@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        id="prometeo-music" version="1.2.0">
+    <name>Prometeo Music</name>
+    <description>Música del teléfono sin copiarla, sesión para el carro, radio y TV con ExoPlayer (AndroidX Media3). Sin recopilar datos.</description>
+    <author>Lanchalex</author>
+    <license>Propietaria - © 2026 Lanchalex. Todos los derechos reservados.</license>
+    <engines>
+        <engine name="cordova-android" version=">=10.0.0" />
+    </engines>
+
+    <js-module src="www/prometeoMusic.js" name="PrometeoMusic">
+        <clobbers target="PrometeoMusic" />
+    </js-module>
+
+    <platform name="android">
+        <config-file target="res/xml/config.xml" parent="/*">
+            <feature name="PrometeoMusic">
+                <param name="android-package" value="com.prometeo.music.PrometeoMusic" />
+                <param name="onload" value="true" />
+            </feature>
+        </config-file>
+        <config-file target="AndroidManifest.xml" parent="/manifest">
+            <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+            <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
+            <!-- Radio en segundo plano: servicio de reproducción multimedia y mantener el wifi despierto -->
+            <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+            <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
+            <uses-permission android:name="android.permission.WAKE_LOCK" />
+            <!-- Reconexión de la radio: saber cuándo vuelve el internet (permiso normal, sin aviso) -->
+            <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+        </config-file>
+        <!-- Radio: muchas emisoras transmiten con http:// (sin s). Esto solo permite reproducirlas. -->
+        <edit-config file="AndroidManifest.xml" target="/manifest/application" mode="merge">
+            <application android:usesCleartextTraffic="true" />
+        </edit-config>
+        <!-- Pantalla completa para ver canales de TV / IPTV -->
+        <config-file target="AndroidManifest.xml" parent="/manifest/application">
+            <activity android:name="com.prometeo.music.VideoActivity"
+                      android:exported="false"
+                      android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboardHidden"
+                      android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" />
+            <service android:name="com.prometeo.music.RadioService"
+                     android:exported="false"
+                     android:foregroundServiceType="mediaPlayback" />
+        </config-file>
+        <source-file src="src/android/PrometeoMusic.java" target-dir="src/com/prometeo/music" />
+        <source-file src="src/android/VideoActivity.java" target-dir="src/com/prometeo/music" />
+        <source-file src="src/android/RadioService.java" target-dir="src/com/prometeo/music" />
+        <!-- ExoPlayer (AndroidX Media3) — © The Android Open Source Project — Apache License 2.0 -->
+        <!-- WebViewAssetLoader (para leer la música sin copiarla); Cordova la usa pero no la comparte con los plugins -->
+        <framework src="androidx.webkit:webkit:1.14.0" />
+        <framework src="androidx.media3:media3-exoplayer:1.9.4" />
+        <framework src="androidx.media3:media3-exoplayer-hls:1.9.4" />
+        <framework src="androidx.media3:media3-ui:1.9.4" />
+    </platform>
+</plugin>

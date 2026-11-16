@@ -1,0 +1,12 @@
+{
+  "name": "prometeo-music",
+  "version": "1.2.0",
+  "description": "Lee la música del teléfono sin copiarla (Prometeo Player)",
+  "cordova": {
+    "id": "prometeo-music",
+    "platforms": ["android"]
+  },
+  "keywords": ["ecosystem:cordova", "cordova-android"],
+  "author": "Lanchalex",
+  "license": "UNLICENSED"
+}

@@ -3,29 +3,97 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Prometeo Player v40</title>
+<meta name="theme-color" content="#141414">
+<title>Prometeo Player v41</title>
 <style>
-:root{--bg:#0a0a0a;--card:#141414;--card2:#1c1c1c;--line:#232323;--acc:#00e5ff;--acc2:#00b8d4;--txt:#fff;--mut:#8a8a8a;--red:#ff4d5e}
+/* ===== Skins: cada skin solo cambia estas variables ===== */
+:root,[data-skin="neon"]{--bg:#0a0a0a;--card:#141414;--card2:#1c1c1c;--line:#232323;--line2:#2c2c2c;--acc:#00e5ff;--accrgb:0,229,255;--onacc:#000;--txt:#fff;--txt2:#ddd;--soft:#aaa;--mut:#8a8a8a;--dim:#666;--viz:#070b0c;--sheet:#161616;--input:#202020;--mini:#1a1f20;--miniline:#2a3a3c;--thumb:#fff;--overlay:rgba(0,0,0,.7);--red:#ff4d5e}
+[data-skin="fuego"]{--bg:#0d0806;--card:#1a110c;--card2:#22160f;--line:#2a1a10;--line2:#3a2416;--acc:#ff7a1a;--accrgb:255,122,26;--onacc:#000;--txt:#fff;--txt2:#eadbd2;--soft:#c2ab9c;--mut:#a08a7c;--dim:#7d6a5e;--viz:#0a0503;--sheet:#1c120d;--input:#22160f;--mini:#24170f;--miniline:#4a2c17}
+[data-skin="pink"]{--bg:#0d070b;--card:#170d14;--card2:#21121c;--line:#2e1a27;--line2:#3a2131;--acc:#ff6fb1;--accrgb:255,111,177;--onacc:#000;--txt:#fff;--txt2:#f0dbe6;--soft:#c9a9b9;--mut:#a68a98;--dim:#806676;--viz:#0a0408;--sheet:#1a0f17;--input:#21121c;--mini:#24121e;--miniline:#4d2440}
+[data-skin="amatista"]{--bg:#0b0812;--card:#161124;--card2:#1e1730;--line:#221a36;--line2:#2e2448;--acc:#b388ff;--accrgb:179,136,255;--onacc:#000;--txt:#fff;--txt2:#e2dcf0;--soft:#b3aac9;--mut:#9188aa;--dim:#6f6788;--viz:#08060e;--sheet:#181227;--input:#1e1730;--mini:#1c1530;--miniline:#3a2d60}
+[data-skin="claro"]{--bg:#f4f5f7;--card:#ffffff;--card2:#f0f2f5;--line:#e3e5e8;--line2:#d3d7dd;--acc:#0077b6;--accrgb:0,119,182;--onacc:#fff;--txt:#15171a;--txt2:#2a2e33;--soft:#4a5058;--mut:#5f6670;--dim:#6b7280;--viz:#eaf1f7;--sheet:#ffffff;--input:#f0f2f5;--mini:#ffffff;--miniline:#cfd6de;--thumb:#0077b6;--overlay:rgba(0,0,0,.45);--red:#d9314a}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{background:var(--bg);color:var(--txt);font-family:system-ui,-apple-system,Roboto,sans-serif}
-body{padding-bottom:calc(76px + env(safe-area-inset-bottom));overflow-x:hidden;user-select:none;-webkit-user-select:none}
+body{padding-bottom:calc(76px + env(safe-area-inset-bottom));overflow-x:hidden;user-select:none;-webkit-user-select:none;transition:background .25s}
 body.has-mini{padding-bottom:calc(142px + env(safe-area-inset-bottom))}
 button{font-family:inherit;cursor:pointer;color:inherit}
 .hidden{display:none!important}
 
-.topbar{background:var(--card);padding:calc(12px + env(safe-area-inset-top)) 16px 12px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
-.topbar h1{font-size:18px;font-weight:900;letter-spacing:.5px}
+.topbar{background:var(--card);padding:calc(12px + env(safe-area-inset-top)) 12px 12px 16px;display:flex;justify-content:space-between;align-items:center;gap:8px;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+.topbar h1{font-size:18px;font-weight:900;letter-spacing:.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
 .topbar h1 span{color:var(--acc)}
-.ver{cursor:pointer;color:var(--acc);font-size:12px;font-weight:800;border:1px solid var(--acc);padding:3px 9px;border-radius:12px}
+.top-actions{display:flex;align-items:center;gap:5px;flex:none}
+.top-btn{width:34px;height:34px;flex:none;border-radius:50%;background:var(--card2);border:1px solid var(--line2);color:var(--acc);display:flex;align-items:center;justify-content:center;padding:0}
+.top-btn svg{width:17px;height:17px;display:block}
+.top-btn:active{transform:scale(.92)}
+.ver{cursor:pointer;background:transparent;color:var(--acc);font-size:12px;font-weight:800;border:1px solid var(--acc);padding:3px 9px;border-radius:12px;margin-left:2px;flex:none}
+@media (max-width:360px){ .topbar h1{font-size:16px} .top-btn{width:32px;height:32px} .top-actions{gap:4px} }
+/* teléfonos muy angostos: que no se salgan los botones de abajo del título ni los de repetir/aleatorio */
+@media (max-width:350px){ .topbar h1 span{display:none} .ctrl-row{flex-wrap:wrap;row-gap:10px} .transport{order:-1;width:100%;justify-content:center} }
 
 .view{display:none}.view.active{display:block;animation:fade .2s}
 @keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 
-.visual-box{background:#070b0c;margin:12px 16px 0;border-radius:20px;height:190px;overflow:hidden;border:1px solid var(--line)}
-#viz{display:block;width:100%;height:100%}
+.visual-box{background:var(--viz);margin:12px 16px 0;border-radius:20px;height:190px;overflow:hidden;border:1px solid var(--line);position:relative}
+#viz{display:block;width:100%;height:100%;position:relative;z-index:1}
+/* Portada del álbum (opción A): a la izquierda, y el visualizador completo a la derecha. No tapa nada. */
+.cover-img{display:none;width:156px;height:156px;flex:none;border-radius:14px;object-fit:cover;box-shadow:0 8px 22px rgba(0,0,0,.55);align-self:center}
+.visual-box.has-cover{display:flex;align-items:stretch;gap:14px;padding:16px}
+.visual-box.has-cover .cover-img{display:block;order:-1;animation:fade .35s}
+.visual-box.has-cover #viz{flex:1;min-width:0;width:auto}
+@media (max-width:360px){ .cover-img{width:120px;height:120px} .visual-box.has-cover{gap:10px;padding:12px} }
+.seg{display:flex;gap:6px;background:var(--card2);border:1px solid var(--line2);border-radius:22px;padding:4px;margin:12px 16px 0}
+.seg button{flex:1;background:transparent;border:none;color:var(--soft);padding:10px;border-radius:18px;font-size:13px;font-weight:800}
+.seg button.on{background:var(--acc);color:var(--onacc)}
+.chips{display:flex;gap:6px;overflow-x:auto;padding:2px 0 8px;margin-top:10px;scrollbar-width:none}
+.chips button{flex:none;background:var(--card2);border:1px solid var(--line2);color:var(--soft);padding:7px 12px;border-radius:16px;font-size:12px;font-weight:700;white-space:nowrap}
+.chips button.on{background:var(--acc);color:var(--onacc);border-color:var(--acc)}
+.two-btn{display:flex;gap:8px;margin-top:12px}
+.two-btn button{flex:1;margin:0}
+.list-row small{color:var(--dim)}
+.lic-pre{white-space:pre-wrap;font-family:ui-monospace,monospace;font-size:10.5px;line-height:1.4;color:var(--soft);background:var(--card2);border:1px solid var(--line2);border-radius:12px;padding:12px;max-height:260px;overflow:auto;user-select:text;-webkit-user-select:text}
+.credit{background:var(--card2);border-radius:14px;padding:10px 12px;margin-top:8px;font-size:12.5px;color:var(--txt2);line-height:1.45;text-align:left}
+.credit b{color:var(--txt);font-size:13.5px}
+.credit small{display:block;color:var(--mut);font-size:11.5px;word-break:break-all;user-select:text;-webkit-user-select:text}
+.about-logo img{width:100%;height:100%;border-radius:22px;object-fit:cover;display:block}
+.radio-only{display:none}
+body.radio-on .radio-only{display:block}
+body.radio-on .live-row{display:flex}
+body.radio-on #progress, body.radio-on #view-ahora .times, body.radio-on #curArtist, body.radio-on #btnCurToPl,
+body.radio-on #view-ahora .picker, body.radio-on #view-ahora .btn-scan{display:none}
+body.radio-on #btnRepeat, body.radio-on #btnShuffle{visibility:hidden}
+body.radio-on #modes{opacity:.4;pointer-events:none}
+.live-row{align-items:center;gap:8px;margin-bottom:8px}
+.live-badge{background:#ff4d5e;color:#fff;font-size:11px;font-weight:900;padding:3px 8px;border-radius:8px;letter-spacing:.5px}
+.live-row small{font-size:12px;color:var(--mut)}
+.radio-bar{height:6px;border-radius:3px;background:#ff4d5e;opacity:.5;margin:16px 0 6px}
+.radio-times{justify-content:space-between;font-size:11px;color:var(--mut)}
+body.radio-on .radio-times{display:flex}
+.radio-hint{text-align:center;font-size:11px;color:var(--dim);margin-top:8px}
+.radio-note{display:flex;gap:10px;align-items:flex-start;background:rgba(var(--accrgb),.08);border:1px solid rgba(var(--accrgb),.35);border-radius:14px;padding:10px 12px;font-size:12px;color:var(--txt2);line-height:1.4}
+.st-tile{width:44px;height:44px;flex:none;border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:15px;color:rgba(0,0,0,.75)}
+.st-live{color:#ff4d5e!important;font-weight:800}
+.song-item.live .song-info b{color:var(--acc)}
+.field-label{display:block;font-size:11px;font-weight:800;color:var(--mut);letter-spacing:.6px;text-transform:uppercase;margin:12px 4px 6px}
+.field-help{margin:8px 4px 0;font-size:12px;color:var(--mut);line-height:1.45}
+.test-box{margin-top:12px;display:flex;align-items:center;gap:10px;border-radius:14px;padding:11px 12px;font-size:13px;border:1px solid var(--line2);background:var(--card2)}
+.test-box i{width:10px;height:10px;border-radius:50%;flex:none;background:var(--mut)}
+.test-box.ok{border-color:rgba(46,232,138,.5);background:rgba(46,232,138,.08)} .test-box.ok i{background:#2ee88a}
+.test-box.bad{border-color:rgba(255,77,94,.5);background:rgba(255,77,94,.08)} .test-box.bad i{background:#ff4d5e}
+.st-actions{display:flex;gap:8px;margin-top:16px}
+.st-actions button{flex:1}
+.privacy-small{margin:12px 4px 0;font-size:11px;color:var(--dim);line-height:1.45}
+.bottom-nav button{flex:1 1 0;min-width:0}
+.bottom-nav button span:last-child{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media (max-width:370px){ .bottom-nav button{padding:4px 2px;font-size:10px} }
+@media (max-width:345px){ .bottom-nav button{font-size:9px;letter-spacing:-.2px;padding:4px 1px} }
+.song-artist{font-size:13px;font-weight:700;color:var(--acc);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.song-artist:empty{display:none}
+.mini-cover{width:40px;height:40px;flex:none;border-radius:8px;object-fit:cover;display:none;margin-left:-6px}
+.mini.has-cover .mini-cover{display:block}
 .modes{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin:10px 16px 0}
-.modes button{background:var(--card2);border:1px solid #2c2c2c;color:#aaa;padding:7px 13px;border-radius:18px;font-size:12px;font-weight:700}
-.modes button.on{background:var(--acc);color:#000;border-color:var(--acc)}
+.modes button{background:var(--card2);border:1px solid var(--line2);color:var(--soft);padding:7px 13px;border-radius:18px;font-size:12px;font-weight:700}
+.modes button.on{background:var(--acc);color:var(--onacc);border-color:var(--acc)}
 
 .card{background:var(--card);margin:12px 16px;border-radius:20px;padding:16px;border:1px solid var(--line)}
 .card-title{font-size:16px;font-weight:800;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;gap:8px}
@@ -34,64 +102,97 @@ button{font-family:inherit;cursor:pointer;color:inherit}
 .song-title{font-size:19px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .song-sub{font-size:12px;color:var(--mut);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
-input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:3px;margin:16px 0 6px;background:linear-gradient(to right,var(--acc) var(--p,0%),#2d2d2d var(--p,0%));outline:none}
-input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 0 8px rgba(0,229,255,.7)}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:3px;margin:16px 0 6px;background:linear-gradient(to right,var(--acc) var(--p,0%),var(--line2) var(--p,0%));outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--thumb);box-shadow:0 0 8px rgba(var(--accrgb),.7)}
 .times{display:flex;justify-content:space-between;font-size:11px;color:var(--mut);font-variant-numeric:tabular-nums}
 
 .ctrl-row{display:flex;justify-content:space-between;align-items:center;margin-top:14px;gap:6px}
 .transport{display:flex;gap:8px;align-items:center}
-.btn-round{width:44px;height:44px;flex:none;border-radius:50%;background:var(--card2);border:1px solid #2c2c2c;font-size:18px}
-.big-play{width:62px;height:62px;flex:none;background:var(--acc);border:none;border-radius:50%;color:#000;font-size:26px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 20px rgba(0,229,255,.5)}
+.btn-round{width:44px;height:44px;flex:none;border-radius:50%;background:var(--card2);border:1px solid var(--line2);font-size:18px}
+.big-play{width:62px;height:62px;flex:none;background:var(--acc);border:none;border-radius:50%;color:var(--onacc);font-size:26px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 20px rgba(var(--accrgb),.5)}
 .big-play:active,.btn-round:active{transform:scale(.94)}
-.btn-mode{background:var(--card2);border:1px solid #2c2c2c;color:#888;padding:9px 8px;border-radius:22px;font-size:11px;font-weight:800;min-width:0;white-space:nowrap;flex:none}
-.btn-mode.on{background:rgba(0,229,255,.12);color:var(--acc);border-color:var(--acc)}
+.btn-mode{background:var(--card2);border:1px solid var(--line2);color:var(--mut);padding:9px 8px;border-radius:22px;font-size:11px;font-weight:800;min-width:0;white-space:nowrap;flex:none}
+.btn-mode.on{background:rgba(var(--accrgb),.12);color:var(--acc);border-color:var(--acc)}
 
-.btn-add{background:var(--acc);border:none;color:#000;padding:14px;border-radius:25px;width:100%;font-weight:900;font-size:14px}
+.btn-add{background:var(--acc);border:none;color:var(--onacc);padding:14px;border-radius:25px;width:100%;font-weight:900;font-size:14px}
 .picker{position:relative;overflow:hidden;display:block;text-align:center;cursor:pointer}
+/* En la app (Android) se busca la música del teléfono sin copiarla; en la web se sigue usando el selector */
+.btn-scan{display:none}
+body.native .btn-scan{display:block}
+body.native .btn-add.picker{display:none}
 .picker input{position:absolute;inset:0;width:100%;height:100%;opacity:0;font-size:200px;cursor:pointer}
-.btn-ghost{background:transparent;border:1px solid #2f2f2f;color:#ddd;padding:12px;border-radius:25px;width:100%;font-weight:700;font-size:13px;margin-top:10px}
-.btn-pill{background:var(--card2);border:1px solid #2f2f2f;padding:8px 14px;border-radius:20px;font-size:12px;font-weight:700}
+.btn-ghost{background:transparent;border:1px solid var(--line2);color:var(--txt2);padding:12px;border-radius:25px;width:100%;font-weight:700;font-size:13px;margin-top:10px}
+.btn-pill{background:var(--card2);border:1px solid var(--line2);padding:8px 14px;border-radius:20px;font-size:12px;font-weight:700}
 .btn-danger{background:var(--red);border:none;color:#fff;padding:10px 18px;border-radius:20px;font-size:13px;font-weight:800}
-.btn-ok{background:var(--acc);border:none;color:#000;padding:10px 18px;border-radius:20px;font-size:13px;font-weight:800}
+.btn-ok{background:var(--acc);border:none;color:var(--onacc);padding:10px 18px;border-radius:20px;font-size:13px;font-weight:800}
 
 .list{margin-top:10px}
-.song-item{display:flex;align-items:center;gap:6px;padding:11px 4px;border-bottom:1px solid #1d1d1d}
+.song-item{display:flex;align-items:center;gap:6px;padding:11px 4px;border-bottom:1px solid var(--line)}
 .song-item:last-child{border-bottom:none}
 .song-info{flex:1;min-width:0;cursor:pointer}
 .song-info b{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.song-info small{display:block;font-size:11px;color:#666;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+.song-info small{display:block;font-size:11px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
 .song-item.current .song-info b{color:var(--acc)}
 .song-item.current .song-info b::before{content:"♪ ";}
-.icon-btn{width:38px;height:38px;flex:none;border-radius:50%;background:transparent;border:1px solid #2a2a2a;font-size:15px;color:#bbb}
-.icon-btn.del{color:var(--red);border-color:#3a2226}
-.empty{color:#666;font-size:13px;text-align:center;padding:22px 8px;line-height:1.5;white-space:pre-line}
+.icon-btn{width:38px;height:38px;flex:none;border-radius:50%;background:transparent;border:1px solid var(--line2);font-size:15px;color:var(--soft)}
+.icon-btn.del{color:var(--red);border-color:rgba(255,77,94,.3)}
+.empty{color:var(--dim);font-size:13px;text-align:center;padding:22px 8px;line-height:1.5;white-space:pre-line}
 
-.pl-row{display:flex;align-items:center;gap:6px;background:var(--card2);border:1px solid #2a2a2a;border-radius:16px;padding:10px 10px 10px 14px;margin-bottom:8px}
+.pl-row{display:flex;align-items:center;gap:6px;background:var(--card2);border:1px solid var(--line2);border-radius:16px;padding:10px 10px 10px 14px;margin-bottom:8px}
 .pl-row .song-info b::before{content:"📂 "}
 
-input.search{width:100%;background:#202020;border:1px solid #333;color:#fff;padding:13px 16px;border-radius:25px;font-size:15px;outline:none;user-select:text;-webkit-user-select:text}
+input.search{width:100%;background:var(--input);border:1px solid var(--line2);color:var(--txt);padding:13px 16px;border-radius:25px;font-size:15px;outline:none;user-select:text;-webkit-user-select:text}
 input.search:focus{border-color:var(--acc)}
 
-.mini{position:fixed;left:10px;right:10px;bottom:calc(68px + env(safe-area-inset-bottom));background:#1a1f20;border:1px solid #2a3a3c;border-radius:16px;display:flex;align-items:center;gap:10px;padding:8px 8px 8px 14px;z-index:9;box-shadow:0 6px 20px rgba(0,0,0,.6)}
+.mini{position:fixed;left:10px;right:10px;bottom:calc(68px + env(safe-area-inset-bottom));background:var(--mini);border:1px solid var(--miniline);border-radius:16px;display:flex;align-items:center;gap:10px;padding:8px 8px 8px 14px;z-index:9;box-shadow:0 6px 20px rgba(0,0,0,.35)}
 .mini-info{flex:1;min-width:0}
 .mini-info b{display:block;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .mini-info small{font-size:11px;color:var(--acc)}
-.mini-play{width:42px;height:42px;border-radius:50%;background:var(--acc);border:none;color:#000;font-size:17px}
+.mini-play{width:42px;height:42px;border-radius:50%;background:var(--acc);border:none;color:var(--onacc);font-size:17px}
 
 .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:8px 0 calc(8px + env(safe-area-inset-bottom));z-index:10}
-.bottom-nav button{background:none;border:none;color:#666;font-size:11px;font-weight:700;display:flex;flex-direction:column;align-items:center;gap:3px;padding:4px 10px}
-.bottom-nav button span{font-size:19px}
+.bottom-nav button{background:none;border:none;color:var(--dim);font-size:11px;font-weight:700;display:flex;flex-direction:column;align-items:center;gap:3px;padding:4px 10px}
+.bottom-nav button .ic{font-size:19px}
 .bottom-nav button.active{color:var(--acc)}
 
-.modal{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:50;display:flex;align-items:flex-end;justify-content:center}
-.sheet{background:#161616;border:1px solid #2a2a2a;border-radius:22px 22px 0 0;width:100%;max-width:520px;padding:20px 16px calc(18px + env(safe-area-inset-bottom));max-height:80vh;overflow:auto;animation:up .2s}
+.modal{position:fixed;inset:0;background:var(--overlay);z-index:50;display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--sheet);border:1px solid var(--line2);border-radius:22px 22px 0 0;width:100%;max-width:520px;padding:20px 16px calc(18px + env(safe-area-inset-bottom));max-height:80vh;overflow:auto;animation:up .2s}
 @keyframes up{from{transform:translateY(30px);opacity:0}to{transform:none;opacity:1}}
 .sheet h3{font-size:17px;margin-bottom:14px}
-.m-msg{color:#bbb;font-size:14px;line-height:1.45}
-.m-item{display:block;width:100%;text-align:left;background:var(--card2);border:1px solid #2a2a2a;padding:13px 14px;border-radius:14px;margin-bottom:8px;font-size:14px;font-weight:600}
+.m-msg{color:var(--soft);font-size:14px;line-height:1.45}
+.m-item{display:block;width:100%;text-align:left;background:var(--card2);border:1px solid var(--line2);padding:13px 14px;border-radius:14px;margin-bottom:8px;font-size:14px;font-weight:600}
 .m-item.done{color:var(--acc)}
 .m-item.new{border-style:dashed;color:var(--acc)}
 .m-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:16px}
+.m-sub{color:var(--mut);font-size:13px;margin:-8px 0 14px}
+.m-label{font-size:11px;font-weight:800;color:var(--mut);letter-spacing:.8px;text-transform:uppercase;margin:12px 4px 8px}
+
+/* ---- opciones de skin / idioma ---- */
+.opt{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--card2);border:2px solid var(--line2);border-radius:16px;padding:10px 12px;margin-bottom:8px;color:var(--txt)}
+.opt.on{border-color:var(--acc);background:rgba(var(--accrgb),.08)}
+.opt-txt{flex:1;min-width:0}
+.opt-txt b{display:block;font-size:15px}
+.opt-txt small{display:block;font-size:12px;color:var(--mut);margin-top:2px}
+.opt-mark{width:22px;height:22px;flex:none;border-radius:50%;border:2px solid var(--line2);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900}
+.opt.on .opt-mark{border-color:var(--acc);background:var(--acc);color:var(--onacc)}
+.sk-prev{width:74px;height:56px;flex:none;border-radius:10px;border:1px solid;display:flex;flex-direction:column;overflow:hidden}
+.sk-prev i{display:block;height:10px}
+.sk-prev div{flex:1;display:flex;align-items:flex-end;gap:3px;padding:0 8px 6px}
+.sk-prev em{display:block;width:6px;border-radius:2px}
+.sk-prev em:nth-child(1){height:14px}.sk-prev em:nth-child(2){height:24px}.sk-prev em:nth-child(3){height:18px}
+.sk-prev s{display:block;width:14px;height:14px;border-radius:50%;margin-left:auto}
+
+/* ---- Acerca de ---- */
+.about{text-align:center;padding-top:4px}
+.about-logo{width:72px;height:72px;border-radius:22px;margin:0 auto 12px;background:var(--card2);border:1px solid var(--line2);display:flex;align-items:center;justify-content:center;font-size:36px}
+.about h4{font-size:22px;font-weight:900}
+.about h4 span{color:var(--acc)}
+.about-ver{display:inline-block;margin-top:8px;color:var(--acc);font-size:12px;font-weight:800;border:1px solid var(--acc);padding:3px 10px;border-radius:12px}
+.about-dev{margin-top:16px;font-size:15px;color:var(--txt2)}
+.about-dev b{color:var(--txt)}
+.about-feats{margin-top:16px;display:flex;flex-direction:column;gap:8px;text-align:left}
+.about-feats div{display:flex;align-items:center;gap:10px;background:var(--card2);border-radius:14px;padding:12px;font-size:13px;color:var(--txt2)}
+.about-foot{margin-top:14px;font-size:12px;color:var(--mut)}
 
 .toast{position:fixed;left:50%;bottom:calc(150px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(10px);background:#242424;border:1px solid #333;color:#fff;padding:10px 16px;border-radius:20px;font-size:13px;opacity:0;pointer-events:none;transition:.25s;z-index:60;max-width:88vw;text-align:center}
 .toast.show{opacity:1;transform:translateX(-50%)}
@@ -99,38 +200,60 @@ input.search:focus{border-color:var(--acc)}
 </head>
 <body>
 
-<header class="topbar"><h1>🔥 Prometeo <span>Player</span></h1><span class="ver">v40</span></header>
+<header class="topbar">
+  <h1>🔥 Prometeo <span>Player</span></h1>
+  <div class="top-actions">
+    <button class="top-btn" id="btnSkin" data-i18n-aria="skinBtn" aria-label="Cambiar skin">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.6-.8 1.6-1.6 0-.5-.2-.9-.5-1.2-.3-.3-.5-.7-.5-1.2 0-.9.7-1.6 1.6-1.6H16a5 5 0 0 0 5-5c0-4-4-7.4-9-7.4z"/><circle cx="7.5" cy="11" r="1"/><circle cx="10" cy="7" r="1"/><circle cx="15" cy="7.5" r="1"/></svg>
+    </button>
+    <button class="top-btn" id="btnLang" data-i18n-aria="langBtn" aria-label="Idioma">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a14 14 0 0 1 0 18a14 14 0 0 1 0-18z"/></svg>
+    </button>
+    <button class="top-btn" id="btnAbout" data-i18n-aria="aboutBtn" aria-label="Acerca de">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6"/><path d="M12 7.5v.01"/></svg>
+    </button>
+    <button class="ver" id="btnVer" data-i18n-aria="diagBtn" aria-label="Diagnóstico">v41</button>
+  </div>
+</header>
 
 <main>
 <!-- ============ AHORA ============ -->
 <section id="view-ahora" class="view active">
-  <div class="visual-box"><canvas id="viz"></canvas></div>
+  <div class="visual-box" id="vbox"><canvas id="viz"></canvas><img class="cover-img" id="coverImg" alt=""></div>
   <div class="modes" id="modes">
-    <button data-mode="barras">Barras</button>
-    <button data-mode="onda">Onda</button>
-    <button data-mode="circulo">Círculo</button>
-    <button data-mode="fuego">Fuego</button>
+    <button data-mode="barras" data-i18n="mBars">Barras</button>
+    <button data-mode="onda" data-i18n="mWave">Onda</button>
+    <button data-mode="circulo" data-i18n="mCircle">Círculo</button>
+    <button data-mode="fuego" data-i18n="mFire">Fuego</button>
     <button data-mode="off">Off</button>
   </div>
   <div class="card">
+    <div class="live-row radio-only" id="liveRow"><span class="live-badge" data-i18n="live">● EN VIVO</span><small id="radioPos"></small></div>
     <div id="curTitle" class="song-title">Sin canción</div>
+    <div id="radioNow" class="song-artist radio-only"></div>
+    <div id="curArtist" class="song-artist"></div>
     <div id="curSub" class="song-sub">Agrega música desde Biblioteca</div>
     <input type="range" id="progress" min="0" max="1000" step="1" value="0">
     <div class="times"><span id="tCur">0:00</span><span id="tDur">0:00</span></div>
+    <div class="radio-bar radio-only"></div>
+    <div class="radio-times radio-only"><span id="radioElapsed"></span><span id="radioStatus"></span></div>
     <div class="ctrl-row">
       <button class="btn-mode" id="btnRepeat"></button>
       <div class="transport">
-        <button class="btn-round" id="btnPrev" aria-label="Anterior">⏮</button>
-        <button class="big-play" id="btnPlay" aria-label="Reproducir">▶</button>
-        <button class="btn-round" id="btnNext" aria-label="Siguiente">⏭</button>
+        <button class="btn-round" id="btnPrev" data-i18n-aria="prev" aria-label="Anterior">⏮</button>
+        <button class="big-play" id="btnPlay" data-i18n-aria="playA" aria-label="Reproducir">▶</button>
+        <button class="btn-round" id="btnNext" data-i18n-aria="next" aria-label="Siguiente">⏭</button>
       </div>
       <button class="btn-mode" id="btnShuffle"></button>
     </div>
-    <button class="btn-ghost" id="btnCurToPl">＋ Agregar a playlist</button>
-    <label class="btn-add picker" style="margin-top:10px">＋ Agregar canciones<input type="file" class="songPicker" multiple></label>
+    <div class="radio-hint radio-only" data-i18n="switchHint">⏮ ⏭ cambian de emisora</div>
+    <button class="btn-ghost radio-only" id="btnBackMusic" data-i18n="backToMusic">🎵 Volver a mi música</button>
+    <button class="btn-ghost" id="btnCurToPl" data-i18n="addToPlBtn">＋ Agregar a playlist</button>
+    <label class="btn-add picker" style="margin-top:10px"><span data-i18n="addSongs">＋ Agregar canciones</span><input type="file" class="songPicker" multiple></label>
+    <button class="btn-add btn-scan" style="margin-top:10px" data-i18n="scanBtn">🔍 Buscar música en el teléfono</button>
   </div>
   <div class="card">
-    <div class="card-title"><span>Cola</span><small id="queueInfo"></small></div>
+    <div class="card-title"><span data-i18n="queue">Cola</span><small id="queueInfo"></small></div>
     <div id="queueList" class="list"></div>
   </div>
 </section>
@@ -138,9 +261,10 @@ input.search:focus{border-color:var(--acc)}
 <!-- ============ BIBLIOTECA ============ -->
 <section id="view-biblioteca" class="view">
   <div class="card">
-    <div class="card-title"><span>Biblioteca</span><small id="libCount">0 canciones</small></div>
-    <label class="btn-add picker">＋ Agregar canciones<input type="file" class="songPicker" multiple></label>
-    <button class="btn-ghost" id="btnPlayAll">▶ Reproducir todo</button>
+    <div class="card-title"><span data-i18n="library">Biblioteca</span><small id="libCount">0 canciones</small></div>
+    <label class="btn-add picker"><span data-i18n="addSongs">＋ Agregar canciones</span><input type="file" class="songPicker" multiple></label>
+    <button class="btn-add btn-scan" data-i18n="scanBtn">🔍 Buscar música en el teléfono</button>
+    <button class="btn-ghost" id="btnPlayAll" data-i18n="playAll">▶ Reproducir todo</button>
     <div id="libList" class="list"></div>
   </div>
 </section>
@@ -148,46 +272,248 @@ input.search:focus{border-color:var(--acc)}
 <!-- ============ PLAYLISTS ============ -->
 <section id="view-playlists" class="view">
   <div class="card" id="plIndex">
-    <div class="card-title"><span>Playlists</span><button class="btn-pill" id="btnNewPl">＋ Nueva</button></div>
+    <div class="card-title"><span>Playlists</span><button class="btn-pill" id="btnNewPl" data-i18n="newBtn">＋ Nueva</button></div>
     <div id="plList"></div>
   </div>
   <div class="card hidden" id="plDetail">
-    <div class="card-title"><button class="btn-pill" id="btnPlBack">‹ Volver</button><small id="plCount"></small></div>
+    <div class="card-title"><button class="btn-pill" id="btnPlBack" data-i18n="back">‹ Volver</button><small id="plCount"></small></div>
     <div class="song-title" id="plName"></div>
     <div style="display:flex;gap:8px;margin-top:12px">
-      <button class="btn-add" id="btnPlPlay" style="flex:2">▶ Reproducir</button>
-      <button class="btn-pill" id="btnPlRename" style="flex:1">✎ Renombrar</button>
+      <button class="btn-add" id="btnPlPlay" style="flex:2" data-i18n="playBtn">▶ Reproducir</button>
+      <button class="btn-pill" id="btnPlRename" style="flex:1" data-i18n="renameBtn">✎ Renombrar</button>
     </div>
     <div id="plSongs" class="list"></div>
+  </div>
+</section>
+
+<!-- ============ RADIO ============ -->
+<section id="view-radio" class="view">
+  <div class="seg" role="tablist"><button id="segSt" class="on" data-i18n="rtStations">📻 Emisoras</button><button id="segTv" data-i18n="rtChannels">📺 Canales</button></div>
+  <div class="card" id="paneSt">
+    <div class="card-title"><span data-i18n="radioTitle">📻 Radio</span><small id="radioCount"></small></div>
+    <div class="radio-note"><span>📶</span><span data-i18n="radioNote">La radio usa internet solo mientras escuchas una emisora. Tu música sigue funcionando sin conexión.</span></div>
+    <button class="btn-add" id="btnAddStation" style="margin-top:12px" data-i18n="addStation">＋ Agregar emisora</button>
+    <div id="radioList" class="list"></div>
+  </div>
+  <div class="card hidden" id="paneTv">
+    <div class="card-title"><span data-i18n="tvTitle">📺 Canales</span><small id="tvCount"></small></div>
+    <div class="radio-note"><span>📶</span><span data-i18n="tvNote">Los canales usan internet solo mientras los ves.</span></div>
+    <div class="two-btn"><button class="btn-add" id="btnAddList" data-i18n="addList">＋ Lista M3U</button><button class="btn-ghost" id="btnAddChannel" data-i18n="addChannel">＋ Canal</button></div>
+    <div id="tvLists" class="list"></div>
+    <input type="search" id="tvSearch" class="search hidden" style="margin-top:12px" data-i18n-ph="searchCh" placeholder="Buscar canal…" autocomplete="off">
+    <div id="tvGroups" class="chips hidden"></div>
+    <div id="tvList" class="list"></div>
   </div>
 </section>
 
 <!-- ============ BUSCAR ============ -->
 <section id="view-buscar" class="view">
   <div class="card">
-    <div class="card-title"><span>Buscar</span></div>
-    <input type="search" id="searchInput" class="search" placeholder="Nombre de canción o archivo…" autocomplete="off">
+    <div class="card-title"><span data-i18n="search">Buscar</span></div>
+    <input type="search" id="searchInput" class="search" data-i18n-ph="searchPh" placeholder="Nombre de canción o archivo…" autocomplete="off">
     <div id="searchResults" class="list"></div>
   </div>
 </section>
 </main>
 
 <div id="mini" class="mini hidden">
-  <div class="mini-info" id="miniInfo"><b id="miniTitle"></b><small id="miniSub">Toca para abrir</small></div>
-  <button class="mini-play" id="miniPlay">▶</button>
+  <img class="mini-cover" id="miniCover" alt="">
+  <div class="mini-info" id="miniInfo"><b id="miniTitle"></b><small id="miniSub" data-i18n="tapOpen">Toca para abrir</small></div>
+  <button class="mini-play" id="miniPlay" data-i18n-aria="playA" aria-label="Reproducir">▶</button>
 </div>
 
 <nav class="bottom-nav" id="nav">
-  <button data-tab="ahora" class="active"><span>🎧</span>Ahora</button>
-  <button data-tab="biblioteca"><span>📚</span>Biblioteca</button>
-  <button data-tab="playlists"><span>📂</span>Playlists</button>
-  <button data-tab="buscar"><span>🔍</span>Buscar</button>
+  <button data-tab="ahora" class="active"><span class="ic">🎧</span><span data-i18n="tabNow">Ahora</span></button>
+  <button data-tab="biblioteca"><span class="ic">📚</span><span data-i18n="library">Biblioteca</span></button>
+  <button data-tab="playlists"><span class="ic">📂</span><span>Playlists</span></button>
+  <button data-tab="radio"><span class="ic">📻</span><span data-i18n="tabRadio">Radio/TV</span></button>
+  <button data-tab="buscar"><span class="ic">🔍</span><span data-i18n="search">Buscar</span></button>
 </nav>
 
 <div id="modal" class="modal hidden"><div class="sheet"><h3 id="mTitle"></h3><div id="mBody"></div><div class="m-actions" id="mActions"></div></div></div>
-<div id="toast" class="toast"></div>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
 
 <audio id="audio" preload="metadata"></audio>
+<audio id="radioAudio" preload="none"></audio>
+<!-- Texto oficial de la licencia Apache 2.0 (se muestra en Acerca de › Licencias, sin internet) -->
+<script type="text/plain" id="licApache">                                 Apache License
+                           Version 2.0, January 2004
+                        http://www.apache.org/licenses/
+
+   TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
+
+   1. Definitions.
+
+      "License" shall mean the terms and conditions for use, reproduction,
+      and distribution as defined by Sections 1 through 9 of this document.
+
+      "Licensor" shall mean the copyright owner or entity authorized by
+      the copyright owner that is granting the License.
+
+      "Legal Entity" shall mean the union of the acting entity and all
+      other entities that control, are controlled by, or are under common
+      control with that entity. For the purposes of this definition,
+      "control" means (i) the power, direct or indirect, to cause the
+      direction or management of such entity, whether by contract or
+      otherwise, or (ii) ownership of fifty percent (50%) or more of the
+      outstanding shares, or (iii) beneficial ownership of such entity.
+
+      "You" (or "Your") shall mean an individual or Legal Entity
+      exercising permissions granted by this License.
+
+      "Source" form shall mean the preferred form for making modifications,
+      including but not limited to software source code, documentation
+      source, and configuration files.
+
+      "Object" form shall mean any form resulting from mechanical
+      transformation or translation of a Source form, including but
+      not limited to compiled object code, generated documentation,
+      and conversions to other media types.
+
+      "Work" shall mean the work of authorship, whether in Source or
+      Object form, made available under the License, as indicated by a
+      copyright notice that is included in or attached to the work
+      (an example is provided in the Appendix below).
+
+      "Derivative Works" shall mean any work, whether in Source or Object
+      form, that is based on (or derived from) the Work and for which the
+      editorial revisions, annotations, elaborations, or other modifications
+      represent, as a whole, an original work of authorship. For the purposes
+      of this License, Derivative Works shall not include works that remain
+      separable from, or merely link (or bind by name) to the interfaces of,
+      the Work and Derivative Works thereof.
+
+      "Contribution" shall mean any work of authorship, including
+      the original version of the Work and any modifications or additions
+      to that Work or Derivative Works thereof, that is intentionally
+      submitted to Licensor for inclusion in the Work by the copyright owner
+      or by an individual or Legal Entity authorized to submit on behalf of
+      the copyright owner. For the purposes of this definition, "submitted"
+      means any form of electronic, verbal, or written communication sent
+      to the Licensor or its representatives, including but not limited to
+      communication on electronic mailing lists, source code control systems,
+      and issue tracking systems that are managed by, or on behalf of, the
+      Licensor for the purpose of discussing and improving the Work, but
+      excluding communication that is conspicuously marked or otherwise
+      designated in writing by the copyright owner as "Not a Contribution."
+
+      "Contributor" shall mean Licensor and any individual or Legal Entity
+      on behalf of whom a Contribution has been received by Licensor and
+      subsequently incorporated within the Work.
+
+   2. Grant of Copyright License. Subject to the terms and conditions of
+      this License, each Contributor hereby grants to You a perpetual,
+      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+      copyright license to reproduce, prepare Derivative Works of,
+      publicly display, publicly perform, sublicense, and distribute the
+      Work and such Derivative Works in Source or Object form.
+
+   3. Grant of Patent License. Subject to the terms and conditions of
+      this License, each Contributor hereby grants to You a perpetual,
+      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+      (except as stated in this section) patent license to make, have made,
+      use, offer to sell, sell, import, and otherwise transfer the Work,
+      where such license applies only to those patent claims licensable
+      by such Contributor that are necessarily infringed by their
+      Contribution(s) alone or by combination of their Contribution(s)
+      with the Work to which such Contribution(s) was submitted. If You
+      institute patent litigation against any entity (including a
+      cross-claim or counterclaim in a lawsuit) alleging that the Work
+      or a Contribution incorporated within the Work constitutes direct
+      or contributory patent infringement, then any patent licenses
+      granted to You under this License for that Work shall terminate
+      as of the date such litigation is filed.
+
+   4. Redistribution. You may reproduce and distribute copies of the
+      Work or Derivative Works thereof in any medium, with or without
+      modifications, and in Source or Object form, provided that You
+      meet the following conditions:
+
+      (a) You must give any other recipients of the Work or
+          Derivative Works a copy of this License; and
+
+      (b) You must cause any modified files to carry prominent notices
+          stating that You changed the files; and
+
+      (c) You must retain, in the Source form of any Derivative Works
+          that You distribute, all copyright, patent, trademark, and
+          attribution notices from the Source form of the Work,
+          excluding those notices that do not pertain to any part of
+          the Derivative Works; and
+
+      (d) If the Work includes a "NOTICE" text file as part of its
+          distribution, then any Derivative Works that You distribute must
+          include a readable copy of the attribution notices contained
+          within such NOTICE file, excluding those notices that do not
+          pertain to any part of the Derivative Works, in at least one
+          of the following places: within a NOTICE text file distributed
+          as part of the Derivative Works; within the Source form or
+          documentation, if provided along with the Derivative Works; or,
+          within a display generated by the Derivative Works, if and
+          wherever such third-party notices normally appear. The contents
+          of the NOTICE file are for informational purposes only and
+          do not modify the License. You may add Your own attribution
+          notices within Derivative Works that You distribute, alongside
+          or as an addendum to the NOTICE text from the Work, provided
+          that such additional attribution notices cannot be construed
+          as modifying the License.
+
+      You may add Your own copyright statement to Your modifications and
+      may provide additional or different license terms and conditions
+      for use, reproduction, or distribution of Your modifications, or
+      for any such Derivative Works as a whole, provided Your use,
+      reproduction, and distribution of the Work otherwise complies with
+      the conditions stated in this License.
+
+   5. Submission of Contributions. Unless You explicitly state otherwise,
+      any Contribution intentionally submitted for inclusion in the Work
+      by You to the Licensor shall be under the terms and conditions of
+      this License, without any additional terms or conditions.
+      Notwithstanding the above, nothing herein shall supersede or modify
+      the terms of any separate license agreement you may have executed
+      with Licensor regarding such Contributions.
+
+   6. Trademarks. This License does not grant permission to use the trade
+      names, trademarks, service marks, or product names of the Licensor,
+      except as required for reasonable and customary use in describing the
+      origin of the Work and reproducing the content of the NOTICE file.
+
+   7. Disclaimer of Warranty. Unless required by applicable law or
+      agreed to in writing, Licensor provides the Work (and each
+      Contributor provides its Contributions) on an "AS IS" BASIS,
+      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+      implied, including, without limitation, any warranties or conditions
+      of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A
+      PARTICULAR PURPOSE. You are solely responsible for determining the
+      appropriateness of using or redistributing the Work and assume any
+      risks associated with Your exercise of permissions under this License.
+
+   8. Limitation of Liability. In no event and under no legal theory,
+      whether in tort (including negligence), contract, or otherwise,
+      unless required by applicable law (such as deliberate and grossly
+      negligent acts) or agreed to in writing, shall any Contributor be
+      liable to You for damages, including any direct, indirect, special,
+      incidental, or consequential damages of any character arising as a
+      result of this License or out of the use or inability to use the
+      Work (including but not limited to damages for loss of goodwill,
+      work stoppage, computer failure or malfunction, or any and all
+      other commercial damages or losses), even if such Contributor
+      has been advised of the possibility of such damages.
+
+   9. Accepting Warranty or Additional Liability. While redistributing
+      the Work or Derivative Works thereof, You may choose to offer,
+      and charge a fee for, acceptance of support, warranty, indemnity,
+      or other liability obligations and/or rights consistent with this
+      License. However, in accepting such obligations, You may act only
+      on Your own behalf and on Your sole responsibility, not on behalf
+      of any other Contributor, and only if You agree to indemnify,
+      defend, and hold each Contributor harmless for any liability
+      incurred by, or claims asserted against, such Contributor by reason
+      of your accepting any such warranty or additional liability.
+
+   END OF TERMS AND CONDITIONS</script>
+
+<script>window.__BOOT={t0:Date.now(),errors:[],ready:0};window.addEventListener("error",function(e){__BOOT.errors.push(String(e.message||"error")+" @"+String(e.filename||"").split("/").pop()+":"+(e.lineno||""));});window.addEventListener("unhandledrejection",function(e){__BOOT.errors.push("promesa: "+String(e.reason&&e.reason.message||e.reason));});</script>
 
 <script>
 'use strict';
@@ -205,6 +531,262 @@ const store = {
 let toastT;
 function toast(msg){ const t=$('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),2300); }
 
+/* ================= IDIOMAS (v41) ================= */
+const VERSION='41';
+const LANGS={es:'Español',en:'English',pt:'Português',fr:'Français'};
+const I18N={
+es:{
+ testFailNative:'No se pudo comprobar aquí. Guárdala y tócala: el reproductor de la app abre más tipos de emisoras.',
+ tabRadio:'Radio/TV',rtStations:'📻 Emisoras',rtChannels:'📺 Canales',tvTitle:'📺 Canales',tvNote:'Los canales usan internet solo mientras los ves. Prometeo no trae listas: agregas las tuyas (usa listas legales y gratuitas).',
+ addList:'＋ Lista M3U',addChannel:'＋ Canal',ch1:'{0} canal',chN:'{0} canales',tvEmpty:'Todavía no tienes canales.\nAgrega una lista M3U (dirección o archivo) o un canal suelto.',
+ listName:'Nombre de la lista',listUrl:'Dirección de la lista (URL)',orFile:'…o un archivo .m3u del teléfono',chooseFile:'📄 Elegir archivo',fileChosen:'Archivo: {0}',needSource:'Pon una dirección o elige un archivo',
+ loadingList:'Descargando la lista…',listFail:'No se pudo descargar la lista ({0})',listEmptyErr:'La lista no tiene canales ni canciones',listSaved:'Lista "{0}": {1} canales ✓',
+ musicImported:'Playlist "{0}" creada con {1} de {2} canciones',musicNone:'Ninguna canción de esa lista está en tu Biblioteca',allGroups:'Todos',searchCh:'Buscar canal…',moreCh:'…y {0} más: usa la búsqueda',
+ delListT:'Eliminar lista',delListQ:'¿Eliminar la lista "{0}" y sus {1} canales?',listDel:'Lista eliminada',refresh:'Actualizar',listUpdated:'Lista actualizada: {0} canales',myChannels:'Mis canales',
+ addChannelT:'Agregar canal',chName:'Nombre del canal',chUrl:'Dirección del canal (URL)',chSaved:'Canal guardado ✓',tvFail:'No se pudo abrir el canal',opening:'Abriendo "{0}"…',
+ poweredBy:'Powered by',licenses:'📄 Licencias',licT:'Licencias de código abierto',licIntro:'Prometeo Player usa estos componentes de código abierto. Gracias a sus autores.',
+ notAffiliated:'Prometeo Player es un proyecto independiente. No está afiliado ni respaldado por Google, The Apache Software Foundation, JetBrains, Meta ni Anthropic. Los nombres mencionados son marcas de sus dueños.',sourceCode:'Código fuente:',fullLicense:'Texto completo de la licencia Apache 2.0:',usedFor:'Uso en Prometeo:',
+ useMedia3:'reproducir radio y canales de TV/IPTV',useCordova:'convertir Prometeo en app de Android',useAndroidx:'componentes de Android que usan Cordova y Media3',useGuava:'herramientas internas de ExoPlayer (Media3)',useKotlin:'lenguaje interno de las librerías de AndroidX',useAnnot:'anotaciones de código usadas por las librerías',moreLibs:'…y {0} librerías más: toca Licencias para verlas todas.',aiCredit:'Ícono generado con Meta AI. Desarrollado por Lanchalex con asistencia de Meta AI y Claude (Anthropic).',rights:'Todos los derechos reservados. Cada librería conserva su propia licencia.',
+ radioTitle:'📻 Radio',radioNote:'La radio usa internet solo mientras escuchas una emisora. Tu música sigue funcionando sin conexión.',addStation:'＋ Agregar emisora',
+ st1:'{0} emisora',stN:'{0} emisoras',radioEmpty:'Todavía no tienes emisoras.\nToca "＋ Agregar emisora" y pega la dirección de una radio por internet.',
+ stName:'Nombre',stUrl:'Dirección de la transmisión (URL)',urlHelp:'Suele terminar en .mp3, .aac, .m3u8 o /stream. Búscala en la página de la emisora, en "Escuchar en vivo".',
+ test:'▶ Probar',testing:'Probando…',testOk:'Funciona. Se escuchó bien la prueba.',testFail:'No se pudo reproducir. Revisa la dirección.',testIdle:'Toca "Probar" para saber si funciona.',
+ badUrl:'La dirección debe empezar con http:// o https://',needName:'Escribe un nombre',live:'● EN VIVO',radioOfN:'Radio • {0} de {1}',listening:'Escuchando {0}',online:'📶 en línea',connecting:'Conectando…',reconnecting:'📡 Sin señal, reconectando…',paused:'En pausa',
+ radioFail:'No se pudo conectar con "{0}"',noNet:'Sin conexión a internet',backToMusic:'🎵 Volver a mi música',editStation:'Editar emisora',addStationT:'Agregar emisora',delStationT:'Eliminar emisora',delStationQ:'¿Eliminar la emisora "{0}"?',
+ radioPrivacy:'Prometeo solo se conecta a esta dirección cuando tocas play. No envía tus datos a nadie.',stationDel:'Emisora eliminada',stationSaved:'Emisora guardada ✓',switchHint:'⏮ ⏭ cambian de emisora',radioLiveCar:'Radio en vivo',edit:'Editar',
+ scanBtn:'🔍 Buscar música en el teléfono',scanning:'Buscando música en el teléfono…',scanNew:'{0} canción(es) nueva(s) ✓',scanNone:'No hay canciones nuevas',freed:'Espacio liberado: {0} MB (ya no hay copias duplicadas)',
+ permAsk:'Prometeo necesita permiso de "Música y audio" para ver tus canciones. No copia ni envía nada.',permDenied:'Sin permiso no puedo ver tu música. Actívalo en Ajustes › Apps › Prometeo Player › Permisos',scanFail:'No se pudo buscar ({0})',
+ libEmptyNative:'No hay canciones todavía.\nToca "🔍 Buscar música en el teléfono".',tapScan:'Toca "🔍 Buscar música en el teléfono"',missingRow:'⚠ Ya no está en el teléfono',missing:'"{0}" ya no está en el teléfono',allow:'Dar permiso',
+ skinBtn:'Cambiar skin',langBtn:'Idioma',aboutBtn:'Acerca de',diagBtn:'Diagnóstico',
+ mBars:'Barras',mWave:'Onda',mCircle:'Círculo',mFire:'Fuego',
+ noSong:'Sin canción',addFromLib:'Agrega música desde Biblioteca',chooseSong:'Elige una canción',
+ prev:'Anterior',playA:'Reproducir',next:'Siguiente',addToPlBtn:'＋ Agregar a playlist',addSongs:'＋ Agregar canciones',
+ queue:'Cola',library:'Biblioteca',playAll:'▶ Reproducir todo',newBtn:'＋ Nueva',back:'‹ Volver',playBtn:'▶ Reproducir',renameBtn:'✎ Renombrar',
+ search:'Buscar',searchPh:'Nombre de canción o archivo…',tapOpen:'Toca para abrir',tabNow:'Ahora',
+ song1:'{0} canción',songN:'{0} canciones',offline:'offline',
+ closeOther:'Cierra otras ventanas de Prometeo',stillSaving:'Espera, todavía guardando…',dbNotReady:'La base de datos no está lista, cierra y abre la app',
+ notAudio:'Esos archivos no son de audio',saving:'Guardando {0} de {1}…',emptyFile:'archivo vacío',songDefault:'Canción {0}',unsupported:'{0} no soportado',
+ noSpace:'Sin espacio en el teléfono',savedOk:'{0} canción(es) guardada(s) ✓',savedSome:'{0} guardadas, {1} fallaron ({2})',savedNone:'No se pudo guardar ninguna ({0})',
+ tapAdd:'Toca "＋ Agregar canciones"',delSongT:'Eliminar canción',delSongQ:'¿Borrar "{0}" de Prometeo? También se quitará de tus playlists. (El archivo original del teléfono no se toca.)',
+ delFail:'No se pudo borrar',songDeleted:'Canción eliminada',newPlT:'Nueva playlist',createFail:'No se pudo crear',plCreated:'Playlist "{0}" creada',
+ renamePlT:'Renombrar playlist',delPlT:'Eliminar playlist',delPlQ:'¿Eliminar "{0}"? Las canciones seguirán en tu Biblioteca.',plDeleted:'Playlist eliminada',
+ pickFirst:'Primero elige una canción',addToPlT:'Agregar a playlist',noPlYet:'Todavía no tienes playlists. Crea una:',newPlItem:'＋ Nueva playlist…',
+ cancel:'Cancelar',alreadyIn:'Ya está en "{0}"',saveFail:'No se pudo guardar',addedTo:'Agregada a "{0}" ✓',removedFromPl:'Quitada de la playlist',
+ plSrc:'Playlist: {0}',broken:'"{0}" está dañada. Bórrala y agrégala de nuevo',blocked:'Android bloqueó el audio: toca ▶ otra vez',playFail:'No se pudo reproducir ({0})',
+ endQueue:'Fin de la cola',rep0:'No repetir',rep1:'Repetir toda la cola',rep2:'Repetir una canción',shufOn:'Aleatorio activado',shufOff:'Aleatorio desactivado',
+ cantPlay:'No se puede reproducir {0} (código {1}). Toca la versión arriba para diagnosticar',brokenRow:'⚠ Dañada: bórrala y agrégala de nuevo',
+ libEmpty:'No hay canciones todavía.\nToca "＋ Agregar canciones" para elegirlas del teléfono.',libEmpty2:'Tu biblioteca está vacía.',noResults:'Sin resultados para "{0}"',
+ plEmpty:'No tienes playlists.\nToca "＋ Nueva" para crear una.',del:'Eliminar',rename:'Renombrar',play:'Reproducir',plIsEmpty:'La playlist está vacía',
+ plDetailEmpty:'Playlist vacía.\nEn Biblioteca o Buscar toca "＋" en una canción para agregarla aquí.',removeFromPl:'Quitar de la playlist',
+ queueEmpty:'La cola está vacía.',andMore:'…y {0} más',ofN:'{0} de {1}',mode0:'➡ No repite',mode1:'🔁 Todo',mode2:'🔂 Una',
+ namePh:'Nombre',save:'Guardar',vizOff:'Visualizador apagado',addToStart:'Agrega música para empezar',bgText:'Reproduciendo música',noSongs:'No hay canciones',
+ noFile:'No se eligió ningún archivo',diagnosing:'Diagnosticando…',diagT:'Diagnóstico de audio',close:'Cerrar',testWith:'Prueba con',curSong:'Canción actual',
+ unkFmt:'formato desconocido',readFail:'no se pudo leer',dataMode:'Modo data',yes:'sí',no:'no',noResp:'no respondió',code:'código',
+ dbErr:'Error al abrir la base de datos',recovered:'{0} canción(es) recuperadas de la v38c ✓',
+ skinT:'Apariencia',skinSub:'Elige un skin. Se aplica al instante.',skinSet:'Skin: {0}',
+ sk_neon:'Neón',sk_neon_d:'El clásico de Prometeo',sk_fuego:'Fuego',sk_fuego_d:'Naranja y brasas',sk_pink:'Pink',sk_pink_d:'Rosado dulce y brillante',
+ sk_amatista:'Amatista',sk_amatista_d:'Morado suave, ideal de noche',sk_claro:'Claro',sk_claro_d:'Fondo blanco, para usar de día',
+ langT:'Idioma',langSub:'Por defecto Prometeo usa el idioma de tu teléfono.',auto:'Automático',autoSub:'Idioma del teléfono · {0}',orPick:'O elige uno',
+ aboutT:'Acerca de',version:'Versión {0}',devBy:'Desarrollado por',feat1:'Funciona sin internet (solo la radio y la TV que agregues lo usan)',feat2:'No recopila ningún dato tuyo',
+ feat3:'Tu música y audios en un solo lugar',madeWith:'Hecho con cariño para la familia · 2026'},
+en:{
+ testFailNative:'Could not check it here. Save it and tap it: the app player opens more kinds of stations.',
+ tabRadio:'Radio/TV',rtStations:'📻 Stations',rtChannels:'📺 Channels',tvTitle:'📺 Channels',tvNote:'Channels use the internet only while you watch them. Prometeo includes no lists: you add your own (use legal, free lists).',
+ addList:'＋ M3U list',addChannel:'＋ Channel',ch1:'{0} channel',chN:'{0} channels',tvEmpty:'No channels yet.\nAdd an M3U list (address or file) or a single channel.',
+ listName:'List name',listUrl:'List address (URL)',orFile:'…or an .m3u file from the phone',chooseFile:'📄 Choose file',fileChosen:'File: {0}',needSource:'Type an address or choose a file',
+ loadingList:'Downloading the list…',listFail:'Could not download the list ({0})',listEmptyErr:'The list has no channels or songs',listSaved:'List "{0}": {1} channels ✓',
+ musicImported:'Playlist "{0}" created with {1} of {2} songs',musicNone:'None of the songs in that list are in your Library',allGroups:'All',searchCh:'Search channel…',moreCh:'…and {0} more: use search',
+ delListT:'Delete list',delListQ:'Delete the list "{0}" and its {1} channels?',listDel:'List deleted',refresh:'Refresh',listUpdated:'List updated: {0} channels',myChannels:'My channels',
+ addChannelT:'Add channel',chName:'Channel name',chUrl:'Channel address (URL)',chSaved:'Channel saved ✓',tvFail:'Could not open the channel',opening:'Opening "{0}"…',
+ poweredBy:'Powered by',licenses:'📄 Licenses',licT:'Open source licenses',licIntro:'Prometeo Player uses these open source components. Thanks to their authors.',
+ notAffiliated:'Prometeo Player is an independent project. It is not affiliated with or endorsed by Google, The Apache Software Foundation, JetBrains, Meta or Anthropic. Names mentioned are trademarks of their owners.',sourceCode:'Source code:',fullLicense:'Full text of the Apache 2.0 license:',usedFor:'Used in Prometeo for:',
+ useMedia3:'playing radio and TV/IPTV channels',useCordova:'turning Prometeo into an Android app',useAndroidx:'Android components used by Cordova and Media3',useGuava:'internal tools used by ExoPlayer (Media3)',useKotlin:'internal language of the AndroidX libraries',useAnnot:'code annotations used by the libraries',moreLibs:'…and {0} more libraries: tap Licenses to see them all.',aiCredit:'Icon generated with Meta AI. Developed by Lanchalex with assistance from Meta AI and Claude (Anthropic).',rights:'All rights reserved. Each library keeps its own license.',
+ radioTitle:'📻 Radio',radioNote:'Radio uses the internet only while you listen to a station. Your music still works offline.',addStation:'＋ Add station',
+ st1:'{0} station',stN:'{0} stations',radioEmpty:'No stations yet.\nTap "＋ Add station" and paste the address of an internet radio.',
+ stName:'Name',stUrl:'Stream address (URL)',urlHelp:'It usually ends in .mp3, .aac, .m3u8 or /stream. Look for it on the station\'s site, under "Listen live".',
+ test:'▶ Test',testing:'Testing…',testOk:'It works. The test played fine.',testFail:'Could not play it. Check the address.',testIdle:'Tap "Test" to check it works.',
+ badUrl:'The address must start with http:// or https://',needName:'Type a name',live:'● LIVE',radioOfN:'Radio • {0} of {1}',listening:'Listening {0}',online:'📶 online',connecting:'Connecting…',reconnecting:'📡 No signal, reconnecting…',paused:'Paused',
+ radioFail:'Could not connect to "{0}"',noNet:'No internet connection',backToMusic:'🎵 Back to my music',editStation:'Edit station',addStationT:'Add station',delStationT:'Delete station',delStationQ:'Delete the station "{0}"?',
+ radioPrivacy:'Prometeo only connects to this address when you tap play. It sends your data to no one.',stationDel:'Station deleted',stationSaved:'Station saved ✓',switchHint:'⏮ ⏭ change station',radioLiveCar:'Live radio',edit:'Edit',
+ scanBtn:'🔍 Find music on the phone',scanning:'Looking for music on the phone…',scanNew:'{0} new song(s) ✓',scanNone:'No new songs',freed:'Space freed: {0} MB (no more duplicate copies)',
+ permAsk:'Prometeo needs the "Music and audio" permission to see your songs. It copies and sends nothing.',permDenied:'Without permission I can\'t see your music. Turn it on in Settings › Apps › Prometeo Player › Permissions',scanFail:'Could not search ({0})',
+ libEmptyNative:'No songs yet.\nTap "🔍 Find music on the phone".',tapScan:'Tap "🔍 Find music on the phone"',missingRow:'⚠ No longer on the phone',missing:'"{0}" is no longer on the phone',allow:'Allow',
+ skinBtn:'Change skin',langBtn:'Language',aboutBtn:'About',diagBtn:'Diagnostics',
+ mBars:'Bars',mWave:'Wave',mCircle:'Circle',mFire:'Fire',
+ noSong:'No song',addFromLib:'Add music from Library',chooseSong:'Pick a song',
+ prev:'Previous',playA:'Play',next:'Next',addToPlBtn:'＋ Add to playlist',addSongs:'＋ Add songs',
+ queue:'Queue',library:'Library',playAll:'▶ Play all',newBtn:'＋ New',back:'‹ Back',playBtn:'▶ Play',renameBtn:'✎ Rename',
+ search:'Search',searchPh:'Song or file name…',tapOpen:'Tap to open',tabNow:'Now',
+ song1:'{0} song',songN:'{0} songs',offline:'offline',
+ closeOther:'Close other Prometeo windows',stillSaving:'Wait, still saving…',dbNotReady:'Database not ready, close and reopen the app',
+ notAudio:'Those files are not audio',saving:'Saving {0} of {1}…',emptyFile:'empty file',songDefault:'Song {0}',unsupported:'{0} not supported',
+ noSpace:'No space left on the phone',savedOk:'{0} song(s) saved ✓',savedSome:'{0} saved, {1} failed ({2})',savedNone:'Could not save any ({0})',
+ tapAdd:'Tap "＋ Add songs"',delSongT:'Delete song',delSongQ:'Delete "{0}" from Prometeo? It will also be removed from your playlists. (The original file on the phone is not touched.)',
+ delFail:'Could not delete',songDeleted:'Song deleted',newPlT:'New playlist',createFail:'Could not create',plCreated:'Playlist "{0}" created',
+ renamePlT:'Rename playlist',delPlT:'Delete playlist',delPlQ:'Delete "{0}"? The songs will stay in your Library.',plDeleted:'Playlist deleted',
+ pickFirst:'Pick a song first',addToPlT:'Add to playlist',noPlYet:'You have no playlists yet. Create one:',newPlItem:'＋ New playlist…',
+ cancel:'Cancel',alreadyIn:'Already in "{0}"',saveFail:'Could not save',addedTo:'Added to "{0}" ✓',removedFromPl:'Removed from playlist',
+ plSrc:'Playlist: {0}',broken:'"{0}" is damaged. Delete it and add it again',blocked:'Android blocked audio: tap ▶ again',playFail:'Could not play ({0})',
+ endQueue:'End of queue',rep0:'Repeat off',rep1:'Repeat whole queue',rep2:'Repeat one song',shufOn:'Shuffle on',shufOff:'Shuffle off',
+ cantPlay:'Cannot play {0} (code {1}). Tap the version at the top to diagnose',brokenRow:'⚠ Damaged: delete it and add it again',
+ libEmpty:'No songs yet.\nTap "＋ Add songs" to pick them from your phone.',libEmpty2:'Your library is empty.',noResults:'No results for "{0}"',
+ plEmpty:'You have no playlists.\nTap "＋ New" to create one.',del:'Delete',rename:'Rename',play:'Play',plIsEmpty:'The playlist is empty',
+ plDetailEmpty:'Empty playlist.\nIn Library or Search tap "＋" on a song to add it here.',removeFromPl:'Remove from playlist',
+ queueEmpty:'The queue is empty.',andMore:'…and {0} more',ofN:'{0} of {1}',mode0:'➡ No repeat',mode1:'🔁 All',mode2:'🔂 One',
+ namePh:'Name',save:'Save',vizOff:'Visualizer off',addToStart:'Add music to start',bgText:'Playing music',noSongs:'No songs',
+ noFile:'No file was chosen',diagnosing:'Diagnosing…',diagT:'Audio diagnostics',close:'Close',testWith:'Test with',curSong:'Current song',
+ unkFmt:'unknown format',readFail:'could not read',dataMode:'Data mode',yes:'yes',no:'no',noResp:'no response',code:'code',
+ dbErr:'Error opening the database',recovered:'{0} song(s) recovered from v38c ✓',
+ skinT:'Appearance',skinSub:'Pick a skin. It applies instantly.',skinSet:'Skin: {0}',
+ sk_neon:'Neon',sk_neon_d:'The Prometeo classic',sk_fuego:'Fire',sk_fuego_d:'Orange and embers',sk_pink:'Pink',sk_pink_d:'Sweet, bright pink',
+ sk_amatista:'Amethyst',sk_amatista_d:'Soft purple, great at night',sk_claro:'Light',sk_claro_d:'White background, for daytime',
+ langT:'Language',langSub:'By default Prometeo uses your phone\'s language.',auto:'Automatic',autoSub:'Phone language · {0}',orPick:'Or pick one',
+ aboutT:'About',version:'Version {0}',devBy:'Developed by',feat1:'Works offline (only the radio and TV you add use the internet)',feat2:'Collects none of your data',
+ feat3:'Your music and audio in one place',madeWith:'Made with love for the family · 2026'},
+pt:{
+ testFailNative:'Não deu para conferir aqui. Salve e toque nela: o player do app abre mais tipos de emissoras.',
+ tabRadio:'Rádio/TV',rtStations:'📻 Emissoras',rtChannels:'📺 Canais',tvTitle:'📺 Canais',tvNote:'Os canais usam internet só enquanto você assiste. O Prometeo não traz listas: você adiciona as suas (use listas legais e gratuitas).',
+ addList:'＋ Lista M3U',addChannel:'＋ Canal',ch1:'{0} canal',chN:'{0} canais',tvEmpty:'Você ainda não tem canais.\nAdicione uma lista M3U (endereço ou arquivo) ou um canal avulso.',
+ listName:'Nome da lista',listUrl:'Endereço da lista (URL)',orFile:'…ou um arquivo .m3u do celular',chooseFile:'📄 Escolher arquivo',fileChosen:'Arquivo: {0}',needSource:'Coloque um endereço ou escolha um arquivo',
+ loadingList:'Baixando a lista…',listFail:'Não foi possível baixar a lista ({0})',listEmptyErr:'A lista não tem canais nem músicas',listSaved:'Lista "{0}": {1} canais ✓',
+ musicImported:'Playlist "{0}" criada com {1} de {2} músicas',musicNone:'Nenhuma música dessa lista está na sua Biblioteca',allGroups:'Todos',searchCh:'Buscar canal…',moreCh:'…e mais {0}: use a busca',
+ delListT:'Excluir lista',delListQ:'Excluir a lista "{0}" e seus {1} canais?',listDel:'Lista excluída',refresh:'Atualizar',listUpdated:'Lista atualizada: {0} canais',myChannels:'Meus canais',
+ addChannelT:'Adicionar canal',chName:'Nome do canal',chUrl:'Endereço do canal (URL)',chSaved:'Canal salvo ✓',tvFail:'Não foi possível abrir o canal',opening:'Abrindo "{0}"…',
+ poweredBy:'Powered by',licenses:'📄 Licenças',licT:'Licenças de código aberto',licIntro:'O Prometeo Player usa estes componentes de código aberto. Obrigado aos autores.',
+ notAffiliated:'O Prometeo Player é um projeto independente. Não é afiliado nem endossado pelo Google, The Apache Software Foundation, JetBrains, Meta ou Anthropic. Os nomes citados são marcas de seus donos.',sourceCode:'Código-fonte:',fullLicense:'Texto completo da licença Apache 2.0:',usedFor:'Uso no Prometeo:',
+ useMedia3:'tocar rádio e canais de TV/IPTV',useCordova:'transformar o Prometeo em app Android',useAndroidx:'componentes Android usados pelo Cordova e Media3',useGuava:'ferramentas internas do ExoPlayer (Media3)',useKotlin:'linguagem interna das bibliotecas AndroidX',useAnnot:'anotações de código usadas pelas bibliotecas',moreLibs:'…e mais {0} bibliotecas: toque em Licenças para ver todas.',aiCredit:'Ícone gerado com Meta AI. Desenvolvido por Lanchalex com assistência de Meta AI e Claude (Anthropic).',rights:'Todos os direitos reservados. Cada biblioteca mantém sua própria licença.',
+ radioTitle:'📻 Rádio',radioNote:'O rádio usa internet só enquanto você ouve uma emissora. Sua música continua funcionando sem conexão.',addStation:'＋ Adicionar emissora',
+ st1:'{0} emissora',stN:'{0} emissoras',radioEmpty:'Você ainda não tem emissoras.\nToque em "＋ Adicionar emissora" e cole o endereço de uma rádio pela internet.',
+ stName:'Nome',stUrl:'Endereço da transmissão (URL)',urlHelp:'Costuma terminar em .mp3, .aac, .m3u8 ou /stream. Procure no site da emissora, em "Ouvir ao vivo".',
+ test:'▶ Testar',testing:'Testando…',testOk:'Funciona. O teste tocou bem.',testFail:'Não foi possível tocar. Confira o endereço.',testIdle:'Toque em "Testar" para saber se funciona.',
+ badUrl:'O endereço deve começar com http:// ou https://',needName:'Escreva um nome',live:'● AO VIVO',radioOfN:'Rádio • {0} de {1}',listening:'Ouvindo há {0}',online:'📶 online',connecting:'Conectando…',reconnecting:'📡 Sem sinal, reconectando…',paused:'Em pausa',
+ radioFail:'Não foi possível conectar a "{0}"',noNet:'Sem conexão com a internet',backToMusic:'🎵 Voltar para minha música',editStation:'Editar emissora',addStationT:'Adicionar emissora',delStationT:'Excluir emissora',delStationQ:'Excluir a emissora "{0}"?',
+ radioPrivacy:'O Prometeo só se conecta a este endereço quando você toca play. Não envia seus dados a ninguém.',stationDel:'Emissora excluída',stationSaved:'Emissora salva ✓',switchHint:'⏮ ⏭ trocam de emissora',radioLiveCar:'Rádio ao vivo',edit:'Editar',
+ scanBtn:'🔍 Buscar música no celular',scanning:'Buscando música no celular…',scanNew:'{0} música(s) nova(s) ✓',scanNone:'Não há músicas novas',freed:'Espaço liberado: {0} MB (sem cópias duplicadas)',
+ permAsk:'O Prometeo precisa da permissão "Música e áudio" para ver suas músicas. Não copia nem envia nada.',permDenied:'Sem permissão não consigo ver suas músicas. Ative em Configurações › Apps › Prometeo Player › Permissões',scanFail:'Não foi possível buscar ({0})',
+ libEmptyNative:'Ainda não há músicas.\nToque em "🔍 Buscar música no celular".',tapScan:'Toque em "🔍 Buscar música no celular"',missingRow:'⚠ Não está mais no celular',missing:'"{0}" não está mais no celular',allow:'Permitir',
+ skinBtn:'Mudar skin',langBtn:'Idioma',aboutBtn:'Sobre',diagBtn:'Diagnóstico',
+ mBars:'Barras',mWave:'Onda',mCircle:'Círculo',mFire:'Fogo',
+ noSong:'Sem música',addFromLib:'Adicione música na Biblioteca',chooseSong:'Escolha uma música',
+ prev:'Anterior',playA:'Tocar',next:'Próxima',addToPlBtn:'＋ Adicionar à playlist',addSongs:'＋ Adicionar músicas',
+ queue:'Fila',library:'Biblioteca',playAll:'▶ Tocar tudo',newBtn:'＋ Nova',back:'‹ Voltar',playBtn:'▶ Tocar',renameBtn:'✎ Renomear',
+ search:'Buscar',searchPh:'Nome da música ou arquivo…',tapOpen:'Toque para abrir',tabNow:'Agora',
+ song1:'{0} música',songN:'{0} músicas',offline:'offline',
+ closeOther:'Feche outras janelas do Prometeo',stillSaving:'Espere, ainda salvando…',dbNotReady:'O banco de dados não está pronto, feche e abra o app',
+ notAudio:'Esses arquivos não são de áudio',saving:'Salvando {0} de {1}…',emptyFile:'arquivo vazio',songDefault:'Música {0}',unsupported:'{0} não suportado',
+ noSpace:'Sem espaço no celular',savedOk:'{0} música(s) salva(s) ✓',savedSome:'{0} salvas, {1} falharam ({2})',savedNone:'Não foi possível salvar nenhuma ({0})',
+ tapAdd:'Toque em "＋ Adicionar músicas"',delSongT:'Excluir música',delSongQ:'Excluir "{0}" do Prometeo? Também será removida das suas playlists. (O arquivo original do celular não é tocado.)',
+ delFail:'Não foi possível excluir',songDeleted:'Música excluída',newPlT:'Nova playlist',createFail:'Não foi possível criar',plCreated:'Playlist "{0}" criada',
+ renamePlT:'Renomear playlist',delPlT:'Excluir playlist',delPlQ:'Excluir "{0}"? As músicas continuam na sua Biblioteca.',plDeleted:'Playlist excluída',
+ pickFirst:'Primeiro escolha uma música',addToPlT:'Adicionar à playlist',noPlYet:'Você ainda não tem playlists. Crie uma:',newPlItem:'＋ Nova playlist…',
+ cancel:'Cancelar',alreadyIn:'Já está em "{0}"',saveFail:'Não foi possível salvar',addedTo:'Adicionada a "{0}" ✓',removedFromPl:'Removida da playlist',
+ plSrc:'Playlist: {0}',broken:'"{0}" está danificada. Exclua e adicione de novo',blocked:'O Android bloqueou o áudio: toque ▶ de novo',playFail:'Não foi possível tocar ({0})',
+ endQueue:'Fim da fila',rep0:'Não repetir',rep1:'Repetir toda a fila',rep2:'Repetir uma música',shufOn:'Aleatório ativado',shufOff:'Aleatório desativado',
+ cantPlay:'Não é possível tocar {0} (código {1}). Toque na versão acima para diagnosticar',brokenRow:'⚠ Danificada: exclua e adicione de novo',
+ libEmpty:'Ainda não há músicas.\nToque em "＋ Adicionar músicas" para escolhê-las do celular.',libEmpty2:'Sua biblioteca está vazia.',noResults:'Sem resultados para "{0}"',
+ plEmpty:'Você não tem playlists.\nToque em "＋ Nova" para criar uma.',del:'Excluir',rename:'Renomear',play:'Tocar',plIsEmpty:'A playlist está vazia',
+ plDetailEmpty:'Playlist vazia.\nNa Biblioteca ou Buscar toque "＋" em uma música para adicioná-la aqui.',removeFromPl:'Remover da playlist',
+ queueEmpty:'A fila está vazia.',andMore:'…e mais {0}',ofN:'{0} de {1}',mode0:'➡ Sem repetir',mode1:'🔁 Tudo',mode2:'🔂 Uma',
+ namePh:'Nome',save:'Salvar',vizOff:'Visualizador desligado',addToStart:'Adicione música para começar',bgText:'Tocando música',noSongs:'Não há músicas',
+ noFile:'Nenhum arquivo escolhido',diagnosing:'Diagnosticando…',diagT:'Diagnóstico de áudio',close:'Fechar',testWith:'Teste com',curSong:'Música atual',
+ unkFmt:'formato desconhecido',readFail:'não foi possível ler',dataMode:'Modo data',yes:'sim',no:'não',noResp:'não respondeu',code:'código',
+ dbErr:'Erro ao abrir o banco de dados',recovered:'{0} música(s) recuperadas da v38c ✓',
+ skinT:'Aparência',skinSub:'Escolha uma skin. Aplica na hora.',skinSet:'Skin: {0}',
+ sk_neon:'Neon',sk_neon_d:'O clássico do Prometeo',sk_fuego:'Fogo',sk_fuego_d:'Laranja e brasas',sk_pink:'Pink',sk_pink_d:'Rosa doce e brilhante',
+ sk_amatista:'Ametista',sk_amatista_d:'Roxo suave, ideal à noite',sk_claro:'Claro',sk_claro_d:'Fundo branco, para usar de dia',
+ langT:'Idioma',langSub:'Por padrão o Prometeo usa o idioma do seu celular.',auto:'Automático',autoSub:'Idioma do celular · {0}',orPick:'Ou escolha um',
+ aboutT:'Sobre',version:'Versão {0}',devBy:'Desenvolvido por',feat1:'Funciona sem internet (só o rádio e a TV que você adicionar usam)',feat2:'Não coleta nenhum dado seu',
+ feat3:'Sua música e áudios em um só lugar',madeWith:'Feito com carinho para a família · 2026'},
+fr:{
+ testFailNative:'Vérification impossible ici. Enregistrez-la et touchez-la : le lecteur de l\'app ouvre plus de types de stations.',
+ tabRadio:'Radio/TV',rtStations:'📻 Stations',rtChannels:'📺 Chaînes',tvTitle:'📺 Chaînes',tvNote:'Les chaînes utilisent internet seulement pendant que vous les regardez. Prometeo ne fournit aucune liste : vous ajoutez les vôtres (listes légales et gratuites).',
+ addList:'＋ Liste M3U',addChannel:'＋ Chaîne',ch1:'{0} chaîne',chN:'{0} chaînes',tvEmpty:'Pas encore de chaînes.\nAjoutez une liste M3U (adresse ou fichier) ou une chaîne seule.',
+ listName:'Nom de la liste',listUrl:'Adresse de la liste (URL)',orFile:'…ou un fichier .m3u du téléphone',chooseFile:'📄 Choisir un fichier',fileChosen:'Fichier : {0}',needSource:'Entrez une adresse ou choisissez un fichier',
+ loadingList:'Téléchargement de la liste…',listFail:'Téléchargement impossible ({0})',listEmptyErr:'La liste ne contient ni chaînes ni chansons',listSaved:'Liste « {0} » : {1} chaînes ✓',
+ musicImported:'Playlist « {0} » créée avec {1} chansons sur {2}',musicNone:'Aucune chanson de cette liste n\'est dans votre Bibliothèque',allGroups:'Toutes',searchCh:'Chercher une chaîne…',moreCh:'…et {0} de plus : utilisez la recherche',
+ delListT:'Supprimer la liste',delListQ:'Supprimer la liste « {0} » et ses {1} chaînes ?',listDel:'Liste supprimée',refresh:'Actualiser',listUpdated:'Liste actualisée : {0} chaînes',myChannels:'Mes chaînes',
+ addChannelT:'Ajouter une chaîne',chName:'Nom de la chaîne',chUrl:'Adresse de la chaîne (URL)',chSaved:'Chaîne enregistrée ✓',tvFail:'Impossible d\'ouvrir la chaîne',opening:'Ouverture de « {0} »…',
+ poweredBy:'Powered by',licenses:'📄 Licences',licT:'Licences open source',licIntro:'Prometeo Player utilise ces composants open source. Merci à leurs auteurs.',
+ notAffiliated:'Prometeo Player est un projet indépendant. Il n\'est ni affilié ni approuvé par Google, The Apache Software Foundation, JetBrains, Meta ou Anthropic. Les noms cités sont des marques de leurs propriétaires.',sourceCode:'Code source :',fullLicense:'Texte complet de la licence Apache 2.0 :',usedFor:'Utilisé dans Prometeo pour :',
+ useMedia3:'lire la radio et les chaînes TV/IPTV',useCordova:'faire de Prometeo une app Android',useAndroidx:'composants Android utilisés par Cordova et Media3',useGuava:'outils internes d’ExoPlayer (Media3)',useKotlin:'langage interne des bibliothèques AndroidX',useAnnot:'annotations de code utilisées par les bibliothèques',moreLibs:'…et {0} autres bibliothèques : touchez Licences pour les voir toutes.',aiCredit:'Icône générée avec Meta AI. Développé par Lanchalex avec l’aide de Meta AI et Claude (Anthropic).',rights:'Tous droits réservés. Chaque bibliothèque conserve sa propre licence.',
+ radioTitle:'📻 Radio',radioNote:'La radio utilise internet seulement pendant que vous écoutez une station. Votre musique fonctionne toujours hors ligne.',addStation:'＋ Ajouter une station',
+ st1:'{0} station',stN:'{0} stations',radioEmpty:'Pas encore de stations.\nTouchez « ＋ Ajouter une station » et collez l\'adresse d\'une radio internet.',
+ stName:'Nom',stUrl:'Adresse du flux (URL)',urlHelp:'Elle finit souvent par .mp3, .aac, .m3u8 ou /stream. Cherchez-la sur le site de la station, dans « Écouter en direct ».',
+ test:'▶ Tester',testing:'Test en cours…',testOk:'Ça marche. Le test a bien joué.',testFail:'Lecture impossible. Vérifiez l\'adresse.',testIdle:'Touchez « Tester » pour vérifier.',
+ badUrl:'L\'adresse doit commencer par http:// ou https://',needName:'Écrivez un nom',live:'● EN DIRECT',radioOfN:'Radio • {0} sur {1}',listening:'Écoute depuis {0}',online:'📶 en ligne',connecting:'Connexion…',reconnecting:'📡 Pas de signal, reconnexion…',paused:'En pause',
+ radioFail:'Connexion impossible à « {0} »',noNet:'Pas de connexion internet',backToMusic:'🎵 Revenir à ma musique',editStation:'Modifier la station',addStationT:'Ajouter une station',delStationT:'Supprimer la station',delStationQ:'Supprimer la station « {0} » ?',
+ radioPrivacy:'Prometeo se connecte à cette adresse seulement quand vous touchez lecture. Il n\'envoie vos données à personne.',stationDel:'Station supprimée',stationSaved:'Station enregistrée ✓',switchHint:'⏮ ⏭ changent de station',radioLiveCar:'Radio en direct',edit:'Modifier',
+ scanBtn:'🔍 Chercher la musique du téléphone',scanning:'Recherche de musique sur le téléphone…',scanNew:'{0} nouvelle(s) chanson(s) ✓',scanNone:'Aucune nouvelle chanson',freed:'Espace libéré : {0} Mo (plus de copies en double)',
+ permAsk:'Prometeo a besoin de l\'autorisation « Musique et audio » pour voir vos chansons. Il ne copie et n\'envoie rien.',permDenied:'Sans autorisation je ne peux pas voir votre musique. Activez-la dans Paramètres › Applis › Prometeo Player › Autorisations',scanFail:'Recherche impossible ({0})',
+ libEmptyNative:'Pas encore de chansons.\nTouchez « 🔍 Chercher la musique du téléphone ».',tapScan:'Touchez « 🔍 Chercher la musique du téléphone »',missingRow:'⚠ N\'est plus sur le téléphone',missing:'« {0} » n\'est plus sur le téléphone',allow:'Autoriser',
+ skinBtn:'Changer de skin',langBtn:'Langue',aboutBtn:'À propos',diagBtn:'Diagnostic',
+ mBars:'Barres',mWave:'Onde',mCircle:'Cercle',mFire:'Feu',
+ noSong:'Aucune chanson',addFromLib:'Ajoutez de la musique depuis la Bibliothèque',chooseSong:'Choisissez une chanson',
+ prev:'Précédent',playA:'Lire',next:'Suivant',addToPlBtn:'＋ Ajouter à une playlist',addSongs:'＋ Ajouter des chansons',
+ queue:'File',library:'Bibliothèque',playAll:'▶ Tout lire',newBtn:'＋ Nouvelle',back:'‹ Retour',playBtn:'▶ Lire',renameBtn:'✎ Renommer',
+ search:'Rechercher',searchPh:'Nom de chanson ou de fichier…',tapOpen:'Touchez pour ouvrir',tabNow:'Lecture',
+ song1:'{0} chanson',songN:'{0} chansons',offline:'hors ligne',
+ closeOther:'Fermez les autres fenêtres de Prometeo',stillSaving:'Patientez, enregistrement en cours…',dbNotReady:'Base de données pas prête, fermez et rouvrez l\'app',
+ notAudio:'Ces fichiers ne sont pas audio',saving:'Enregistrement {0} sur {1}…',emptyFile:'fichier vide',songDefault:'Chanson {0}',unsupported:'{0} non pris en charge',
+ noSpace:'Plus d\'espace sur le téléphone',savedOk:'{0} chanson(s) enregistrée(s) ✓',savedSome:'{0} enregistrées, {1} échouées ({2})',savedNone:'Aucune n\'a pu être enregistrée ({0})',
+ tapAdd:'Touchez "＋ Ajouter des chansons"',delSongT:'Supprimer la chanson',delSongQ:'Supprimer "{0}" de Prometeo ? Elle sera aussi retirée de vos playlists. (Le fichier original du téléphone n\'est pas touché.)',
+ delFail:'Suppression impossible',songDeleted:'Chanson supprimée',newPlT:'Nouvelle playlist',createFail:'Création impossible',plCreated:'Playlist "{0}" créée',
+ renamePlT:'Renommer la playlist',delPlT:'Supprimer la playlist',delPlQ:'Supprimer "{0}" ? Les chansons resteront dans votre Bibliothèque.',plDeleted:'Playlist supprimée',
+ pickFirst:'Choisissez d\'abord une chanson',addToPlT:'Ajouter à une playlist',noPlYet:'Vous n\'avez pas encore de playlist. Créez-en une :',newPlItem:'＋ Nouvelle playlist…',
+ cancel:'Annuler',alreadyIn:'Déjà dans "{0}"',saveFail:'Enregistrement impossible',addedTo:'Ajoutée à "{0}" ✓',removedFromPl:'Retirée de la playlist',
+ plSrc:'Playlist : {0}',broken:'"{0}" est endommagée. Supprimez-la et ajoutez-la à nouveau',blocked:'Android a bloqué l\'audio : touchez ▶ encore',playFail:'Lecture impossible ({0})',
+ endQueue:'Fin de la file',rep0:'Pas de répétition',rep1:'Répéter toute la file',rep2:'Répéter une chanson',shufOn:'Aléatoire activé',shufOff:'Aléatoire désactivé',
+ cantPlay:'Impossible de lire {0} (code {1}). Touchez la version en haut pour diagnostiquer',brokenRow:'⚠ Endommagée : supprimez-la et ajoutez-la à nouveau',
+ libEmpty:'Pas encore de chansons.\nTouchez "＋ Ajouter des chansons" pour les choisir sur le téléphone.',libEmpty2:'Votre bibliothèque est vide.',noResults:'Aucun résultat pour "{0}"',
+ plEmpty:'Vous n\'avez pas de playlist.\nTouchez "＋ Nouvelle" pour en créer une.',del:'Supprimer',rename:'Renommer',play:'Lire',plIsEmpty:'La playlist est vide',
+ plDetailEmpty:'Playlist vide.\nDans Bibliothèque ou Rechercher, touchez "＋" sur une chanson pour l\'ajouter ici.',removeFromPl:'Retirer de la playlist',
+ queueEmpty:'La file est vide.',andMore:'…et {0} de plus',ofN:'{0} sur {1}',mode0:'➡ Sans répét.',mode1:'🔁 Tout',mode2:'🔂 Une',
+ namePh:'Nom',save:'Enregistrer',vizOff:'Visualiseur éteint',addToStart:'Ajoutez de la musique pour commencer',bgText:'Lecture en cours',noSongs:'Aucune chanson',
+ noFile:'Aucun fichier choisi',diagnosing:'Diagnostic…',diagT:'Diagnostic audio',close:'Fermer',testWith:'Test avec',curSong:'Chanson actuelle',
+ unkFmt:'format inconnu',readFail:'lecture impossible',dataMode:'Mode data',yes:'oui',no:'non',noResp:'pas de réponse',code:'code',
+ dbErr:'Erreur à l\'ouverture de la base de données',recovered:'{0} chanson(s) récupérée(s) de la v38c ✓',
+ skinT:'Apparence',skinSub:'Choisissez un skin. Il s\'applique tout de suite.',skinSet:'Skin : {0}',
+ sk_neon:'Néon',sk_neon_d:'Le classique de Prometeo',sk_fuego:'Feu',sk_fuego_d:'Orange et braises',sk_pink:'Pink',sk_pink_d:'Rose doux et brillant',
+ sk_amatista:'Améthyste',sk_amatista_d:'Violet doux, idéal la nuit',sk_claro:'Clair',sk_claro_d:'Fond blanc, pour la journée',
+ langT:'Langue',langSub:'Par défaut Prometeo utilise la langue de votre téléphone.',auto:'Automatique',autoSub:'Langue du téléphone · {0}',orPick:'Ou choisissez',
+ aboutT:'À propos',version:'Version {0}',devBy:'Développé par',feat1:'Fonctionne hors ligne (seules la radio et la TV que vous ajoutez utilisent internet)',feat2:'Ne collecte aucune de vos données',
+ feat3:'Votre musique et vos audios au même endroit',madeWith:'Fait avec amour pour la famille · 2026'}
+};
+function phoneLang(){
+  const list=(navigator.languages&&navigator.languages.length)? navigator.languages : [navigator.language||'es'];
+  for(const l of list){ const c=String(l||'').slice(0,2).toLowerCase(); if(I18N[c]) return c; }
+  return 'en';
+}
+let langPref=store.get('lang','auto'); if(langPref!=='auto' && !I18N[langPref]) langPref='auto';
+let LANG=langPref==='auto'? phoneLang() : langPref;
+function t(k){ let s=(I18N[LANG]&&I18N[LANG][k]); if(s==null) s=I18N.es[k]; if(s==null) s=k;
+  for(let i=1;i<arguments.length;i++) s=s.split('{'+(i-1)+'}').join(String(arguments[i])); return s; }
+function nSongs(n){ return t(n===1?'song1':'songN',n); }
+function translateStatic(){
+  document.documentElement.lang=LANG;
+  document.querySelectorAll('[data-i18n]').forEach(e=>{ e.textContent=t(e.dataset.i18n); });
+  document.querySelectorAll('[data-i18n-aria]').forEach(e=>{ const v=t(e.dataset.i18nAria); e.setAttribute('aria-label',v); e.title=v; });
+  document.querySelectorAll('[data-i18n-ph]').forEach(e=>{ e.placeholder=t(e.dataset.i18nPh); });
+}
+
+/* ================= SKINS (v41) ================= */
+/* hue/span = colores de las barras del visualizador; los colores de la app están en el CSS */
+const SKINS={
+  neon:    {bg:'#0a0a0a',bar:'#141414',acc:'#00e5ff',hue:185,span:73, lit:42},
+  fuego:   {bg:'#0d0806',bar:'#1a110c',acc:'#ff7a1a',hue:8,  span:40, lit:45},
+  pink:    {bg:'#0d070b',bar:'#170d14',acc:'#ff6fb1',hue:332,span:-40,lit:52},
+  amatista:{bg:'#0b0812',bar:'#161124',acc:'#b388ff',hue:262,span:45, lit:55},
+  claro:   {bg:'#f4f5f7',bar:'#ffffff',acc:'#0077b6',hue:200,span:30, lit:34}
+};
+const SKIN_ORDER=['neon','fuego','pink','amatista','claro'];
+let skin=store.get('skin','neon'); if(!SKINS[skin]) skin='neon';
+function applySkin(){
+  document.documentElement.setAttribute('data-skin',skin);
+  const m=document.querySelector('meta[name=theme-color]'); if(m) m.setAttribute('content',SKINS[skin].bar);
+  try{ const sb=window.StatusBar; if(sb){ sb.backgroundColorByHexString(SKINS[skin].bar); skin==='claro'? sb.styleDefault() : sb.styleLightContent(); } }catch(e){}
+}
+applySkin();
+
 /* ================= ESTADO ================= */
 const audio=$('audio'), progress=$('progress');
 let db=null, songs=[], playlists=[];
@@ -217,12 +799,13 @@ let currentTab='ahora', openPl=null, dragging=false, pendingSeek=0, errStreak=0,
 /* ================= BASE DE DATOS ================= */
 function openDB(){
   return new Promise((res,rej)=>{
-    const r=indexedDB.open('PrometeoPlayerDB',2);
+    const r=indexedDB.open('PrometeoPlayerDB',3);
     r.onupgradeneeded=e=>{ const d=e.target.result;
       if(!d.objectStoreNames.contains('songs')) d.createObjectStore('songs',{keyPath:'id'});
       if(!d.objectStoreNames.contains('playlists')) d.createObjectStore('playlists',{keyPath:'id'});
-      if(!d.objectStoreNames.contains('audio')) d.createObjectStore('audio',{keyPath:'id'}); };
-    r.onblocked=()=>toast('Cierra otras ventanas de Prometeo');
+      if(!d.objectStoreNames.contains('audio')) d.createObjectStore('audio',{keyPath:'id'});
+      if(!d.objectStoreNames.contains('tv')) d.createObjectStore('tv',{keyPath:'id'}); };
+    r.onblocked=()=>toast(t('closeOther'));
     r.onsuccess=()=>res(r.result);
     r.onerror=()=>rej(r.error);
   });
@@ -285,7 +868,7 @@ function migrateOld(){
 }
 
 /* ================= CANCIONES ================= */
-function sortSongs(){ songs.sort((a,b)=>a.name.localeCompare(b.name,'es',{sensitivity:'base',numeric:true})); }
+function sortSongs(){ songs.sort((a,b)=>a.name.localeCompare(b.name,LANG,{sensitivity:'base',numeric:true})); }
 const songById=id=>songs.find(s=>s.id===id);
 
 /* Lee el archivo completo como bytes */
@@ -313,47 +896,48 @@ function guessType(n){ const e=(String(n).split('.').pop()||'').toLowerCase();
   return {mp3:'audio/mpeg',m4a:'audio/mp4',aac:'audio/aac',flac:'audio/flac',ogg:'audio/ogg',oga:'audio/ogg',opus:'audio/ogg',wav:'audio/wav',webm:'audio/webm'}[e]||'audio/mpeg'; }
 let adding=false;
 async function addFiles(files){
-  if(adding){ toast('Espera, todavía guardando…'); return; }
-  if(!db){ toast('La base de datos no está lista, cierra y abre la app'); return; }
+  if(adding){ toast(t('stillSaving')); return; }
+  if(!db){ toast(t('dbNotReady')); return; }
   const list=files.filter(f=>!(f.type && /^(image|text)\//.test(f.type)));
-  if(!list.length){ toast('Esos archivos no son de audio'); return; }
+  if(!list.length){ toast(t('notAudio')); return; }
   adding=true; let ok=0, fail=0, lastErr='';
   for(let i=0;i<list.length;i++){
     const f=list[i];
-    toast('Guardando '+(i+1)+' de '+list.length+'…');
+    toast(t('saving',i+1,list.length));
     try{
       const buf=await readBuf(f);
-      if(!buf || !buf.byteLength) throw new Error('archivo vacío');
-      const fn=f.name||('Canción '+(songs.length+1));
+      if(!buf || !buf.byteLength) throw new Error(t('emptyFile'));
+      const fn=f.name||t('songDefault',songs.length+1);
       const real=sniffBytes(new Uint8Array(buf,0,Math.min(16,buf.byteLength)));
-      if(real && UNSUPPORTED[real]) throw new Error(UNSUPPORTED[real]+' no soportado');
+      if(real && UNSUPPORTED[real]) throw new Error(t('unsupported',UNSUPPORTED[real]));
       const mime=real || (f.type && f.type.indexOf('audio/')===0 ? f.type : '') || guessType(fn);
       const meta={id:'s'+uid(), name:cleanName(fn), fileName:fn, mime, size:buf.byteLength, added:Date.now()+i};
       await putSongWithAudio(meta,buf); songs.push(meta); ok++;
     }catch(e){
       fail++; lastErr=(e && (e.message||e.name))||'error';
-      if(e && e.name==='QuotaExceededError'){ toast('Sin espacio en el teléfono'); break; }
+      if(e && e.name==='QuotaExceededError'){ toast(t('noSpace')); break; }
     }
   }
   adding=false;
   sortSongs();
   if(queueSource.type==='lib') buildQueue();
   renderAll();
-  if(!currentId && queue.length) loadById(queue[0],false);
-  if(ok && !fail) toast(ok+' canción(es) guardada(s) ✓');
-  else if(ok) toast(ok+' guardadas, '+fail+' fallaron ('+lastErr+')');
-  else toast('No se pudo guardar ninguna ('+lastErr+')');
+  if(!currentId && queue.length && !radioId) loadById(queue[0],false); /* si suena la radio, no se interrumpe */
+  if(ok && !fail) toast(t('savedOk',ok));
+  else if(ok) toast(t('savedSome',ok,fail,lastErr));
+  else toast(t('savedNone',lastErr));
 }
-function pickSongs(){ switchTab('biblioteca'); toast('Toca "＋ Agregar canciones"'); }
+function pickSongs(){ switchTab('biblioteca'); if(PM) scanPhone(true); else toast(t('tapAdd')); }
 
 async function deleteSong(id){
   const s=songById(id); if(!s) return;
-  const yes=await confirmBox('Eliminar canción','¿Borrar "'+s.name+'" de Prometeo? También se quitará de tus playlists. (El archivo original del teléfono no se toca.)');
+  const yes=await confirmBox(t('delSongT'),t('delSongQ',s.name));
   if(!yes) return;
   const wasCurrent=id===currentId, wasPlaying=wasCurrent && !audio.paused;
   let nextId=null;
   if(wasCurrent){ const i=queue.indexOf(id); nextId=queue[i+1]||queue[i-1]||null; }
-  try{ await delSongWithAudio(id); }catch(e){ toast('No se pudo borrar'); return; }
+  try{ await delSongWithAudio(id); }catch(e){ toast(t('delFail')); return; }
+  if(s.mid!=null){ const h=store.get('hidden',[]); if(!h.includes(s.mid)){ h.push(s.mid); store.set('hidden',h); } }
   songs=songs.filter(x=>x.id!==id);
   for(const p of playlists){ if(p.songIds.includes(id)){ p.songIds=p.songIds.filter(x=>x!==id); try{ await dbPut('playlists',p); }catch(e){} } }
   queue=queue.filter(x=>x!==id);
@@ -361,60 +945,60 @@ async function deleteSong(id){
     stopAudio();
     if(nextId && songById(nextId)) loadById(nextId,wasPlaying); else resetNow();
   } else qPos=queue.indexOf(currentId);
-  renderAll(); toast('Canción eliminada');
+  renderAll(); toast(t('songDeleted'));
 }
 
 /* ================= PLAYLISTS ================= */
 const plById=id=>playlists.find(p=>p.id===id);
 
 async function newPlaylist(){
-  const n=await askText('Nueva playlist','');
+  const n=await askText(t('newPlT'),'');
   if(!n) return null;
   const p={id:'p'+uid(), name:n, songIds:[], created:Date.now()};
-  try{ await dbPut('playlists',p); }catch(e){ toast('No se pudo crear'); return null; }
-  playlists.push(p); renderPlaylists(); toast('Playlist "'+n+'" creada');
+  try{ await dbPut('playlists',p); }catch(e){ toast(t('createFail')); return null; }
+  playlists.push(p); renderPlaylists(); toast(t('plCreated',n));
   return p;
 }
 async function renamePl(p){
-  const n=await askText('Renombrar playlist',p.name);
+  const n=await askText(t('renamePlT'),p.name);
   if(!n || n===p.name) return;
   p.name=n; await dbPut('playlists',p).catch(()=>{});
   renderPlaylists(); if(openPl===p.id) renderPlDetail(); renderQueue(); updateNowText();
 }
 async function deletePl(p){
-  const yes=await confirmBox('Eliminar playlist','¿Eliminar "'+p.name+'"? Las canciones seguirán en tu Biblioteca.');
+  const yes=await confirmBox(t('delPlT'),t('delPlQ',p.name));
   if(!yes) return;
   await dbDel('playlists',p.id).catch(()=>{});
   playlists=playlists.filter(x=>x.id!==p.id);
   if(queueSource.type==='pl' && queueSource.id===p.id){ queueSource={type:'lib'}; store.set('src',queueSource); buildQueue(); }
   if(openPl===p.id) closePlDetail();
-  renderPlaylists(); renderQueue(); updateNowText(); toast('Playlist eliminada');
+  renderPlaylists(); renderQueue(); updateNowText(); toast(t('plDeleted'));
 }
 async function addToPlaylist(songId){
-  if(!songId || !songById(songId)){ toast('Primero elige una canción'); return; }
-  let p=await modal('Agregar a playlist',(b,close)=>{
-    if(!playlists.length) b.appendChild(el('p','m-msg','Todavía no tienes playlists. Crea una:'));
+  if(!songId || !songById(songId)){ toast(t('pickFirst')); return; }
+  let p=await modal(t('addToPlT'),(b,close)=>{
+    if(!playlists.length) b.appendChild(el('p','m-msg',t('noPlYet')));
     playlists.forEach(pl=>{
       const has=pl.songIds.includes(songId);
       const bt=el('button','m-item'+(has?' done':''),(has?'✓ ':'')+pl.name+'  ·  '+pl.songIds.length);
       bt.onclick=()=>close(pl); b.appendChild(bt);
     });
-    const nb=el('button','m-item new','＋ Nueva playlist…'); nb.onclick=()=>close('new'); b.appendChild(nb);
-  },[['Cancelar',()=>null,'btn-pill']]);
+    const nb=el('button','m-item new',t('newPlItem')); nb.onclick=()=>close('new'); b.appendChild(nb);
+  },[[t('cancel'),()=>null,'btn-pill']]);
   if(p==='new') p=await newPlaylist();
   if(!p) return;
-  if(p.songIds.includes(songId)){ toast('Ya está en "'+p.name+'"'); return; }
+  if(p.songIds.includes(songId)){ toast(t('alreadyIn',p.name)); return; }
   p.songIds.push(songId);
-  try{ await dbPut('playlists',p); }catch(e){ toast('No se pudo guardar'); return; }
+  try{ await dbPut('playlists',p); }catch(e){ toast(t('saveFail')); return; }
   if(queueSource.type==='pl' && queueSource.id===p.id) buildQueue();
   renderPlaylists(); if(openPl===p.id) renderPlDetail(); renderQueue();
-  toast('Agregada a "'+p.name+'" ✓');
+  toast(t('addedTo',p.name));
 }
 async function removeFromPl(p,songId){
   p.songIds=p.songIds.filter(x=>x!==songId);
   await dbPut('playlists',p).catch(()=>{});
   if(queueSource.type==='pl' && queueSource.id===p.id) buildQueue();
-  renderPlaylists(); renderPlDetail(); renderQueue(); toast('Quitada de la playlist');
+  renderPlaylists(); renderPlDetail(); renderQueue(); toast(t('removedFromPl'));
 }
 
 /* ================= COLA ================= */
@@ -434,7 +1018,7 @@ function buildQueue(){
   }
   queue=ids; qPos=currentId? queue.indexOf(currentId) : -1;
 }
-function sourceName(){ if(queueSource.type==='pl'){ const p=plById(queueSource.id); if(p) return 'Playlist: '+p.name; } return 'Biblioteca'; }
+function sourceName(){ if(queueSource.type==='pl'){ const p=plById(queueSource.id); if(p) return t('plSrc',p.name); } return t('library'); }
 function playFrom(src,id){
   queueSource=src; store.set('src',src);
   currentId=id; buildQueue(); renderQueue();
@@ -446,22 +1030,29 @@ function stopAudio(){
   audio.pause(); audio.removeAttribute('src'); audio.load();
   if(currentUrl){ URL.revokeObjectURL(currentUrl); currentUrl=null; }
 }
-let loadSeq=0, srcStage=0, curBlob=null;
+let loadSeq=0, srcStage=0, curBlob=null, posFor=null; /* posFor = canción cuyo audio está cargado */
 async function songBlob(s){
+  if(s.mid!=null){ /* canción del teléfono: se lee directo del archivo original, sin copia */
+    const r=await fetch(PM? PM.url(s.mid) : '/__prometeo_music__/'+s.mid);
+    if(!r.ok) throw new Error('missing');
+    const b=await r.blob(); if(!b.size) throw new Error('missing');
+    return (s.mime && b.type!==s.mime)? new Blob([b],{type:s.mime}) : b;
+  }
   if(s.blob) return s.blob.type===s.mime || !s.mime ? s.blob : new Blob([s.blob],{type:s.mime});
   const rec=await dbGet('audio',s.id);
   if(!rec || !rec.data) throw new Error('sin datos');
   return new Blob([rec.data],{type:s.mime||'audio/mpeg'});
 }
 function blobToDataURL(b){ return new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(r.result); r.onerror=()=>rej(r.error); r.readAsDataURL(b); }); }
-function setSrc(url){ if(currentUrl && currentUrl!==url && currentUrl.indexOf('blob:')===0) URL.revokeObjectURL(currentUrl); currentUrl=url; audio.src=url; }
+function setSrc(url){ if(currentUrl && currentUrl!==url && currentUrl.indexOf('blob:')===0) URL.revokeObjectURL(currentUrl); currentUrl=url; audio.src=url; posFor=currentId; }
 function loadById(id,autoplay,seek){
   const s=songById(id); if(!s) return;
+  if(radioId) stopRadio(true);
   const seq=++loadSeq;
   currentId=id; qPos=queue.indexOf(id);
   if(qPos<0){ buildQueue(); qPos=queue.indexOf(id); }
   if(!audio.paused) audio.pause();
-  pendingSeek=seek||0; srcStage=0; curBlob=null;
+  pendingSeek=seek||0; srcStage=0; curBlob=null; posFor=null; clearCover();
   audio.loop=(repeatMode===2);
   progress.value=0; setFill(0); $('tCur').textContent='0:00'; $('tDur').textContent='0:00';
   store.set('last',id); store.set('pos',0);
@@ -469,14 +1060,14 @@ function loadById(id,autoplay,seek){
   setPlayIcon();
   songBlob(s).then(b=>{
     if(seq!==loadSeq) return;
-    curBlob=b;
+    curBlob=b; showCoverFor(s,b,seq);
     if(useDataUrl) return blobToDataURL(b).then(u=>{ if(seq!==loadSeq) return; srcStage=1; setSrc(u); if(autoplay) play(); });
     setSrc(URL.createObjectURL(b));
     if(autoplay) play();
   }).catch(()=>{
     if(seq!==loadSeq) return;
     s.broken=true; renderLib();
-    toast('"'+s.name+'" está dañada. Bórrala y agrégala de nuevo');
+    toast(t(s.mid!=null?'missing':'broken',s.name));
   });
 }
 function play(){
@@ -487,9 +1078,9 @@ function play(){
     setPlayIcon();
     const n=err && err.name;
     if(n==='AbortError') return;
-    if(n==='NotAllowedError') toast('Android bloqueó el audio: toca ▶ otra vez');
+    if(n==='NotAllowedError') toast(t('blocked'));
     else if(n==='NotSupportedError') return; /* lo maneja el evento "error" con reintento */
-    else toast('No se pudo reproducir ('+(n||'error')+')');
+    else toast(t('playFail',n||'error'));
   });
 }
 function togglePlay(){
@@ -504,7 +1095,7 @@ function nextSong(auto){
   if(!queue.length){ buildQueue(); if(!queue.length) return; }
   let p=qPos+1;
   if(p>=queue.length){
-    if(auto && repeatMode===0){ audio.pause(); audio.currentTime=0; setPlayIcon(); toast('Fin de la cola'); return; }
+    if(auto && repeatMode===0){ audio.pause(); audio.currentTime=0; setPlayIcon(); toast(t('endQueue')); return; }
     if(shuffle){ const ids=shuffleArr(sourceIds()); if(ids.length>1 && ids[0]===currentId) ids.push(ids.shift()); queue=ids; renderQueue(); }
     p=0;
   }
@@ -516,18 +1107,19 @@ function prevSong(){
   let p=qPos-1; if(p<0) p=queue.length-1;
   loadById(queue[p],true);
 }
-function cycleRepeat(){ repeatMode=(repeatMode+1)%3; audio.loop=(repeatMode===2); store.set('repeat',repeatMode); applyModeButtons(); toast(['No repetir','Repetir toda la cola','Repetir una canción'][repeatMode]); }
-function toggleShuffle(){ shuffle=!shuffle; store.set('shuffle',shuffle); buildQueue(); applyModeButtons(); renderQueue(); updateNowText(); toast(shuffle?'Aleatorio activado':'Aleatorio desactivado'); }
+function cycleRepeat(){ repeatMode=(repeatMode+1)%3; audio.loop=(repeatMode===2); store.set('repeat',repeatMode); applyModeButtons(); toast(t('rep'+repeatMode)); }
+function toggleShuffle(){ shuffle=!shuffle; store.set('shuffle',shuffle); buildQueue(); applyModeButtons(); renderQueue(); updateNowText(); toast(t(shuffle?'shufOn':'shufOff')); }
+function setIdleText(){ $('curTitle').textContent=t('noSong'); $('curSub').textContent=songs.length? t('chooseSong') : t('addFromLib'); }
 function resetNow(){
   currentId=null; qPos=-1;
-  $('curTitle').textContent='Sin canción'; $('curSub').textContent=songs.length? 'Elige una canción' : 'Agrega música desde Biblioteca';
+  setIdleText(); clearCover(); $('curArtist').textContent='';
   $('tCur').textContent='0:00'; $('tDur').textContent='0:00'; progress.value=0; setFill(0);
   setPlayIcon(); updateMini(); store.set('last',null);
 }
 
 /* ---- eventos del audio ---- */
 function setFill(pct){ progress.style.setProperty('--p',pct+'%'); }
-function setPlayIcon(){ const ic=audio.paused?'▶':'⏸'; $('btnPlay').textContent=ic; $('miniPlay').textContent=ic; }
+function setPlayIcon(){ const ic=(radioId? radioPaused() : audio.paused)?'▶':'⏸'; $('btnPlay').textContent=ic; $('miniPlay').textContent=ic; }
 audio.addEventListener('play',()=>{ setPlayIcon(); bgMode(true); if(actx && actx.state==='suspended') actx.resume().catch(()=>{}); });
 audio.addEventListener('pause',()=>{ setPlayIcon(); savePos(true); });
 audio.addEventListener('playing',()=>{ errStreak=0; setPlayIcon(); if(vMode!=='off'){ ensureGraph(); if(actx && actx.state==='suspended') actx.resume().catch(()=>{}); } });
@@ -545,6 +1137,8 @@ audio.addEventListener('timeupdate',()=>{
   savePos(false);
 });
 audio.addEventListener('ended',()=>{ setPlayIcon(); nextSong(true); });
+['play','pause','seeked','playing'].forEach(ev=>audio.addEventListener(ev,carState));
+audio.addEventListener('loadedmetadata',()=>{ const s=currentId && songById(currentId); if(s) sendCar(s); carState(); });
 let useDataUrl=store.get('dataurl',false);
 audio.addEventListener('error',async ()=>{
   if(!currentId || !audio.getAttribute('src')) return;
@@ -559,13 +1153,13 @@ audio.addEventListener('error',async ()=>{
       setSrc(u); play(); return;
     }catch(e){}
   }
-  toast('No se puede reproducir '+s.fileName+' (código '+code+'). Toca la versión arriba para diagnosticar');
+  toast(t('cantPlay',s.fileName,code));
   errStreak++;
   if(errStreak < Math.min(queue.length,3)) setTimeout(()=>nextSong(false),1200);
   else setPlayIcon();
 });
 audio.addEventListener('canplay',()=>{ if(srcStage===1 && !useDataUrl){ useDataUrl=true; store.set('dataurl',true); } });
-function savePos(force){ const now=Date.now(); if(force || now-lastSave>5000){ lastSave=now; if(currentId) store.set('pos',audio.currentTime||0); } }
+function savePos(force){ const now=Date.now(); if(force || now-lastSave>5000){ lastSave=now; if(currentId && posFor===currentId) store.set('pos',audio.currentTime||0); } }
 
 progress.addEventListener('input',()=>{ dragging=true; setFill(progress.value/10); if(isFinite(audio.duration)) $('tCur').textContent=fmt(progress.value/1000*audio.duration); });
 progress.addEventListener('change',()=>{ if(isFinite(audio.duration) && audio.duration>0) audio.currentTime=progress.value/1000*audio.duration; dragging=false; });
@@ -573,45 +1167,45 @@ progress.addEventListener('change',()=>{ if(isFinite(audio.duration) && audio.du
 /* ================= RENDER ================= */
 function songRow(s, onPlay, btns){
   const r=el('div','song-item'+(s.id===currentId?' current':'')); r.dataset.id=s.id;
-  const info=el('div','song-info'); info.appendChild(el('b',null,s.name)); info.appendChild(el('small',null,s.broken? '⚠ Dañada: bórrala y agrégala de nuevo' : s.fileName));
+  const info=el('div','song-info'); info.appendChild(el('b',null,s.name)); info.appendChild(el('small',null,s.broken? t(s.mid!=null?'missingRow':'brokenRow') : (s.artist? s.artist+' • '+s.fileName : s.fileName)));
   info.onclick=onPlay; r.appendChild(info);
   (btns||[]).forEach(([ic,title,fn,cls])=>{ const b=el('button','icon-btn'+(cls?' '+cls:''),ic); b.title=title; b.onclick=e=>{ e.stopPropagation(); fn(); }; r.appendChild(b); });
   return r;
 }
 function renderLib(){
   const c=$('libList'); c.textContent='';
-  $('libCount').textContent=songs.length+(songs.length===1?' canción':' canciones')+' • offline';
-  if(!songs.length){ c.appendChild(el('div','empty','No hay canciones todavía.\nToca "＋ Agregar canciones" para elegirlas del teléfono.')); return; }
+  $('libCount').textContent=nSongs(songs.length)+' • '+t('offline');
+  if(!songs.length){ c.appendChild(el('div','empty',t(PM?'libEmptyNative':'libEmpty'))); return; }
   const frag=document.createDocumentFragment();
   songs.forEach(s=>frag.appendChild(songRow(s,()=>{ playFrom({type:'lib'},s.id); switchTab('ahora'); },
-    [['＋','Agregar a playlist',()=>addToPlaylist(s.id)],['🗑','Eliminar',()=>deleteSong(s.id),'del']])));
+    [['＋',t('addToPlT'),()=>addToPlaylist(s.id)],['🗑',t('del'),()=>deleteSong(s.id),'del']])));
   c.appendChild(frag);
 }
 function renderSearch(){
   const q=($('searchInput').value||'').trim().toLowerCase(), c=$('searchResults'); c.textContent='';
-  if(!songs.length){ c.appendChild(el('div','empty','Tu biblioteca está vacía.')); return; }
+  if(!songs.length){ c.appendChild(el('div','empty',t('libEmpty2'))); return; }
   const f=q? songs.filter(s=>s.name.toLowerCase().includes(q)||s.fileName.toLowerCase().includes(q)) : songs;
-  if(!f.length){ c.appendChild(el('div','empty','Sin resultados para "'+q+'"')); return; }
+  if(!f.length){ c.appendChild(el('div','empty',t('noResults',q))); return; }
   const frag=document.createDocumentFragment();
-  f.forEach(s=>frag.appendChild(songRow(s,()=>{ playFrom({type:'lib'},s.id); switchTab('ahora'); },[['＋','Agregar a playlist',()=>addToPlaylist(s.id)]])));
+  f.forEach(s=>frag.appendChild(songRow(s,()=>{ playFrom({type:'lib'},s.id); switchTab('ahora'); },[['＋',t('addToPlT'),()=>addToPlaylist(s.id)]])));
   c.appendChild(frag);
 }
 function renderPlaylists(){
   const c=$('plList'); c.textContent='';
-  if(!playlists.length){ c.appendChild(el('div','empty','No tienes playlists.\nToca "＋ Nueva" para crear una.')); return; }
+  if(!playlists.length){ c.appendChild(el('div','empty',t('plEmpty'))); return; }
   playlists.forEach(p=>{
     const n=p.songIds.filter(id=>songById(id)).length;
     const r=el('div','pl-row'); const info=el('div','song-info');
-    info.appendChild(el('b',null,p.name)); info.appendChild(el('small',null,n+(n===1?' canción':' canciones')));
+    info.appendChild(el('b',null,p.name)); info.appendChild(el('small',null,nSongs(n)));
     info.onclick=()=>openPlDetail(p.id); r.appendChild(info);
-    [['▶','Reproducir',()=>playPl(p)],['✎','Renombrar',()=>renamePl(p)],['🗑','Eliminar',()=>deletePl(p),'del']].forEach(([ic,t,fn,cls])=>{
+    [['▶',t('play'),()=>playPl(p)],['✎',t('rename'),()=>renamePl(p)],['🗑',t('del'),()=>deletePl(p),'del']].forEach(([ic,t,fn,cls])=>{
       const b=el('button','icon-btn'+(cls?' '+cls:''),ic); b.title=t; b.onclick=e=>{ e.stopPropagation(); fn(); }; r.appendChild(b); });
     c.appendChild(r);
   });
 }
 function playPl(p){
   const ids=p.songIds.filter(id=>songById(id));
-  if(!ids.length){ toast('La playlist está vacía'); return; }
+  if(!ids.length){ toast(t('plIsEmpty')); return; }
   playFrom({type:'pl',id:p.id}, shuffle? shuffleArr(ids)[0] : ids[0]); switchTab('ahora');
 }
 function openPlDetail(id){ openPl=id; $('plIndex').classList.add('hidden'); $('plDetail').classList.remove('hidden'); renderPlDetail(); window.scrollTo(0,0); }
@@ -619,36 +1213,42 @@ function closePlDetail(){ openPl=null; $('plDetail').classList.add('hidden'); $(
 function renderPlDetail(){
   const p=plById(openPl); if(!p){ closePlDetail(); return; }
   const ids=p.songIds.filter(id=>songById(id));
-  $('plName').textContent=p.name; $('plCount').textContent=ids.length+(ids.length===1?' canción':' canciones');
+  $('plName').textContent=p.name; $('plCount').textContent=nSongs(ids.length);
   const c=$('plSongs'); c.textContent='';
-  if(!ids.length){ c.appendChild(el('div','empty','Playlist vacía.\nEn Biblioteca o Buscar toca "＋" en una canción para agregarla aquí.')); return; }
+  if(!ids.length){ c.appendChild(el('div','empty',t('plDetailEmpty'))); return; }
   ids.forEach(id=>{ const s=songById(id);
-    c.appendChild(songRow(s,()=>{ playFrom({type:'pl',id:p.id},id); switchTab('ahora'); },[['✕','Quitar de la playlist',()=>removeFromPl(p,id),'del']])); });
+    c.appendChild(songRow(s,()=>{ playFrom({type:'pl',id:p.id},id); switchTab('ahora'); },[['✕',t('removeFromPl'),()=>removeFromPl(p,id),'del']])); });
 }
 function renderQueue(){
   const c=$('queueList'); c.textContent='';
   $('queueInfo').textContent=sourceName()+' • '+queue.length+(shuffle?' • 🔀':'');
-  if(!queue.length){ c.appendChild(el('div','empty','La cola está vacía.')); return; }
+  if(!queue.length){ c.appendChild(el('div','empty',t('queueEmpty'))); return; }
   const frag=document.createDocumentFragment();
   queue.slice(0,300).forEach(id=>{ const s=songById(id); if(s) frag.appendChild(songRow(s,()=>loadById(id,true))); });
-  if(queue.length>300) frag.appendChild(el('div','empty','…y '+(queue.length-300)+' más'));
+  if(queue.length>300) frag.appendChild(el('div','empty',t('andMore',queue.length-300)));
   c.appendChild(frag);
 }
-function renderAll(){ renderLib(); renderSearch(); renderPlaylists(); if(openPl) renderPlDetail(); renderQueue(); updateNowText(); updateMini(); }
+function renderAll(){ renderRadio(); renderLib(); renderSearch(); renderPlaylists(); if(openPl) renderPlDetail(); renderQueue(); updateNowText(); updateMini(); }
 function markCurrent(){ document.querySelectorAll('.song-item').forEach(r=>r.classList.toggle('current',r.dataset.id===currentId)); }
 function updateNowText(){
+  if(radioId){ updateRadioText(); return; }
   const s=currentId && songById(currentId); if(!s) return;
   $('curTitle').textContent=s.name;
-  $('curSub').textContent=sourceName()+' • '+(qPos+1)+' de '+queue.length;
+  $('curArtist').textContent=[s.artist,s.album].filter(Boolean).join(' · ');
+  $('curSub').textContent=sourceName()+' • '+t('ofN',qPos+1,queue.length);
 }
 function updateMini(){
+  if(radioId){ const st=stationById(radioId), show=!!st && currentTab!=='ahora';
+    $('mini').classList.toggle('hidden',!show); document.body.classList.toggle('has-mini',show);
+    if(st){ $('miniTitle').textContent=st.name; $('miniSub').textContent=t('live'); } return; }
+  $('miniSub').textContent=t('tapOpen');
   const s=currentId && songById(currentId);
   const show=!!s && currentTab!=='ahora';
   $('mini').classList.toggle('hidden',!show); document.body.classList.toggle('has-mini',show);
   if(s) $('miniTitle').textContent=s.name;
 }
 function applyModeButtons(){
-  const r=$('btnRepeat'); r.textContent=['➡ No repite','🔁 Todo','🔂 Una'][repeatMode]; r.classList.toggle('on',repeatMode!==0);
+  const r=$('btnRepeat'); r.textContent=t('mode'+repeatMode); r.classList.toggle('on',repeatMode!==0);
   const sh=$('btnShuffle'); sh.textContent=shuffle?'🔀 ON':'🔀 OFF'; sh.classList.toggle('on',shuffle);
   document.querySelectorAll('#modes button').forEach(b=>b.classList.toggle('on',b.dataset.mode===vMode));
 }
@@ -659,6 +1259,7 @@ function switchTab(name){
   document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id==='view-'+name));
   document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.tab===name));
   if(name==='ahora') requestAnimationFrame(sizeCanvas);
+  if(name==='radio') renderRadio();
   updateMini(); window.scrollTo(0,0);
 }
 
@@ -680,13 +1281,13 @@ function modal(title, build, actions){
 function askText(title,value){
   let inp;
   return modal(title,(b,close)=>{
-    inp=el('input','search'); inp.value=value||''; inp.maxLength=60; inp.placeholder='Nombre';
+    inp=el('input','search'); inp.value=value||''; inp.maxLength=60; inp.placeholder=t('namePh');
     inp.onkeydown=e=>{ if(e.key==='Enter') close(inp.value.trim()||null); };
     b.appendChild(inp);
-  },[['Cancelar',()=>null,'btn-pill'],['Guardar',()=>inp.value.trim()||null,'btn-ok']]);
+  },[[t('cancel'),()=>null,'btn-pill'],[t('save'),()=>inp.value.trim()||null,'btn-ok']]);
 }
 function confirmBox(title,msg){
-  return modal(title,b=>b.appendChild(el('p','m-msg',msg)),[['Cancelar',()=>false,'btn-pill'],['Eliminar',()=>true,'btn-danger']]);
+  return modal(title,b=>b.appendChild(el('p','m-msg',msg)),[[t('cancel'),()=>false,'btn-pill'],[t('del'),()=>true,'btn-danger']]);
 }
 
 /* ================= VISUALIZADOR ================= */
@@ -714,33 +1315,33 @@ function setVisual(m){ vMode=m; store.set('vmode',m); applyModeButtons(); embers
   if(m!=='off' && !audio.paused){ ensureGraph(); if(actx && actx.state==='suspended') actx.resume().catch(()=>{}); } }
 function fillRound(x,y,w,h,r){ ctx.beginPath(); if(ctx.roundRect) ctx.roundRect(x,y,w,h,r); else ctx.rect(x,y,w,h); ctx.fill(); }
 function drawIdle(text){
-  ctx.strokeStyle='rgba(0,229,255,.25)'; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(0,H/2); ctx.lineTo(W,H/2); ctx.stroke();
-  if(text){ ctx.fillStyle='#555'; ctx.font='600 12px system-ui'; ctx.textAlign='center'; ctx.fillText(text,W/2,H/2-12); }
+  ctx.strokeStyle='rgba('+accRGB()+',.25)'; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(0,H/2); ctx.lineTo(W,H/2); ctx.stroke();
+  if(text){ ctx.fillStyle=skin==='claro'?'#6b7280':'#666'; ctx.font='600 12px system-ui'; ctx.textAlign='center'; ctx.fillText(text,W/2,H/2-12); }
 }
 function drawBars(){
-  const n=56, gap=3, bw=(W-gap*(n-1))/n, step=Math.max(1,Math.floor(freq.length*0.7/n));
+  const S=SKINS[skin], gap=3, n=W>=320? 56 : Math.max(10,Math.floor((W+gap)/9)), bw=(W-gap*(n-1))/n, step=Math.max(1,Math.floor(freq.length*0.7/n));
   for(let i=0;i<n;i++){
     let v=0; for(let j=0;j<step;j++) v+=freq[i*step+j]; v=v/step/255;
     const h=Math.max(3,v*H*0.92);
-    ctx.fillStyle='hsl('+(185+i*1.3)+',100%,'+(42+v*28)+'%)';
+    ctx.fillStyle='hsl('+(S.hue+i*S.span/n)+',100%,'+(S.lit+v*28)+'%)';
     fillRound(i*(bw+gap),H-h,bw,h,Math.min(3,bw/2));
   }
 }
 function drawWave(){
-  ctx.lineWidth=2.5; ctx.strokeStyle='#00e5ff'; ctx.shadowColor='#00e5ff'; ctx.shadowBlur=14; ctx.beginPath();
+  const S=SKINS[skin]; ctx.lineWidth=2.5; ctx.strokeStyle=S.acc; ctx.shadowColor=S.acc; ctx.shadowBlur=14; ctx.beginPath();
   const sl=W/(wave.length-1);
   for(let i=0;i<wave.length;i++){ const y=H/2+(wave[i]-128)/128*H*0.45; if(i) ctx.lineTo(i*sl,y); else ctx.moveTo(0,y); }
   ctx.stroke(); ctx.shadowBlur=0;
 }
 function drawCircle(){
-  const cx=W/2, cy=H/2, base=Math.min(W,H);
+  const S=SKINS[skin], cx=W/2, cy=H/2, base=Math.min(W,H);
   let bass=0; for(let i=0;i<8;i++) bass+=freq[i]; bass/=8*255;
   const r=base*0.2+bass*12, n=96;
-  ctx.beginPath(); ctx.arc(cx,cy,Math.max(4,r-6),0,Math.PI*2); ctx.fillStyle='rgba(0,229,255,'+(0.06+bass*0.35)+')'; ctx.fill();
+  ctx.beginPath(); ctx.arc(cx,cy,Math.max(4,r-6),0,Math.PI*2); ctx.fillStyle='rgba('+accRGB()+','+(0.06+bass*0.35)+')'; ctx.fill();
   ctx.lineWidth=2.5; ctx.lineCap='round';
   for(let i=0;i<n;i++){
     const v=freq[Math.floor(i*150/n)]/255, a=i/n*Math.PI*2-Math.PI/2, len=3+v*base*0.27;
-    ctx.strokeStyle='hsl('+(185+i*1.6)+',100%,'+(48+v*22)+'%)';
+    ctx.strokeStyle='hsl('+(S.hue+i/n*S.span*2)+',100%,'+(S.lit+6+v*22)+'%)';
     ctx.beginPath(); ctx.moveTo(cx+Math.cos(a)*r,cy+Math.sin(a)*r); ctx.lineTo(cx+Math.cos(a)*(r+len),cy+Math.sin(a)*(r+len)); ctx.stroke();
   }
 }
@@ -761,14 +1362,16 @@ function drawFire(){
     ctx.beginPath(); ctx.arc(p.x,p.y,1.2+p.life*1.8,0,Math.PI*2); ctx.fill();
   }
 }
+function accRGB(){ const h=SKINS[skin].acc; return [1,3,5].map(i=>parseInt(h.substr(i,2),16)).join(','); }
 const drawers={barras:drawBars,onda:drawWave,circulo:drawCircle,fuego:drawFire};
 function frame(){
   requestAnimationFrame(frame);
   if(currentTab!=='ahora' || document.hidden) return;
   if(!W) sizeCanvas(); if(!W) return;
   ctx.clearRect(0,0,W,H);
-  if(vMode==='off'){ drawIdle('Visualizador apagado'); return; }
-  if(!an || audio.paused){ drawIdle(currentId? '' : 'Agrega música para empezar'); return; }
+  if(radioId){ drawRadio(); return; }
+  if(vMode==='off'){ drawIdle(t('vizOff')); return; }
+  if(!an || audio.paused){ drawIdle(currentId? '' : t('addToStart')); return; }
   an.getByteFrequencyData(freq); an.getByteTimeDomainData(wave);
   (drawers[vMode]||drawBars)();
 }
@@ -777,12 +1380,16 @@ function frame(){
 function bgPlugin(){ return window.cordova && cordova.plugins && cordova.plugins.backgroundMode; }
 function bgMode(on){ const bm=bgPlugin(); if(!bm) return; try{ on? bm.enable() : null; }catch(e){} }
 function updateMediaSession(s){
+  sendCar(s);
+  if(radioId) return;
   if(!('mediaSession' in navigator)) return;
-  try{ navigator.mediaSession.metadata=new MediaMetadata({title:s.name,artist:'Prometeo Player',album:sourceName()}); }catch(e){}
+  const cm=carMeta(s);
+  try{ navigator.mediaSession.metadata=new MediaMetadata({title:cm.title,artist:cm.artist||'Prometeo Player',album:cm.album,
+    artwork:(coverUrl && s.id===coverFor)? [{src:coverUrl,sizes:'512x512',type:coverType}] : []}); }catch(e){}
 }
 if('mediaSession' in navigator){
   const ms=navigator.mediaSession;
-  [['play',()=>play()],['pause',()=>audio.pause()],['nexttrack',()=>nextSong(false)],['previoustrack',()=>prevSong()],
+  [['play',()=>radioId? carControl({action:'play'}) : play()],['pause',()=>radioId? radioPauseAny() : audio.pause()],['nexttrack',()=>radioId? switchStation(1) : nextSong(false)],['previoustrack',()=>radioId? switchStation(-1) : prevSong()],
    ['seekto',d=>{ if(d && isFinite(d.seekTime)) audio.currentTime=d.seekTime; }]]
    .forEach(([a,fn])=>{ try{ ms.setActionHandler(a,fn); }catch(e){} });
 }
@@ -800,22 +1407,727 @@ function onBack(){
   if(navigator.app && navigator.app.exitApp) navigator.app.exitApp();
 }
 document.addEventListener('deviceready',()=>{
+  window.__BOOT.ready=Date.now()-window.__BOOT.t0;
+  applySkin(); /* barra de estado del color del skin (si existe el plugin) */
   const bm=bgPlugin();
   if(bm){
     try{
-      bm.setDefaults({title:'Prometeo Player',text:'Reproduciendo música',resume:true,hidden:false});
+      bm.setDefaults({title:'Prometeo Player',text:t('bgText'),resume:true,hidden:false});
       bm.on('activate',()=>{ try{ bm.disableWebViewOptimizations(); }catch(e){} });
     }catch(e){}
   }
   document.addEventListener('backbutton',onBack,false);
+  if(window.PrometeoMusic){ PM=window.PrometeoMusic; document.body.classList.add('native'); if(PM.onRadio) PM.onRadio(onRadioNative); translateStatic(); renderLib(); nativeStart(); }
 },false);
 
+/* ================= PORTADA, ARTISTA Y ÁLBUM DESDE EL ARCHIVO (v41) =================
+   Lee las etiquetas que vienen DENTRO del archivo (MP3/ID3, M4A, FLAC, OGG/Opus). Todo local, sin internet. */
+let coverUrl=null, coverFor=null, coverType='image/jpeg';
+const T3=(u,i,n)=>String.fromCharCode.apply(null,u.subarray(i,i+n));
+const BE32=(u,i)=>((u[i]<<24)>>>0)+(u[i+1]<<16)+(u[i+2]<<8)+u[i+3];
+const LE32=(u,i)=>(u[i]|(u[i+1]<<8)|(u[i+2]<<16))+(u[i+3]<<24>>>0);
+const SYNC=(u,i)=>(u[i]&127)*2097152+(u[i+1]&127)*16384+(u[i+2]&127)*128+(u[i+3]&127);
+function readAt(b,o,n){ return b.slice(o,o+n).arrayBuffer().then(x=>new Uint8Array(x)); }
+function deUnsync(u){ const o=[]; for(let i=0;i<u.length;i++){ o.push(u[i]); if(u[i]===0xFF && u[i+1]===0) i++; } return new Uint8Array(o); }
+function decodeTxt(u,enc){
+  try{
+    let lab=['windows-1252','utf-16le','utf-16be','utf-8'][enc]||'utf-8';
+    if(enc===1 && u[0]===0xFE && u[1]===0xFF){ lab='utf-16be'; u=u.subarray(2); }
+    else if(enc===1 && u[0]===0xFF && u[1]===0xFE) u=u.subarray(2);
+    return new TextDecoder(lab).decode(u).replace(/\u0000.*$/s,'').trim();
+  }catch(e){ return ''; }
+}
+function imgMime(d,fb){ if(d[0]===0x89 && d[1]===0x50) return 'image/png'; if(d[0]===0xFF && d[1]===0xD8) return 'image/jpeg';
+  if(T3(d,0,4)==='RIFF') return 'image/webp'; if(T3(d,0,3)==='GIF') return 'image/gif'; return fb||'image/jpeg'; }
+function addPic(out,data,ptype,mime){ if(!data || data.length<64) return;
+  if(!out.pic || (ptype===3 && out.picType!==3)){ out.pic=data; out.picType=ptype; out.picMime=imgMime(data,mime); } }
+/* ---- MP3 (ID3v2.2 / 2.3 / 2.4) ---- */
+async function tagsID3(b,off,out){
+  const h=await readAt(b,off,10); if(T3(h,0,3)!=='ID3') return 0;
+  const ver=h[3], flags=h[5], size=SYNC(h,6); if(ver<2 || ver>4 || !size) return 10;
+  let d=await readAt(b,off+10,size);
+  if((flags&0x80) && ver<4) d=deUnsync(d);
+  let p=0; if(flags&0x40) p= ver===3? BE32(d,0)+4 : SYNC(d,0);
+  const hl= ver===2? 6 : 10;
+  while(p+hl<=d.length){
+    const id=T3(d,p,ver===2?3:4); if(!/^[A-Z0-9]{3,4}$/.test(id)) break;
+    const fs= ver===2? (d[p+3]<<16)|(d[p+4]<<8)|d[p+5] : ver===4? SYNC(d,p+4) : BE32(d,p+4);
+    const ff= ver===2? 0 : d[p+9];
+    let f=d.subarray(p+hl,p+hl+fs); p+=hl+fs; if(fs<=0) break;
+    if(ver===3 && (ff&0xC0)) continue;                 /* comprimido o cifrado: se salta */
+    if(ver===4){ if(ff&0x0C) continue; if(ff&0x02) f=deUnsync(f); if(ff&0x01) f=f.subarray(4); }
+    if(id==='APIC' || id==='PIC'){
+      const enc=f[0]; let i, mime;
+      if(id==='PIC'){ mime=/png/i.test(T3(f,1,3))?'image/png':'image/jpeg'; i=4; }
+      else { i=1; let s=''; while(i<f.length && f[i]) s+=String.fromCharCode(f[i++]); i++; mime=s; }
+      const ptype=f[i++];
+      if(enc===1 || enc===2){ while(i+1<f.length && (f[i]||f[i+1])) i+=2; i+=2; } else { while(i<f.length && f[i]) i++; i++; }
+      addPic(out,f.slice(i),ptype,mime);
+    } else if(/^(TPE1|TP1)$/.test(id)){ out.artist=out.artist||decodeTxt(f.subarray(1),f[0]); }
+    else if(/^(TIT2|TT2)$/.test(id)){ out.title=out.title||decodeTxt(f.subarray(1),f[0]); }
+    else if(/^(TALB|TAL)$/.test(id)){ out.album=out.album||decodeTxt(f.subarray(1),f[0]); }
+  }
+  return 10+size+((flags&0x10)?10:0);
+}
+/* ---- Comentarios Vorbis (FLAC / OGG / Opus) ---- */
+function picBlock(d,out){ let i=0; const ptype=BE32(d,i); i+=4; const ml=BE32(d,i); i+=4; const mime=T3(d,i,ml); i+=ml;
+  const dl=BE32(d,i); i+=4+dl+16; const n=BE32(d,i); i+=4; addPic(out,d.slice(i,i+n),ptype,mime); }
+function vorbisComments(d,out){
+  let i=0; const vl=LE32(d,i); i+=4+vl; const n=LE32(d,i); i+=4;
+  const dec=new TextDecoder('utf-8');
+  for(let k=0;k<n && i+4<=d.length;k++){
+    const l=LE32(d,i); i+=4; const c=d.subarray(i,i+l); i+=l;
+    let eq=c.indexOf(61); if(eq<0) continue;
+    const key=T3(c,0,eq).toUpperCase(), val=c.subarray(eq+1);
+    if(key==='ARTIST') out.artist=out.artist||dec.decode(val);
+    else if(key==='TITLE') out.title=out.title||dec.decode(val);
+    else if(key==='ALBUM') out.album=out.album||dec.decode(val);
+    else if(key==='METADATA_BLOCK_PICTURE' || key==='COVERART'){
+      try{ const bin=atob(T3(val,0,val.length).replace(/\s/g,'')); const u=new Uint8Array(bin.length); for(let j=0;j<bin.length;j++) u[j]=bin.charCodeAt(j);
+        if(key==='COVERART') addPic(out,u,3); else picBlock(u,out); }catch(e){}
+    }
+  }
+}
+async function tagsFLAC(b,off,out){
+  let p=off+4;
+  for(let k=0;k<128;k++){
+    const h=await readAt(b,p,4); if(h.length<4) break;
+    const last=h[0]&0x80, type=h[0]&0x7F, len=(h[1]<<16)|(h[2]<<8)|h[3];
+    if(type===4 || type===6){ const d=await readAt(b,p+4,len); if(type===6) picBlock(d,out); else vorbisComments(d,out); }
+    p+=4+len; if(last) break;
+  }
+}
+async function tagsOGG(b,out){
+  const u=await readAt(b,0,Math.min(b.size,8*1048576)); let p=0, pk=[], packets=[], cur=[];
+  while(p+27<=u.length && packets.length<2 && T3(u,p,4)==='OggS'){
+    const ns=u[p+26], seg=u.subarray(p+27,p+27+ns); let q=p+27+ns;
+    for(let s=0;s<ns;s++){ cur.push(u.subarray(q,q+seg[s])); q+=seg[s];
+      if(seg[s]<255){ let L=0; cur.forEach(x=>L+=x.length); const pkt=new Uint8Array(L); let o=0; cur.forEach(x=>{ pkt.set(x,o); o+=x.length; }); packets.push(pkt); cur=[]; if(packets.length>=2) break; } }
+    p=q;
+  }
+  const c=packets[1]; if(!c) return;
+  if(c[0]===3 && T3(c,1,6)==='vorbis') vorbisComments(c.subarray(7),out);
+  else if(T3(c,0,8)==='OpusTags') vorbisComments(c.subarray(8),out);
+}
+/* ---- M4A / MP4 ---- */
+function mp4Atoms(u,fn){ let p=0; while(p+8<=u.length){ let sz=BE32(u,p), hl=8; const ty=T3(u,p+4,4);
+  if(sz===1){ sz=BE32(u,p+8)*4294967296+BE32(u,p+12); hl=16; } else if(sz===0) sz=u.length-p;
+  if(sz<hl || p+sz>u.length) break; fn(ty,u.subarray(p+hl,p+sz)); p+=sz; } }
+function mp4Ilst(moov,out){
+  const meta=m=>mp4Atoms(m.subarray(4),(t,x)=>{ if(t==='ilst') mp4Atoms(x,(k,item)=>mp4Atoms(item,(dt,data)=>{ if(dt!=='data') return;
+    const typ=BE32(data,0)&0xFFFFFF, v=data.subarray(8);
+    if(k==='covr') addPic(out,v.slice(),3,typ===14?'image/png':'image/jpeg');
+    else if(k==='©ART' || k==='aART') out.artist=out.artist||new TextDecoder().decode(v);
+    else if(k==='©alb') out.album=out.album||new TextDecoder().decode(v);
+    else if(k==='©nam') out.title=out.title||new TextDecoder().decode(v); })); });
+  mp4Atoms(moov,(t,x)=>{ if(t==='udta') mp4Atoms(x,(t2,y)=>{ if(t2==='meta') meta(y); }); else if(t==='meta') meta(x); });
+}
+async function tagsMP4(b,out){
+  let p=0;
+  for(let k=0;k<64 && p+8<=b.size;k++){
+    const h=await readAt(b,p,16); let sz=BE32(h,0), hl=8; const ty=T3(h,4,4);
+    if(sz===1){ sz=BE32(h,8)*4294967296+BE32(h,12); hl=16; } else if(sz===0) sz=b.size-p;
+    if(sz<8) break;
+    if(ty==='moov'){ if(sz<64*1048576) mp4Ilst(await readAt(b,p+hl,sz-hl),out); return; }
+    p+=sz;
+  }
+}
+async function readTags(b){
+  const out={}; if(!b || b.size<16) return out;
+  try{
+    const h=await readAt(b,0,12);
+    if(T3(h,0,3)==='ID3'){ const n=await tagsID3(b,0,out); const h2=await readAt(b,n,4); if(T3(h2,0,4)==='fLaC') await tagsFLAC(b,n,out); }
+    else if(T3(h,0,4)==='fLaC') await tagsFLAC(b,0,out);
+    else if(T3(h,0,4)==='OggS') await tagsOGG(b,out);
+    else if(T3(h,4,4)==='ftyp') await tagsMP4(b,out);
+  }catch(e){}
+  ['artist','album','title'].forEach(k=>{ if(out[k]) out[k]=String(out[k]).replace(/\u0000/g,'').trim().slice(0,120); });
+  return out;
+}
+function clearCover(){
+  const had=$('vbox').classList.contains('has-cover');
+  $('vbox').classList.remove('has-cover'); $('mini').classList.remove('has-cover'); if(had) sizeCanvas();
+  $('coverImg').removeAttribute('src'); $('miniCover').removeAttribute('src');
+  if(coverUrl){ URL.revokeObjectURL(coverUrl); coverUrl=null; } coverFor=null;
+}
+async function showCoverFor(s,b,seq){
+  const tg=await readTags(b);
+  if(seq!==loadSeq) return;
+  let changed=false;
+  if(tg.artist && !s.artist){ s.artist=tg.artist; changed=true; }
+  if(tg.album && s.album!==tg.album){ s.album=tg.album; changed=true; }
+  if(tg.title && s.title!==tg.title){ s.title=tg.title; changed=true; }
+  if(changed){ try{ await dbPut('songs',songRecord(s)); }catch(e){} updateNowText(); renderLib(); if(currentTab==='buscar') renderSearch(); }
+  if(tg.pic){
+    clearCover();
+    coverType=tg.picMime; coverUrl=URL.createObjectURL(new Blob([tg.pic],{type:coverType})); coverFor=s.id;
+    const img=$('coverImg');
+    img.onload=()=>{ if(coverFor!==s.id) return; $('vbox').classList.add('has-cover'); $('mini').classList.add('has-cover'); sizeCanvas(); sendCar(s); };
+    img.onerror=()=>{ if(coverFor===s.id) clearCover(); };
+    img.src=coverUrl; $('miniCover').src=coverUrl;
+  }
+  updateMediaSession(s);
+}
+
+/* ================= RADIO POR INTERNET (v41) =================
+   Solo las emisoras que agregue el usuario. Prometeo se conecta a esa dirección SOLO al tocar play.
+   Usa su propio <audio> (sin el visualizador), porque Android no deja analizar audio de otros sitios. */
+const radioAudio=$('radioAudio');
+const ST_COLORS=['#00e5ff','#ff7a1a','#b388ff','#ff6fb1','#2ee88a','#ffd23f'];
+let radios=store.get('radios',[]); if(!Array.isArray(radios)) radios=[];
+let radioId=null, radioStart=0, radioTick=null, radioState='', nrState='', radioNowTitle='';
+/* En la app, la radio suena con ExoPlayer (más compatible). En la web, con el <audio> de la página. */
+const NR=()=>!!(PM && PM.radioPlay);
+function radioPaused(){ return NR()? !(nrState==='online' || nrState==='connecting' || nrState==='reconnecting') : radioAudio.paused; }
+function radioPauseAny(){ if(NR()){ nrState='paused'; PM.radioPause().catch(()=>{}); setRadioState('paused'); setPlayIcon(); carState(); } else radioAudio.pause(); }
+function startStream(url){
+  if(NR()){ nrState='connecting'; PM.radioPlay(url,(stationById(radioId)||{}).name||'').catch(e=>onRadioNative({type:'error',value:String(e)})); }
+  else { radioAudio.src=url; const p=radioAudio.play(); if(p && p.catch) p.catch(()=>{}); }
+}
+function onRadioNative(ev){
+  if(!radioId || !ev) return;
+  if(ev.type==='state'){ nrState=ev.value; if(ev.value==='online' && !radioStart) radioStart=Date.now(); setRadioState(ev.value); setPlayIcon(); carState(); }
+  else if(ev.type==='title'){ radioNowTitle=String(ev.value||'').trim(); $('radioNow').textContent=radioNowTitle? '♪ '+radioNowTitle : ''; sendCarRadio(); }
+  else if(ev.type==='error'){ nrState='paused'; setRadioState('paused'); setPlayIcon(); carState(); const st=stationById(radioId); toast(navigator.onLine===false? t('noNet') : t('radioFail',st? st.name : '')); }
+}
+const stationById=id=>radios.find(r=>r.id===id);
+function saveRadios(){ store.set('radios',radios); }
+function stInitials(n){ const w=String(n||'').trim().split(/\s+/).filter(x=>/^\p{L}/u.test(x));
+  if(w.length>1) return (w[0][0]+w[1][0]).toUpperCase(); if(w.length) return w[0].slice(0,2).toUpperCase(); return '📻'; }
+function stTile(st){ const d=el('div','st-tile',stInitials(st.name)); d.style.background='linear-gradient(135deg,'+st.color+',rgba(0,0,0,.55))'; return d; }
+function stTileDataURL(st){
+  const c=document.createElement('canvas'); c.width=c.height=320; const g=c.getContext('2d');
+  const gr=g.createLinearGradient(0,0,320,320); gr.addColorStop(0,st.color); gr.addColorStop(1,'#101418');
+  g.fillStyle=gr; g.fillRect(0,0,320,320);
+  g.fillStyle='rgba(0,0,0,.72)'; g.textAlign='center'; g.textBaseline='middle';
+  g.font='900 120px system-ui,sans-serif'; g.fillText(stInitials(st.name),160,175);
+  g.font='64px system-ui,sans-serif'; g.fillText('📻',160,70);
+  return c.toDataURL('image/jpeg',0.9);
+}
+function validUrl(u){ const v=String(u||'').trim(); return /^https?:\/\/[^\s\/?#]+/i.test(v) && !/\s/.test(v); }
+function renderRadio(){
+  const c=$('radioList'); if(!c) return; c.textContent='';
+  $('radioCount').textContent=t(radios.length===1?'st1':'stN',radios.length);
+  if(!radios.length){ c.appendChild(el('div','empty',t('radioEmpty'))); return; }
+  radios.forEach(st=>{
+    const r=el('div','song-item'+(st.id===radioId?' live':'')); r.appendChild(stTile(st));
+    const info=el('div','song-info'); info.appendChild(el('b',null,st.name));
+    let host=st.url.replace(/^https?:\/\//i,'');
+    info.appendChild(st.id===radioId? el('small','st-live',t('live')) : el('small',null,host));
+    info.onclick=()=>{ playRadio(st.id); switchTab('ahora'); }; r.appendChild(info);
+    [['✎',t('edit'),()=>editStation(st)],['🗑',t('del'),()=>deleteStation(st),'del']].forEach(([ic,ti,fn,cls])=>{
+      const b=el('button','icon-btn'+(cls?' '+cls:''),ic); b.title=ti; b.setAttribute('aria-label',ti); b.onclick=e=>{ e.stopPropagation(); fn(); }; r.appendChild(b); });
+    c.appendChild(r);
+  });
+}
+/* Prueba una dirección: intenta reproducirla en silencio unos segundos */
+function testStream(url){
+  return new Promise(res=>{
+    const a=new Audio(); let done=false;
+    const end=ok=>{ if(done) return; done=true; clearTimeout(tm); a.pause(); a.removeAttribute('src'); a.load(); res(ok); };
+    const tm=setTimeout(()=>end(false),15000);
+    a.muted=true; a.preload='auto';
+    a.addEventListener('playing',()=>end(true)); a.addEventListener('error',()=>end(false));
+    a.src=url.trim(); const p=a.play(); if(p && p.catch) p.catch(()=>{});
+  });
+}
+async function editStation(st){
+  let nameIn, urlIn, box;
+  const res=await modal(st? t('editStation') : t('addStationT'),(b,close)=>{
+    b.appendChild(el('label','field-label',t('stName')));
+    nameIn=el('input','search'); nameIn.type='text'; nameIn.value=st? st.name : ''; nameIn.maxLength=60; b.appendChild(nameIn);
+    b.appendChild(el('label','field-label',t('stUrl')));
+    urlIn=el('input','search'); urlIn.type='url'; urlIn.value=st? st.url : ''; urlIn.placeholder='https://…'; urlIn.autocapitalize='off'; urlIn.spellcheck=false; b.appendChild(urlIn);
+    b.appendChild(el('p','field-help',t('urlHelp')));
+    box=el('div','test-box'); box.appendChild(el('i')); const msg=el('span',null,t('testIdle')); box.appendChild(msg); b.appendChild(box);
+    const row=el('div','st-actions');
+    const bt=el('button','btn-ghost',t('test')); bt.style.marginTop='0';
+    bt.onclick=async()=>{
+      if(!validUrl(urlIn.value)){ box.className='test-box bad'; msg.textContent=t('badUrl'); return; }
+      if(navigator.onLine===false){ box.className='test-box bad'; msg.textContent=t('noNet'); return; }
+      box.className='test-box'; msg.textContent=t('testing'); bt.disabled=true;
+      const ok=await testStream(urlIn.value); bt.disabled=false;
+      box.className='test-box '+(ok?'ok':'bad'); msg.textContent=t(ok?'testOk':(NR()?'testFailNative':'testFail'));
+    };
+    const bc=el('button','btn-pill',t('cancel')); bc.onclick=()=>close(null);
+    const bs=el('button','btn-ok',t('save'));
+    bs.onclick=()=>{
+      const n=nameIn.value.trim(), u=urlIn.value.trim();
+      if(!n){ toast(t('needName')); nameIn.focus(); return; }
+      if(!validUrl(u)){ box.className='test-box bad'; msg.textContent=t('badUrl'); urlIn.focus(); return; }
+      close({name:n,url:u});
+    };
+    row.appendChild(bt); row.appendChild(bc); row.appendChild(bs); b.appendChild(row);
+    b.appendChild(el('p','privacy-small',t('radioPrivacy')));
+  },[]);
+  if(!res) return;
+  if(st){ st.name=res.name; const changed=st.url!==res.url; st.url=res.url; saveRadios();
+    if(st.id===radioId){ if(changed) playRadio(st.id); else { updateRadioText(); showStationTile(st); } } }
+  else { radios.push({id:'r'+uid(), name:res.name, url:res.url, color:ST_COLORS[radios.length%ST_COLORS.length]}); saveRadios(); }
+  renderRadio(); toast(t('stationSaved'));
+}
+async function deleteStation(st){
+  const yes=await modal(t('delStationT'),b=>b.appendChild(el('p','m-msg',t('delStationQ',st.name))),[[t('cancel'),()=>false,'btn-pill'],[t('del'),()=>true,'btn-danger']]);
+  if(!yes) return;
+  if(st.id===radioId) stopRadio(false);
+  radios=radios.filter(r=>r.id!==st.id); saveRadios(); renderRadio(); toast(t('stationDel'));
+}
+function showStationTile(st){
+  clearCover(); const u=stTileDataURL(st); coverFor='radio';
+  const img=$('coverImg'); img.onload=()=>{ if(!radioId) return; $('vbox').classList.add('has-cover'); $('mini').classList.add('has-cover'); sizeCanvas(); sendCarRadio(); };
+  img.src=u; $('miniCover').src=u;
+}
+function updateRadioText(){
+  const st=stationById(radioId); if(!st) return;
+  $('curTitle').textContent=st.name;
+  $('radioPos').textContent=t('radioOfN',radios.indexOf(st)+1,radios.length);
+  $('curSub').textContent=st.url.replace(/^https?:\/\//i,'');
+  updateRadioTimes();
+}
+function updateRadioTimes(){
+  if(!radioId) return;
+  $('radioElapsed').textContent=radioStart? t('listening',fmt((Date.now()-radioStart)/1000)) : '';
+  $('radioStatus').textContent=t(radioState||'connecting');
+}
+function setRadioState(s){ radioState=s; updateRadioTimes(); }
+function playRadio(id){
+  const st=stationById(id); if(!st) return;
+  if(navigator.onLine===false) toast(t('noNet'));
+  if(!audio.paused) audio.pause();
+  radioId=id; document.body.classList.add('radio-on');
+  radioStart=0; setRadioState('connecting');
+  radioNowTitle=''; $('radioNow').textContent=''; startStream(st.url);
+  if(!radioTick) radioTick=setInterval(updateRadioTimes,1000);
+  updateRadioText(); showStationTile(st); setPlayIcon(); updateMini(); renderRadio(); sendCarRadio(); bgMode(true);
+}
+function toggleRadio(){
+  const st=stationById(radioId); if(!st) return;
+  if(radioPaused()){ setRadioState('connecting'); startStream(st.url); } /* en vivo: siempre se retoma desde el presente */
+  else radioPauseAny();
+}
+function switchStation(dir){
+  if(!radios.length) return;
+  let i=radios.findIndex(r=>r.id===radioId); i=(i+dir+radios.length)%radios.length;
+  playRadio(radios[i].id);
+}
+function stopRadio(forSong){
+  radioAudio.pause(); radioAudio.removeAttribute('src'); radioAudio.load();
+  if(NR()) PM.radioStop().catch(()=>{}); nrState=''; radioNowTitle=''; $('radioNow').textContent='';
+  radioId=null; radioStart=0; document.body.classList.remove('radio-on');
+  if(radioTick){ clearInterval(radioTick); radioTick=null; }
+  clearCover(); renderRadio();
+  if(!forSong){
+    const s=currentId && songById(currentId);
+    if(s){ updateNowText(); if(curBlob) showCoverFor(s,curBlob,loadSeq); else updateMediaSession(s); }
+    else if(songs.length){ buildQueue(); if(queue.length){ loadById(queue[0],false); return; } }
+    else { setIdleText(); }
+    $('progress').value=0; setPlayIcon(); updateMini(); carState();
+  }
+}
+function sendCarRadio(){
+  const st=stationById(radioId); if(!st) return;
+  let art=''; const img=$('coverImg');
+  if(PM && PM.nowPlaying){
+    try{ if(img.complete && img.naturalWidth){ const c=document.createElement('canvas'); c.width=c.height=320; c.getContext('2d').drawImage(img,0,0,320,320); art=c.toDataURL('image/jpeg',0.85).split(',')[1]||''; } }catch(e){}
+    PM.nowPlaying({title:radioNowTitle||st.name, artist:radioNowTitle? st.name : t('radioLiveCar'), album:'Prometeo Radio', duration:0, art}).catch(()=>{});
+  }
+  if('mediaSession' in navigator){ try{ navigator.mediaSession.metadata=new MediaMetadata({title:st.name,artist:t('radioLiveCar'),album:'Prometeo Radio'}); }catch(e){} }
+}
+/* Animación tranquila: no se puede leer el audio de la radio, así que se muestran ondas que laten */
+function drawRadio(){
+  const S=SKINS[skin], cx=W/2, cy=H/2, tm=performance.now()/1000, on=!radioPaused() && radioState==='online';
+  for(let k=0;k<4;k++){
+    const ph=((tm*0.45+k/4)%1), r=10+ph*Math.min(W,H)*0.48;
+    ctx.strokeStyle='rgba('+accRGB()+','+((on?0.55:0.18)*(1-ph))+')'; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.stroke();
+  }
+  ctx.fillStyle=S.acc; ctx.shadowColor=S.acc; ctx.shadowBlur=on?18:4;
+  ctx.beginPath(); ctx.arc(cx,cy,on? 11+Math.sin(tm*4)*1.5 : 9,0,Math.PI*2); ctx.fill(); ctx.shadowBlur=0;
+}
+radioAudio.addEventListener('playing',()=>{ if(!radioId) return; if(!radioStart) radioStart=Date.now(); setRadioState('online'); setPlayIcon(); carState(); });
+radioAudio.addEventListener('waiting',()=>{ if(radioId) setRadioState('connecting'); });
+radioAudio.addEventListener('pause',()=>{ if(!radioId) return; setRadioState('paused'); setPlayIcon(); carState(); });
+radioAudio.addEventListener('error',()=>{
+  if(!radioId || !radioAudio.getAttribute('src')) return;
+  const st=stationById(radioId); setRadioState('paused'); setPlayIcon(); carState();
+  toast(navigator.onLine===false? t('noNet') : t('radioFail',st? st.name : ''));
+});
+audio.addEventListener('play',()=>{ if(radioId) stopRadio(false); });
+
+/* ================= TV / IPTV Y LISTAS M3U (v41) =================
+   Las listas las agrega el usuario (dirección o archivo). Prometeo solo se conecta al descargar
+   una lista que tú pediste o al ver un canal. Los logos de los canales NO se descargan. */
+let tvLists=[], tvGroup='', tvPane='st';
+const STREAM_RE=/^(https?|rtsp|rtmp|rtp|udp|mms):\/\//i;
+function parseM3U(text){
+  const lines=String(text||'').replace(/^﻿/,'').split(/\r?\n/), out=[]; let cur=null, grp='';
+  for(const raw of lines){
+    const l=raw.trim(); if(!l) continue;
+    if(/^#EXTINF/i.test(l)){
+      let q=false, cut=-1; for(let i=0;i<l.length;i++){ const ch=l[i]; if(ch==='"') q=!q; else if(ch===',' && !q){ cut=i; break; } }
+      const head=cut<0? l : l.slice(0,cut), name=cut<0? '' : l.slice(cut+1).trim(), at={};
+      head.replace(/([\w-]+)="([^"]*)"/g,(m,k,v)=>{ at[k.toLowerCase()]=v; return m; });
+      cur={n:name, g:at['group-title']||''};
+    } else if(/^#EXTGRP:/i.test(l)) grp=l.slice(8).trim();
+    else if(l[0]==='#') continue;
+    else { const e=cur||{n:'',g:''}; e.u=l; if(!e.g && grp) e.g=grp; if(!e.n) e.n=decodeURIComponent(l.split(/[\/\\]/).pop()||l).replace(/\.[a-z0-9]{2,5}$/i,''); out.push(e); cur=null; grp=''; }
+  }
+  return out;
+}
+async function loadTv(){ try{ tvLists=(await dbAll('tv'))||[]; }catch(e){ tvLists=[]; } tvLists.sort((a,b)=>a.added-b.added); renderTv(); }
+function allChannels(){ const o=[]; tvLists.forEach(L=>L.channels.forEach(c=>o.push(c))); return o; }
+function chColor(s){ let h=0; for(let i=0;i<s.length;i++) h=(h*31+s.charCodeAt(i))>>>0; return ST_COLORS[h%ST_COLORS.length]; }
+function setRadioPane(p){ tvPane=p; $('segSt').classList.toggle('on',p==='st'); $('segTv').classList.toggle('on',p==='tv');
+  $('paneSt').classList.toggle('hidden',p!=='st'); $('paneTv').classList.toggle('hidden',p!=='tv'); if(p==='tv') renderTv(); }
+function renderTv(){
+  const all=allChannels();
+  $('tvCount').textContent=t(all.length===1?'ch1':'chN',all.length);
+  const ls=$('tvLists'); ls.textContent='';
+  tvLists.forEach(L=>{
+    const r=el('div','song-item list-row'); const info=el('div','song-info');
+    info.appendChild(el('b',null,'📋 '+L.name)); info.appendChild(el('small',null,t(L.channels.length===1?'ch1':'chN',L.channels.length)+(L.url? ' • '+L.url.replace(/^https?:\/\//i,'') : '')));
+    r.appendChild(info);
+    if(L.url){ const b=el('button','icon-btn','⟳'); b.title=t('refresh'); b.setAttribute('aria-label',t('refresh')); b.onclick=()=>refreshList(L); r.appendChild(b); }
+    const d=el('button','icon-btn del','🗑'); d.title=t('del'); d.setAttribute('aria-label',t('del')); d.onclick=()=>deleteList(L); r.appendChild(d);
+    ls.appendChild(r);
+  });
+  const has=all.length>0;
+  $('tvSearch').classList.toggle('hidden',!has); $('tvGroups').classList.toggle('hidden',!has);
+  const groups=[...new Set(all.map(c=>c.g).filter(Boolean))].sort((a,b)=>a.localeCompare(b,LANG));
+  if(tvGroup && !groups.includes(tvGroup)) tvGroup='';
+  const gc=$('tvGroups'); gc.textContent='';
+  if(groups.length>1) [''].concat(groups).forEach(g=>{ const b=el('button',g===tvGroup?'on':'',g||t('allGroups')); b.onclick=()=>{ tvGroup=g; renderTv(); }; gc.appendChild(b); });
+  else gc.classList.add('hidden');
+  const c=$('tvList'); c.textContent='';
+  if(!has){ c.appendChild(el('div','empty',t('tvEmpty'))); return; }
+  const q=$('tvSearch').value.trim().toLowerCase();
+  const list=all.filter(ch=>(!tvGroup || ch.g===tvGroup) && (!q || ch.n.toLowerCase().includes(q) || (ch.g||'').toLowerCase().includes(q)));
+  const frag=document.createDocumentFragment();
+  list.slice(0,200).forEach(ch=>{
+    const r=el('div','song-item'); r.appendChild(stTile({name:ch.n,color:chColor(ch.n)}));
+    const info=el('div','song-info'); info.appendChild(el('b',null,ch.n)); info.appendChild(el('small',null,ch.g||ch.u.replace(/^[a-z]+:\/\//i,'')));
+    info.onclick=()=>playChannel(ch); r.appendChild(info); frag.appendChild(r);
+  });
+  c.appendChild(frag);
+  if(list.length>200) c.appendChild(el('div','empty',t('moreCh',list.length-200)));
+}
+function playChannel(ch){
+  if(radioId) stopRadio(false);
+  if(!audio.paused) audio.pause();
+  if(navigator.onLine===false) toast(t('noNet'));
+  if(PM && PM.playVideo){ toast(t('opening',ch.n)); PM.playVideo(ch.u,ch.n,t('tvFail')).catch(()=>toast(t('tvFail'))); return; }
+  /* versión web: reproductor de la página (abre los formatos que soporte el navegador) */
+  modal(ch.n,(b)=>{
+    const v=el('video'); v.controls=true; v.autoplay=true; v.setAttribute('playsinline',''); v.style.width='100%'; v.style.borderRadius='12px'; v.style.background='#000';
+    v.onerror=()=>toast(t('tvFail')); v.src=ch.u; b.appendChild(v);
+  },[[t('close'),()=>null,'btn-ok']]).then(()=>{ const v=document.querySelector('#mBody video'); if(v){ v.pause(); v.removeAttribute('src'); v.load(); } });
+}
+async function fetchListText(url){
+  if(PM && PM.fetchText) return await PM.fetchText(url);
+  const r=await fetch(url); if(!r.ok) throw new Error('HTTP '+r.status); return await r.text();
+}
+/* Una lista con rutas de archivos (no de internet) es de música: se convierte en playlist con las canciones que ya están en la Biblioteca */
+async function importMusicM3U(name, entries){
+  const byFile=new Map(); songs.forEach(s=>byFile.set(String(s.fileName||'').toLowerCase(),s));
+  const ids=[]; entries.forEach(e=>{ const fn=decodeURIComponent(String(e.u).split(/[\/\\]/).pop()||'').toLowerCase(); const s=byFile.get(fn); if(s && !ids.includes(s.id)) ids.push(s.id); });
+  if(!ids.length){ toast(t('musicNone')); return false; }
+  const p={id:'p'+uid(), name, songIds:ids, created:Date.now()};
+  try{ await dbPut('playlists',p); }catch(e){ toast(t('saveFail')); return false; }
+  playlists.push(p); renderPlaylists(); toast(t('musicImported',name,ids.length,entries.length)); return true;
+}
+async function saveList(name, url, text){
+  const entries=parseM3U(text);
+  const streams=entries.filter(e=>STREAM_RE.test(e.u)), local=entries.filter(e=>!STREAM_RE.test(e.u));
+  if(!entries.length){ toast(t('listEmptyErr')); return; }
+  if(local.length>streams.length){ await importMusicM3U(name, local); return; }
+  const L={id:'l'+uid(), name, url:url||'', channels:streams.map(e=>({n:e.n||e.u, g:e.g||'', u:e.u})), added:Date.now()};
+  try{ await dbPut('tv',L); }catch(e){ toast(t('saveFail')); return; }
+  tvLists.push(L); tvGroup=''; renderTv(); toast(t('listSaved',name,L.channels.length));
+}
+async function addListDialog(){
+  let nameIn, urlIn, fileText=null, fileName='';
+  const res=await modal(t('addList').replace(/^＋\s*/,''),(b,close)=>{
+    b.appendChild(el('label','field-label',t('listName')));
+    nameIn=el('input','search'); nameIn.type='text'; nameIn.maxLength=60; b.appendChild(nameIn);
+    b.appendChild(el('label','field-label',t('listUrl')));
+    urlIn=el('input','search'); urlIn.type='url'; urlIn.placeholder='https://…/lista.m3u'; urlIn.autocapitalize='off'; urlIn.spellcheck=false; b.appendChild(urlIn);
+    b.appendChild(el('p','field-help',t('orFile')));
+    const lab=el('label','btn-ghost picker'); lab.style.marginTop='6px'; const sp=el('span',null,t('chooseFile')); lab.appendChild(sp);
+    const fi=el('input'); fi.type='file'; lab.appendChild(fi); b.appendChild(lab);
+    fi.onchange=async()=>{ const f=fi.files && fi.files[0]; if(!f) return;
+      try{ fileText=await f.text(); fileName=f.name; sp.textContent=t('fileChosen',f.name); if(!nameIn.value.trim()) nameIn.value=f.name.replace(/\.[a-z0-9]{2,5}$/i,''); }catch(e){ fileText=null; } };
+    const row=el('div','st-actions');
+    const bc=el('button','btn-pill',t('cancel')); bc.onclick=()=>close(null);
+    const bs=el('button','btn-ok',t('save')); bs.onclick=()=>{
+      const u=urlIn.value.trim();
+      if(!fileText && !validUrl(u)){ toast(u? t('badUrl') : t('needSource')); return; }
+      close({name:nameIn.value.trim()||fileName.replace(/\.[a-z0-9]{2,5}$/i,'')||(u.split('/').pop()||'M3U'), url: fileText? '' : u, text:fileText});
+    };
+    row.appendChild(bc); row.appendChild(bs); b.appendChild(row);
+    b.appendChild(el('p','privacy-small',t('tvNote')));
+  },[]);
+  if(!res) return;
+  let text=res.text;
+  if(!text){
+    if(navigator.onLine===false){ toast(t('noNet')); return; }
+    toast(t('loadingList'));
+    try{ text=await fetchListText(res.url); }catch(e){ toast(t('listFail',(e && e.message)||e||'error')); return; }
+  }
+  await saveList(res.name,res.url,text);
+}
+async function refreshList(L){
+  if(navigator.onLine===false){ toast(t('noNet')); return; }
+  toast(t('loadingList'));
+  let text; try{ text=await fetchListText(L.url); }catch(e){ toast(t('listFail',(e && e.message)||e||'error')); return; }
+  const ch=parseM3U(text).filter(e=>STREAM_RE.test(e.u)); if(!ch.length){ toast(t('listEmptyErr')); return; }
+  L.channels=ch.map(e=>({n:e.n||e.u, g:e.g||'', u:e.u}));
+  try{ await dbPut('tv',L); }catch(e){} renderTv(); toast(t('listUpdated',L.channels.length));
+}
+async function deleteList(L){
+  const yes=await modal(t('delListT'),b=>b.appendChild(el('p','m-msg',t('delListQ',L.name,L.channels.length))),[[t('cancel'),()=>false,'btn-pill'],[t('del'),()=>true,'btn-danger']]);
+  if(!yes) return;
+  try{ await dbDel('tv',L.id); }catch(e){}
+  tvLists=tvLists.filter(x=>x.id!==L.id); renderTv(); toast(t('listDel'));
+}
+async function addChannelDialog(){
+  let nameIn, urlIn;
+  const res=await modal(t('addChannelT'),(b,close)=>{
+    b.appendChild(el('label','field-label',t('chName'))); nameIn=el('input','search'); nameIn.type='text'; nameIn.maxLength=60; b.appendChild(nameIn);
+    b.appendChild(el('label','field-label',t('chUrl'))); urlIn=el('input','search'); urlIn.type='url'; urlIn.placeholder='https://…/canal.m3u8'; urlIn.autocapitalize='off'; urlIn.spellcheck=false; b.appendChild(urlIn);
+    const row=el('div','st-actions');
+    const bc=el('button','btn-pill',t('cancel')); bc.onclick=()=>close(null);
+    const bs=el('button','btn-ok',t('save')); bs.onclick=()=>{ const n=nameIn.value.trim(), u=urlIn.value.trim();
+      if(!n){ toast(t('needName')); return; } if(!STREAM_RE.test(u)){ toast(t('badUrl')); return; } close({n,u}); };
+    row.appendChild(bc); row.appendChild(bs); b.appendChild(row);
+  },[]);
+  if(!res) return;
+  let L=tvLists.find(x=>x.mine);
+  if(!L){ L={id:'lmine', name:t('myChannels'), url:'', mine:true, channels:[], added:0}; tvLists.unshift(L); }
+  L.channels.push({n:res.n, g:'', u:res.u});
+  try{ await dbPut('tv',L); }catch(e){ toast(t('saveFail')); return; }
+  renderTv(); toast(t('chSaved'));
+}
+$('segSt').onclick=()=>setRadioPane('st'); $('segTv').onclick=()=>setRadioPane('tv');
+$('btnAddList').onclick=addListDialog; $('btnAddChannel').onclick=addChannelDialog;
+$('tvSearch').addEventListener('input',renderTv);
+
+/* ================= CARRO POR BLUETOOTH (v41) =================
+   El plugin crea una sesión multimedia de Android: el carro recibe título, artista, álbum y portada,
+   y los botones del volante llegan aquí. Solo funciona en la app (no en la versión web). */
+let carArt='', carArtFor=null;
+function carCoverB64(s){
+  if(coverFor!==s.id || !coverUrl) return '';
+  if(carArtFor===s.id) return carArt;
+  const img=$('coverImg'); if(!img.complete || !img.naturalWidth) return '';
+  try{
+    const k=Math.min(1,500/Math.max(img.naturalWidth,img.naturalHeight)), c=document.createElement('canvas');
+    c.width=Math.max(1,Math.round(img.naturalWidth*k)); c.height=Math.max(1,Math.round(img.naturalHeight*k));
+    c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+    carArt=c.toDataURL('image/jpeg',0.85).split(',')[1]||''; carArtFor=s.id; return carArt;
+  }catch(e){ return ''; }
+}
+/* Si el archivo no trae artista, se separa "Artista - Canción" del nombre (para el carro y la pantalla de bloqueo) */
+function carMeta(s){
+  let title=s.title||s.name, artist=s.artist||'';
+  if(!artist){ const m=String(s.name||'').match(/^\s*(.+?)\s+[-–—]\s+(.+)$/); if(m){ artist=m[1].trim(); if(!s.title) title=m[2].trim(); } }
+  return {title, artist, album:s.album||sourceName()};
+}
+function sendCar(s){
+  if(radioId){ sendCarRadio(); return; }
+  if(!PM || !PM.nowPlaying || !s) return;
+  const d=isFinite(audio.duration)? Math.round(audio.duration*1000) : 0;
+  const cm=carMeta(s);
+  PM.nowPlaying({title:cm.title, artist:cm.artist, album:cm.album, duration:s.id===currentId? d : 0, art:carCoverB64(s)}).catch(()=>{});
+}
+function carState(){ if(radioId){ if(PM && PM.playState) PM.playState(!radioPaused(),0).catch(()=>{}); return; }
+  if(PM && PM.playState && currentId) PM.playState(!audio.paused,(audio.currentTime||0)*1000).catch(()=>{}); }
+function carControl(ev){
+  const a=ev && ev.action;
+  if(radioId){ if(a==='play'){ if(radioPaused()) toggleRadio(); } else if(a==='pause') radioPauseAny(); else if(a==='next') switchStation(1); else if(a==='prev') switchStation(-1); return; }
+  if(a==='play'){ if(audio.paused){ if(currentId) play(); else togglePlay(); } }
+  else if(a==='pause') audio.pause();
+  else if(a==='next') nextSong(false);
+  else if(a==='prev') prevSong();
+  else if(a==='seek' && isFinite(ev.pos)) audio.currentTime=ev.pos/1000;
+}
+
+/* ================= MÚSICA DEL TELÉFONO SIN COPIAR (v41) =================
+   En la app, el plugin "prometeo-music" le pregunta a Android qué canciones hay.
+   Prometeo guarda solo el nombre y un número de referencia: el audio se lee del archivo original. */
+let PM=null, appReady=false, scanning=false, nativeStarted=false;
+const NO_PLAY_MIME=/wma|amr|aiff|midi|x-ms/i, NO_PLAY_EXT=/\.(wma|amr|aiff?|midi?|3ga)$/i;
+function songRecord(s){ const r={id:s.id,name:s.name,fileName:s.fileName,mime:s.mime,size:s.size,added:s.added||Date.now()};
+  if(s.mid!=null) r.mid=s.mid; if(s.artist) r.artist=s.artist; if(s.album) r.album=s.album; if(s.title) r.title=s.title; return r; }
+/* Una copia de la v40 pasa a usar el original: se guarda la referencia y se borra la copia (en un solo paso) */
+function linkCopy(meta){
+  return new Promise((res,rej)=>{
+    const t=db.transaction(['songs','audio'],'readwrite');
+    t.objectStore('songs').put(meta); t.objectStore('audio').delete(meta.id);
+    t.oncomplete=()=>res(); t.onerror=()=>rej(t.error); t.onabort=()=>rej(t.error||new Error('abort'));
+  });
+}
+function nativeStart(){
+  if(!PM || !appReady || nativeStarted) return; nativeStarted=true;
+  renderLib();
+  if(PM.onControl){ PM.onControl(carControl); const s=currentId && songById(currentId); if(s){ sendCar(s); carState(); } }
+  PM.hasPermission().then(ok=>{
+    if(ok) return scanPhone(false);
+    if(!store.get('askedPerm',false)){ store.set('askedPerm',true); return askPermission(); }
+  }).catch(()=>{});
+}
+async function askPermission(){
+  const go=await modal(t('scanBtn').replace(/^🔍\s*/,''),b=>{ b.appendChild(el('p','m-msg',t('permAsk'))); },
+    [[t('cancel'),()=>false,'btn-pill'],[t('allow'),()=>true,'btn-ok']]);
+  if(go) scanPhone(true);
+}
+async function scanPhone(manual){
+  if(!PM || !db) return;
+  if(scanning || adding){ if(manual) toast(t('stillSaving')); return; }
+  let ok=false; try{ ok=await PM.hasPermission(); }catch(e){}
+  if(!ok){
+    if(!manual) return;
+    try{ ok=await PM.requestPermission(); }catch(e){}
+    if(!ok){ toast(t('permDenied')); return; }
+  }
+  scanning=true; if(manual) toast(t('scanning'));
+  let list=[];
+  try{ list=(await PM.scan())||[]; }catch(e){ scanning=false; toast(t('scanFail',(e && e.message)||e||'error')); return; }
+  const hidden=new Set(store.get('hidden',[]).map(String));
+  const have=new Map(); songs.forEach(s=>{ if(s.mid!=null) have.set(String(s.mid),s); });
+  const copies=songs.filter(s=>s.mid==null);
+  const seen=new Set(); let added=0, freedBytes=0, changed=false;
+  for(let i=0;i<list.length;i++){
+    const f=list[i], k=String(f.id); seen.add(k);
+    const fn=f.name || f.title || t('songDefault',i+1);
+    const mime=String(f.mime||'').toLowerCase();
+    if(NO_PLAY_MIME.test(mime) || NO_PLAY_EXT.test(fn)) continue;
+    const artist=(f.artist && f.artist!=='<unknown>')? f.artist : '';
+    const old=have.get(k);
+    if(old){ if(old.broken){ old.broken=false; changed=true; } continue; }
+    /* ¿esta canción ya estaba copiada desde la v40? -> usar el original y borrar la copia */
+    const ci=copies.findIndex(c=>c.fileName===fn && (c.size || (c.blob && c.blob.size) || -1)===f.size);
+    if(ci>=0){
+      const c=copies.splice(ci,1)[0];
+      const meta=songRecord(c); meta.mid=f.id; meta.size=f.size; if(artist) meta.artist=artist;
+      if(!meta.mime) meta.mime=mime||guessType(fn);
+      try{ await linkCopy(meta); delete c.blob; Object.assign(c,meta); c.broken=false; freedBytes+=f.size; changed=true; }catch(e){}
+      continue;
+    }
+    if(hidden.has(k)) continue;
+    const meta={id:'p'+k, mid:f.id, name:cleanName(fn), fileName:fn, mime:mime||guessType(fn), size:f.size, added:Date.now()+i};
+    if(artist) meta.artist=artist;
+    try{ await dbPut('songs',meta); songs.push(meta); added++; changed=true; }catch(e){}
+  }
+  /* las que ya no están en el teléfono se marcan (no se borran: puede ser una memoria SD que se sacó) */
+  if(list.length) songs.forEach(s=>{ if(s.mid!=null && !seen.has(String(s.mid)) && !s.broken){ s.broken=true; changed=true; } });
+  scanning=false;
+  if(changed){
+    sortSongs(); if(queueSource.type==='lib') buildQueue(); qPos=queue.indexOf(currentId);
+    renderAll(); if(!currentId && queue.length && !radioId){ currentId=queue[0]; loadById(currentId,false); }
+  }
+  if(freedBytes) toast(t('freed',Math.max(1,Math.round(freedBytes/1048576)))+(added? ' · '+t('scanNew',added) : ''));
+  else if(added) toast(t('scanNew',added));
+  else if(manual) toast(t('scanNone'));
+}
+document.querySelectorAll('.btn-scan').forEach(b=>b.onclick=()=>scanPhone(true));
+
+/* ================= SKINS / IDIOMA / ACERCA DE (v41) ================= */
+function optRow(on, left, title, sub, onPick){
+  const b=el('button','opt'+(on?' on':''));
+  if(left) b.appendChild(left);
+  const tx=el('div','opt-txt'); tx.appendChild(el('b',null,title)); if(sub) tx.appendChild(el('small',null,sub)); b.appendChild(tx);
+  b.appendChild(el('span','opt-mark',on?'✓':''));
+  b.onclick=onPick; return b;
+}
+function skinPreview(k){
+  const S=SKINS[k], p=el('div','sk-prev'); p.style.background=S.bg; p.style.borderColor=k==='claro'?'#d6d9de':'rgba(255,255,255,.08)';
+  const top=el('i'); top.style.background=S.bar; p.appendChild(top);
+  const row=el('div'); for(let i=0;i<3;i++){ const e=el('em'); e.style.background=S.acc; row.appendChild(e); }
+  const d=el('s'); d.style.background=S.acc; row.appendChild(d); p.appendChild(row);
+  return p;
+}
+function openSkins(){
+  modal(t('skinT'),(b,close)=>{
+    b.appendChild(el('p','m-sub',t('skinSub')));
+    SKIN_ORDER.forEach(k=>b.appendChild(optRow(k===skin, skinPreview(k), t('sk_'+k), t('sk_'+k+'_d'), ()=>{
+      skin=k; store.set('skin',k); applySkin(); embers=[]; close(null); toast(t('skinSet',t('sk_'+k)));
+    })));
+  },[[t('close'),()=>null,'btn-pill']]);
+}
+function applyLang(){
+  LANG=langPref==='auto'? phoneLang() : langPref;
+  translateStatic(); applyModeButtons(); sortSongs(); renderAll();
+  if(!currentId || !songById(currentId)) setIdleText();
+  if(currentId && songById(currentId)) updateMediaSession(songById(currentId));
+}
+function openLang(){
+  modal(t('langT'),(b,close)=>{
+    b.appendChild(el('p','m-sub',t('langSub')));
+    const pick=v=>()=>{ langPref=v; store.set('lang',v); close(null); applyLang(); };
+    b.appendChild(optRow(langPref==='auto', null, '📱 '+t('auto'), t('autoSub',LANGS[phoneLang()]), pick('auto')));
+    b.appendChild(el('div','m-label',t('orPick')));
+    Object.keys(LANGS).forEach(c=>b.appendChild(optRow(langPref===c, null, LANGS[c], null, pick(c))));
+  },[[t('close'),()=>null,'btn-pill']]);
+}
+const PROMETEO_LOGO='data:image/jpeg;base64,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';
+/* Componentes de código abierto que usa Prometeo (créditos y licencias) */
+const CREDITS=[
+  {name:'AndroidX Media3 (ExoPlayer) 1.9.4', copy:'© The Android Open Source Project', lic:'Apache License 2.0', use:'useMedia3', src:'https://github.com/androidx/media'},
+  {name:'Apache Cordova (cordova-android 15)', copy:'© The Apache Software Foundation', lic:'Apache License 2.0', use:'useCordova', src:'https://github.com/apache/cordova-android',
+   notice:'Apache Cordova\nCopyright 2015-2020 The Apache Software Foundation\n\nThis product includes software developed at\nThe Apache Software Foundation (http://www.apache.org/).'},
+  {name:'AndroidX (AppCompat, Core, WebKit, Activity, Fragment, Lifecycle, Emoji2, RecyclerView…)', copy:'© The Android Open Source Project', lic:'Apache License 2.0', use:'useAndroidx', src:'https://android.googlesource.com/platform/frameworks/support'},
+  {name:'Guava 33.3.1 (+ failureaccess 1.0.2)', copy:'© The Guava Authors', lic:'Apache License 2.0', use:'useGuava', src:'https://github.com/google/guava'},
+  {name:'Kotlin Standard Library 2.1.21', copy:'© JetBrains s.r.o. and Kotlin Programming Language contributors', lic:'Apache License 2.0', use:'useKotlin', src:'https://github.com/JetBrains/kotlin'},
+  {name:'kotlinx.coroutines 1.6.4', copy:'© JetBrains s.r.o. and Kotlin Programming Language contributors', lic:'Apache License 2.0', use:'useKotlin', src:'https://github.com/Kotlin/kotlinx.coroutines'},
+  {name:'JetBrains Annotations 13.0', copy:'© JetBrains s.r.o.', lic:'Apache License 2.0', use:'useAnnot', src:'https://github.com/JetBrains/java-annotations'},
+  {name:'JSpecify 1.0.0', copy:'© The JSpecify Authors', lic:'Apache License 2.0', use:'useAnnot', src:'https://github.com/jspecify/jspecify'}
+];
+function openLicenses(){
+  modal(t('licT'),b=>{
+    b.appendChild(el('p','m-msg',t('licIntro')));
+    CREDITS.forEach(c=>{
+      const d=el('div','credit'); d.appendChild(el('b',null,c.name));
+      d.appendChild(el('div',null,c.copy+' · '+c.lic));
+      d.appendChild(el('div',null,t('usedFor')+' '+t(c.use)));
+      d.appendChild(el('small',null,t('sourceCode')+' '+c.src));
+      if(c.notice){ const n=el('div','lic-pre',c.notice); n.style.marginTop='8px'; d.appendChild(n); }
+      b.appendChild(d);
+    });
+    b.appendChild(el('div','m-label',t('fullLicense')));
+    b.appendChild(el('div','lic-pre',($('licApache')||{}).textContent||''));
+    b.appendChild(el('p','privacy-small',t('notAffiliated')));
+    b.appendChild(el('p','privacy-small',t('aiCredit')));
+    b.appendChild(el('p','privacy-small','Prometeo Player © 2026 Lanchalex. '+t('rights')));
+  },[[t('close'),()=>null,'btn-ok']]);
+}
+function openAbout(){
+  modal(t('aboutT'),b=>{
+    const w=el('div','about');
+    const lg=el('div','about-logo'); const li=el('img'); li.src=PROMETEO_LOGO; li.alt='Prometeo Player'; lg.appendChild(li); w.appendChild(lg);
+    const h=el('h4',null,'Prometeo '); h.appendChild(el('span',null,'Player')); w.appendChild(h);
+    w.appendChild(el('div','about-ver',t('version',VERSION)));
+    const dev=el('p','about-dev',t('devBy')+' '); dev.appendChild(el('b',null,'Lanchalex')); w.appendChild(dev);
+    const f=el('div','about-feats');
+    [['📴','feat1'],['🛡️','feat2'],['🎵','feat3']].forEach(([ic,k])=>{ const r=el('div'); r.appendChild(el('span',null,ic)); r.appendChild(el('span',null,t(k))); f.appendChild(r); });
+    w.appendChild(f);
+    w.appendChild(el('p','about-foot',t('madeWith')));
+    w.appendChild(el('div','m-label',t('poweredBy')));
+    CREDITS.slice(0,3).forEach(c=>{ const d=el('div','credit'); d.appendChild(el('b',null,c.name)); d.appendChild(el('div',null,c.copy+' · '+c.lic)); w.appendChild(d); });
+    w.appendChild(el('p','privacy-small',t('moreLibs',CREDITS.length-3)));
+    w.appendChild(el('p','privacy-small',t('aiCredit')));
+    w.appendChild(el('p','privacy-small','Prometeo Player © 2026 Lanchalex. '+t('rights')));
+    b.appendChild(w);
+  },[[t('licenses'),()=>'lic','btn-pill'],[t('close'),()=>null,'btn-ok']]).then(v=>{ if(v==='lic') openLicenses(); });
+}
+
 /* ================= BOTONES ================= */
-$('btnPlay').onclick=togglePlay; $('miniPlay').onclick=togglePlay;
-$('btnNext').onclick=()=>nextSong(false); $('btnPrev').onclick=prevSong;
+$('btnSkin').onclick=openSkins; $('btnLang').onclick=openLang; $('btnAbout').onclick=openAbout;
+$('btnPlay').onclick=()=>radioId? toggleRadio() : togglePlay(); $('miniPlay').onclick=()=>radioId? toggleRadio() : togglePlay();
+$('btnNext').onclick=()=>radioId? switchStation(1) : nextSong(false); $('btnPrev').onclick=()=>radioId? switchStation(-1) : prevSong();
+$('btnAddStation').onclick=()=>editStation(null); $('btnBackMusic').onclick=()=>stopRadio(false);
 $('btnRepeat').onclick=cycleRepeat; $('btnShuffle').onclick=toggleShuffle;
 $('btnCurToPl').onclick=()=>addToPlaylist(currentId);
-$('btnPlayAll').onclick=()=>{ if(!songs.length){ toast('No hay canciones'); return; } playFrom({type:'lib'}, shuffle? shuffleArr(songs.map(s=>s.id))[0] : songs[0].id); switchTab('ahora'); };
+$('btnPlayAll').onclick=()=>{ if(!songs.length){ toast(t('noSongs')); return; } playFrom({type:'lib'}, shuffle? shuffleArr(songs.map(s=>s.id))[0] : songs[0].id); switchTab('ahora'); };
 $('btnNewPl').onclick=()=>newPlaylist();
 $('btnPlBack').onclick=closePlDetail;
 $('btnPlPlay').onclick=()=>{ const p=plById(openPl); if(p) playPl(p); };
@@ -824,7 +2136,7 @@ $('miniInfo').onclick=()=>switchTab('ahora');
 $('searchInput').addEventListener('input',renderSearch);
 document.querySelectorAll('.songPicker').forEach(inp=>{
   inp.addEventListener('click',()=>{ inp.value=''; });
-  inp.addEventListener('change',()=>{ const f=Array.prototype.slice.call(inp.files||[]); if(f.length) addFiles(f); else toast('No se eligió ningún archivo'); });
+  inp.addEventListener('change',()=>{ const f=Array.prototype.slice.call(inp.files||[]); if(f.length) addFiles(f); else toast(t('noFile')); });
 });
 document.querySelectorAll('#nav button').forEach(b=>b.onclick=()=>switchTab(b.dataset.tab));
 document.querySelectorAll('#modes button').forEach(b=>b.onclick=()=>setVisual(b.dataset.mode));
@@ -857,36 +2169,49 @@ function tryPlay(url){
   return new Promise(res=>{
     const a=new Audio(); let done=false; const fin=r=>{ if(!done){ done=true; try{a.pause();}catch(e){} res(r); } };
     a.oncanplay=()=>{ const p=a.play(); if(p&&p.then) p.then(()=>setTimeout(()=>fin('✅ OK'),400)).catch(e=>fin('❌ '+e.name)); else fin('✅ OK'); };
-    a.onerror=()=>fin('❌ código '+(a.error?a.error.code:'?'));
-    setTimeout(()=>fin('❌ no respondió'),4000);
+    a.onerror=()=>fin('❌ '+t('code')+' '+(a.error?a.error.code:'?'));
+    setTimeout(()=>fin('❌ '+t('noResp')),4000);
     a.src=url;
   });
 }
 async function diagnose(){
-  const lines=[], m=navigator.userAgent.match(/Chrome\/(\d+)/), av=new Audio();
+  const lines=[], m=navigator.userAgent.match(/Chrome\/(\d+)/), av=new Audio(), B=window.__BOOT||{errors:[]};
+  /* ---- parte nativa (Cordova + plugin) ---- */
+  lines.push('— App —');
+  lines.push('Cordova: '+(window.cordova? 'sí '+(cordova.version||'')+' '+(cordova.platformVersion||'') : 'NO'));
+  lines.push('deviceready: '+(B.ready? 'sí ('+B.ready+' ms)' : 'NO'));
+  try{ const ch=cordova.require('cordova/channel');
+    lines.push('Pasos: '+['onDOMContentLoaded','onNativeReady','onPluginsReady','onCordovaReady','onDeviceReady'].map(n=>n.replace(/^on/,'')+(ch[n] && ch[n].state===2?'✓':'✗')).join(' ')); }catch(e){ lines.push('Pasos: ? ('+e.message+')'); }
+  try{ lines.push('Plugins: '+(cordova.require('cordova/plugin_list')||[]).map(x=>x.id).join(', ')); }catch(e){ lines.push('Plugins: ? ('+e.message+')'); }
+  lines.push('PrometeoMusic: '+(window.PrometeoMusic? 'sí' : 'NO')+' • modo app: '+(PM? 'sí':'NO'));
+  if(PM){ try{ lines.push('Permiso música: '+(await Promise.race([PM.hasPermission(),new Promise(r=>setTimeout(()=>r('sin respuesta'),3000))]))); }catch(e){ lines.push('Permiso música: error '+e); } }
+  lines.push('Dirección: '+location.href);
+  if(B.errors.length) lines.push('Errores: '+B.errors.slice(0,6).join(' | ')); else lines.push('Errores: ninguno');
+  lines.push('— Audio —');
   lines.push('Android: '+((navigator.userAgent.match(/Android ([\d.]+)/)||[])[1]||'?')+'  •  WebView Chrome: '+(m?m[1]:'?'));
   ['audio/mpeg','audio/mp4','audio/ogg','audio/flac','audio/wav'].forEach(t=>lines.push(t+': '+(av.canPlayType(t)||'no')));
   const b=beepWav();
-  lines.push('Prueba con blob: '+await tryPlay(URL.createObjectURL(b)));
-  lines.push('Prueba con data: '+await tryPlay(await blobToDataURL(b)));
+  lines.push(t('testWith')+' blob: '+await tryPlay(URL.createObjectURL(b)));
+  lines.push(t('testWith')+' data: '+await tryPlay(await blobToDataURL(b)));
   const s=currentId && songById(currentId);
   if(s){
     try{ const sb=await songBlob(s); const h=new Uint8Array(await readBuf(sb.slice(0,16)));
-      lines.push('Canción actual: '+(sniffBytes(h)||'formato desconocido')+' • '+(sb.size/1048576).toFixed(1)+' MB'); }
-    catch(e){ lines.push('Canción actual: ❌ no se pudo leer'); }
+      lines.push(t('curSong')+': '+(sniffBytes(h)||t('unkFmt'))+' • '+(sb.size/1048576).toFixed(1)+' MB'); }
+    catch(e){ lines.push(t('curSong')+': ❌ '+t('readFail')); }
   }
-  lines.push('Modo data: '+(useDataUrl?'sí':'no'));
-  modal('Diagnóstico de audio',bx=>{ const pre=el('p','m-msg',lines.join('\n')); pre.style.whiteSpace='pre-line'; pre.style.userSelect='text'; bx.appendChild(pre); },[['Cerrar',()=>null,'btn-ok']]);
+  lines.push(t('dataMode')+': '+t(useDataUrl?'yes':'no'));
+  modal(t('diagT'),bx=>{ const pre=el('p','m-msg',lines.join('\n')); pre.style.whiteSpace='pre-line'; pre.style.userSelect='text'; bx.appendChild(pre); },[[t('close'),()=>null,'btn-ok']]);
 }
-document.querySelector('.ver').onclick=()=>{ toast('Diagnosticando…'); diagnose(); };
+$('btnVer').onclick=()=>{ toast(t('diagnosing')); diagnose(); };
 
 (async function init(){
-  applyModeButtons(); setPlayIcon(); sizeCanvas();
+  translateStatic(); setIdleText(); applyModeButtons(); setPlayIcon(); sizeCanvas();
   requestAnimationFrame(frame);
-  try{ db=await openDB(); }catch(e){ toast('Error al abrir la base de datos'); return; }
+  try{ db=await openDB(); }catch(e){ toast(t('dbErr')); return; }
   const migrated=await migrateOld();
   try{ songs=await dbAll('songs'); playlists=await dbAll('playlists'); }catch(e){ songs=[]; playlists=[]; }
   sortSongs(); playlists.sort((a,b)=>a.created-b.created);
+  loadTv();
   if(navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(()=>{});
   queueSource=store.get('src',{type:'lib'});
   const last=store.get('last',null);
@@ -895,8 +2220,9 @@ document.querySelector('.ver').onclick=()=>{ toast('Diagnosticando…'); diagnos
   if(!startId && queue.length){ currentId=queue[0]; qPos=0; }
   renderAll();
   if(currentId) loadById(currentId,false,startId? store.get('pos',0) : 0);
-  if(migrated) toast(migrated+' canción(es) recuperadas de la v38c ✓');
+  if(migrated) toast(t('recovered',migrated));
   convertLegacy();
+  appReady=true; nativeStart();
 })();
 </script>
 </body>

@@ -1,0 +1,50 @@
+Prometeo Player
+Copyright (c) 2026 Lanchalex. Todos los derechos reservados.
+Copyright (c) 2026 Lanchalex. All rights reserved.
+
+ESPAÑOL
+
+El código fuente, el diseño, los textos, el ícono y demás contenido propio de
+Prometeo Player (incluidos www/index.html, docs/index.html, el plugin
+prometeo-music y la carpeta res/) son propiedad de Lanchalex.
+
+Este repositorio se publica para que el código se pueda ver. Sin permiso
+previo y por escrito del autor, NO se permite copiar, modificar, distribuir,
+publicar, sublicenciar ni vender este software ni partes de él, ni crear obras
+derivadas a partir de él.
+
+Sí se permite descargar e instalar el APK publicado en "Releases" para uso
+personal.
+
+EL SOFTWARE SE ENTREGA "TAL CUAL", SIN GARANTÍAS DE NINGÚN TIPO. EL AUTOR NO
+SERÁ RESPONSABLE DE NINGÚN DAÑO DERIVADO DE SU USO.
+
+Componentes de terceros: Prometeo Player incluye software de código abierto
+de otros autores (Apache Cordova, AndroidX, AndroidX Media3/ExoPlayer, Guava,
+Kotlin, kotlinx.coroutines, JetBrains Annotations y JSpecify). Esos
+componentes NO están cubiertos por esta licencia: cada uno conserva su propia
+licencia, la Apache License 2.0. Lee THIRD_PARTY_NOTICES.md y
+LICENSES/Apache-2.0.txt.
+
+ENGLISH
+
+The source code, design, texts, icon and other original content of Prometeo
+Player (including www/index.html, docs/index.html, the prometeo-music plugin
+and the res/ folder) are the property of Lanchalex.
+
+This repository is published so the code can be viewed. Without the author's
+prior written permission, you may NOT copy, modify, distribute, publish,
+sublicense or sell this software or parts of it, or create derivative works
+based on it.
+
+You may download and install the APK published in "Releases" for personal
+use.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND. THE AUTHOR
+SHALL NOT BE LIABLE FOR ANY DAMAGES ARISING FROM ITS USE.
+
+Third-party components: Prometeo Player includes open source software by
+other authors (Apache Cordova, AndroidX, AndroidX Media3/ExoPlayer, Guava,
+Kotlin, kotlinx.coroutines, JetBrains Annotations and JSpecify). Those
+components are NOT covered by this license: each keeps its own license, the
+Apache License 2.0. See THIRD_PARTY_NOTICES.md and LICENSES/Apache-2.0.txt.
