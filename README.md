@@ -26,11 +26,19 @@
 - 🚗 **Pantalla del carro por Bluetooth**: canción, artista, álbum y portada, con los botones del volante.
   - Se pausa sola al apagar el carro o desconectar el Bluetooth.
   - No arranca sola al conectar el carro.
-- 📻 **Radio por internet**: agregas los links de tus emisoras y Prometeo solo se conecta mientras suenan.
+- 📻 **Radio por internet**: agregas tus emisoras y Prometeo solo se conecta mientras suenan.
+  - **Agregar emisora fácil**, sin saber nada técnico:
+    - **🔍 Buscar por nombre** en [Radio Browser](https://www.radio-browser.info), un directorio libre de emisoras.
+    - **🔗 Pegar el link de la página** de la emisora: Prometeo encuentra la transmisión y, si es de un proveedor conocido (StreamTheWorld, StreamGuys, Zeno), la cambia por su link permanente.
+    - **✍️ Link directo**, para quien ya lo tiene.
+    - Cada emisora se prueba antes de guardarla.
+  - **⭐ Favoritas y listas propias** (por ejemplo "Carro"). Los botones del volante cambian de emisora dentro de la lista elegida.
   - Sigue sonando en segundo plano y con la pantalla apagada.
   - Si se pierde la señal, se reconecta sola.
   - Muestra la canción que está sonando, si la emisora la envía.
 - 📺 **Canales de TV / IPTV** con listas **M3U** (link o archivo del teléfono), en pantalla completa con **ExoPlayer**.
+  - **⭐ Favoritos y listas propias** de canales. Se conservan aunque actualices la lista M3U.
+- 🔒 **Audios privados protegidos**: las notas de voz y audios de WhatsApp, Telegram y Signal y las grabaciones de llamadas o de voz **no entran a tu música**. Si quieres verlos, van en una sección aparte que se abre con tu **huella, PIN o patrón**.
 - 🆕 **Ícono nuevo**.
 
 ## 🎵 También incluye (desde la V40)
@@ -46,11 +54,16 @@
 
 - **No recopila datos**: sin anuncios, sin estadísticas y sin cuentas.
 - **Tu música se reproduce sin internet.**
-- **Internet solo para lo que tú agregas**: Prometeo no trae emisoras ni listas. Solo se conecta a las radios y canales que agregas, y solo mientras los escuchas o los ves.
+- **Internet solo cuando tú lo pides**:
+  - al escuchar una radio o ver un canal que agregaste;
+  - al tocar **Buscar** emisora: a Radio Browser solo se envía el texto que escribiste (Prometeo no le avisa qué escuchas);
+  - al pegar el link de la página de una emisora, para encontrar su transmisión.
+- **Tus audios privados no se muestran**: las notas de voz y grabaciones quedan fuera de tu música. Si decides verlas, Android pide tu huella, PIN o patrón. Prometeo no guarda ninguna clave.
 - **Permisos que pide**:
   - "Música y audio" (o "Almacenamiento" en Android 12 o menos), para encontrar tus canciones.
-  - Internet, solo para la radio y la TV.
+  - Internet y estado de la red, solo para la radio, la TV y buscar emisoras.
   - Reproducción en segundo plano, para que la radio siga sonando.
+  - Huella o bloqueo de pantalla, solo para abrir los audios privados.
 - No pide ubicación, contactos, cámara ni micrófono.
 
 ## 📲 Instalación
@@ -65,7 +78,7 @@
 | Carpeta | Qué contiene |
 |---|---|
 | [`www/index.html`](www/index.html) | Todo el reproductor (HTML + CSS + JavaScript) en un solo archivo |
-| [`prometeo-music/`](prometeo-music) | Plugin propio en Java: música sin copias, carro por Bluetooth, radio y TV con ExoPlayer |
+| [`prometeo-music/`](prometeo-music) | Plugin propio en Java: música sin copias, carro por Bluetooth, radio y TV con ExoPlayer, bloqueo de audios privados |
 | [`res/icon/android/`](res/icon/android) | Íconos de la app |
 | [`docs/index.html`](docs/index.html) | Versión web, publicada con GitHub Pages |
 
@@ -95,9 +108,11 @@ Prometeo existe gracias a estos proyectos de código abierto. Todos usan la **Ap
 | [JetBrains Annotations](https://github.com/JetBrains/java-annotations) 13.0 | JetBrains s.r.o. | Anotaciones de código |
 | [JSpecify](https://github.com/jspecify/jspecify) 1.0.0 | The JSpecify Authors | Anotaciones de código |
 
+**Servicio usado (no va dentro de la app):** [Radio Browser](https://www.radio-browser.info), directorio comunitario, libre y gratuito de emisoras, de uso permitido en software gratis y de pago. Prometeo solo lo consulta cuando tocas **Buscar**. Gracias a su comunidad por mantenerlo.
+
 La lista completa, con cada librería y su versión, está en **[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)**. El texto completo de la licencia está en **[LICENSES/Apache-2.0.txt](LICENSES/Apache-2.0.txt)**. También se pueden ver dentro de la app, en **ⓘ Acerca de → Licencias**.
 
-Prometeo Player es un proyecto independiente. No está afiliado ni respaldado por Google, The Apache Software Foundation, JetBrains, Meta ni Anthropic. Android es una marca de Google LLC. Los demás nombres mencionados son marcas de sus respectivos dueños.
+Prometeo Player es un proyecto independiente. No está afiliado ni respaldado por Google, The Apache Software Foundation, JetBrains, Meta, Anthropic ni Radio Browser. Android es una marca de Google LLC. StreamTheWorld (Triton Digital), StreamGuys y Zeno.fm son marcas de sus dueños: Prometeo solo reconoce sus links públicos de transmisión. Los demás nombres mencionados son marcas de sus respectivos dueños.
 
 ## ⚖️ Licencia
 

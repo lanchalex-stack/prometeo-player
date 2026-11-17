@@ -153,6 +153,27 @@ The Apache Software Foundation (http://www.apache.org/).
 
 ---
 
+## Servicios externos · External services
+
+Estos servicios **no van dentro del APK**. Prometeo solo se conecta a ellos cuando el usuario lo pide.
+
+### Radio Browser (radio-browser.info)
+
+- **Qué es:** directorio comunitario, libre y gratuito de emisoras de radio por internet.
+- **Uso en Prometeo:** la pestaña "🔍 Buscar" de *Agregar emisora* envía solo el texto que escribió el usuario y muestra los resultados. Prometeo no envía qué emisoras escucha cada persona.
+- **Condiciones:** el proyecto permite usar su API en software gratuito y no gratuito (comercial). Prometeo se identifica como `PrometeoPlayer/41` y busca sus servidores por DNS, como pide el proyecto.
+- **Sitio:** https://www.radio-browser.info · **API:** https://api.radio-browser.info · **Código:** https://github.com/segler-alex/radiobrowser-api
+
+### Emisoras, canales y proveedores de transmisión
+
+Las emisoras, los canales de TV y las listas M3U los agrega cada usuario. Prometeo no trae ni recomienda contenido. Cuando reconoce un link de StreamTheWorld (Triton Digital), StreamGuys o Zeno.fm, usa su link público y permanente de transmisión; nunca genera ni falsifica tokens de acceso. Esas marcas pertenecen a sus dueños.
+
+## Funciones de Android usadas · Android platform features
+
+- **BiometricPrompt / KeyguardManager** (sistema Android): pedir huella, PIN o patrón para los audios privados. Es parte de Android, no una librería adicional.
+
+---
+
 ## Contenido propio de Prometeo · Original content
 
 - **Código, diseño y textos** (`www/index.html`, `docs/index.html`, plugin `prometeo-music`): Lanchalex. Desarrollado con asistencia de **Meta AI** y **Claude (Anthropic)**.
@@ -160,4 +181,4 @@ The Apache Software Foundation (http://www.apache.org/).
 
 ## Marcas · Trademarks
 
-Prometeo Player es un proyecto independiente. No está afiliado ni respaldado por Google, The Apache Software Foundation, JetBrains, Meta ni Anthropic. Android es una marca de Google LLC. "Apache", "Apache Cordova" y el logo de la pluma son marcas de The Apache Software Foundation. Kotlin es una marca de JetBrains s.r.o. Los demás nombres son marcas de sus respectivos dueños.
+Prometeo Player es un proyecto independiente. No está afiliado ni respaldado por Google, The Apache Software Foundation, JetBrains, Meta, Anthropic ni Radio Browser. Android es una marca de Google LLC. "Apache", "Apache Cordova" y el logo de la pluma son marcas de The Apache Software Foundation. Kotlin es una marca de JetBrains s.r.o. Los demás nombres son marcas de sus respectivos dueños.

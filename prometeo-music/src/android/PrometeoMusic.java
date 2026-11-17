@@ -227,6 +227,34 @@ public class PrometeoMusic extends CordovaPlugin {
             return true;
         }
         /* ---- Descargar una lista M3U (sin las restricciones del navegador) ---- */
+        if ("fetchPage".equals(action)) {
+            final String url = args.optString(0, "");
+            final boolean browser = args.optBoolean(1, true);
+            cordova.getThreadPool().execute(new Runnable() {
+                public void run() {
+                    try { cb.success(fetchPage(url, browser)); } catch (Exception e) { cb.error(String.valueOf(e.getMessage())); }
+                }
+            });
+            return true;
+        }
+        if ("rbServers".equals(action)) {
+            cordova.getThreadPool().execute(new Runnable() {
+                public void run() {
+                    JSONArray out = new JSONArray();
+                    try {
+                        /* Como pide Radio Browser: buscar sus servidores por DNS (no hay una lista fija) */
+                        java.util.LinkedHashSet<String> names = new java.util.LinkedHashSet<String>();
+                        for (java.net.InetAddress a : java.net.InetAddress.getAllByName("all.api.radio-browser.info")) {
+                            String h = a.getCanonicalHostName();
+                            if (h != null && h.endsWith(".api.radio-browser.info")) names.add(h);
+                        }
+                        for (String h : names) out.put(h);
+                    } catch (Exception ignored) { }
+                    cb.success(out);
+                }
+            });
+            return true;
+        }
         if ("fetchText".equals(action)) {
             final String url = args.optString(0, "");
             cordova.getThreadPool().execute(new Runnable() {
@@ -234,6 +262,31 @@ public class PrometeoMusic extends CordovaPlugin {
                     try { cb.success(fetchText(url)); } catch (Exception e) { cb.error(String.valueOf(e.getMessage())); }
                 }
             });
+            return true;
+        }
+        if ("lockStatus".equals(action)) {
+            cb.success(deviceSecure() ? 1 : 0);
+            return true;
+        }
+        if ("openLockSettings".equals(action)) {
+            try {
+                Intent i = new Intent(android.provider.Settings.ACTION_SECURITY_SETTINGS);
+                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                cordova.getActivity().startActivity(i);
+            } catch (Exception e) {
+                try {
+                    Intent i = new Intent(android.provider.Settings.ACTION_SETTINGS);
+                    i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    cordova.getActivity().startActivity(i);
+                } catch (Exception ignored) { }
+            }
+            cb.success();
+            return true;
+        }
+        if ("authenticate".equals(action)) {
+            final String title = args.optString(0, "Prometeo Player");
+            final String sub = args.optString(1, "");
+            cordova.getActivity().runOnUiThread(new Runnable() { public void run() { authenticate(title, sub, cb); } });
             return true;
         }
         if ("scan".equals(action)) {
@@ -259,6 +312,18 @@ public class PrometeoMusic extends CordovaPlugin {
         cb.success(ok ? 1 : 0);
     }
 
+    /** Solo la carpeta (sin el nombre del archivo ni /storage/emulated/0/): nunca sale del teléfono */
+    private static String folderOf(String p) {
+        if (p == null) return "";
+        String f = p.replace('\\', '/');
+        if (Build.VERSION.SDK_INT < 29) {
+            int cut = f.lastIndexOf('/');
+            if (cut >= 0) f = f.substring(0, cut + 1);
+            f = f.replaceFirst("^/storage/(emulated/\\d+|[^/]+)/", "").replaceFirst("^/sdcard/", "");
+        }
+        return f;
+    }
+
     /** Lista todas las canciones del teléfono, sin tonos de llamada, notificaciones ni alarmas. */
     private JSONArray scan() throws JSONException {
         JSONArray out = new JSONArray();
@@ -270,7 +335,9 @@ public class PrometeoMusic extends CordovaPlugin {
                 MediaStore.Audio.Media.ARTIST,
                 MediaStore.Audio.Media.DURATION,
                 MediaStore.Audio.Media.SIZE,
-                MediaStore.Audio.Media.MIME_TYPE
+                MediaStore.Audio.Media.MIME_TYPE,
+                /* carpeta: para dejar fuera notas de voz de WhatsApp, Telegram y grabaciones (privacidad) */
+                Build.VERSION.SDK_INT >= 29 ? MediaStore.Audio.Media.RELATIVE_PATH : MediaStore.Audio.Media.DATA
         };
         String where = MediaStore.Audio.Media.IS_RINGTONE + "=0 AND "
                 + MediaStore.Audio.Media.IS_NOTIFICATION + "=0 AND "
@@ -286,6 +353,8 @@ public class PrometeoMusic extends CordovaPlugin {
             int iDur = c.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION);
             int iSize = c.getColumnIndexOrThrow(MediaStore.Audio.Media.SIZE);
             int iMime = c.getColumnIndexOrThrow(MediaStore.Audio.Media.MIME_TYPE);
+            int iPath = c.getColumnIndex(Build.VERSION.SDK_INT >= 29 ? MediaStore.Audio.Media.RELATIVE_PATH : MediaStore.Audio.Media.DATA);
+            int iRec = Build.VERSION.SDK_INT >= 31 ? c.getColumnIndex("is_recording") : -1;
             while (c.moveToNext()) {
                 JSONObject o = new JSONObject();
                 o.put("id", c.getLong(iId));
@@ -295,12 +364,65 @@ public class PrometeoMusic extends CordovaPlugin {
                 o.put("duration", c.isNull(iDur) ? 0 : c.getLong(iDur));
                 o.put("size", c.isNull(iSize) ? 0 : c.getLong(iSize));
                 o.put("mime", c.isNull(iMime) ? "" : c.getString(iMime));
+                o.put("folder", folderOf(iPath < 0 || c.isNull(iPath) ? "" : c.getString(iPath)));
+                o.put("rec", iRec >= 0 && !c.isNull(iRec) && c.getInt(iRec) == 1);
                 out.put(o);
             }
         } finally {
             c.close();
         }
         return out;
+    }
+
+    /* ================= BLOQUEO DE AUDIOS PRIVADOS =================
+       Lo verifica Android con la huella, el PIN o el patrón del propio teléfono. Prometeo no guarda ninguna clave.
+       Solo métodos fuertes: el reconocimiento de cara de muchos teléfonos es "débil" y no se acepta. */
+    private static final int REQ_AUTH = 4243;
+    private CallbackContext authCallback;
+
+    private boolean deviceSecure() {
+        try {
+            android.app.KeyguardManager km = (android.app.KeyguardManager) cordova.getContext().getSystemService(Context.KEYGUARD_SERVICE);
+            return km != null && km.isDeviceSecure();
+        } catch (Exception e) { return false; }
+    }
+
+    private void authenticate(String title, String sub, final CallbackContext cb) {
+        if (!deviceSecure()) { cb.error("nolock"); return; }
+        if (authCallback != null) { authCallback.error("cancel"); authCallback = null; }
+        try {
+            if (Build.VERSION.SDK_INT >= 30) {
+                android.hardware.biometrics.BiometricPrompt prompt = new android.hardware.biometrics.BiometricPrompt.Builder(cordova.getActivity())
+                        .setTitle(title)
+                        .setSubtitle(sub)
+                        .setAllowedAuthenticators(android.hardware.biometrics.BiometricManager.Authenticators.BIOMETRIC_STRONG
+                                | android.hardware.biometrics.BiometricManager.Authenticators.DEVICE_CREDENTIAL)
+                        .build();
+                prompt.authenticate(new android.os.CancellationSignal(), cordova.getActivity().getMainExecutor(),
+                        new android.hardware.biometrics.BiometricPrompt.AuthenticationCallback() {
+                            @Override public void onAuthenticationSucceeded(android.hardware.biometrics.BiometricPrompt.AuthenticationResult r) { cb.success(1); }
+                            @Override public void onAuthenticationError(int code, CharSequence msg) { cb.error("cancel"); }
+                        });
+            } else {
+                /* Android 6 a 10: la pantalla de confirmación del bloqueo del teléfono (PIN, patrón o huella) */
+                android.app.KeyguardManager km = (android.app.KeyguardManager) cordova.getContext().getSystemService(Context.KEYGUARD_SERVICE);
+                @SuppressWarnings("deprecation")
+                Intent i = km.createConfirmDeviceCredentialIntent(title, sub);
+                if (i == null) { cb.error("nolock"); return; }
+                authCallback = cb;
+                cordova.startActivityForResult(this, i, REQ_AUTH);
+            }
+        } catch (Exception e) {
+            cb.error("fail");
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode != REQ_AUTH) return;
+        CallbackContext c = authCallback; authCallback = null;
+        if (c == null) return;
+        if (resultCode == android.app.Activity.RESULT_OK) c.success(1); else c.error("cancel");
     }
 
     /* ================= SESIÓN MULTIMEDIA ================= */
@@ -595,6 +717,52 @@ public class PrometeoMusic extends CordovaPlugin {
     }
 
     /* ================= DESCARGAR LISTAS M3U ================= */
+    /** Para "Agregar emisora": lee una página o un JSON (hasta 3 MB). Si el link ya es audio, NO lo descarga:
+        solo avisa que es una transmisión. Solo se usa cuando el usuario lo pide. */
+    private static JSONObject fetchPage(String address, boolean browser) throws Exception {
+        URL url = new URL(address);
+        for (int hop = 0; hop < 8; hop++) {
+            HttpURLConnection c = (HttpURLConnection) url.openConnection();
+            c.setInstanceFollowRedirects(false);
+            c.setConnectTimeout(12000);
+            c.setReadTimeout(15000);
+            c.setRequestProperty("User-Agent", browser
+                    ? "Mozilla/5.0 (Linux; Android " + Build.VERSION.RELEASE + ") AppleWebKit/537.36 (KHTML, like Gecko) Mobile Safari/537.36 PrometeoPlayer/41"
+                    : "PrometeoPlayer/41");
+            c.setRequestProperty("Accept", browser ? "text/html,application/xhtml+xml,*/*;q=0.8" : "application/json,*/*");
+            int code = c.getResponseCode();
+            if (code >= 300 && code < 400 && c.getHeaderField("Location") != null) {
+                url = new URL(url, c.getHeaderField("Location"));
+                c.disconnect();
+                continue;
+            }
+            if (code >= 400) { c.disconnect(); throw new Exception("HTTP " + code); }
+            String ct = c.getContentType() == null ? "" : c.getContentType().toLowerCase();
+            JSONObject o = new JSONObject();
+            o.put("url", url.toString());
+            o.put("ctype", ct);
+            boolean audio = ct.startsWith("audio/") || ct.contains("application/ogg") || ct.contains("octet-stream")
+                    || c.getHeaderField("icy-name") != null || c.getHeaderField("icy-br") != null || c.getHeaderField("icy-metaint") != null;
+            boolean playlist = ct.contains("mpegurl") || ct.contains("scpls") || ct.contains("x-scpls");
+            if (audio && !playlist) { c.disconnect(); o.put("type", "audio"); return o; }
+            InputStream in = c.getInputStream();
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            byte[] buf = new byte[16384];
+            int n, total = 0;
+            while ((n = in.read(buf)) > 0) {
+                total += n;
+                out.write(buf, 0, n);
+                if (total > 3 * 1024 * 1024) break;
+            }
+            in.close();
+            c.disconnect();
+            o.put("type", "text");
+            o.put("text", new String(out.toByteArray(), StandardCharsets.UTF_8));
+            return o;
+        }
+        throw new Exception("too many redirects");
+    }
+
     private static String fetchText(String address) throws Exception {
         URL url = new URL(address);
         for (int hop = 0; hop < 6; hop++) {

@@ -49,6 +49,52 @@ button{font-family:inherit;cursor:pointer;color:inherit}
 .chips button{flex:none;background:var(--card2);border:1px solid var(--line2);color:var(--soft);padding:7px 12px;border-radius:16px;font-size:12px;font-weight:700;white-space:nowrap}
 .chips button.on{background:var(--acc);color:var(--onacc);border-color:var(--acc)}
 .two-btn{display:flex;gap:8px;margin-top:12px}
+/* v41: listas, favoritos y audios privados */
+.title-right{display:flex;align-items:center;gap:8px}
+.lib-seg{margin:0 0 12px}
+.icon-btn.star{color:#ffc83c;border-color:rgba(255,200,60,.45)}
+.icon-btn.star.off{color:var(--dim);border-color:var(--line2)}
+.chips button.add{border-style:dashed;color:var(--acc)}
+.list-bar{display:flex;gap:8px;align-items:center;margin:0 0 6px}
+.list-bar b{flex:1;min-width:0;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.list-bar .btn-pill.del{color:var(--red)}
+.chk-row{display:flex;align-items:center;gap:12px;padding:11px 4px;border-bottom:1px solid var(--line2);font-size:14px;cursor:pointer}
+.chk-row input{width:20px;height:20px;accent-color:var(--acc);flex:none;margin:0}
+.chk-row span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chk-row small{color:var(--mut);font-size:12px}
+.star-mini{color:#ffc83c;font-style:normal}
+.field-label .cnt{color:var(--acc);text-transform:none;letter-spacing:0}
+.cnt-row{display:flex;justify-content:space-between;gap:10px;padding:9px 4px;border-bottom:1px solid var(--line2);font-size:13px}
+.cnt-row small{color:var(--mut)}
+.opt-ic{width:30px;flex:none;text-align:center;font-size:18px}
+.priv-note{display:flex;gap:10px;align-items:center;width:100%;text-align:left;background:rgba(var(--accrgb),.07);border:1px solid rgba(var(--accrgb),.3);border-radius:14px;padding:10px 12px;font-size:12px;color:var(--txt2);margin:12px 0 4px;line-height:1.4}
+.priv-note .tx{flex:1;min-width:0} .priv-note b{display:block;color:var(--txt)} .priv-note .go{color:var(--acc);font-weight:800;white-space:nowrap}
+.priv-info{display:flex;gap:10px;align-items:flex-start;background:rgba(255,170,60,.08);border:1px solid rgba(255,170,60,.4);border-radius:14px;padding:10px 12px;font-size:12px;color:var(--txt2);line-height:1.4;margin-bottom:6px}
+.hint{font-size:11px;color:var(--dim);margin:4px 4px 2px}
+.hidden-priv{display:none!important}
+/* v41: agregar emisora fácil */
+.seg-in{margin:0 0 12px}
+.st-status{font-size:12px;color:var(--mut);font-weight:700;margin:10px 4px 4px}
+.search-row{display:flex;gap:8px}
+.search-row .search{flex:1;min-width:0}
+.search-row .btn-ok{flex:none}
+.btn-pill.try{flex:none;color:var(--acc);border-color:var(--acc);font-weight:800}
+.warn-box,.ok-box{border-radius:14px;padding:12px 14px;margin:12px 0 4px;line-height:1.45}
+.warn-box{background:rgba(255,170,60,.08);border:1px solid rgba(255,170,60,.45)}
+.ok-box{background:rgba(46,232,138,.08);border:1px solid rgba(46,232,138,.45)}
+.warn-box b,.ok-box b{display:block;font-size:14px;margin-bottom:4px}
+.warn-box small,.ok-box small{display:block;font-size:12px;color:var(--txt2)}
+.opt-big{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--card2);border:1px solid var(--line2);border-radius:16px;padding:13px 14px;margin-top:8px}
+.opt-big .ic{font-size:20px} .opt-big .tx{flex:1;min-width:0} .opt-big b{display:block;font-size:14px} .opt-big small{display:block;font-size:12px;color:var(--mut)} .opt-big .go{color:var(--acc);font-weight:900}
+.link-btn{background:transparent;border:none;color:var(--acc);font-weight:800;font-size:13px;padding:4px 0 10px}
+.st-head{display:flex;align-items:center;gap:14px;margin-bottom:6px}
+.st-tile.big{width:64px;height:64px;border-radius:16px;font-size:22px}
+.st-head .song-info b{font-size:17px}
+.chips.wrap{flex-wrap:wrap;overflow:visible;margin-top:0}
+.test-box .stop-btn{margin-left:auto;width:36px;height:36px}
+.stream-link{margin-top:12px;font-size:12px;color:var(--mut)} .stream-link summary{cursor:pointer;font-weight:700}
+.stream-link .lic-pre{margin-top:6px;word-break:break-all}
+.song-item.missing .song-info small{color:var(--red)}
 .two-btn button{flex:1;margin:0}
 .list-row small{color:var(--dim)}
 .lic-pre{white-space:pre-wrap;font-family:ui-monospace,monospace;font-size:10.5px;line-height:1.4;color:var(--soft);background:var(--card2);border:1px solid var(--line2);border-radius:12px;padding:12px;max-height:260px;overflow:auto;user-select:text;-webkit-user-select:text}
@@ -261,7 +307,8 @@ input.search:focus{border-color:var(--acc)}
 <!-- ============ BIBLIOTECA ============ -->
 <section id="view-biblioteca" class="view">
   <div class="card">
-    <div class="card-title"><span data-i18n="library">Biblioteca</span><small id="libCount">0 canciones</small></div>
+    <div class="card-title"><span data-i18n="library">Biblioteca</span><span class="title-right"><small id="libCount">0 canciones</small><button class="icon-btn hidden" id="btnPrivSet" data-i18n-aria="privSetA" aria-label="Qué busca Prometeo">⚙️</button></span></div>
+    <div id="libSeg" class="seg lib-seg hidden" role="tablist"></div>
     <label class="btn-add picker"><span data-i18n="addSongs">＋ Agregar canciones</span><input type="file" class="songPicker" multiple></label>
     <button class="btn-add btn-scan" data-i18n="scanBtn">🔍 Buscar música en el teléfono</button>
     <button class="btn-ghost" id="btnPlayAll" data-i18n="playAll">▶ Reproducir todo</button>
@@ -293,6 +340,8 @@ input.search:focus{border-color:var(--acc)}
     <div class="card-title"><span data-i18n="radioTitle">📻 Radio</span><small id="radioCount"></small></div>
     <div class="radio-note"><span>📶</span><span data-i18n="radioNote">La radio usa internet solo mientras escuchas una emisora. Tu música sigue funcionando sin conexión.</span></div>
     <button class="btn-add" id="btnAddStation" style="margin-top:12px" data-i18n="addStation">＋ Agregar emisora</button>
+    <div id="radioChips" class="chips hidden"></div>
+    <div id="radioListBar" class="list-bar hidden"></div>
     <div id="radioList" class="list"></div>
   </div>
   <div class="card hidden" id="paneTv">
@@ -301,7 +350,10 @@ input.search:focus{border-color:var(--acc)}
     <div class="two-btn"><button class="btn-add" id="btnAddList" data-i18n="addList">＋ Lista M3U</button><button class="btn-ghost" id="btnAddChannel" data-i18n="addChannel">＋ Canal</button></div>
     <div id="tvLists" class="list"></div>
     <input type="search" id="tvSearch" class="search hidden" style="margin-top:12px" data-i18n-ph="searchCh" placeholder="Buscar canal…" autocomplete="off">
-    <div id="tvGroups" class="chips hidden"></div>
+    <div id="tvMyBox" class="hidden"><div class="field-label" data-i18n="myLists">Mis listas</div><div id="tvMyChips" class="chips" style="margin-top:0"></div><div id="tvListBar" class="list-bar hidden"></div></div>
+    <div id="tvGrpLabel" class="field-label hidden" data-i18n="m3uGroups">Grupos de la lista M3U</div>
+    <div id="tvGroups" class="chips hidden" style="margin-top:0"></div>
+    <p id="tvHint" class="hint hidden" data-i18n="holdHint">Mantén presionado un canal para guardarlo en tus listas.</p>
     <div id="tvList" class="list"></div>
   </div>
 </section>
@@ -530,12 +582,24 @@ const store = {
 };
 let toastT;
 function toast(msg){ const t=$('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),2300); }
+/* Estado de v41: audios privados, listas de emisoras y favoritos de canales (se usa en varias partes) */
+const PRIV_KINDS=['wav','waa','wab','tg','sg','call','rec'];
+function musicSongs(){ return songs.filter(s=>!s.priv); } function privSongs(){ return songs.filter(s=>s.priv); }
+let privOn=store.get('privOn',false), libSeg='music', privUnlockedAt=0, authBusy=false;
+const PRIV_UNLOCK_MS=5*60*1000;
+let radioLists=store.get('radioLists',[]); if(!Array.isArray(radioLists)) radioLists=[];
+let radioFilter=store.get('radioFilter','all');
+let tvFav=store.get('tvFav',[]); if(!Array.isArray(tvFav)) tvFav=[];
+let tvMy=store.get('tvMyLists',[]); if(!Array.isArray(tvMy)) tvMy=[];
+let tvSel='';
 
 /* ================= IDIOMAS (v41) ================= */
 const VERSION='41';
 const LANGS={es:'Español',en:'English',pt:'Português',fr:'Français'};
 const I18N={
 es:{
+ tabSearch:'🔍 Buscar',tabPage:'🔗 Página',tabDirect:'✍️ Link directo',stSearchPh:'Nombre de la emisora (ej. Easy 93.1 Miami)',searchBtn:'Buscar',rbNote:'Busca en Radio Browser, un directorio libre de emisoras. Solo se envía lo que escribiste.',searchingSt:'Buscando…',nResults:'{0} resultados',noStResults:'No encontramos \"{0}\". Prueba con menos palabras o pega el link de su página.',rbFail:'No se pudo conectar con el directorio de emisoras. Intenta de nuevo en un rato.',tryBtn:'▶ Probar',backResults:'‹ Volver',testingNow:'Probando…',worksNow:'✓ Funciona. Está sonando la prueba.',stopTest:'Detener prueba',testStopped:'Prueba detenida',nameInList:'Nombre en tu lista',saveAlsoIn:'Guardar también en',seeLink:'Ver el link de transmisión',saveStation:'Guardar emisora',pageLabel:'Link de la página de la emisora',pageHelp:'Copia el link de la página donde escuchas la radio en el navegador y pégalo aquí.',webPageNote:'En la versión web los navegadores no dejan leer otras páginas: usa la app o búscala por nombre.',findStream:'🔎 Buscar la transmisión',lookingPage:'Revisando la página…',foundStream:'✓ Encontramos la transmisión',foundPerm:'Era un link que puede caducar. Prometeo lo cambió por el link permanente del proveedor ({0}).',foundPlain:'Prometeo encontró el link de la transmisión en la página.',mayExpire:'Ojo: este link trae un código que podría caducar. Si deja de sonar, búscala por nombre.',notFoundT:'No encontramos la transmisión en esa página',notFoundMsg:'Algunas emisoras esconden su reproductor o usan links que caducan. No pasa nada, prueba una de estas opciones:',optSearch:'Buscarla por nombre',optSearchSub:'Ya escribimos \"{0}\" por ti',optDirect:'Escribir el link directo',optDirectSub:'Si alguien te lo pasó (.mp3, .aac, .m3u8…)',continueBtn:'Probar y continuar',stationDefault:'Emisora',rbCredit:'Búsqueda de emisoras: Radio Browser (radio-browser.info), directorio libre y comunitario. Solo se consulta cuando tocas Buscar.',
+ privHidden:'{0} audios privados ocultos',privHidden1:'1 audio privado oculto',privCleaned1:'🔒 1 audio de WhatsApp o grabación ya no se muestra en tu música',privHiddenSub:'WhatsApp y grabaciones. No se muestran aquí.',privSee:'Ver ajustes ›',privSetT:'Qué busca Prometeo',privSetA:'Qué busca Prometeo',privSetIntro:'Al buscar música, Prometeo deja fuera las notas de voz y las grabaciones para proteger tu privacidad. No se borra nada del teléfono.',privToggle:'Incluir audios privados',privOffRec:'Apagado · recomendado',privOnNow:'Activado · en su propia sección',privFolders:'Carpetas que se omiten',pk_wav:'WhatsApp · notas de voz',pk_waa:'WhatsApp · audios recibidos',pk_wab:'WhatsApp Business',pk_tg:'Telegram',pk_sg:'Signal',pk_call:'Grabaciones de llamadas',pk_rec:'Grabadora de voz',done:'Listo',privAskT:'¿Mostrar audios privados?',privAsk1:'Pueden incluir notas de voz personales de WhatsApp, Telegram o grabaciones de llamadas.',privAsk2:'Aparecerán solo en la sección \"Privados\", nunca mezclados con tu música ni en \"Reproducir todo\". Puedes volver a ocultarlos cuando quieras.',privNo:'Mejor no',privYes:'Sí, mostrar',segMusic:'🎵 Música · {0}',segPriv:'🔒 Privados · {0}',privInfo:'Estos audios no se mezclan con tu música, ni en \"Reproducir todo\" ni en aleatorio. Solo suenan si tocas uno.',privHideAgain:'🙈 Ocultar audios privados otra vez',privEmpty:'No hay audios privados.',privSrc:'Audio privado',authTitle:'Abrir audios privados',authSub:'Usa tu huella, tu PIN o tu patrón',noLockT:'Tu teléfono no tiene bloqueo',noLock1:'Para proteger tus audios privados, Prometeo usa el bloqueo de pantalla del teléfono: huella, PIN o patrón.',noLock2:'Ponle uno y vuelve aquí. Tu música sigue funcionando normal mientras tanto.',setLock:'Configurar bloqueo',notNow:'Ahora no',authFail:'No se pudo verificar',privHiddenToast:'Audios privados ocultos 🔒',privCleaned:'🔒 {0} audios de WhatsApp o grabaciones ya no se muestran en tu música',rAll:'Todas · {0}',rFav:'⭐ Favoritas · {0}',rNewList:'＋ Nueva lista',editListBtn:'✎ Editar',delListBtn:'🗑 Borrar',favAdd:'Marcar como favorita',favDel:'Quitar de favoritas',newRListT:'Nueva lista de emisoras',editRListT:'Editar lista',pickSt:'Elige las emisoras',nChosen:'{0} elegidas',saveListBtn:'Guardar lista',rListEmpty:'Esta lista está vacía.\nToca ✎ Editar para agregar emisoras.',rFavEmpty:'Todavía no tienes favoritas.\nToca ☆ en una emisora.',delRListQ:'¿Borrar la lista \"{0}\"? Las emisoras no se borran.',delRListT:'Borrar lista',inList:'{0} · {1} de {2}',listSavedOk:'Lista guardada ✓',listDeletedOk:'Lista borrada',needStations:'Elige al menos una emisora',myLists:'Mis listas',m3uGroups:'Grupos de la lista M3U',tvFav:'⭐ Favoritos · {0}',tvNew:'＋ Nueva',chFavAdd:'Marcar como favorito',chFavDel:'Quitar de favoritos',inFav:'En Favoritos',notInFav:'Agregar a Favoritos',tapToRemove:'Toca para quitar',tapToAdd:'Toca para agregar',addToMyLists:'Agregar a mis listas',createList:'＋ Crear lista nueva',watchNow:'▶ Ver ahora',newTvListT:'Nueva lista de canales',fromList:'De la lista: {0}',tvFavEmpty:'Todavía no tienes favoritos.\nToca ☆ en un canal.',tvListEmpty:'Esta lista está vacía.\nMantén presionado un canal para agregarlo.',holdHint:'Mantén presionado un canal para guardarlo en tus listas.',chMissing:'Ya no está en tus listas M3U',delTvListQ:'¿Borrar la lista \"{0}\"? Los canales no se borran.',addedToList:'Agregado a \"{0}\" ✓',nCh:'{0} canales',
  testFailNative:'No se pudo comprobar aquí. Guárdala y tócala: el reproductor de la app abre más tipos de emisoras.',
  tabRadio:'Radio/TV',rtStations:'📻 Emisoras',rtChannels:'📺 Canales',tvTitle:'📺 Canales',tvNote:'Los canales usan internet solo mientras los ves. Prometeo no trae listas: agregas las tuyas (usa listas legales y gratuitas).',
  addList:'＋ Lista M3U',addChannel:'＋ Canal',ch1:'{0} canal',chN:'{0} canales',tvEmpty:'Todavía no tienes canales.\nAgrega una lista M3U (dirección o archivo) o un canal suelto.',
@@ -590,6 +654,8 @@ es:{
  aboutT:'Acerca de',version:'Versión {0}',devBy:'Desarrollado por',feat1:'Funciona sin internet (solo la radio y la TV que agregues lo usan)',feat2:'No recopila ningún dato tuyo',
  feat3:'Tu música y audios en un solo lugar',madeWith:'Hecho con cariño para la familia · 2026'},
 en:{
+ tabSearch:'🔍 Search',tabPage:'🔗 Web page',tabDirect:'✍️ Direct link',stSearchPh:'Station name (e.g. Easy 93.1 Miami)',searchBtn:'Search',rbNote:'Searches Radio Browser, a free station directory. Only what you typed is sent.',searchingSt:'Searching…',nResults:'{0} results',noStResults:'We couldn\'t find \"{0}\". Try fewer words or paste the link of its web page.',rbFail:'Could not reach the station directory. Try again in a while.',tryBtn:'▶ Try',backResults:'‹ Back',testingNow:'Testing…',worksNow:'✓ It works. The test is playing.',stopTest:'Stop test',testStopped:'Test stopped',nameInList:'Name in your list',saveAlsoIn:'Also save in',seeLink:'See the stream link',saveStation:'Save station',pageLabel:'Link of the station\'s web page',pageHelp:'Copy the link of the page where you listen to the radio in your browser and paste it here.',webPageNote:'In the web version browsers don\'t allow reading other pages: use the app or search by name.',findStream:'🔎 Find the stream',lookingPage:'Checking the page…',foundStream:'✓ We found the stream',foundPerm:'It was a link that may expire. Prometeo replaced it with the provider\'s permanent link ({0}).',foundPlain:'Prometeo found the stream link on the page.',mayExpire:'Note: this link has a code that might expire. If it stops playing, search for it by name.',notFoundT:'We couldn\'t find the stream on that page',notFoundMsg:'Some stations hide their player or use links that expire. No problem, try one of these options:',optSearch:'Search by name',optSearchSub:'We already typed \"{0}\" for you',optDirect:'Type the direct link',optDirectSub:'If someone gave it to you (.mp3, .aac, .m3u8…)',continueBtn:'Test and continue',stationDefault:'Station',rbCredit:'Station search: Radio Browser (radio-browser.info), a free community directory. Only used when you tap Search.',
+ privHidden:'{0} private audios hidden',privHidden1:'1 private audio hidden',privCleaned1:'🔒 1 WhatsApp audio or recording is no longer shown in your music',privHiddenSub:'WhatsApp and recordings. Not shown here.',privSee:'See settings ›',privSetT:'What Prometeo looks for',privSetA:'What Prometeo looks for',privSetIntro:'When searching for music, Prometeo leaves out voice notes and recordings to protect your privacy. Nothing is deleted from the phone.',privToggle:'Include private audios',privOffRec:'Off · recommended',privOnNow:'On · in their own section',privFolders:'Folders that are skipped',pk_wav:'WhatsApp · voice notes',pk_waa:'WhatsApp · received audios',pk_wab:'WhatsApp Business',pk_tg:'Telegram',pk_sg:'Signal',pk_call:'Call recordings',pk_rec:'Voice recorder',done:'Done',privAskT:'Show private audios?',privAsk1:'They may include personal voice notes from WhatsApp, Telegram or call recordings.',privAsk2:'They will appear only in the \"Private\" section, never mixed with your music or in \"Play all\". You can hide them again anytime.',privNo:'Better not',privYes:'Yes, show',segMusic:'🎵 Music · {0}',segPriv:'🔒 Private · {0}',privInfo:'These audios are not mixed with your music, not in \"Play all\" nor in shuffle. They only play if you tap one.',privHideAgain:'🙈 Hide private audios again',privEmpty:'There are no private audios.',privSrc:'Private audio',authTitle:'Open private audios',authSub:'Use your fingerprint, PIN or pattern',noLockT:'Your phone has no screen lock',noLock1:'To protect your private audios, Prometeo uses the phone\'s screen lock: fingerprint, PIN or pattern.',noLock2:'Set one up and come back. Your music keeps working normally meanwhile.',setLock:'Set up screen lock',notNow:'Not now',authFail:'Could not verify',privHiddenToast:'Private audios hidden 🔒',privCleaned:'🔒 {0} WhatsApp audios or recordings are no longer shown in your music',rAll:'All · {0}',rFav:'⭐ Favorites · {0}',rNewList:'＋ New list',editListBtn:'✎ Edit',delListBtn:'🗑 Delete',favAdd:'Mark as favorite',favDel:'Remove from favorites',newRListT:'New station list',editRListT:'Edit list',pickSt:'Choose the stations',nChosen:'{0} chosen',saveListBtn:'Save list',rListEmpty:'This list is empty.\nTap ✎ Edit to add stations.',rFavEmpty:'You have no favorites yet.\nTap ☆ on a station.',delRListQ:'Delete the list \"{0}\"? The stations are not deleted.',delRListT:'Delete list',inList:'{0} · {1} of {2}',listSavedOk:'List saved ✓',listDeletedOk:'List deleted',needStations:'Choose at least one station',myLists:'My lists',m3uGroups:'M3U list groups',tvFav:'⭐ Favorites · {0}',tvNew:'＋ New',chFavAdd:'Mark as favorite',chFavDel:'Remove from favorites',inFav:'In Favorites',notInFav:'Add to Favorites',tapToRemove:'Tap to remove',tapToAdd:'Tap to add',addToMyLists:'Add to my lists',createList:'＋ Create new list',watchNow:'▶ Watch now',newTvListT:'New channel list',fromList:'From the list: {0}',tvFavEmpty:'You have no favorites yet.\nTap ☆ on a channel.',tvListEmpty:'This list is empty.\nPress and hold a channel to add it.',holdHint:'Press and hold a channel to save it to your lists.',chMissing:'No longer in your M3U lists',delTvListQ:'Delete the list \"{0}\"? The channels are not deleted.',addedToList:'Added to \"{0}\" ✓',nCh:'{0} channels',
  testFailNative:'Could not check it here. Save it and tap it: the app player opens more kinds of stations.',
  tabRadio:'Radio/TV',rtStations:'📻 Stations',rtChannels:'📺 Channels',tvTitle:'📺 Channels',tvNote:'Channels use the internet only while you watch them. Prometeo includes no lists: you add your own (use legal, free lists).',
  addList:'＋ M3U list',addChannel:'＋ Channel',ch1:'{0} channel',chN:'{0} channels',tvEmpty:'No channels yet.\nAdd an M3U list (address or file) or a single channel.',
@@ -644,6 +710,8 @@ en:{
  aboutT:'About',version:'Version {0}',devBy:'Developed by',feat1:'Works offline (only the radio and TV you add use the internet)',feat2:'Collects none of your data',
  feat3:'Your music and audio in one place',madeWith:'Made with love for the family · 2026'},
 pt:{
+ tabSearch:'🔍 Buscar',tabPage:'🔗 Página',tabDirect:'✍️ Link direto',stSearchPh:'Nome da rádio (ex. Easy 93.1 Miami)',searchBtn:'Buscar',rbNote:'Busca no Radio Browser, um diretório livre de rádios. Só é enviado o que você escreveu.',searchingSt:'Buscando…',nResults:'{0} resultados',noStResults:'Não encontramos \"{0}\". Tente com menos palavras ou cole o link da página dela.',rbFail:'Não foi possível conectar ao diretório de rádios. Tente de novo daqui a pouco.',tryBtn:'▶ Testar',backResults:'‹ Voltar',testingNow:'Testando…',worksNow:'✓ Funciona. O teste está tocando.',stopTest:'Parar teste',testStopped:'Teste parado',nameInList:'Nome na sua lista',saveAlsoIn:'Salvar também em',seeLink:'Ver o link da transmissão',saveStation:'Salvar rádio',pageLabel:'Link da página da rádio',pageHelp:'Copie o link da página onde você ouve a rádio no navegador e cole aqui.',webPageNote:'Na versão web os navegadores não deixam ler outras páginas: use o app ou busque pelo nome.',findStream:'🔎 Buscar a transmissão',lookingPage:'Verificando a página…',foundStream:'✓ Encontramos a transmissão',foundPerm:'Era um link que pode expirar. O Prometeo trocou pelo link permanente do provedor ({0}).',foundPlain:'O Prometeo encontrou o link da transmissão na página.',mayExpire:'Atenção: este link tem um código que pode expirar. Se parar de tocar, busque pelo nome.',notFoundT:'Não encontramos a transmissão nessa página',notFoundMsg:'Algumas rádios escondem o player ou usam links que expiram. Sem problema, tente uma destas opções:',optSearch:'Buscar pelo nome',optSearchSub:'Já escrevemos \"{0}\" para você',optDirect:'Escrever o link direto',optDirectSub:'Se alguém te passou (.mp3, .aac, .m3u8…)',continueBtn:'Testar e continuar',stationDefault:'Rádio',rbCredit:'Busca de rádios: Radio Browser (radio-browser.info), diretório livre e comunitário. Só é consultado quando você toca em Buscar.',
+ privHidden:'{0} áudios privados ocultos',privHidden1:'1 áudio privado oculto',privCleaned1:'🔒 1 áudio do WhatsApp ou gravação não aparece mais na sua música',privHiddenSub:'WhatsApp e gravações. Não aparecem aqui.',privSee:'Ver ajustes ›',privSetT:'O que o Prometeo procura',privSetA:'O que o Prometeo procura',privSetIntro:'Ao procurar música, o Prometeo deixa de fora as mensagens de voz e as gravações para proteger sua privacidade. Nada é apagado do telefone.',privToggle:'Incluir áudios privados',privOffRec:'Desligado · recomendado',privOnNow:'Ligado · em uma seção própria',privFolders:'Pastas que são ignoradas',pk_wav:'WhatsApp · mensagens de voz',pk_waa:'WhatsApp · áudios recebidos',pk_wab:'WhatsApp Business',pk_tg:'Telegram',pk_sg:'Signal',pk_call:'Gravações de chamadas',pk_rec:'Gravador de voz',done:'Pronto',privAskT:'Mostrar áudios privados?',privAsk1:'Podem incluir mensagens de voz pessoais do WhatsApp, Telegram ou gravações de chamadas.',privAsk2:'Vão aparecer só na seção \"Privados\", nunca misturados com sua música nem em \"Tocar tudo\". Você pode ocultá-los de novo quando quiser.',privNo:'Melhor não',privYes:'Sim, mostrar',segMusic:'🎵 Música · {0}',segPriv:'🔒 Privados · {0}',privInfo:'Estes áudios não se misturam com sua música, nem em \"Tocar tudo\" nem no aleatório. Só tocam se você tocar em um.',privHideAgain:'🙈 Ocultar áudios privados de novo',privEmpty:'Não há áudios privados.',privSrc:'Áudio privado',authTitle:'Abrir áudios privados',authSub:'Use sua digital, seu PIN ou seu padrão',noLockT:'Seu telefone não tem bloqueio',noLock1:'Para proteger seus áudios privados, o Prometeo usa o bloqueio de tela do telefone: digital, PIN ou padrão.',noLock2:'Configure um e volte aqui. Sua música continua funcionando normalmente enquanto isso.',setLock:'Configurar bloqueio',notNow:'Agora não',authFail:'Não foi possível verificar',privHiddenToast:'Áudios privados ocultos 🔒',privCleaned:'🔒 {0} áudios do WhatsApp ou gravações não aparecem mais na sua música',rAll:'Todas · {0}',rFav:'⭐ Favoritas · {0}',rNewList:'＋ Nova lista',editListBtn:'✎ Editar',delListBtn:'🗑 Apagar',favAdd:'Marcar como favorita',favDel:'Tirar das favoritas',newRListT:'Nova lista de rádios',editRListT:'Editar lista',pickSt:'Escolha as rádios',nChosen:'{0} escolhidas',saveListBtn:'Salvar lista',rListEmpty:'Esta lista está vazia.\nToque em ✎ Editar para adicionar rádios.',rFavEmpty:'Você ainda não tem favoritas.\nToque em ☆ numa rádio.',delRListQ:'Apagar a lista \"{0}\"? As rádios não são apagadas.',delRListT:'Apagar lista',inList:'{0} · {1} de {2}',listSavedOk:'Lista salva ✓',listDeletedOk:'Lista apagada',needStations:'Escolha pelo menos uma rádio',myLists:'Minhas listas',m3uGroups:'Grupos da lista M3U',tvFav:'⭐ Favoritos · {0}',tvNew:'＋ Nova',chFavAdd:'Marcar como favorito',chFavDel:'Tirar dos favoritos',inFav:'Nos Favoritos',notInFav:'Adicionar aos Favoritos',tapToRemove:'Toque para tirar',tapToAdd:'Toque para adicionar',addToMyLists:'Adicionar às minhas listas',createList:'＋ Criar lista nova',watchNow:'▶ Ver agora',newTvListT:'Nova lista de canais',fromList:'Da lista: {0}',tvFavEmpty:'Você ainda não tem favoritos.\nToque em ☆ num canal.',tvListEmpty:'Esta lista está vazia.\nMantenha pressionado um canal para adicioná-lo.',holdHint:'Mantenha pressionado um canal para salvá-lo nas suas listas.',chMissing:'Não está mais nas suas listas M3U',delTvListQ:'Apagar a lista \"{0}\"? Os canais não são apagados.',addedToList:'Adicionado a \"{0}\" ✓',nCh:'{0} canais',
  testFailNative:'Não deu para conferir aqui. Salve e toque nela: o player do app abre mais tipos de emissoras.',
  tabRadio:'Rádio/TV',rtStations:'📻 Emissoras',rtChannels:'📺 Canais',tvTitle:'📺 Canais',tvNote:'Os canais usam internet só enquanto você assiste. O Prometeo não traz listas: você adiciona as suas (use listas legais e gratuitas).',
  addList:'＋ Lista M3U',addChannel:'＋ Canal',ch1:'{0} canal',chN:'{0} canais',tvEmpty:'Você ainda não tem canais.\nAdicione uma lista M3U (endereço ou arquivo) ou um canal avulso.',
@@ -698,6 +766,8 @@ pt:{
  aboutT:'Sobre',version:'Versão {0}',devBy:'Desenvolvido por',feat1:'Funciona sem internet (só o rádio e a TV que você adicionar usam)',feat2:'Não coleta nenhum dado seu',
  feat3:'Sua música e áudios em um só lugar',madeWith:'Feito com carinho para a família · 2026'},
 fr:{
+ tabSearch:'🔍 Chercher',tabPage:'🔗 Page web',tabDirect:'✍️ Lien direct',stSearchPh:'Nom de la station (ex. Easy 93.1 Miami)',searchBtn:'Chercher',rbNote:'Cherche dans Radio Browser, un annuaire libre de stations. Seul ce que vous avez écrit est envoyé.',searchingSt:'Recherche…',nResults:'{0} résultats',noStResults:'« {0} » introuvable. Essayez avec moins de mots ou collez le lien de sa page.',rbFail:'Impossible de joindre l\'annuaire des stations. Réessayez plus tard.',tryBtn:'▶ Essayer',backResults:'‹ Retour',testingNow:'Test en cours…',worksNow:'✓ Ça marche. Le test est en lecture.',stopTest:'Arrêter le test',testStopped:'Test arrêté',nameInList:'Nom dans votre liste',saveAlsoIn:'Enregistrer aussi dans',seeLink:'Voir le lien du flux',saveStation:'Enregistrer la station',pageLabel:'Lien de la page de la station',pageHelp:'Copiez le lien de la page où vous écoutez la radio dans le navigateur et collez-le ici.',webPageNote:'Dans la version web, les navigateurs empêchent de lire d\'autres pages : utilisez l\'app ou cherchez par nom.',findStream:'🔎 Trouver le flux',lookingPage:'Analyse de la page…',foundStream:'✓ Flux trouvé',foundPerm:'C\'était un lien qui peut expirer. Prometeo l\'a remplacé par le lien permanent du fournisseur ({0}).',foundPlain:'Prometeo a trouvé le lien du flux dans la page.',mayExpire:'Attention : ce lien contient un code qui peut expirer. S\'il ne marche plus, cherchez la station par nom.',notFoundT:'Flux introuvable sur cette page',notFoundMsg:'Certaines stations cachent leur lecteur ou utilisent des liens qui expirent. Pas de souci, essayez une de ces options :',optSearch:'Chercher par nom',optSearchSub:'Nous avons déjà écrit « {0} » pour vous',optDirect:'Écrire le lien direct',optDirectSub:'Si quelqu\'un vous l\'a donné (.mp3, .aac, .m3u8…)',continueBtn:'Tester et continuer',stationDefault:'Station',rbCredit:'Recherche de stations : Radio Browser (radio-browser.info), annuaire libre et communautaire. Utilisé seulement quand vous touchez Chercher.',
+ privHidden:'{0} audios privés masqués',privHidden1:'1 audio privé masqué',privCleaned1:'🔒 1 audio WhatsApp ou enregistrement ne s\'affiche plus dans votre musique',privHiddenSub:'WhatsApp et enregistrements. Non affichés ici.',privSee:'Voir les réglages ›',privSetT:'Ce que cherche Prometeo',privSetA:'Ce que cherche Prometeo',privSetIntro:'En cherchant la musique, Prometeo laisse de côté les notes vocales et les enregistrements pour protéger votre vie privée. Rien n\'est supprimé du téléphone.',privToggle:'Inclure les audios privés',privOffRec:'Désactivé · recommandé',privOnNow:'Activé · dans leur propre section',privFolders:'Dossiers ignorés',pk_wav:'WhatsApp · notes vocales',pk_waa:'WhatsApp · audios reçus',pk_wab:'WhatsApp Business',pk_tg:'Telegram',pk_sg:'Signal',pk_call:'Enregistrements d\'appels',pk_rec:'Dictaphone',done:'OK',privAskT:'Afficher les audios privés ?',privAsk1:'Ils peuvent contenir des notes vocales personnelles de WhatsApp, Telegram ou des enregistrements d\'appels.',privAsk2:'Ils apparaîtront seulement dans la section « Privés », jamais mélangés à votre musique ni dans « Tout lire ». Vous pouvez les masquer à nouveau quand vous voulez.',privNo:'Plutôt pas',privYes:'Oui, afficher',segMusic:'🎵 Musique · {0}',segPriv:'🔒 Privés · {0}',privInfo:'Ces audios ne se mélangent pas à votre musique, ni dans « Tout lire » ni en aléatoire. Ils ne se lisent que si vous en touchez un.',privHideAgain:'🙈 Masquer à nouveau les audios privés',privEmpty:'Aucun audio privé.',privSrc:'Audio privé',authTitle:'Ouvrir les audios privés',authSub:'Utilisez votre empreinte, votre code PIN ou votre schéma',noLockT:'Votre téléphone n\'a pas de verrouillage',noLock1:'Pour protéger vos audios privés, Prometeo utilise le verrouillage d\'écran du téléphone : empreinte, code PIN ou schéma.',noLock2:'Configurez-en un et revenez ici. Votre musique continue de fonctionner normalement.',setLock:'Configurer le verrouillage',notNow:'Pas maintenant',authFail:'Vérification impossible',privHiddenToast:'Audios privés masqués 🔒',privCleaned:'🔒 {0} audios WhatsApp ou enregistrements ne s\'affichent plus dans votre musique',rAll:'Toutes · {0}',rFav:'⭐ Favorites · {0}',rNewList:'＋ Nouvelle liste',editListBtn:'✎ Modifier',delListBtn:'🗑 Supprimer',favAdd:'Ajouter aux favorites',favDel:'Retirer des favorites',newRListT:'Nouvelle liste de stations',editRListT:'Modifier la liste',pickSt:'Choisissez les stations',nChosen:'{0} choisies',saveListBtn:'Enregistrer la liste',rListEmpty:'Cette liste est vide.\nTouchez ✎ Modifier pour ajouter des stations.',rFavEmpty:'Pas encore de favorites.\nTouchez ☆ sur une station.',delRListQ:'Supprimer la liste « {0} » ? Les stations ne sont pas supprimées.',delRListT:'Supprimer la liste',inList:'{0} · {1} sur {2}',listSavedOk:'Liste enregistrée ✓',listDeletedOk:'Liste supprimée',needStations:'Choisissez au moins une station',myLists:'Mes listes',m3uGroups:'Groupes de la liste M3U',tvFav:'⭐ Favoris · {0}',tvNew:'＋ Nouvelle',chFavAdd:'Ajouter aux favoris',chFavDel:'Retirer des favoris',inFav:'Dans les Favoris',notInFav:'Ajouter aux Favoris',tapToRemove:'Touchez pour retirer',tapToAdd:'Touchez pour ajouter',addToMyLists:'Ajouter à mes listes',createList:'＋ Créer une liste',watchNow:'▶ Regarder',newTvListT:'Nouvelle liste de chaînes',fromList:'De la liste : {0}',tvFavEmpty:'Pas encore de favoris.\nTouchez ☆ sur une chaîne.',tvListEmpty:'Cette liste est vide.\nAppuyez longuement sur une chaîne pour l\'ajouter.',holdHint:'Appuyez longuement sur une chaîne pour l\'enregistrer dans vos listes.',chMissing:'N\'est plus dans vos listes M3U',delTvListQ:'Supprimer la liste « {0} » ? Les chaînes ne sont pas supprimées.',addedToList:'Ajouté à « {0} » ✓',nCh:'{0} chaînes',
  testFailNative:'Vérification impossible ici. Enregistrez-la et touchez-la : le lecteur de l\'app ouvre plus de types de stations.',
  tabRadio:'Radio/TV',rtStations:'📻 Stations',rtChannels:'📺 Chaînes',tvTitle:'📺 Chaînes',tvNote:'Les chaînes utilisent internet seulement pendant que vous les regardez. Prometeo ne fournit aucune liste : vous ajoutez les vôtres (listes légales et gratuites).',
  addList:'＋ Liste M3U',addChannel:'＋ Chaîne',ch1:'{0} chaîne',chN:'{0} chaînes',tvEmpty:'Pas encore de chaînes.\nAjoutez une liste M3U (adresse ou fichier) ou une chaîne seule.',
@@ -1003,12 +1073,13 @@ async function removeFromPl(p,songId){
 
 /* ================= COLA ================= */
 function sourceIds(){
+  if(queueSource.type==='priv'){ const s=songById(queueSource.id); if(s) return [s.id]; queueSource={type:'lib'}; store.set('src',queueSource); }
   if(queueSource.type==='pl'){
     const p=plById(queueSource.id);
-    if(p) return p.songIds.filter(id=>songById(id));
+    if(p) return p.songIds.filter(id=>{ const s=songById(id); return s && !s.priv; });
     queueSource={type:'lib'}; store.set('src',queueSource);
   }
-  return songs.map(s=>s.id);
+  return musicSongs().map(s=>s.id);
 }
 function buildQueue(){
   let ids=sourceIds();
@@ -1018,7 +1089,7 @@ function buildQueue(){
   }
   queue=ids; qPos=currentId? queue.indexOf(currentId) : -1;
 }
-function sourceName(){ if(queueSource.type==='pl'){ const p=plById(queueSource.id); if(p) return t('plSrc',p.name); } return t('library'); }
+function sourceName(){ if(queueSource.type==='priv') return t('privSrc'); if(queueSource.type==='pl'){ const p=plById(queueSource.id); if(p) return t('plSrc',p.name); } return t('library'); }
 function playFrom(src,id){
   queueSource=src; store.set('src',src);
   currentId=id; buildQueue(); renderQueue();
@@ -1085,7 +1156,8 @@ function play(){
 }
 function togglePlay(){
   if(!currentId){
-    if(songs.length) playFrom({type:'lib'}, shuffle? shuffleArr(songs.map(s=>s.id))[0] : songs[0].id);
+    const mus=musicSongs();
+    if(mus.length) playFrom({type:'lib'}, shuffle? shuffleArr(mus.map(s=>s.id))[0] : mus[0].id);
     else pickSongs();
     return;
   }
@@ -1109,7 +1181,7 @@ function prevSong(){
 }
 function cycleRepeat(){ repeatMode=(repeatMode+1)%3; audio.loop=(repeatMode===2); store.set('repeat',repeatMode); applyModeButtons(); toast(t('rep'+repeatMode)); }
 function toggleShuffle(){ shuffle=!shuffle; store.set('shuffle',shuffle); buildQueue(); applyModeButtons(); renderQueue(); updateNowText(); toast(t(shuffle?'shufOn':'shufOff')); }
-function setIdleText(){ $('curTitle').textContent=t('noSong'); $('curSub').textContent=songs.length? t('chooseSong') : t('addFromLib'); }
+function setIdleText(){ $('curTitle').textContent=t('noSong'); $('curSub').textContent=musicSongs().length? t('chooseSong') : t('addFromLib'); }
 function resetNow(){
   currentId=null; qPos=-1;
   setIdleText(); clearCover(); $('curArtist').textContent='';
@@ -1174,17 +1246,40 @@ function songRow(s, onPlay, btns){
 }
 function renderLib(){
   const c=$('libList'); c.textContent='';
-  $('libCount').textContent=nSongs(songs.length)+' • '+t('offline');
-  if(!songs.length){ c.appendChild(el('div','empty',t(PM?'libEmptyNative':'libEmpty'))); return; }
+  const mus=musicSongs(), prv=privSongs(), native=!!PM;
+  $('libCount').textContent=nSongs(mus.length)+' • '+t('offline');
+  $('btnPrivSet').classList.toggle('hidden',!native);
+  const seg=$('libSeg'); seg.textContent='';
+  const showSeg=native && privOn;
+  if(!showSeg || (libSeg==='priv' && !privUnlocked())) libSeg='music';
+  seg.classList.toggle('hidden',!showSeg);
+  if(showSeg) [['music',t('segMusic',mus.length)],['priv',t('segPriv',prv.length)]].forEach(([k,txt])=>{ const b=el('button',libSeg===k?'on':'',txt); b.onclick=()=>setLibSeg(k); seg.appendChild(b); });
+  $('btnPlayAll').classList.toggle('hidden',libSeg==='priv');
+  document.querySelectorAll('#view-biblioteca .btn-scan').forEach(b=>b.classList.toggle('hidden-priv',libSeg==='priv'));
+  if(libSeg==='priv'){
+    const info=el('div','priv-info'); info.appendChild(el('span',null,'ⓘ')); info.appendChild(el('span',null,t('privInfo'))); c.appendChild(info);
+    if(!prv.length) c.appendChild(el('div','empty',t('privEmpty')));
+    prv.forEach(s=>{ const r=songRow(s,()=>{ playFrom({type:'priv',id:s.id},s.id); switchTab('ahora'); },[['🗑',t('del'),()=>deleteSong(s.id),'del']]);
+      const sm=r.querySelector('small'); if(sm && !s.broken) sm.textContent=t('pk_'+s.priv)+' • '+s.fileName; c.appendChild(r); });
+    const h=el('button','btn-ghost',t('privHideAgain')); h.onclick=hidePrivAgain; c.appendChild(h);
+    return;
+  }
+  if(native && !privOn && prv.length){
+    const n=el('button','priv-note'); n.appendChild(el('span',null,'🔒'));
+    const tx=el('span','tx'); tx.appendChild(el('b',null,t(prv.length===1?'privHidden1':'privHidden',prv.length))); tx.appendChild(el('span',null,t('privHiddenSub'))); n.appendChild(tx);
+    n.appendChild(el('span','go',t('privSee'))); n.onclick=openPrivSettings; c.appendChild(n);
+  }
+  if(!mus.length){ c.appendChild(el('div','empty',t(PM?'libEmptyNative':'libEmpty'))); return; }
   const frag=document.createDocumentFragment();
-  songs.forEach(s=>frag.appendChild(songRow(s,()=>{ playFrom({type:'lib'},s.id); switchTab('ahora'); },
+  mus.forEach(s=>frag.appendChild(songRow(s,()=>{ playFrom({type:'lib'},s.id); switchTab('ahora'); },
     [['＋',t('addToPlT'),()=>addToPlaylist(s.id)],['🗑',t('del'),()=>deleteSong(s.id),'del']])));
   c.appendChild(frag);
 }
 function renderSearch(){
   const q=($('searchInput').value||'').trim().toLowerCase(), c=$('searchResults'); c.textContent='';
-  if(!songs.length){ c.appendChild(el('div','empty',t('libEmpty2'))); return; }
-  const f=q? songs.filter(s=>s.name.toLowerCase().includes(q)||s.fileName.toLowerCase().includes(q)) : songs;
+  const mus=musicSongs();
+  if(!mus.length){ c.appendChild(el('div','empty',t('libEmpty2'))); return; }
+  const f=q? mus.filter(s=>s.name.toLowerCase().includes(q)||s.fileName.toLowerCase().includes(q)) : mus;
   if(!f.length){ c.appendChild(el('div','empty',t('noResults',q))); return; }
   const frag=document.createDocumentFragment();
   f.forEach(s=>frag.appendChild(songRow(s,()=>{ playFrom({type:'lib'},s.id); switchTab('ahora'); },[['＋',t('addToPlT'),()=>addToPlaylist(s.id)]])));
@@ -1240,7 +1335,7 @@ function updateNowText(){
 function updateMini(){
   if(radioId){ const st=stationById(radioId), show=!!st && currentTab!=='ahora';
     $('mini').classList.toggle('hidden',!show); document.body.classList.toggle('has-mini',show);
-    if(st){ $('miniTitle').textContent=st.name; $('miniSub').textContent=t('live'); } return; }
+    if(st){ $('miniTitle').textContent=st.name; $('miniSub').textContent=radioFilter!=='all' && radioPool().includes(st)? radioPosText(st) : t('live'); } return; }
   $('miniSub').textContent=t('tapOpen');
   const s=currentId && songById(currentId);
   const show=!!s && currentTab!=='ahora';
@@ -1608,14 +1703,17 @@ function validUrl(u){ const v=String(u||'').trim(); return /^https?:\/\/[^\s\/?#
 function renderRadio(){
   const c=$('radioList'); if(!c) return; c.textContent='';
   $('radioCount').textContent=t(radios.length===1?'st1':'stN',radios.length);
+  renderRadioChips();
   if(!radios.length){ c.appendChild(el('div','empty',t('radioEmpty'))); return; }
-  radios.forEach(st=>{
+  const pool=radioPool();
+  if(!pool.length){ c.appendChild(el('div','empty',t(radioFilter==='fav'?'rFavEmpty':'rListEmpty'))); return; }
+  pool.forEach(st=>{
     const r=el('div','song-item'+(st.id===radioId?' live':'')); r.appendChild(stTile(st));
     const info=el('div','song-info'); info.appendChild(el('b',null,st.name));
     let host=st.url.replace(/^https?:\/\//i,'');
     info.appendChild(st.id===radioId? el('small','st-live',t('live')) : el('small',null,host));
     info.onclick=()=>{ playRadio(st.id); switchTab('ahora'); }; r.appendChild(info);
-    [['✎',t('edit'),()=>editStation(st)],['🗑',t('del'),()=>deleteStation(st),'del']].forEach(([ic,ti,fn,cls])=>{
+    [[st.fav?'★':'☆',t(st.fav?'favDel':'favAdd'),()=>toggleFavStation(st),'star'+(st.fav?'':' off')],['✎',t('edit'),()=>editStation(st)],['🗑',t('del'),()=>deleteStation(st),'del']].forEach(([ic,ti,fn,cls])=>{
       const b=el('button','icon-btn'+(cls?' '+cls:''),ic); b.title=ti; b.setAttribute('aria-label',ti); b.onclick=e=>{ e.stopPropagation(); fn(); }; r.appendChild(b); });
     c.appendChild(r);
   });
@@ -1670,7 +1768,9 @@ async function deleteStation(st){
   const yes=await modal(t('delStationT'),b=>b.appendChild(el('p','m-msg',t('delStationQ',st.name))),[[t('cancel'),()=>false,'btn-pill'],[t('del'),()=>true,'btn-danger']]);
   if(!yes) return;
   if(st.id===radioId) stopRadio(false);
-  radios=radios.filter(r=>r.id!==st.id); saveRadios(); renderRadio(); toast(t('stationDel'));
+  radios=radios.filter(r=>r.id!==st.id); saveRadios();
+  radioLists.forEach(L=>{ L.ids=L.ids.filter(id=>id!==st.id); }); saveRadioLists();
+  renderRadio(); toast(t('stationDel'));
 }
 function showStationTile(st){
   clearCover(); const u=stTileDataURL(st); coverFor='radio';
@@ -1680,9 +1780,15 @@ function showStationTile(st){
 function updateRadioText(){
   const st=stationById(radioId); if(!st) return;
   $('curTitle').textContent=st.name;
-  $('radioPos').textContent=t('radioOfN',radios.indexOf(st)+1,radios.length);
+  $('radioPos').textContent=radioPosText(st);
   $('curSub').textContent=st.url.replace(/^https?:\/\//i,'');
   updateRadioTimes();
+}
+/* "Radio • 2 de 8", o "Carro · 1 de 4" si se está usando una lista */
+function radioPosText(st){
+  const pool=radioPool(), i=pool.indexOf(st);
+  if(radioFilter!=='all' && i>=0) return t('inList', radioFilter==='fav'? t('rFav','').replace(/ · $/,'') : (radioListById(radioFilter)||{}).name, i+1, pool.length);
+  return t('radioOfN',radios.indexOf(st)+1,radios.length);
 }
 function updateRadioTimes(){
   if(!radioId) return;
@@ -1706,9 +1812,10 @@ function toggleRadio(){
   else radioPauseAny();
 }
 function switchStation(dir){
-  if(!radios.length) return;
-  let i=radios.findIndex(r=>r.id===radioId); i=(i+dir+radios.length)%radios.length;
-  playRadio(radios[i].id);
+  let pool=radioPool(); if(!pool.length) pool=radios; if(!pool.length) return;
+  let i=pool.findIndex(r=>r.id===radioId);
+  i= i<0? (dir>0? 0 : pool.length-1) : (i+dir+pool.length)%pool.length;
+  playRadio(pool[i].id);
 }
 function stopRadio(forSong){
   radioAudio.pause(); radioAudio.removeAttribute('src'); radioAudio.load();
@@ -1792,21 +1899,32 @@ function renderTv(){
     ls.appendChild(r);
   });
   const has=all.length>0;
-  $('tvSearch').classList.toggle('hidden',!has); $('tvGroups').classList.toggle('hidden',!has);
+  renderTvMy(has);
+  const sel=tvSelItems();
+  $('tvSearch').classList.toggle('hidden',!has && !sel); $('tvGroups').classList.toggle('hidden',!has || !!sel);
   const groups=[...new Set(all.map(c=>c.g).filter(Boolean))].sort((a,b)=>a.localeCompare(b,LANG));
   if(tvGroup && !groups.includes(tvGroup)) tvGroup='';
   const gc=$('tvGroups'); gc.textContent='';
-  if(groups.length>1) [''].concat(groups).forEach(g=>{ const b=el('button',g===tvGroup?'on':'',g||t('allGroups')); b.onclick=()=>{ tvGroup=g; renderTv(); }; gc.appendChild(b); });
+  if(groups.length>1 && !sel) [''].concat(groups).forEach(g=>{ const b=el('button',g===tvGroup?'on':'',g||t('allGroups')); b.onclick=()=>{ tvGroup=g; renderTv(); }; gc.appendChild(b); });
   else gc.classList.add('hidden');
+  $('tvGrpLabel').classList.toggle('hidden',gc.classList.contains('hidden'));
+  $('tvHint').classList.toggle('hidden',!has || tvMy.length>0 || tvFav.length>0);
   const c=$('tvList'); c.textContent='';
-  if(!has){ c.appendChild(el('div','empty',t('tvEmpty'))); return; }
+  if(!has && !sel){ c.appendChild(el('div','empty',t('tvEmpty'))); return; }
   const q=$('tvSearch').value.trim().toLowerCase();
-  const list=all.filter(ch=>(!tvGroup || ch.g===tvGroup) && (!q || ch.n.toLowerCase().includes(q) || (ch.g||'').toLowerCase().includes(q)));
+  const base=sel || all;
+  const list=base.filter(ch=>(sel || !tvGroup || ch.g===tvGroup) && (!q || ch.n.toLowerCase().includes(q) || (ch.g||'').toLowerCase().includes(q)));
+  if(sel && !base.length){ c.appendChild(el('div','empty',t(tvSel==='fav'?'tvFavEmpty':'tvListEmpty'))); return; }
+  const urls=new Set(all.map(x=>x.u));
   const frag=document.createDocumentFragment();
   list.slice(0,200).forEach(ch=>{
-    const r=el('div','song-item'); r.appendChild(stTile({name:ch.n,color:chColor(ch.n)}));
-    const info=el('div','song-info'); info.appendChild(el('b',null,ch.n)); info.appendChild(el('small',null,ch.g||ch.u.replace(/^[a-z]+:\/\//i,'')));
-    info.onclick=()=>playChannel(ch); r.appendChild(info); frag.appendChild(r);
+    const r=el('div','song-item'+(ch.missing?' missing':'')); r.appendChild(stTile({name:ch.n,color:chColor(ch.n)}));
+    const info=el('div','song-info'); info.appendChild(el('b',null,ch.n)); info.appendChild(el('small',null,ch.missing? t('chMissing') : (ch.g||ch.u.replace(/^[a-z]+:\/\//i,''))));
+    info.onclick=()=>playChannel(ch); r.appendChild(info);
+    const fav=isFavCh(ch,urls), sb=el('button','icon-btn star'+(fav?'':' off'),fav?'★':'☆'); sb.title=t(fav?'chFavDel':'chFavAdd'); sb.setAttribute('aria-label',sb.title);
+    sb.onclick=e=>{ e.stopPropagation(); toggleFavCh(ch); }; r.appendChild(sb);
+    onLongPress(r,()=>openChSheet(ch));
+    frag.appendChild(r);
   });
   c.appendChild(frag);
   if(list.length>200) c.appendChild(el('div','empty',t('moreCh',list.length-200)));
@@ -1957,7 +2075,7 @@ function carControl(ev){
 let PM=null, appReady=false, scanning=false, nativeStarted=false;
 const NO_PLAY_MIME=/wma|amr|aiff|midi|x-ms/i, NO_PLAY_EXT=/\.(wma|amr|aiff?|midi?|3ga)$/i;
 function songRecord(s){ const r={id:s.id,name:s.name,fileName:s.fileName,mime:s.mime,size:s.size,added:s.added||Date.now()};
-  if(s.mid!=null) r.mid=s.mid; if(s.artist) r.artist=s.artist; if(s.album) r.album=s.album; if(s.title) r.title=s.title; return r; }
+  if(s.mid!=null) r.mid=s.mid; if(s.artist) r.artist=s.artist; if(s.album) r.album=s.album; if(s.title) r.title=s.title; if(s.priv) r.priv=s.priv; return r; }
 /* Una copia de la v40 pasa a usar el original: se guarda la referencia y se borra la copia (en un solo paso) */
 function linkCopy(meta){
   return new Promise((res,rej)=>{
@@ -1995,41 +2113,470 @@ async function scanPhone(manual){
   const hidden=new Set(store.get('hidden',[]).map(String));
   const have=new Map(); songs.forEach(s=>{ if(s.mid!=null) have.set(String(s.mid),s); });
   const copies=songs.filter(s=>s.mid==null);
-  const seen=new Set(); let added=0, freedBytes=0, changed=false;
+  const seen=new Set(); let added=0, freedBytes=0, changed=false, newPriv=0;
   for(let i=0;i<list.length;i++){
     const f=list[i], k=String(f.id); seen.add(k);
     const fn=f.name || f.title || t('songDefault',i+1);
     const mime=String(f.mime||'').toLowerCase();
     if(NO_PLAY_MIME.test(mime) || NO_PLAY_EXT.test(fn)) continue;
     const artist=(f.artist && f.artist!=='<unknown>')? f.artist : '';
+    const kind=privKind(f.folder,fn,f.rec);
     const old=have.get(k);
-    if(old){ if(old.broken){ old.broken=false; changed=true; } continue; }
+    if(old){
+      if(old.broken){ old.broken=false; changed=true; }
+      if(old.id==='p'+k && (old.priv||'')!==kind){ if(kind && !old.priv) newPriv++; if(kind) old.priv=kind; else delete old.priv; changed=true; try{ await dbPut('songs',songRecord(old)); }catch(e){} }
+      continue;
+    }
     /* ¿esta canción ya estaba copiada desde la v40? -> usar el original y borrar la copia */
     const ci=copies.findIndex(c=>c.fileName===fn && (c.size || (c.blob && c.blob.size) || -1)===f.size);
     if(ci>=0){
       const c=copies.splice(ci,1)[0];
-      const meta=songRecord(c); meta.mid=f.id; meta.size=f.size; if(artist) meta.artist=artist;
+      const meta=songRecord(c); meta.mid=f.id; meta.size=f.size; if(artist) meta.artist=artist; delete meta.priv; /* la agregó el usuario a mano en la v40: no se oculta */
       if(!meta.mime) meta.mime=mime||guessType(fn);
-      try{ await linkCopy(meta); delete c.blob; Object.assign(c,meta); c.broken=false; freedBytes+=f.size; changed=true; }catch(e){}
+      try{ await linkCopy(meta); delete c.blob; Object.assign(c,meta); delete c.priv; c.broken=false; freedBytes+=f.size; changed=true; }catch(e){}
       continue;
     }
     if(hidden.has(k)) continue;
     const meta={id:'p'+k, mid:f.id, name:cleanName(fn), fileName:fn, mime:mime||guessType(fn), size:f.size, added:Date.now()+i};
     if(artist) meta.artist=artist;
-    try{ await dbPut('songs',meta); songs.push(meta); added++; changed=true; }catch(e){}
+    if(kind) meta.priv=kind;
+    try{ await dbPut('songs',meta); songs.push(meta); if(!kind) added++; changed=true; }catch(e){}
   }
   /* las que ya no están en el teléfono se marcan (no se borran: puede ser una memoria SD que se sacó) */
   if(list.length) songs.forEach(s=>{ if(s.mid!=null && !seen.has(String(s.mid)) && !s.broken){ s.broken=true; changed=true; } });
   scanning=false;
   if(changed){
-    sortSongs(); if(queueSource.type==='lib') buildQueue(); qPos=queue.indexOf(currentId);
+    sortSongs(); await cleanPriv(); if(queueSource.type==='lib') buildQueue(); qPos=queue.indexOf(currentId);
+    if(currentId && queueSource.type!=='priv'){ const cs=songById(currentId); if(cs && cs.priv){ stopAudio(); resetNow(); } }
     renderAll(); if(!currentId && queue.length && !radioId){ currentId=queue[0]; loadById(currentId,false); }
   }
+  if(newPriv) setTimeout(()=>toast(t(newPriv===1?'privCleaned1':'privCleaned',newPriv)),2600);
   if(freedBytes) toast(t('freed',Math.max(1,Math.round(freedBytes/1048576)))+(added? ' · '+t('scanNew',added) : ''));
   else if(added) toast(t('scanNew',added));
   else if(manual) toast(t('scanNone'));
 }
 document.querySelectorAll('.btn-scan').forEach(b=>b.onclick=()=>scanPhone(true));
+
+/* ================= AUDIOS PRIVADOS (v41) =================
+   Las notas de voz y audios de WhatsApp, Telegram, Signal y las grabaciones NO entran a tu música.
+   Solo se ven si el usuario lo activa a propósito, en su propia sección, y con la huella / PIN / patrón del teléfono. */
+function privKind(folder,file,rec){
+  const p=('/'+String(folder||'')+'/').toLowerCase().replace(/\\/g,'/'), f=String(file||'').toLowerCase();
+  const wa=/whatsapp|com\.whatsapp/.test(p);
+  if(/whatsapp business|com\.whatsapp\.w4b/.test(p)) return 'wab';
+  if((wa && /voice notes/.test(p)) || /^ptt-\d{8}-wa\d+/.test(f)) return 'wav';
+  if(wa || /^aud-\d{8}-wa\d+/.test(f)) return 'waa';
+  if(/telegram/.test(p)) return 'tg';
+  if(/\/signal\/|org\.thoughtcrime/.test(p)) return 'sg';
+  if(/\/calls?\/|call ?rec|callrec|grabaciones de llamada|\/llamadas\//.test(p)) return 'call';
+  if(rec || /\/recordings\/|voice ?recorder|sound ?recorder|soundrecorder|\/grabadora|\/sounds\//.test(p)) return 'rec';
+  return '';
+}
+function privUnlocked(){ return privUnlockedAt>0 && Date.now()-privUnlockedAt<PRIV_UNLOCK_MS; }
+function lockPriv(){ if(authBusy) return; privUnlockedAt=0; if(libSeg==='priv'){ libSeg='music'; renderLib(); } }
+/* Quita los audios privados de las playlists y de la cola (los archivos no se tocan) */
+async function cleanPriv(){
+  const pr=new Set(privSongs().map(s=>s.id)); if(!pr.size) return;
+  for(const p of playlists){ const keep=p.songIds.filter(id=>!pr.has(id)); if(keep.length!==p.songIds.length){ p.songIds=keep; try{ await dbPut('playlists',p); }catch(e){} } }
+  if(queueSource.type!=='priv'){ buildQueue(); renderQueue(); }
+}
+async function requireAuth(){
+  if(!PM || !PM.authenticate) return false;
+  let secure=false; try{ secure=await PM.lockStatus(); }catch(e){}
+  if(!secure){ await noLockDialog(); return false; }
+  authBusy=true;
+  try{ await PM.authenticate(t('authTitle'),t('authSub')); privUnlockedAt=Date.now(); return true; }
+  catch(e){ const m=String(e); if(m==='nolock') await noLockDialog(); else if(m!=='cancel') toast(t('authFail')); return false; }
+  finally{ setTimeout(()=>{ authBusy=false; },1500); }
+}
+async function noLockDialog(){
+  const go=await modal(t('noLockT'),b=>{ b.appendChild(el('p','m-msg',t('noLock1'))); b.appendChild(el('p','m-msg',t('noLock2'))); },
+    [[t('notNow'),()=>false,'btn-pill'],[t('setLock'),()=>true,'btn-ok']]);
+  if(go && PM && PM.openLockSettings) PM.openLockSettings().catch(()=>{});
+}
+async function setLibSeg(k){
+  if(k==='priv' && !privUnlocked()){ if(!(await requireAuth())) return; }
+  libSeg=k; renderLib();
+}
+async function openPrivSettings(){
+  const counts={}; privSongs().forEach(s=>{ counts[s.priv]=(counts[s.priv]||0)+1; });
+  const r=await modal(t('privSetT'),(b,close)=>{
+    b.appendChild(el('p','m-msg',t('privSetIntro')));
+    b.appendChild(optRow(privOn,el('span','opt-ic','🔒'),t('privToggle'),t(privOn?'privOnNow':'privOffRec'),()=>close('toggle')));
+    b.appendChild(el('div','field-label',t('privFolders')));
+    PRIV_KINDS.forEach(k=>{ const row=el('div','cnt-row'); row.appendChild(el('span',null,'🔒 '+t('pk_'+k))); row.appendChild(el('small',null,String(counts[k]||0))); b.appendChild(row); });
+  },[[t('done'),()=>null,'btn-ok']]);
+  if(r!=='toggle') return;
+  if(privOn){ privOn=false; store.set('privOn',false); privUnlockedAt=0; libSeg='music'; renderLib(); toast(t('privHiddenToast')); return; }
+  const yes=await modal(t('privAskT'),b=>{ b.appendChild(el('p','m-msg',t('privAsk1'))); b.appendChild(el('p','m-msg',t('privAsk2'))); },
+    [[t('privYes'),()=>true,'btn-pill'],[t('privNo'),()=>false,'btn-ok']]);
+  if(!yes) return;
+  if(!privUnlocked() && !(await requireAuth())) return;
+  privOn=true; store.set('privOn',true); libSeg='priv'; renderLib();
+}
+function hidePrivAgain(){ privOn=false; store.set('privOn',false); privUnlockedAt=0; libSeg='music'; renderLib(); toast(t('privHiddenToast')); }
+document.addEventListener('visibilitychange',()=>{ if(document.hidden) lockPriv(); });
+document.addEventListener('pause',lockPriv,false);
+
+/* ================= LISTAS Y FAVORITAS DE EMISORAS (v41) ================= */
+function saveRadioLists(){ store.set('radioLists',radioLists); }
+function radioListById(id){ return radioLists.find(l=>l.id===id); }
+/* Las emisoras por las que pasan ⏮ ⏭ y el volante: las de la lista elegida */
+function radioPool(){
+  if(radioFilter==='fav') return radios.filter(r=>r.fav);
+  const L=radioListById(radioFilter); if(L) return L.ids.map(stationById).filter(Boolean);
+  return radios;
+}
+function setRadioFilter(f){ radioFilter=f; store.set('radioFilter',f); renderRadio(); if(radioId){ updateRadioText(); updateMini(); } }
+function toggleFavStation(st){ st.fav=!st.fav; saveRadios(); renderRadio(); toast((st.fav?'★ ':'☆ ')+st.name); }
+function renderRadioChips(){
+  const c=$('radioChips'), bar=$('radioListBar'); if(!c) return; c.textContent=''; bar.textContent='';
+  if(radioFilter!=='all' && radioFilter!=='fav' && !radioListById(radioFilter)){ radioFilter='all'; store.set('radioFilter','all'); }
+  c.classList.toggle('hidden',!radios.length); bar.classList.add('hidden');
+  if(!radios.length) return;
+  const chip=(id,txt,cls)=>{ const b=el('button',(radioFilter===id?'on':'')+(cls?' '+cls:''),txt); b.onclick=()=>setRadioFilter(id); c.appendChild(b); };
+  chip('all',t('rAll',radios.length)); chip('fav',t('rFav',radios.filter(r=>r.fav).length),'fav');
+  radioLists.forEach(L=>chip(L.id,L.name+' · '+L.ids.filter(id=>stationById(id)).length));
+  const nb=el('button','add',t('rNewList')); nb.onclick=()=>editRadioList(null); c.appendChild(nb);
+  const L=radioListById(radioFilter);
+  if(L){ bar.classList.remove('hidden'); bar.appendChild(el('b',null,L.name));
+    const e=el('button','btn-pill',t('editListBtn')); e.onclick=()=>editRadioList(L); bar.appendChild(e);
+    const d=el('button','btn-pill del',t('delListBtn')); d.onclick=()=>deleteRadioList(L); bar.appendChild(d); }
+}
+async function editRadioList(L){
+  let nameIn; const chosen=new Set(L? L.ids : []);
+  const res=await modal(L? t('editRListT') : t('newRListT'),(b,close)=>{
+    b.appendChild(el('label','field-label',t('listName')));
+    nameIn=el('input','search'); nameIn.type='text'; nameIn.maxLength=40; nameIn.value=L? L.name : ''; b.appendChild(nameIn);
+    const head=el('div','field-label'); head.textContent=t('pickSt'); const cnt=el('span','cnt',' · '+t('nChosen',chosen.size)); head.appendChild(cnt); b.appendChild(head);
+    radios.forEach(st=>{
+      const row=el('label','chk-row'); const cb=el('input'); cb.type='checkbox'; cb.checked=chosen.has(st.id);
+      cb.onchange=()=>{ if(cb.checked) chosen.add(st.id); else chosen.delete(st.id); cnt.textContent=' · '+t('nChosen',chosen.size); };
+      row.appendChild(cb); row.appendChild(el('span',null,st.name)); if(st.fav) row.appendChild(el('i','star-mini','★')); b.appendChild(row);
+    });
+    const row=el('div','st-actions');
+    const bc=el('button','btn-pill',t('cancel')); bc.onclick=()=>close(null);
+    const bs=el('button','btn-ok',t('saveListBtn')); bs.onclick=()=>{
+      const n=nameIn.value.trim(); if(!n){ toast(t('needName')); nameIn.focus(); return; }
+      if(!chosen.size){ toast(t('needStations')); return; }
+      close({name:n, ids:radios.map(r=>r.id).filter(id=>chosen.has(id))});
+    };
+    row.appendChild(bc); row.appendChild(bs); b.appendChild(row);
+  },[]);
+  if(!res) return;
+  if(L){ L.name=res.name; L.ids=res.ids; } else { L={id:'rl'+uid(), name:res.name, ids:res.ids}; radioLists.push(L); }
+  saveRadioLists(); setRadioFilter(L.id); toast(t('listSavedOk'));
+}
+async function deleteRadioList(L){
+  const yes=await modal(t('delRListT'),b=>b.appendChild(el('p','m-msg',t('delRListQ',L.name))),[[t('cancel'),()=>false,'btn-pill'],[t('del'),()=>true,'btn-danger']]);
+  if(!yes) return;
+  radioLists=radioLists.filter(x=>x.id!==L.id); saveRadioLists(); setRadioFilter('all'); toast(t('listDeletedOk'));
+}
+
+/* ================= FAVORITOS Y LISTAS DE CANALES (v41) =================
+   Se guardan con la dirección y el nombre del canal: si actualizas la lista M3U, se reconocen igual. */
+function saveTvFav(){ store.set('tvFav',tvFav); } function saveTvMy(){ store.set('tvMyLists',tvMy); }
+const chSnap=ch=>({u:ch.u, n:ch.n, g:ch.g||''});
+/* Busca el canal actual que corresponde a uno guardado: primero por dirección, luego por nombre */
+function resolveCh(it, all){
+  all=all||allChannels();
+  const m=all.find(c=>c.u===it.u) || all.find(c=>c.n===it.n && (c.g||'')===(it.g||'')) || all.find(c=>c.n===it.n);
+  if(m && m.u!==it.u){ it.u=m.u; it.g=m.g||''; return {ch:m, moved:true}; }
+  return {ch:m||null, moved:false};
+}
+function itemIndex(arr, ch, urls){
+  let i=arr.findIndex(f=>f.u===ch.u); if(i>=0) return i;
+  return arr.findIndex(f=>f.n===ch.n && !(urls && urls.has(f.u)));
+}
+function isFavCh(ch, urls){ return itemIndex(tvFav,ch,urls)>=0; }
+function toggleFavCh(ch){
+  const i=itemIndex(tvFav,ch); if(i>=0) tvFav.splice(i,1); else tvFav.push(chSnap(ch));
+  saveTvFav(); renderTv(); toast((i>=0?'☆ ':'★ ')+ch.n);
+}
+function tvSelItems(){
+  const all=allChannels(); let src=null, moved=false;
+  if(tvSel==='fav') src=tvFav; else { const L=tvMy.find(x=>x.id===tvSel); if(L) src=L.items; }
+  if(!src) return null;
+  const out=src.map(it=>{ const r=resolveCh(it,all); if(r.moved) moved=true; return r.ch || Object.assign({missing:true},{n:it.n,g:it.g,u:it.u}); });
+  if(moved){ saveTvFav(); saveTvMy(); }
+  return out;
+}
+function renderTvMy(hasAny){
+  const box=$('tvMyBox'), c=$('tvMyChips'), bar=$('tvListBar'); c.textContent=''; bar.textContent=''; bar.classList.add('hidden');
+  const show=hasAny || tvFav.length || tvMy.length; box.classList.toggle('hidden',!show);
+  if(tvSel && tvSel!=='fav' && !tvMy.find(x=>x.id===tvSel)) tvSel='';
+  const chip=(id,txt,cls)=>{ const b=el('button',(tvSel===id?'on':'')+(cls?' '+cls:''),txt); b.onclick=()=>{ tvSel=(tvSel===id? '' : id); renderTv(); }; c.appendChild(b); };
+  chip('fav',t('tvFav',tvFav.length),'fav');
+  tvMy.forEach(L=>chip(L.id,L.name+' · '+L.items.length));
+  const nb=el('button','add',t('tvNew')); nb.onclick=()=>newTvList(null); c.appendChild(nb);
+  const L=tvMy.find(x=>x.id===tvSel);
+  if(L){ bar.classList.remove('hidden'); bar.appendChild(el('b',null,L.name));
+    const e=el('button','btn-pill',t('rename')); e.onclick=async()=>{ const n=await askText(t('rename'),L.name); if(n){ L.name=n; saveTvMy(); renderTv(); } }; bar.appendChild(e);
+    const d=el('button','btn-pill del',t('delListBtn')); d.onclick=()=>deleteTvList(L); bar.appendChild(d); }
+}
+async function newTvList(ch){
+  const n=await askText(t('newTvListT'),''); if(!n) return null;
+  const L={id:'tl'+uid(), name:n, items: ch? [chSnap(ch)] : []}; tvMy.push(L); saveTvMy();
+  if(!ch) tvSel=L.id; renderTv(); toast(ch? t('addedToList',n) : t('listSavedOk')); return L;
+}
+async function deleteTvList(L){
+  const yes=await modal(t('delRListT'),b=>b.appendChild(el('p','m-msg',t('delTvListQ',L.name))),[[t('cancel'),()=>false,'btn-pill'],[t('del'),()=>true,'btn-danger']]);
+  if(!yes) return;
+  tvMy=tvMy.filter(x=>x.id!==L.id); saveTvMy(); if(tvSel===L.id) tvSel=''; renderTv(); toast(t('listDeletedOk'));
+}
+/* Mantener presionado un canal: favorito y "mis listas" */
+async function openChSheet(ch){
+  const L0=tvLists.find(L=>L.channels.includes(ch));
+  const r=await modal(ch.n,(b,close)=>{
+    if(L0) b.appendChild(el('p','m-msg',t('fromList',L0.name)+(ch.g? ' · '+ch.g : '')));
+    const fav=isFavCh(ch);
+    b.appendChild(optRow(fav,el('span','opt-ic',fav?'★':'☆'),t(fav?'inFav':'notInFav'),t(fav?'tapToRemove':'tapToAdd'),()=>{ toggleFavCh(ch); close('again'); }));
+    b.appendChild(el('div','field-label',t('addToMyLists')));
+    tvMy.forEach(L=>{
+      const row=el('label','chk-row'); const cb=el('input'); cb.type='checkbox'; cb.checked=itemIndex(L.items,ch)>=0;
+      cb.onchange=()=>{ const i=itemIndex(L.items,ch); if(cb.checked && i<0) L.items.push(chSnap(ch)); if(!cb.checked && i>=0) L.items.splice(i,1); saveTvMy(); renderTv(); };
+      row.appendChild(cb); row.appendChild(el('span',null,L.name)); row.appendChild(el('small',null,t('nCh',L.items.length))); b.appendChild(row);
+    });
+    const nb=el('button','m-item new',t('createList')); nb.onclick=()=>close('new'); b.appendChild(nb);
+  },[[t('watchNow'),()=>'play','btn-pill'],[t('done'),()=>null,'btn-ok']]);
+  if(r==='again') return openChSheet(ch);
+  if(r==='new'){ await newTvList(ch); return; }
+  if(r==='play') playChannel(ch);
+}
+/* "mantener presionado" en celulares (y clic derecho en la web) */
+function onLongPress(node, fn){
+  let tm=null, sx=0, sy=0, fired=false;
+  const cancel=()=>{ clearTimeout(tm); tm=null; };
+  node.addEventListener('pointerdown',e=>{ fired=false; sx=e.clientX; sy=e.clientY; cancel(); tm=setTimeout(()=>{ fired=true; tm=null; if(navigator.vibrate) try{ navigator.vibrate(15); }catch(x){} fn(); },550); });
+  node.addEventListener('pointermove',e=>{ if(tm && (Math.abs(e.clientX-sx)>10 || Math.abs(e.clientY-sy)>10)) cancel(); });
+  ['pointerup','pointercancel','pointerleave'].forEach(ev=>node.addEventListener(ev,cancel));
+  node.addEventListener('contextmenu',e=>{ e.preventDefault(); if(!fired){ cancel(); fired=true; fn(); } });
+  node.addEventListener('click',e=>{ if(fired){ e.stopPropagation(); e.preventDefault(); fired=false; } },true);
+}
+
+/* ================= AGREGAR EMISORA FÁCIL (v41) =================
+   1) Buscar por nombre en Radio Browser (directorio libre). Solo se envía lo que escribiste, solo al tocar Buscar.
+   2) Pegar el link de la página de la emisora: Prometeo busca la transmisión dentro y, si es de un proveedor conocido,
+      la cambia por su link permanente (sin token que caduca). Nunca se falsifican tokens.
+   3) Link directo, como antes. */
+const RB_FALLBACK=['de1.api.radio-browser.info','fi1.api.radio-browser.info','de2.api.radio-browser.info','nl1.api.radio-browser.info'];
+let rbHosts=null;
+async function rbServerList(){
+  if(rbHosts && rbHosts.length) return rbHosts;
+  let h=[]; if(PM && PM.rbServers){ try{ h=(await PM.rbServers())||[]; }catch(e){} }
+  if(!h.length) h=RB_FALLBACK.slice();
+  rbHosts=shuffleArr(h); return rbHosts;
+}
+async function getUrlText(url, asBrowser){
+  if(PM && PM.fetchPage) return await PM.fetchPage(url, asBrowser);
+  const r=await fetch(url); if(!r.ok) throw new Error('HTTP '+r.status);
+  const ct=(r.headers.get('content-type')||'').toLowerCase();
+  if(/^audio\//.test(ct)) return {type:'audio', url:r.url||url, ctype:ct};
+  return {type:'text', url:r.url||url, ctype:ct, text:await r.text()};
+}
+async function rbSearch(q){
+  const hosts=await rbServerList(); let lastErr=null;
+  for(const h of hosts){
+    try{
+      const r=await getUrlText('https://'+h+'/json/stations/search?name='+encodeURIComponent(q)+'&limit=40&hidebroken=true&order=votes&reverse=true', false);
+      const arr=JSON.parse(r.text||'[]'); const seen=new Set(), out=[];
+      arr.forEach(x=>{ const u=String(x.url_resolved||x.url||'').trim(); if(!u || seen.has(u) || !/^https?:\/\//i.test(u)) return; seen.add(u);
+        out.push({name:String(x.name||'').trim()||u, url:u, cc:String(x.countrycode||''), place:String(x.state||x.country||'').trim(), codec:String(x.codec||''), br:+x.bitrate||0}); });
+      return out;
+    }catch(e){ lastErr=e; rbHosts=hosts.filter(x=>x!==h).concat([h]); }
+  }
+  throw lastErr||new Error('rb');
+}
+function ccFlag(cc){ cc=String(cc||'').toUpperCase(); if(!/^[A-Z]{2}$/.test(cc)) return '📻'; return String.fromCodePoint(...[...cc].map(c=>0x1F1E6+c.charCodeAt(0)-65)); }
+function stSub(c){ return [ccFlag(c.cc)+(c.place? ' '+c.place : ''), [c.codec, c.br? c.br+' kbps' : ''].filter(Boolean).join(' ')].filter(Boolean).join(' · '); }
+
+/* ---- encontrar la transmisión dentro de una página ---- */
+const AD_PARAMS=/^(amsparams|awparams|skey|aw_0_[\w.]+|listenerid|dist|cb|source|playerid|lsid|ttag|us_privacy|gdpr\w*)$/i;
+const TOKEN_PARAMS=/^(token|hdnts|sig|signature|expires|exp|auth|key|policy|jwt|st|e|md5)$/i;
+/* Proveedor conocido -> su link permanente */
+function permanentStream(u){
+  let url; try{ url=new URL(u); }catch(e){ return null; }
+  const host=url.hostname.toLowerCase();
+  if(/streamtheworld\.com$/.test(host)){
+    const m=url.pathname.match(/\/([A-Z0-9_]+?)(AAC)?(?:_SC)?\.(mp3|aac)$/i) || url.pathname.match(/livestream-redirect\/([A-Z0-9_]+?)(AAC)?\.(mp3|aac)$/i);
+    if(m){ const cs=m[1].toUpperCase(), aac=!!m[2]||/aac/i.test(m[3]);
+      return {url:'https://playerservices.streamtheworld.com/api/livestream-redirect/'+cs+(aac?'AAC.aac':'.mp3'), prov:'StreamTheWorld'}; }
+  }
+  if(/streamguys1\.com$/.test(host)) return {url:url.origin+url.pathname, prov:'StreamGuys'};
+  if(/(^|\.)zeno\.fm$/.test(host) && /^\/[a-z0-9]+\/?$/i.test(url.pathname)) return {url:url.origin+url.pathname.replace(/\/$/,''), prov:'Zeno'};
+  return null;
+}
+function cleanStream(u){
+  const p=permanentStream(u); if(p) return {url:p.url, prov:p.prov, changed:p.url!==u, risky:false};
+  let url; try{ url=new URL(u); }catch(e){ return {url:u, changed:false, risky:false}; }
+  let changed=false, risky=false;
+  [...url.searchParams.keys()].forEach(k=>{ if(AD_PARAMS.test(k)){ url.searchParams.delete(k); changed=true; } else if(TOKEN_PARAMS.test(k)) risky=true; });
+  const out=url.toString().replace(/\?$/,'');
+  return {url:out, changed:changed && out!==u, risky};
+}
+function scoreStream(u){
+  let url; try{ url=new URL(u); }catch(e){ return 0; }
+  const h=url.hostname.toLowerCase(), p=url.pathname.toLowerCase();
+  if(/\.(js|css|png|jpe?g|gif|svg|webp|ico|woff2?|ttf|json|xml|html?|php|asp|txt|pdf|mp4|webm)$/.test(p)) return 0;
+  if(/(facebook|twitter|instagram|google|youtube|apple\.com|spotify|doubleclick|gstatic|cloudflare|jquery|fonts\.)/.test(h)) return 0;
+  let s=0;
+  if(/streamtheworld|streamguys|zeno\.fm|radio\.co|radiojar|shoutcast|icecast|stream\.|streaming|cast\d*\.|listen\.|live\./.test(h)) s+=3;
+  if(/\.(mp3|aacp?|ogg|opus|flac|m4a)$/.test(p) || /;$|;stream/.test(u)) s+=4;
+  if(/\.m3u8$/.test(p)) s+=3;
+  if(/\.(pls|m3u)$/.test(p)) s+=3;
+  if(/stream|live|listen|radio|icecast|shoutcast|\/;/.test(p)) s+=1;
+  if(/:(8000|8080|8888|9000|80\d\d)$/.test(url.host)) s+=1;
+  return s;
+}
+function playlistUrls(text){ return String(text||'').split(/\r?\n/).map(l=>l.trim().replace(/^File\d+=/i,'')).filter(l=>/^https?:\/\//i.test(l)); }
+async function findStreams(pageUrl){
+  const r=await getUrlText(pageUrl, true);
+  if(r.type==='audio') return [cleanStream(r.url||pageUrl)];
+  const text=String(r.text||'');
+  if(/^\s*(\[playlist\]|#EXTM3U)/i.test(text) || /\.(pls|m3u)(\?|$)/i.test(pageUrl)) return playlistUrls(text).slice(0,3).map(cleanStream);
+  const t2=text.replace(/\\\//g,'/').replace(/&amp;/g,'&').replace(/\\u002[fF]/g,'/');
+  const found=new Map();
+  (t2.match(/https?:\/\/[^\s"'<>()\\,{}|^`]+/g)||[]).forEach(u=>{ u=u.replace(/[.;:]+$/,''); if(/;$/.test(u)) u+=''; const sc=scoreStream(u); if(sc>=3) found.set(u,Math.max(found.get(u)||0,sc)); });
+  /* StreamTheWorld / Triton: a veces solo aparece el "callsign" */
+  if(/streamtheworld|tritondigital|triton/i.test(t2)){
+    (t2.match(/(?:callsign|station|mount)["']?\s*[:=]\s*["']([A-Z0-9_]{3,})["']/gi)||[]).forEach(m=>{ const cs=m.replace(/.*["']([A-Z0-9_]{3,})["']$/i,'$1').toUpperCase();
+      const aac=/AAC$/.test(cs); found.set('https://playerservices.streamtheworld.com/api/livestream-redirect/'+cs.replace(/AAC$/,'')+(aac?'AAC.aac':'.mp3'),9); });
+  }
+  let list=[...found.entries()].sort((a,b)=>{ const pa=permanentStream(a[0])?1:0, pb=permanentStream(b[0])?1:0; return (pb-pa)||(b[1]-a[1]); }).map(x=>x[0]);
+  const out=[], seen=new Set();
+  for(const u of list.slice(0,8)){
+    if(/\.(pls|m3u)(\?|$)/i.test(u)){ try{ const pr=await getUrlText(u,false); playlistUrls(pr.text).slice(0,2).forEach(x=>{ const c=cleanStream(x); if(!seen.has(c.url)){ seen.add(c.url); out.push(c); } }); }catch(e){} continue; }
+    const c=cleanStream(u); if(!seen.has(c.url)){ seen.add(c.url); out.push(c); }
+    if(out.length>=5) break;
+  }
+  return out;
+}
+function guessNameFromUrl(u){ try{ const h=new URL(u).hostname.replace(/^www\./,''); return h.split('.')[0].replace(/[-_]+/g,' '); }catch(e){ return ''; } }
+
+/* ---- prueba audible (como en el boceto: "Está sonando la prueba") ---- */
+let previewA=null;
+function stopPreview(){ if(previewA){ try{ previewA.pause(); previewA.removeAttribute('src'); previewA.load(); }catch(e){} previewA=null; } }
+function previewStream(url, ms){
+  stopPreview();
+  if(!audio.paused) audio.pause();
+  if(radioId && !radioPaused()) radioPauseAny();
+  return new Promise(res=>{
+    const a=new Audio(); previewA=a; let done=false;
+    const end=ok=>{ if(done) return; done=true; clearTimeout(tm); if(!ok && previewA===a) stopPreview(); res(ok); };
+    const tm=setTimeout(()=>end(false),ms||12000);
+    a.addEventListener('playing',()=>end(true)); a.addEventListener('error',()=>end(false));
+    a.src=url; const p=a.play(); if(p && p.catch) p.catch(()=>end(false));
+  });
+}
+
+/* ---- la ventana ---- */
+async function addStationEasy(){
+  let tab='search', lastQ='', results=null, status='', pageUrl='', pageFail=false, detail=null, alive=true;
+  const res=await modal(t('addStationT'),(b,close)=>{
+    const draw=()=>{
+      b.textContent='';
+      if(detail){ drawDetail(); return; }
+      const seg=el('div','seg seg-in'); [['search',t('tabSearch')],['page',t('tabPage')],['direct',t('tabDirect')]].forEach(([k,txt])=>{ const bt=el('button',tab===k?'on':'',txt); bt.onclick=()=>{ tab=k; status=''; draw(); }; seg.appendChild(bt); }); b.appendChild(seg);
+      if(tab==='search') drawSearch(); else if(tab==='page') drawPage(); else drawDirect();
+      const bc=el('button','btn-ghost',t('cancel')); bc.onclick=()=>close(null); b.appendChild(bc);
+    };
+    const drawSearch=()=>{
+      const row=el('div','search-row'); const q=el('input','search'); q.type='search'; q.placeholder=t('stSearchPh'); q.value=lastQ; q.setAttribute('aria-label',t('stSearchPh'));
+      const go=el('button','btn-ok',t('searchBtn')); row.appendChild(q); row.appendChild(go); b.appendChild(row);
+      b.appendChild(el('p','field-help',t('rbNote')));
+      const doIt=async()=>{ const v=q.value.trim(); if(!v){ q.focus(); return; } lastQ=v;
+        if(navigator.onLine===false){ status=t('noNet'); results=null; draw(); return; }
+        status=t('searchingSt'); results=null; draw();
+        try{ results=await rbSearch(v); status=results.length? t('nResults',results.length) : t('noStResults',v); }
+        catch(e){ results=null; status=t('rbFail'); }
+        if(alive && !detail && tab==='search') draw(); };
+      go.onclick=doIt; q.onkeydown=e=>{ if(e.key==='Enter') doIt(); };
+      if(status) b.appendChild(el('p','st-status',status));
+      (results||[]).forEach(c=>{
+        const r=el('div','song-item'); r.appendChild(stTile({name:c.name,color:chColor(c.name)}));
+        const info=el('div','song-info'); info.appendChild(el('b',null,c.name)); info.appendChild(el('small',null,stSub(c))); r.appendChild(info);
+        const tb=el('button','btn-pill try',t('tryBtn')); const open=()=>{ detail={name:c.name, url:c.url, sub:stSub(c), back:'search'}; draw(); }; tb.onclick=open; info.onclick=open; r.appendChild(tb);
+        b.appendChild(r);
+      });
+      if(!results && !status) setTimeout(()=>q.focus(),60);
+    };
+    const drawPage=()=>{
+      b.appendChild(el('label','field-label',t('pageLabel')));
+      const u=el('input','search'); u.type='url'; u.placeholder='https://…'; u.value=pageUrl; u.autocapitalize='off'; u.spellcheck=false; b.appendChild(u);
+      b.appendChild(el('p','field-help',t(PM? 'pageHelp' : 'webPageNote')));
+      const go=el('button','btn-add',t('findStream')); b.appendChild(go);
+      if(status) b.appendChild(el('p','st-status',status));
+      if(pageFail){
+        const w=el('div','warn-box'); w.appendChild(el('b',null,t('notFoundT'))); w.appendChild(el('small',null,t('notFoundMsg'))); b.appendChild(w);
+        const g=guessNameFromUrl(pageUrl);
+        const o1=el('button','opt-big'); o1.appendChild(el('span','ic','🔍')); const t1=el('span','tx'); t1.appendChild(el('b',null,t('optSearch'))); if(g) t1.appendChild(el('small',null,t('optSearchSub',g))); o1.appendChild(t1); o1.appendChild(el('span','go','›'));
+        o1.onclick=()=>{ tab='search'; lastQ=g; results=null; status=''; pageFail=false; draw(); }; b.appendChild(o1);
+        const o2=el('button','opt-big'); o2.appendChild(el('span','ic','✍️')); const t2=el('span','tx'); t2.appendChild(el('b',null,t('optDirect'))); t2.appendChild(el('small',null,t('optDirectSub'))); o2.appendChild(t2); o2.appendChild(el('span','go','›'));
+        o2.onclick=()=>{ tab='direct'; status=''; pageFail=false; draw(); }; b.appendChild(o2);
+      }
+      go.onclick=async()=>{
+        const v=u.value.trim(); pageUrl=v; pageFail=false;
+        if(!validUrl(v)){ status=t('badUrl'); draw(); return; }
+        if(navigator.onLine===false){ status=t('noNet'); draw(); return; }
+        status=t('lookingPage'); draw();
+        let list=[]; try{ list=await findStreams(v); }catch(e){ list=[]; }
+        if(!alive) return;
+        if(!list.length){ status=''; pageFail=true; draw(); return; }
+        status=t('testingNow'); draw();
+        let pick=null; for(const c of list.slice(0,3)){ if(!alive) return; if(await previewStream(c.url,9000)){ pick=c; break; } }
+        stopPreview(); if(!alive) return;
+        const c=pick||list[0];
+        detail={name:guessNameFromUrl(v)||'', url:c.url, back:'page', found:true, prov:c.changed? (c.prov||'') : '', changed:c.changed, risky:c.risky, sub:(()=>{ try{ return new URL(v).hostname; }catch(e){ return ''; } })()};
+        status=''; draw();
+      };
+    };
+    const drawDirect=()=>{
+      b.appendChild(el('label','field-label',t('stName'))); const n=el('input','search'); n.type='text'; n.maxLength=60; b.appendChild(n);
+      b.appendChild(el('label','field-label',t('stUrl'))); const u=el('input','search'); u.type='url'; u.placeholder='https://…'; u.autocapitalize='off'; u.spellcheck=false; b.appendChild(u);
+      b.appendChild(el('p','field-help',t('urlHelp')));
+      if(status) b.appendChild(el('p','st-status',status));
+      const go=el('button','btn-add',t('continueBtn')); b.appendChild(go);
+      go.onclick=()=>{ const nv=n.value.trim(), uv=u.value.trim();
+        if(!nv){ toast(t('needName')); n.focus(); return; } if(!validUrl(uv)){ status=t('badUrl'); draw(); return; }
+        const c=cleanStream(uv); detail={name:nv, url:c.url, back:'direct', changed:c.changed, prov:c.prov||'', risky:c.risky}; draw(); };
+    };
+    const drawDetail=()=>{
+      const d=detail;
+      const back=el('button','link-btn',t('backResults')); back.onclick=()=>{ stopPreview(); tab=d.back; detail=null; draw(); }; b.appendChild(back);
+      const head=el('div','st-head'); const tile=stTile({name:d.name||'?',color:chColor(d.name||d.url)}); tile.classList.add('big'); head.appendChild(tile);
+      const hi=el('div','song-info'); hi.appendChild(el('b',null,d.name||t('stationDefault'))); if(d.sub) hi.appendChild(el('small',null,d.sub)); head.appendChild(hi); b.appendChild(head);
+      if(d.found){ const fb=el('div','ok-box'); fb.appendChild(el('b',null,t('foundStream'))); fb.appendChild(el('small',null, d.changed && d.prov? t('foundPerm',d.prov) : t('foundPlain'))); b.appendChild(fb); }
+      else if(d.changed && d.prov){ const fb=el('div','ok-box'); fb.appendChild(el('small',null,t('foundPerm',d.prov))); b.appendChild(fb); }
+      if(d.risky) b.appendChild(el('p','field-help',t('mayExpire')));
+      const tb=el('div','test-box'); tb.appendChild(el('i')); const msg=el('span',null,t('testingNow')); tb.appendChild(msg);
+      const stop=el('button','icon-btn stop-btn','⏸'); stop.title=t('stopTest'); stop.setAttribute('aria-label',t('stopTest')); stop.onclick=()=>{ stopPreview(); stop.classList.add('hidden'); msg.textContent=t('testStopped'); };
+      tb.appendChild(stop); b.appendChild(tb);
+      const myRun=Symbol(); d.run=myRun;
+      previewStream(d.url,15000).then(ok=>{ if(!alive || detail!==d || d.run!==myRun) return; tb.className='test-box '+(ok?'ok':'bad'); msg.textContent=ok? t('worksNow') : t(NR()?'testFailNative':'testFail'); if(!ok) stop.classList.add('hidden'); });
+      b.appendChild(el('label','field-label',t('nameInList'))); const n=el('input','search'); n.type='text'; n.maxLength=60; n.value=d.name||''; b.appendChild(n);
+      d.lists=d.lists||new Set(radioFilter!=='all'? [radioFilter] : []);
+      b.appendChild(el('div','field-label',t('saveAlsoIn')));
+      const ch=el('div','chips wrap');
+      [['fav',t('rFav','').replace(/ · $/,'')]].concat(radioLists.map(L=>[L.id,L.name])).forEach(([id,txt])=>{
+        const bt=el('button',d.lists.has(id)?'on':'',(d.lists.has(id)?'✓ ':'')+txt); bt.onclick=()=>{ if(d.lists.has(id)) d.lists.delete(id); else d.lists.add(id); bt.classList.toggle('on'); bt.textContent=(d.lists.has(id)?'✓ ':'')+txt; }; ch.appendChild(bt); });
+      b.appendChild(ch);
+      const det=el('details','stream-link'); det.appendChild(el('summary',null,t('seeLink'))); det.appendChild(el('div','lic-pre',d.url)); b.appendChild(det);
+      const row=el('div','st-actions');
+      const bc=el('button','btn-pill',t('cancel')); bc.onclick=()=>close(null);
+      const bs=el('button','btn-ok',t('saveStation')); bs.onclick=()=>{ const nv=n.value.trim(); if(!nv){ toast(t('needName')); n.focus(); return; } close({name:nv, url:d.url, lists:[...d.lists]}); };
+      row.appendChild(bc); row.appendChild(bs); b.appendChild(row);
+      b.appendChild(el('p','privacy-small',t('radioPrivacy')));
+    };
+    draw();
+  },[]);
+  alive=false; stopPreview();
+  if(!res) return;
+  const st={id:'r'+uid(), name:res.name, url:res.url, color:ST_COLORS[radios.length%ST_COLORS.length]};
+  if(res.lists.includes('fav')) st.fav=true;
+  radios.push(st); saveRadios();
+  res.lists.forEach(id=>{ const L=radioListById(id); if(L && !L.ids.includes(st.id)) L.ids.push(st.id); }); saveRadioLists();
+  renderRadio(); toast(t('stationSaved'));
+}
 
 /* ================= SKINS / IDIOMA / ACERCA DE (v41) ================= */
 function optRow(on, left, title, sub, onPick){
@@ -2096,6 +2643,7 @@ function openLicenses(){
     b.appendChild(el('div','m-label',t('fullLicense')));
     b.appendChild(el('div','lic-pre',($('licApache')||{}).textContent||''));
     b.appendChild(el('p','privacy-small',t('notAffiliated')));
+    b.appendChild(el('p','privacy-small',t('rbCredit')));
     b.appendChild(el('p','privacy-small',t('aiCredit')));
     b.appendChild(el('p','privacy-small','Prometeo Player © 2026 Lanchalex. '+t('rights')));
   },[[t('close'),()=>null,'btn-ok']]);
@@ -2114,6 +2662,7 @@ function openAbout(){
     w.appendChild(el('div','m-label',t('poweredBy')));
     CREDITS.slice(0,3).forEach(c=>{ const d=el('div','credit'); d.appendChild(el('b',null,c.name)); d.appendChild(el('div',null,c.copy+' · '+c.lic)); w.appendChild(d); });
     w.appendChild(el('p','privacy-small',t('moreLibs',CREDITS.length-3)));
+    w.appendChild(el('p','privacy-small',t('rbCredit')));
     w.appendChild(el('p','privacy-small',t('aiCredit')));
     w.appendChild(el('p','privacy-small','Prometeo Player © 2026 Lanchalex. '+t('rights')));
     b.appendChild(w);
@@ -2124,10 +2673,10 @@ function openAbout(){
 $('btnSkin').onclick=openSkins; $('btnLang').onclick=openLang; $('btnAbout').onclick=openAbout;
 $('btnPlay').onclick=()=>radioId? toggleRadio() : togglePlay(); $('miniPlay').onclick=()=>radioId? toggleRadio() : togglePlay();
 $('btnNext').onclick=()=>radioId? switchStation(1) : nextSong(false); $('btnPrev').onclick=()=>radioId? switchStation(-1) : prevSong();
-$('btnAddStation').onclick=()=>editStation(null); $('btnBackMusic').onclick=()=>stopRadio(false);
+$('btnAddStation').onclick=()=>addStationEasy(); $('btnBackMusic').onclick=()=>stopRadio(false);
 $('btnRepeat').onclick=cycleRepeat; $('btnShuffle').onclick=toggleShuffle;
 $('btnCurToPl').onclick=()=>addToPlaylist(currentId);
-$('btnPlayAll').onclick=()=>{ if(!songs.length){ toast(t('noSongs')); return; } playFrom({type:'lib'}, shuffle? shuffleArr(songs.map(s=>s.id))[0] : songs[0].id); switchTab('ahora'); };
+$('btnPlayAll').onclick=()=>{ const mus=musicSongs(); if(!mus.length){ toast(t('noSongs')); return; } playFrom({type:'lib'}, shuffle? shuffleArr(mus.map(s=>s.id))[0] : mus[0].id); switchTab('ahora'); };
 $('btnNewPl').onclick=()=>newPlaylist();
 $('btnPlBack').onclick=closePlDetail;
 $('btnPlPlay').onclick=()=>{ const p=plById(openPl); if(p) playPl(p); };
@@ -2203,6 +2752,7 @@ async function diagnose(){
   modal(t('diagT'),bx=>{ const pre=el('p','m-msg',lines.join('\n')); pre.style.whiteSpace='pre-line'; pre.style.userSelect='text'; bx.appendChild(pre); },[[t('close'),()=>null,'btn-ok']]);
 }
 $('btnVer').onclick=()=>{ toast(t('diagnosing')); diagnose(); };
+$('btnPrivSet').onclick=openPrivSettings;
 
 (async function init(){
   translateStatic(); setIdleText(); applyModeButtons(); setPlayIcon(); sizeCanvas();
@@ -2211,11 +2761,12 @@ $('btnVer').onclick=()=>{ toast(t('diagnosing')); diagnose(); };
   const migrated=await migrateOld();
   try{ songs=await dbAll('songs'); playlists=await dbAll('playlists'); }catch(e){ songs=[]; playlists=[]; }
   sortSongs(); playlists.sort((a,b)=>a.created-b.created);
+  await cleanPriv();
   loadTv();
   if(navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(()=>{});
-  queueSource=store.get('src',{type:'lib'});
+  queueSource=store.get('src',{type:'lib'}); if(queueSource && queueSource.type==='priv') queueSource={type:'lib'};
   const last=store.get('last',null);
-  const startId=songById(last)? last : null;
+  const startId=(songById(last) && !songById(last).priv)? last : null;
   currentId=startId; buildQueue();
   if(!startId && queue.length){ currentId=queue[0]; qPos=0; }
   renderAll();
