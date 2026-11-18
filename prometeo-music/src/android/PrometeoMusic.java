@@ -140,6 +140,10 @@ public class PrometeoMusic extends CordovaPlugin {
         registerNoisy();
         registerBluetoothWatch();
         registerNetworkWatch();
+        /* Botones de la notificación de música (Android 12 o menos): igual que los del volante */
+        RadioService.controls = new RadioService.Controls() {
+            public void on(String what) { sendControl(what, -1); }
+        };
         cordova.getActivity().runOnUiThread(new Runnable() {
             public void run() {
                 try {
@@ -174,8 +178,13 @@ public class PrometeoMusic extends CordovaPlugin {
             return true;
         }
         if ("playState".equals(action)) {
-            try { setPlayState(args.optBoolean(0, false), args.optLong(1, 0)); cb.success(); }
+            final boolean playing = args.optBoolean(0, false);
+            try { setPlayState(playing, args.optLong(1, 0)); cb.success(); }
             catch (Exception e) { cb.error(String.valueOf(e.getMessage())); }
+            /* Música local: el mismo servicio en primer plano que la radio, para que Android no la corte */
+            if ("music".equals(args.optString(2, ""))) {
+                cordova.getActivity().runOnUiThread(new Runnable() { public void run() { musicState(playing); } });
+            }
             return true;
         }
         if ("controls".equals(action)) {
@@ -196,9 +205,10 @@ public class PrometeoMusic extends CordovaPlugin {
         if ("radioPlay".equals(action)) {
             final String url = args.optString(0, "");
             final String name = args.optString(1, "");
+            final boolean tv = "tv".equals(args.optString(2, ""));
             cordova.getActivity().runOnUiThread(new Runnable() {
                 public void run() {
-                    try { radioPlay(url, name); cb.success(); } catch (Exception e) { cb.error(String.valueOf(e.getMessage())); }
+                    try { radioAudioOnly = tv; radioPlay(url, name); cb.success(); } catch (Exception e) { cb.error(String.valueOf(e.getMessage())); }
                 }
             });
             return true;
@@ -209,15 +219,46 @@ public class PrometeoMusic extends CordovaPlugin {
                 public void run() {
                     radioWanted = false; cancelRetry();
                     if (radio != null) { if (stop) { radio.stop(); radio.clearMediaItems(); } else radio.pause(); }
-                    /* Al quitar la radio se apaga el servicio; en pausa se mantiene para poder seguir desde el volante */
-                    if (stop) RadioService.stop(cordova.getContext());
+                    /* Al quitar la radio se apaga el servicio (salvo que pase a sonar una canción);
+                       en pausa se mantiene para poder seguir desde el volante */
+                    if (stop) { mainHandler.removeCallbacks(stopIfIdle); mainHandler.postDelayed(stopIfIdle, 1200); }
                     cb.success();
                 }
             });
             return true;
         }
         /* ---- Video / TV en pantalla completa ---- */
+        if ("tvEvents".equals(action)) {
+            tvCallback = cb;
+            VideoActivity.events = new VideoActivity.Events() {
+                public void send(JSONObject o) { sendTv(o); }
+            };
+            PluginResult r = new PluginResult(PluginResult.Status.NO_RESULT);
+            r.setKeepCallback(true);
+            cb.sendPluginResult(r);
+            return true;
+        }
+        /* ---- TV en pequeño, dentro de la app ---- */
+        if ("tvInline".equals(action) || "tvInlineRect".equals(action) || "tvInlineCmd".equals(action) || "tvClose".equals(action)) {
+            final String url = args.optString(0, "");
+            final JSONObject rect = "tvInline".equals(action) ? args.optJSONObject(1) : args.optJSONObject(0);
+            cordova.getActivity().runOnUiThread(new Runnable() {
+                public void run() {
+                    try {
+                        if ("tvInline".equals(action)) inline().open(url, rect);
+                        else if ("tvInlineRect".equals(action)) { if (tvInline != null) tvInline.place(rect); }
+                        else if ("tvInlineCmd".equals(action)) { if (tvInline != null) tvInline.command(url); }
+                        else if (tvInline != null) tvInline.close();
+                        cb.success();
+                    } catch (Exception e) { cb.error(String.valueOf(e.getMessage())); }
+                }
+            });
+            return true;
+        }
         if ("playVideo".equals(action)) {
+            if (tvInline != null) cordova.getActivity().runOnUiThread(new Runnable() { public void run() { if (tvInline != null) tvInline.pause(); } });
+            /* La lista de canales va aparte (puede ser muy grande para un Intent) */
+            VideoActivity.pending = args.optJSONObject(3);
             Intent i = new Intent(cordova.getActivity(), VideoActivity.class);
             i.putExtra("url", args.optString(0, ""));
             i.putExtra("title", args.optString(1, ""));
@@ -469,8 +510,30 @@ public class PrometeoMusic extends CordovaPlugin {
         } catch (JSONException ignored) { }
     }
 
+    /* Lo último que sonó de la música (para la notificación) */
+    private volatile String musicTitle = "", musicArtist = "";
+
+    /** Se apaga el servicio solo si ya no suena nada: ni radio ni música */
+    private final Runnable stopIfIdle = new Runnable() {
+        @Override public void run() {
+            if (!radioWanted && !RadioService.music) RadioService.stop(cordova.getContext());
+        }
+    };
+
+    /** Play/pausa de una canción: arranca o actualiza la notificación de la música.
+        En pausa se mantiene (para seguir desde el volante o la notificación). */
+    private void musicState(boolean playing) {
+        if (radioWanted) return;                      /* la radio manda */
+        mainHandler.removeCallbacks(stopIfIdle);
+        RadioService.sessionToken = session().getSessionToken();
+        RadioService.art = musicArt;
+        if (RadioService.running && RadioService.music) RadioService.updateMusic(cordova.getContext(), musicTitle, musicArtist, playing);
+        else if (playing) RadioService.startMusic(cordova.getContext(), musicTitle, musicArtist, true);
+    }
+
     private void setNowPlaying(JSONObject o) {
         if (o == null) return;
+        final boolean isMusic = !"radio".equals(o.optString("kind", ""));
         MediaMetadata.Builder b = new MediaMetadata.Builder();
         String title = o.optString("title", "");
         b.putString(MediaMetadata.METADATA_KEY_TITLE, title);
@@ -497,13 +560,24 @@ public class PrometeoMusic extends CordovaPlugin {
                     }
                     b.putBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART, bmp);
                     b.putBitmap(MediaMetadata.METADATA_KEY_ART, bmp);
+                    if (isMusic) musicArt = bmp;
                 }
             } catch (Exception ignored) { }
-        }
+        } else if (isMusic) musicArt = null;
         MediaSession s = session();
         s.setMetadata(b.build());
         if (!s.isActive()) s.setActive(true);
+        if (isMusic) {
+            musicTitle = title; musicArtist = artist;
+            final Bitmap a = musicArt;
+            cordova.getActivity().runOnUiThread(new Runnable() { public void run() {
+                if (!RadioService.music) return;
+                RadioService.art = a;
+                RadioService.updateMusic(cordova.getContext(), musicTitle, musicArtist, null);
+            } });
+        }
     }
+    private volatile Bitmap musicArt;
 
     private void setPlayState(boolean playing, long positionMs) {
         sessionPlaying = playing;
@@ -522,7 +596,29 @@ public class PrometeoMusic extends CordovaPlugin {
 
     /* ================= RADIO CON EXOPLAYER ================= */
     private ExoPlayer radio;
-    private CallbackContext radioCallback;
+    private CallbackContext radioCallback, tvCallback;
+    private TvInline tvInline;
+
+    private void sendTv(JSONObject o) {
+        CallbackContext c = tvCallback; if (c == null) return;
+        PluginResult r = new PluginResult(PluginResult.Status.OK, o);
+        r.setKeepCallback(true);
+        c.sendPluginResult(r);
+    }
+
+    private TvInline inline() {
+        if (tvInline == null) tvInline = new TvInline(cordova.getActivity(), webView.getView(), new TvInline.Events() { public void send(JSONObject o) { sendTv(o); } });
+        return tvInline;
+    }
+
+    /* La app pasa a segundo plano: el TV pequeño se pausa (la radio y la música siguen) */
+    @Override
+    public void onPause(boolean multitasking) {
+        super.onPause(multitasking);
+        if (tvInline != null) tvInline.pause();
+    }
+    /** TV en "solo audio": sin video y con la calidad más baja (gasta menos datos y batería) */
+    private boolean radioAudioOnly = false;
 
     private void radioEvent(String type, String value) {
         CallbackContext cb = radioCallback;
@@ -552,11 +648,27 @@ public class PrometeoMusic extends CordovaPlugin {
             retryPending = false;
             if (!radioWanted || radio == null || radioUrl == null) return;
             radio.stop();
-            radio.setMediaItem(MediaItem.fromUri(radioUrl));
+            radio.setMediaItem(MediaItem.fromUri(freshUrl(radioUrl)));
             radio.prepare();
             radio.play();
         }
     };
+
+    /* skey = marca de hora que ponen los reproductores de algunas emisoras (no es una clave):
+       al reconectar se pone al día, igual que hace la página al darle play. El resto del link no se toca. */
+    private static final java.util.regex.Pattern SKEY = java.util.regex.Pattern.compile("(?i)(skey(?:%3A|%3D|:|=))(\\d{10,13})");
+    static String freshUrl(String u) {
+        if (u == null) return null;
+        java.util.regex.Matcher m = SKEY.matcher(u);
+        StringBuffer sb = new StringBuffer();
+        while (m.find()) {
+            long now = System.currentTimeMillis();
+            String v = m.group(2).length() >= 13 ? String.valueOf(now) : String.valueOf(now / 1000);
+            m.appendReplacement(sb, java.util.regex.Matcher.quoteReplacement(m.group(1) + v));
+        }
+        m.appendTail(sb);
+        return sb.toString();
+    }
 
     private boolean retrying() { return retryCount > 0 && radioWanted; }
 
@@ -608,7 +720,7 @@ public class PrometeoMusic extends CordovaPlugin {
     }
 
     /** ¿Fue un problema de señal/servidor (vale la pena reintentar) o un link malo (no insistir)? */
-    private static boolean isNetworkProblem(PlaybackException e) {
+    static boolean isNetworkProblem(PlaybackException e) {
         switch (e.errorCode) {
             case PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED:
             case PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_TIMEOUT:
@@ -701,6 +813,10 @@ public class PrometeoMusic extends CordovaPlugin {
                 }
             });
         }
+        radio.setTrackSelectionParameters(radio.getTrackSelectionParameters().buildUpon()
+                .setTrackTypeDisabled(C.TRACK_TYPE_VIDEO, radioAudioOnly)
+                .setTrackTypeDisabled(C.TRACK_TYPE_TEXT, radioAudioOnly)
+                .setForceLowestBitrate(radioAudioOnly).build());
         cancelRetry();
         retryCount = 0;
         radioUrl = url;
@@ -711,7 +827,9 @@ public class PrometeoMusic extends CordovaPlugin {
         radio.play();
         radioEvent("state", "connecting");
         /* Servicio en primer plano: así Android no le corta el internet a la radio en segundo plano */
+        mainHandler.removeCallbacks(stopIfIdle);
         RadioService.sessionToken = session().getSessionToken();
+        RadioService.music = false;   /* la notificación pasa a ser de la radio */
         if (RadioService.running) RadioService.update(cordova.getContext(), name);
         else RadioService.start(cordova.getContext(), name);
     }
@@ -798,6 +916,8 @@ public class PrometeoMusic extends CordovaPlugin {
     public void onDestroy() {
         if (session != null) { session.setActive(false); session.release(); session = null; }
         radioWanted = false; cancelRetry(); unregisterNetworkWatch();
+        mainHandler.removeCallbacks(stopIfIdle);
+        RadioService.controls = null; RadioService.music = false; RadioService.art = null;
         if (radio != null) { radio.release(); radio = null; }
         RadioService.stop(cordova.getContext());
         if (btRegistered) {
@@ -807,6 +927,8 @@ public class PrometeoMusic extends CordovaPlugin {
         if (noisyRegistered) { try { cordova.getContext().unregisterReceiver(noisyReceiver); } catch (Exception ignored) { } noisyRegistered = false; }
         controlsCallback = null;
         radioCallback = null;
+        tvCallback = null; VideoActivity.events = null;
+        if (tvInline != null) { tvInline.release(); tvInline = null; }
     }
 
     /** Sirve el archivo original directamente a la página (no se copia nada). */

@@ -49,6 +49,26 @@ button{font-family:inherit;cursor:pointer;color:inherit}
 .chips button{flex:none;background:var(--card2);border:1px solid var(--line2);color:var(--soft);padding:7px 12px;border-radius:16px;font-size:12px;font-weight:700;white-space:nowrap}
 .chips button.on{background:var(--acc);color:var(--onacc);border-color:var(--acc)}
 .two-btn{display:flex;gap:8px;margin-top:12px}
+.tv-inline{position:fixed;left:0;right:0;z-index:9;background:var(--bg);padding:8px 12px 10px;border-bottom:1px solid var(--line);box-shadow:0 8px 20px rgba(0,0,0,.35)}
+.tvi-video{width:100%;aspect-ratio:16/9;max-height:40vh;background:#000;border-radius:14px;display:flex;align-items:center;justify-content:center;color:#9aa;font-size:12px;text-align:center;padding:0 12px}
+.tvi-bar{display:flex;align-items:center;gap:6px;margin-top:8px}
+.tvi-btns{display:flex;align-items:center;gap:4px;flex:none}
+@media (max-width:440px){.tvi-bar{flex-wrap:wrap}.tvi-info{flex:1 1 100%}.tvi-btns{flex:1 1 100%;justify-content:space-between}}
+.tvi-bar .icon-btn{flex:none}
+.tvi-bar .tvi-play{background:var(--acc);color:var(--onacc);border-color:var(--acc)}
+.tvi-info{flex:1;min-width:0}
+.tvi-info b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:14px}
+.tvi-info small{display:block;font-size:11px;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tvi-info small.live{color:var(--red);font-weight:800}
+body.tvi-on #view-radio{padding-top:var(--tvih,0px)}
+.m-item.del-ch{color:var(--red);display:flex;flex-direction:column;align-items:flex-start;gap:2px;margin-top:14px;border-color:rgba(255,77,94,.4)}
+.m-item.del-ch small{color:var(--mut);font-weight:600;font-size:11px}
+.icon-btn.more{font-size:20px;font-weight:900}
+#tvResume{margin-top:12px;background:rgba(var(--accrgb),.08);border:1px solid rgba(var(--accrgb),.4);border-radius:16px;padding:12px}
+#tvResume .rs-row{display:flex;align-items:center;gap:12px}
+#tvResume .rs-row .song-info{flex:1;min-width:0}
+#tvResume .rs-row small.rs-k{display:block;font-size:11px;color:var(--acc);font-weight:800;letter-spacing:.5px}
+#tvResume .btn-ghost{margin-top:10px;border-color:var(--acc);color:var(--acc);font-weight:900}
 /* v41: listas, favoritos y audios privados */
 .title-right{display:flex;align-items:center;gap:8px}
 .lib-seg{margin:0 0 12px}
@@ -348,6 +368,7 @@ input.search:focus{border-color:var(--acc)}
     <div class="card-title"><span data-i18n="tvTitle">📺 Canales</span><small id="tvCount"></small></div>
     <div class="radio-note"><span>📶</span><span data-i18n="tvNote">Los canales usan internet solo mientras los ves.</span></div>
     <div class="two-btn"><button class="btn-add" id="btnAddList" data-i18n="addList">＋ Lista M3U</button><button class="btn-ghost" id="btnAddChannel" data-i18n="addChannel">＋ Canal</button></div>
+    <div id="tvResume" class="hidden"></div>
     <div id="tvLists" class="list"></div>
     <input type="search" id="tvSearch" class="search hidden" style="margin-top:12px" data-i18n-ph="searchCh" placeholder="Buscar canal…" autocomplete="off">
     <div id="tvMyBox" class="hidden"><div class="field-label" data-i18n="myLists">Mis listas</div><div id="tvMyChips" class="chips" style="margin-top:0"></div><div id="tvListBar" class="list-bar hidden"></div></div>
@@ -368,6 +389,20 @@ input.search:focus{border-color:var(--acc)}
 </section>
 </main>
 
+<div id="tvInline" class="tv-inline hidden">
+  <div id="tvInlineVideo" class="tvi-video"><span id="tvInlineState"></span></div>
+  <div class="tvi-bar">
+    <div class="tvi-info"><b id="tvInlineName"></b><small id="tvInlineSub"></small></div>
+    <div class="tvi-btns">
+    <button class="icon-btn" id="tviPrev" aria-label="▲">▲</button>
+    <button class="icon-btn tvi-play" id="tviPlay" aria-label="⏸">⏸</button>
+    <button class="icon-btn" id="tviNext" aria-label="▼">▼</button>
+    <button class="icon-btn star" id="tviFav">☆</button>
+    <button class="icon-btn" id="tviFull">⛶</button>
+    <button class="icon-btn" id="tviClose">✕</button>
+    </div>
+  </div>
+</div>
 <div id="mini" class="mini hidden">
   <img class="mini-cover" id="miniCover" alt="">
   <div class="mini-info" id="miniInfo"><b id="miniTitle"></b><small id="miniSub" data-i18n="tapOpen">Toca para abrir</small></div>
@@ -591,6 +626,7 @@ let radioLists=store.get('radioLists',[]); if(!Array.isArray(radioLists)) radioL
 let radioFilter=store.get('radioFilter','all');
 let tvFav=store.get('tvFav',[]); if(!Array.isArray(tvFav)) tvFav=[];
 let tvMy=store.get('tvMyLists',[]); if(!Array.isArray(tvMy)) tvMy=[];
+let tvInlineCh=null, tviPool=[], tviIdx=0, tviState='', tviFromFull=false, tviAudioStarted=false;   /* TV en pequeño */
 let tvSel='';
 
 /* ================= IDIOMAS (v41) ================= */
@@ -598,6 +634,12 @@ const VERSION='41';
 const LANGS={es:'Español',en:'English',pt:'Português',fr:'Français'};
 const I18N={
 es:{
+ tviFull:'Pantalla completa',tviClose:'Cerrar el canal',tviLive:'● EN VIVO',tviTap:'Toca el video para verlo en grande',
+ chMore:'Opciones del canal',delCh:'🗑 Borrar canal',delChSub:'Se quita de "{0}", de Favoritos y de tus listas',delChT:'Borrar canal',delChQ:'¿Borrar "{0}"? Se quita de "{1}", de Favoritos y de tus listas.',chDeleted:'Canal borrado',delChM3U:'Si actualizas la lista M3U, este canal no vuelve a aparecer.',
+ tvResumeDel:'Quitar de "Seguir viendo"',
+ tvResume:'SEGUIR VIENDO',tvWatch:'▶ Ver',tvListen:'🎧 Escuchar solo audio',tvAudioCar:'TV · solo audio',tvAudioPos:'📺 Solo audio · {0} de {1}',tvAudioOn:'🎧 {0} en solo audio',tv_live:'EN VIVO',tv_nOfM:'{0} de {1}',tv_next:'Siguiente:',tv_sleep:'Dormir',tv_window:'Ventana',tv_audioOnly:'Solo audio',tv_channels:'Canales',tv_searchCh:'Buscar canal…',tv_all:'Todos',tv_favs:'Favoritos',tv_close:'Cerrar',tv_back:'Volver',tv_screenFit:'Ajuste de pantalla',tv_fit:'Ajustar',tv_fill:'Rellenar',tv_zoom:'Zoom',tv_quality:'Calidad',tv_qAuto:'Automática',tv_qHigh:'Alta · 1080p',tv_qMed:'Media · 720p',tv_qLow:'Baja · 480p',tv_audioLang:'Idioma del audio',tv_audio:'Audio',tv_subs:'Subtítulos',tv_subsOff:'Desactivados',tv_sleepT:'Temporizador para dormir',tv_sleepOff:'Apagado',tv_sleepIn:'Se apaga en {0}',tv_onlyOpts:'Solo aparecen las opciones que el canal trae (algunos tienen una sola calidad o un solo idioma).',tv_lock:'Bloquear pantalla',tv_unlock:'Desbloquear pantalla',tv_lockedHint:'Pantalla bloqueada · mantén el candado para desbloquear',tv_unlocked:'Pantalla desbloqueada',tv_reconnecting:'Sin señal, reconectando…',tv_attempt:'Intento {0} · vuelve solo cuando regrese la señal',tv_tryOther:'Prueba con otro canal ▲ ▼',tv_release:'Suelta para cambiar',tv_keepSliding:'Sigue deslizando',tv_chNofM:'Canal {0} de {1}',tv_favAdd:'Agregar a Favoritos',tv_favDel:'Quitar de Favoritos',tv_favAdded:'Agregado a Favoritos',tv_favRemoved:'Quitado de Favoritos',tv_settings:'Ajustes',tv_prevCh:'Canal anterior',tv_nextCh:'Canal siguiente',tv_pause:'Pausa',tv_play:'Reproducir',tv_watching:'Viendo ahora',tv_oneCh:'Solo hay un canal en esta lista',tv_noPip:'La ventana flotante está desactivada en los ajustes del teléfono',
+ keepFresh:'Este link trae una marca de hora (skey). Prometeo la pondrá al día cada vez que pongas la emisora.',
+ noHost:'Prometeo no aloja ni distribuye contenido. Las emisoras, canales y listas los agrega cada usuario, que es responsable de usarlos respetando los términos de cada servicio.',
  tabSearch:'🔍 Buscar',foundNoPlayT:'Encontramos un link, pero no sonó en la prueba',foundNoPlay:'Puede que sea parte de la página y no la transmisión. Lo más seguro es buscarla por nombre.',foundNoPlayNative:'Puede que sea parte de la página y no la transmisión, o que solo suene en el reproductor de la app. Lo más seguro es buscarla por nombre.',tabPage:'🔗 Página',tabDirect:'✍️ Link directo',stSearchPh:'Nombre de la emisora (ej. Easy 93.1 Miami)',searchBtn:'Buscar',rbNote:'Busca en Radio Browser, un directorio libre de emisoras. Solo se envía lo que escribiste.',searchingSt:'Buscando…',nResults:'{0} resultados',noStResults:'No encontramos \"{0}\". Prueba con menos palabras o pega el link de su página.',rbFail:'No se pudo conectar con el directorio de emisoras. Intenta de nuevo en un rato.',tryBtn:'▶ Probar',backResults:'‹ Volver',testingNow:'Probando…',worksNow:'✓ Funciona. Está sonando la prueba.',stopTest:'Detener prueba',testStopped:'Prueba detenida',nameInList:'Nombre en tu lista',saveAlsoIn:'Guardar también en',seeLink:'Ver el link de transmisión',saveStation:'Guardar emisora',pageLabel:'Link de la página de la emisora',pageHelp:'Copia el link de la página donde escuchas la radio en el navegador y pégalo aquí.',webPageNote:'En la versión web los navegadores no dejan leer otras páginas: usa la app o búscala por nombre.',findStream:'🔎 Buscar la transmisión',lookingPage:'Revisando la página…',foundStream:'✓ Encontramos la transmisión',foundPerm:'Era un link que puede caducar. Prometeo lo cambió por el link permanente del proveedor ({0}).',foundPlain:'Prometeo encontró el link de la transmisión en la página.',mayExpire:'Ojo: este link trae un código que podría caducar. Si deja de sonar, búscala por nombre.',notFoundT:'No encontramos la transmisión en esa página',notFoundMsg:'Algunas emisoras esconden su reproductor o usan links que caducan. No pasa nada, prueba una de estas opciones:',optSearch:'Buscarla por nombre',optSearchSub:'Ya escribimos \"{0}\" por ti',optDirect:'Escribir el link directo',optDirectSub:'Si alguien te lo pasó (.mp3, .aac, .m3u8…)',continueBtn:'Probar y continuar',stationDefault:'Emisora',rbCredit:'Búsqueda de emisoras: Radio Browser (radio-browser.info), directorio libre y comunitario. Solo se consulta cuando tocas Buscar.',
  privHidden:'{0} audios privados ocultos',privHidden1:'1 audio privado oculto',privCleaned1:'🔒 1 audio de WhatsApp o grabación ya no se muestra en tu música',privHiddenSub:'WhatsApp y grabaciones. No se muestran aquí.',privSee:'Ver ajustes ›',privSetT:'Qué busca Prometeo',privSetA:'Qué busca Prometeo',privSetIntro:'Al buscar música, Prometeo deja fuera las notas de voz y las grabaciones para proteger tu privacidad. No se borra nada del teléfono.',privToggle:'Incluir audios privados',privOffRec:'Apagado · recomendado',privOnNow:'Activado · en su propia sección',privFolders:'Carpetas que se omiten',pk_wav:'WhatsApp · notas de voz',pk_waa:'WhatsApp · audios recibidos',pk_wab:'WhatsApp Business',pk_tg:'Telegram',pk_sg:'Signal',pk_call:'Grabaciones de llamadas',pk_rec:'Grabadora de voz',done:'Listo',privAskT:'¿Mostrar audios privados?',privAsk1:'Pueden incluir notas de voz personales de WhatsApp, Telegram o grabaciones de llamadas.',privAsk2:'Aparecerán solo en la sección \"Privados\", nunca mezclados con tu música ni en \"Reproducir todo\". Puedes volver a ocultarlos cuando quieras.',privNo:'Mejor no',privYes:'Sí, mostrar',segMusic:'🎵 Música · {0}',segPriv:'🔒 Privados · {0}',privInfo:'Estos audios no se mezclan con tu música, ni en \"Reproducir todo\" ni en aleatorio. Solo suenan si tocas uno.',privHideAgain:'🙈 Ocultar audios privados otra vez',privEmpty:'No hay audios privados.',privSrc:'Audio privado',authTitle:'Abrir audios privados',authSub:'Usa tu huella, tu PIN o tu patrón',noLockT:'Tu teléfono no tiene bloqueo',noLock1:'Para proteger tus audios privados, Prometeo usa el bloqueo de pantalla del teléfono: huella, PIN o patrón.',noLock2:'Ponle uno y vuelve aquí. Tu música sigue funcionando normal mientras tanto.',setLock:'Configurar bloqueo',notNow:'Ahora no',authFail:'No se pudo verificar',privHiddenToast:'Audios privados ocultos 🔒',privCleaned:'🔒 {0} audios de WhatsApp o grabaciones ya no se muestran en tu música',rAll:'Todas · {0}',rFav:'⭐ Favoritas · {0}',rNewList:'＋ Nueva lista',editListBtn:'✎ Editar',delListBtn:'🗑 Borrar',favAdd:'Marcar como favorita',favDel:'Quitar de favoritas',newRListT:'Nueva lista de emisoras',editRListT:'Editar lista',pickSt:'Elige las emisoras',nChosen:'{0} elegidas',saveListBtn:'Guardar lista',rListEmpty:'Esta lista está vacía.\nToca ✎ Editar para agregar emisoras.',rFavEmpty:'Todavía no tienes favoritas.\nToca ☆ en una emisora.',delRListQ:'¿Borrar la lista \"{0}\"? Las emisoras no se borran.',delRListT:'Borrar lista',inList:'{0} · {1} de {2}',listSavedOk:'Lista guardada ✓',listDeletedOk:'Lista borrada',needStations:'Elige al menos una emisora',myLists:'Mis listas',m3uGroups:'Grupos de la lista M3U',tvFav:'⭐ Favoritos · {0}',tvNew:'＋ Nueva',chFavAdd:'Marcar como favorito',chFavDel:'Quitar de favoritos',inFav:'En Favoritos',notInFav:'Agregar a Favoritos',tapToRemove:'Toca para quitar',tapToAdd:'Toca para agregar',addToMyLists:'Agregar a mis listas',createList:'＋ Crear lista nueva',watchNow:'▶ Ver ahora',newTvListT:'Nueva lista de canales',fromList:'De la lista: {0}',tvFavEmpty:'Todavía no tienes favoritos.\nToca ☆ en un canal.',tvListEmpty:'Esta lista está vacía.\nMantén presionado un canal para agregarlo.',holdHint:'Mantén presionado un canal para guardarlo en tus listas.',chMissing:'Ya no está en tus listas M3U',delTvListQ:'¿Borrar la lista \"{0}\"? Los canales no se borran.',addedToList:'Agregado a \"{0}\" ✓',nCh:'{0} canales',
  testFailNative:'No se pudo comprobar aquí. Guárdala y tócala: el reproductor de la app abre más tipos de emisoras.',
@@ -654,6 +696,12 @@ es:{
  aboutT:'Acerca de',version:'Versión {0}',devBy:'Desarrollado por',feat1:'Funciona sin internet (solo la radio y la TV que agregues lo usan)',feat2:'No recopila ningún dato tuyo',
  feat3:'Tu música y audios en un solo lugar',madeWith:'Hecho con cariño para la familia · 2026'},
 en:{
+ tviFull:'Full screen',tviClose:'Close the channel',tviLive:'● LIVE',tviTap:'Tap the video to see it full screen',
+ chMore:'Channel options',delCh:'🗑 Delete channel',delChSub:'Removed from "{0}", Favorites and your lists',delChT:'Delete channel',delChQ:'Delete "{0}"? It is removed from "{1}", Favorites and your lists.',chDeleted:'Channel deleted',delChM3U:'If you refresh the M3U list, this channel will not come back.',
+ tvResumeDel:'Remove from "Keep watching"',
+ tvResume:'KEEP WATCHING',tvWatch:'▶ Watch',tvListen:'🎧 Listen audio only',tvAudioCar:'TV · audio only',tvAudioPos:'📺 Audio only · {0} of {1}',tvAudioOn:'🎧 {0} in audio only',tv_live:'LIVE',tv_nOfM:'{0} of {1}',tv_next:'Next:',tv_sleep:'Sleep',tv_window:'Window',tv_audioOnly:'Audio only',tv_channels:'Channels',tv_searchCh:'Search channel…',tv_all:'All',tv_favs:'Favorites',tv_close:'Close',tv_back:'Back',tv_screenFit:'Screen fit',tv_fit:'Fit',tv_fill:'Fill',tv_zoom:'Zoom',tv_quality:'Quality',tv_qAuto:'Automatic',tv_qHigh:'High · 1080p',tv_qMed:'Medium · 720p',tv_qLow:'Low · 480p',tv_audioLang:'Audio language',tv_audio:'Audio',tv_subs:'Subtitles',tv_subsOff:'Off',tv_sleepT:'Sleep timer',tv_sleepOff:'Off',tv_sleepIn:'Turns off in {0}',tv_onlyOpts:'Only the options the channel provides are shown (some have a single quality or language).',tv_lock:'Lock screen',tv_unlock:'Unlock screen',tv_lockedHint:'Screen locked · press and hold the lock to unlock',tv_unlocked:'Screen unlocked',tv_reconnecting:'No signal, reconnecting…',tv_attempt:'Attempt {0} · comes back on its own when the signal returns',tv_tryOther:'Try another channel ▲ ▼',tv_release:'Release to change',tv_keepSliding:'Keep sliding',tv_chNofM:'Channel {0} of {1}',tv_favAdd:'Add to Favorites',tv_favDel:'Remove from Favorites',tv_favAdded:'Added to Favorites',tv_favRemoved:'Removed from Favorites',tv_settings:'Settings',tv_prevCh:'Previous channel',tv_nextCh:'Next channel',tv_pause:'Pause',tv_play:'Play',tv_watching:'Watching now',tv_oneCh:'There is only one channel in this list',tv_noPip:'Picture-in-picture is turned off in the phone settings',
+ keepFresh:'This link carries a timestamp (skey). Prometeo will keep it up to date every time you play the station.',
+ noHost:'Prometeo does not host or distribute any content. Stations, channels and lists are added by each user, who is responsible for using them in line with each service\'s terms.',
  tabSearch:'🔍 Search',foundNoPlayT:'We found a link, but it didn\'t play in the test',foundNoPlay:'It may be part of the page, not the stream. The safest option is to search by name.',foundNoPlayNative:'It may be part of the page, not the stream, or it may only play in the app\'s player. The safest option is to search by name.',tabPage:'🔗 Web page',tabDirect:'✍️ Direct link',stSearchPh:'Station name (e.g. Easy 93.1 Miami)',searchBtn:'Search',rbNote:'Searches Radio Browser, a free station directory. Only what you typed is sent.',searchingSt:'Searching…',nResults:'{0} results',noStResults:'We couldn\'t find \"{0}\". Try fewer words or paste the link of its web page.',rbFail:'Could not reach the station directory. Try again in a while.',tryBtn:'▶ Try',backResults:'‹ Back',testingNow:'Testing…',worksNow:'✓ It works. The test is playing.',stopTest:'Stop test',testStopped:'Test stopped',nameInList:'Name in your list',saveAlsoIn:'Also save in',seeLink:'See the stream link',saveStation:'Save station',pageLabel:'Link of the station\'s web page',pageHelp:'Copy the link of the page where you listen to the radio in your browser and paste it here.',webPageNote:'In the web version browsers don\'t allow reading other pages: use the app or search by name.',findStream:'🔎 Find the stream',lookingPage:'Checking the page…',foundStream:'✓ We found the stream',foundPerm:'It was a link that may expire. Prometeo replaced it with the provider\'s permanent link ({0}).',foundPlain:'Prometeo found the stream link on the page.',mayExpire:'Note: this link has a code that might expire. If it stops playing, search for it by name.',notFoundT:'We couldn\'t find the stream on that page',notFoundMsg:'Some stations hide their player or use links that expire. No problem, try one of these options:',optSearch:'Search by name',optSearchSub:'We already typed \"{0}\" for you',optDirect:'Type the direct link',optDirectSub:'If someone gave it to you (.mp3, .aac, .m3u8…)',continueBtn:'Test and continue',stationDefault:'Station',rbCredit:'Station search: Radio Browser (radio-browser.info), a free community directory. Only used when you tap Search.',
  privHidden:'{0} private audios hidden',privHidden1:'1 private audio hidden',privCleaned1:'🔒 1 WhatsApp audio or recording is no longer shown in your music',privHiddenSub:'WhatsApp and recordings. Not shown here.',privSee:'See settings ›',privSetT:'What Prometeo looks for',privSetA:'What Prometeo looks for',privSetIntro:'When searching for music, Prometeo leaves out voice notes and recordings to protect your privacy. Nothing is deleted from the phone.',privToggle:'Include private audios',privOffRec:'Off · recommended',privOnNow:'On · in their own section',privFolders:'Folders that are skipped',pk_wav:'WhatsApp · voice notes',pk_waa:'WhatsApp · received audios',pk_wab:'WhatsApp Business',pk_tg:'Telegram',pk_sg:'Signal',pk_call:'Call recordings',pk_rec:'Voice recorder',done:'Done',privAskT:'Show private audios?',privAsk1:'They may include personal voice notes from WhatsApp, Telegram or call recordings.',privAsk2:'They will appear only in the \"Private\" section, never mixed with your music or in \"Play all\". You can hide them again anytime.',privNo:'Better not',privYes:'Yes, show',segMusic:'🎵 Music · {0}',segPriv:'🔒 Private · {0}',privInfo:'These audios are not mixed with your music, not in \"Play all\" nor in shuffle. They only play if you tap one.',privHideAgain:'🙈 Hide private audios again',privEmpty:'There are no private audios.',privSrc:'Private audio',authTitle:'Open private audios',authSub:'Use your fingerprint, PIN or pattern',noLockT:'Your phone has no screen lock',noLock1:'To protect your private audios, Prometeo uses the phone\'s screen lock: fingerprint, PIN or pattern.',noLock2:'Set one up and come back. Your music keeps working normally meanwhile.',setLock:'Set up screen lock',notNow:'Not now',authFail:'Could not verify',privHiddenToast:'Private audios hidden 🔒',privCleaned:'🔒 {0} WhatsApp audios or recordings are no longer shown in your music',rAll:'All · {0}',rFav:'⭐ Favorites · {0}',rNewList:'＋ New list',editListBtn:'✎ Edit',delListBtn:'🗑 Delete',favAdd:'Mark as favorite',favDel:'Remove from favorites',newRListT:'New station list',editRListT:'Edit list',pickSt:'Choose the stations',nChosen:'{0} chosen',saveListBtn:'Save list',rListEmpty:'This list is empty.\nTap ✎ Edit to add stations.',rFavEmpty:'You have no favorites yet.\nTap ☆ on a station.',delRListQ:'Delete the list \"{0}\"? The stations are not deleted.',delRListT:'Delete list',inList:'{0} · {1} of {2}',listSavedOk:'List saved ✓',listDeletedOk:'List deleted',needStations:'Choose at least one station',myLists:'My lists',m3uGroups:'M3U list groups',tvFav:'⭐ Favorites · {0}',tvNew:'＋ New',chFavAdd:'Mark as favorite',chFavDel:'Remove from favorites',inFav:'In Favorites',notInFav:'Add to Favorites',tapToRemove:'Tap to remove',tapToAdd:'Tap to add',addToMyLists:'Add to my lists',createList:'＋ Create new list',watchNow:'▶ Watch now',newTvListT:'New channel list',fromList:'From the list: {0}',tvFavEmpty:'You have no favorites yet.\nTap ☆ on a channel.',tvListEmpty:'This list is empty.\nPress and hold a channel to add it.',holdHint:'Press and hold a channel to save it to your lists.',chMissing:'No longer in your M3U lists',delTvListQ:'Delete the list \"{0}\"? The channels are not deleted.',addedToList:'Added to \"{0}\" ✓',nCh:'{0} channels',
  testFailNative:'Could not check it here. Save it and tap it: the app player opens more kinds of stations.',
@@ -710,6 +758,12 @@ en:{
  aboutT:'About',version:'Version {0}',devBy:'Developed by',feat1:'Works offline (only the radio and TV you add use the internet)',feat2:'Collects none of your data',
  feat3:'Your music and audio in one place',madeWith:'Made with love for the family · 2026'},
 pt:{
+ tviFull:'Tela cheia',tviClose:'Fechar o canal',tviLive:'● AO VIVO',tviTap:'Toque no vídeo para ver em tela cheia',
+ chMore:'Opções do canal',delCh:'🗑 Apagar canal',delChSub:'Sai de "{0}", dos Favoritos e das suas listas',delChT:'Apagar canal',delChQ:'Apagar "{0}"? Ele sai de "{1}", dos Favoritos e das suas listas.',chDeleted:'Canal apagado',delChM3U:'Se você atualizar a lista M3U, este canal não volta.',
+ tvResumeDel:'Tirar de "Continuar assistindo"',
+ tvResume:'CONTINUAR ASSISTINDO',tvWatch:'▶ Ver',tvListen:'🎧 Ouvir só o áudio',tvAudioCar:'TV · só áudio',tvAudioPos:'📺 Só áudio · {0} de {1}',tvAudioOn:'🎧 {0} só no áudio',tv_live:'AO VIVO',tv_nOfM:'{0} de {1}',tv_next:'Próximo:',tv_sleep:'Dormir',tv_window:'Janela',tv_audioOnly:'Só áudio',tv_channels:'Canais',tv_searchCh:'Buscar canal…',tv_all:'Todos',tv_favs:'Favoritos',tv_close:'Fechar',tv_back:'Voltar',tv_screenFit:'Ajuste de tela',tv_fit:'Ajustar',tv_fill:'Preencher',tv_zoom:'Zoom',tv_quality:'Qualidade',tv_qAuto:'Automática',tv_qHigh:'Alta · 1080p',tv_qMed:'Média · 720p',tv_qLow:'Baixa · 480p',tv_audioLang:'Idioma do áudio',tv_audio:'Áudio',tv_subs:'Legendas',tv_subsOff:'Desativadas',tv_sleepT:'Timer para dormir',tv_sleepOff:'Desligado',tv_sleepIn:'Desliga em {0}',tv_onlyOpts:'Só aparecem as opções que o canal tem (alguns têm uma só qualidade ou um só idioma).',tv_lock:'Bloquear tela',tv_unlock:'Desbloquear tela',tv_lockedHint:'Tela bloqueada · mantenha o cadeado pressionado para desbloquear',tv_unlocked:'Tela desbloqueada',tv_reconnecting:'Sem sinal, reconectando…',tv_attempt:'Tentativa {0} · volta sozinho quando o sinal voltar',tv_tryOther:'Tente outro canal ▲ ▼',tv_release:'Solte para trocar',tv_keepSliding:'Continue deslizando',tv_chNofM:'Canal {0} de {1}',tv_favAdd:'Adicionar aos Favoritos',tv_favDel:'Tirar dos Favoritos',tv_favAdded:'Adicionado aos Favoritos',tv_favRemoved:'Tirado dos Favoritos',tv_settings:'Ajustes',tv_prevCh:'Canal anterior',tv_nextCh:'Próximo canal',tv_pause:'Pausa',tv_play:'Tocar',tv_watching:'Assistindo agora',tv_oneCh:'Só há um canal nesta lista',tv_noPip:'A janela flutuante está desativada nos ajustes do telefone',
+ keepFresh:'Este link tem uma marca de hora (skey). O Prometeo vai atualizá-la toda vez que você tocar a rádio.',
+ noHost:'O Prometeo não hospeda nem distribui conteúdo. As rádios, canais e listas são adicionados por cada usuário, que é responsável por usá-los respeitando os termos de cada serviço.',
  tabSearch:'🔍 Buscar',foundNoPlayT:'Encontramos um link, mas não tocou no teste',foundNoPlay:'Pode ser parte da página e não a transmissão. O mais seguro é buscar pelo nome.',foundNoPlayNative:'Pode ser parte da página e não a transmissão, ou só tocar no player do app. O mais seguro é buscar pelo nome.',tabPage:'🔗 Página',tabDirect:'✍️ Link direto',stSearchPh:'Nome da rádio (ex. Easy 93.1 Miami)',searchBtn:'Buscar',rbNote:'Busca no Radio Browser, um diretório livre de rádios. Só é enviado o que você escreveu.',searchingSt:'Buscando…',nResults:'{0} resultados',noStResults:'Não encontramos \"{0}\". Tente com menos palavras ou cole o link da página dela.',rbFail:'Não foi possível conectar ao diretório de rádios. Tente de novo daqui a pouco.',tryBtn:'▶ Testar',backResults:'‹ Voltar',testingNow:'Testando…',worksNow:'✓ Funciona. O teste está tocando.',stopTest:'Parar teste',testStopped:'Teste parado',nameInList:'Nome na sua lista',saveAlsoIn:'Salvar também em',seeLink:'Ver o link da transmissão',saveStation:'Salvar rádio',pageLabel:'Link da página da rádio',pageHelp:'Copie o link da página onde você ouve a rádio no navegador e cole aqui.',webPageNote:'Na versão web os navegadores não deixam ler outras páginas: use o app ou busque pelo nome.',findStream:'🔎 Buscar a transmissão',lookingPage:'Verificando a página…',foundStream:'✓ Encontramos a transmissão',foundPerm:'Era um link que pode expirar. O Prometeo trocou pelo link permanente do provedor ({0}).',foundPlain:'O Prometeo encontrou o link da transmissão na página.',mayExpire:'Atenção: este link tem um código que pode expirar. Se parar de tocar, busque pelo nome.',notFoundT:'Não encontramos a transmissão nessa página',notFoundMsg:'Algumas rádios escondem o player ou usam links que expiram. Sem problema, tente uma destas opções:',optSearch:'Buscar pelo nome',optSearchSub:'Já escrevemos \"{0}\" para você',optDirect:'Escrever o link direto',optDirectSub:'Se alguém te passou (.mp3, .aac, .m3u8…)',continueBtn:'Testar e continuar',stationDefault:'Rádio',rbCredit:'Busca de rádios: Radio Browser (radio-browser.info), diretório livre e comunitário. Só é consultado quando você toca em Buscar.',
  privHidden:'{0} áudios privados ocultos',privHidden1:'1 áudio privado oculto',privCleaned1:'🔒 1 áudio do WhatsApp ou gravação não aparece mais na sua música',privHiddenSub:'WhatsApp e gravações. Não aparecem aqui.',privSee:'Ver ajustes ›',privSetT:'O que o Prometeo procura',privSetA:'O que o Prometeo procura',privSetIntro:'Ao procurar música, o Prometeo deixa de fora as mensagens de voz e as gravações para proteger sua privacidade. Nada é apagado do telefone.',privToggle:'Incluir áudios privados',privOffRec:'Desligado · recomendado',privOnNow:'Ligado · em uma seção própria',privFolders:'Pastas que são ignoradas',pk_wav:'WhatsApp · mensagens de voz',pk_waa:'WhatsApp · áudios recebidos',pk_wab:'WhatsApp Business',pk_tg:'Telegram',pk_sg:'Signal',pk_call:'Gravações de chamadas',pk_rec:'Gravador de voz',done:'Pronto',privAskT:'Mostrar áudios privados?',privAsk1:'Podem incluir mensagens de voz pessoais do WhatsApp, Telegram ou gravações de chamadas.',privAsk2:'Vão aparecer só na seção \"Privados\", nunca misturados com sua música nem em \"Tocar tudo\". Você pode ocultá-los de novo quando quiser.',privNo:'Melhor não',privYes:'Sim, mostrar',segMusic:'🎵 Música · {0}',segPriv:'🔒 Privados · {0}',privInfo:'Estes áudios não se misturam com sua música, nem em \"Tocar tudo\" nem no aleatório. Só tocam se você tocar em um.',privHideAgain:'🙈 Ocultar áudios privados de novo',privEmpty:'Não há áudios privados.',privSrc:'Áudio privado',authTitle:'Abrir áudios privados',authSub:'Use sua digital, seu PIN ou seu padrão',noLockT:'Seu telefone não tem bloqueio',noLock1:'Para proteger seus áudios privados, o Prometeo usa o bloqueio de tela do telefone: digital, PIN ou padrão.',noLock2:'Configure um e volte aqui. Sua música continua funcionando normalmente enquanto isso.',setLock:'Configurar bloqueio',notNow:'Agora não',authFail:'Não foi possível verificar',privHiddenToast:'Áudios privados ocultos 🔒',privCleaned:'🔒 {0} áudios do WhatsApp ou gravações não aparecem mais na sua música',rAll:'Todas · {0}',rFav:'⭐ Favoritas · {0}',rNewList:'＋ Nova lista',editListBtn:'✎ Editar',delListBtn:'🗑 Apagar',favAdd:'Marcar como favorita',favDel:'Tirar das favoritas',newRListT:'Nova lista de rádios',editRListT:'Editar lista',pickSt:'Escolha as rádios',nChosen:'{0} escolhidas',saveListBtn:'Salvar lista',rListEmpty:'Esta lista está vazia.\nToque em ✎ Editar para adicionar rádios.',rFavEmpty:'Você ainda não tem favoritas.\nToque em ☆ numa rádio.',delRListQ:'Apagar a lista \"{0}\"? As rádios não são apagadas.',delRListT:'Apagar lista',inList:'{0} · {1} de {2}',listSavedOk:'Lista salva ✓',listDeletedOk:'Lista apagada',needStations:'Escolha pelo menos uma rádio',myLists:'Minhas listas',m3uGroups:'Grupos da lista M3U',tvFav:'⭐ Favoritos · {0}',tvNew:'＋ Nova',chFavAdd:'Marcar como favorito',chFavDel:'Tirar dos favoritos',inFav:'Nos Favoritos',notInFav:'Adicionar aos Favoritos',tapToRemove:'Toque para tirar',tapToAdd:'Toque para adicionar',addToMyLists:'Adicionar às minhas listas',createList:'＋ Criar lista nova',watchNow:'▶ Ver agora',newTvListT:'Nova lista de canais',fromList:'Da lista: {0}',tvFavEmpty:'Você ainda não tem favoritos.\nToque em ☆ num canal.',tvListEmpty:'Esta lista está vazia.\nMantenha pressionado um canal para adicioná-lo.',holdHint:'Mantenha pressionado um canal para salvá-lo nas suas listas.',chMissing:'Não está mais nas suas listas M3U',delTvListQ:'Apagar a lista \"{0}\"? Os canais não são apagados.',addedToList:'Adicionado a \"{0}\" ✓',nCh:'{0} canais',
  testFailNative:'Não deu para conferir aqui. Salve e toque nela: o player do app abre mais tipos de emissoras.',
@@ -766,6 +820,12 @@ pt:{
  aboutT:'Sobre',version:'Versão {0}',devBy:'Desenvolvido por',feat1:'Funciona sem internet (só o rádio e a TV que você adicionar usam)',feat2:'Não coleta nenhum dado seu',
  feat3:'Sua música e áudios em um só lugar',madeWith:'Feito com carinho para a família · 2026'},
 fr:{
+ tviFull:'Plein écran',tviClose:'Fermer la chaîne',tviLive:'● EN DIRECT',tviTap:'Touchez la vidéo pour la voir en grand',
+ chMore:'Options de la chaîne',delCh:'🗑 Supprimer la chaîne',delChSub:'Retirée de « {0} », des Favoris et de vos listes',delChT:'Supprimer la chaîne',delChQ:'Supprimer « {0} » ? Elle est retirée de « {1} », des Favoris et de vos listes.',chDeleted:'Chaîne supprimée',delChM3U:'Si vous actualisez la liste M3U, cette chaîne ne reviendra pas.',
+ tvResumeDel:'Retirer de « Continuer à regarder »',
+ tvResume:'CONTINUER À REGARDER',tvWatch:'▶ Regarder',tvListen:'🎧 Écouter le son seul',tvAudioCar:'TV · son seul',tvAudioPos:'📺 Son seul · {0} sur {1}',tvAudioOn:'🎧 {0} en son seul',tv_live:'EN DIRECT',tv_nOfM:'{0} sur {1}',tv_next:'Suivant :',tv_sleep:'Veille',tv_window:'Fenêtre',tv_audioOnly:'Son seul',tv_channels:'Chaînes',tv_searchCh:'Chercher une chaîne…',tv_all:'Toutes',tv_favs:'Favoris',tv_close:'Fermer',tv_back:'Retour',tv_screenFit:'Ajustement de l\'écran',tv_fit:'Ajuster',tv_fill:'Remplir',tv_zoom:'Zoom',tv_quality:'Qualité',tv_qAuto:'Automatique',tv_qHigh:'Haute · 1080p',tv_qMed:'Moyenne · 720p',tv_qLow:'Basse · 480p',tv_audioLang:'Langue audio',tv_audio:'Audio',tv_subs:'Sous-titres',tv_subsOff:'Désactivés',tv_sleepT:'Minuterie de veille',tv_sleepOff:'Désactivée',tv_sleepIn:'S\'éteint dans {0}',tv_onlyOpts:'Seules les options fournies par la chaîne s\'affichent (certaines n\'ont qu\'une qualité ou qu\'une langue).',tv_lock:'Verrouiller l\'écran',tv_unlock:'Déverrouiller l\'écran',tv_lockedHint:'Écran verrouillé · maintenez le cadenas pour déverrouiller',tv_unlocked:'Écran déverrouillé',tv_reconnecting:'Pas de signal, reconnexion…',tv_attempt:'Essai {0} · revient tout seul quand le signal revient',tv_tryOther:'Essayez une autre chaîne ▲ ▼',tv_release:'Relâchez pour changer',tv_keepSliding:'Continuez à glisser',tv_chNofM:'Chaîne {0} sur {1}',tv_favAdd:'Ajouter aux Favoris',tv_favDel:'Retirer des Favoris',tv_favAdded:'Ajouté aux Favoris',tv_favRemoved:'Retiré des Favoris',tv_settings:'Réglages',tv_prevCh:'Chaîne précédente',tv_nextCh:'Chaîne suivante',tv_pause:'Pause',tv_play:'Lire',tv_watching:'En cours',tv_oneCh:'Il n\'y a qu\'une chaîne dans cette liste',tv_noPip:'La fenêtre flottante est désactivée dans les réglages du téléphone',
+ keepFresh:'Ce lien contient un horodatage (skey). Prometeo le mettra à jour chaque fois que vous lancerez la station.',
+ noHost:'Prometeo n\'héberge ni ne distribue aucun contenu. Les stations, chaînes et listes sont ajoutées par chaque utilisateur, qui est responsable de les utiliser dans le respect des conditions de chaque service.',
  tabSearch:'🔍 Chercher',foundNoPlayT:'Lien trouvé, mais il n\'a pas joué pendant le test',foundNoPlay:'C\'est peut-être une partie de la page et non le flux. Le plus sûr est de chercher par nom.',foundNoPlayNative:'C\'est peut-être une partie de la page et non le flux, ou il ne joue que dans le lecteur de l\'app. Le plus sûr est de chercher par nom.',tabPage:'🔗 Page web',tabDirect:'✍️ Lien direct',stSearchPh:'Nom de la station (ex. Easy 93.1 Miami)',searchBtn:'Chercher',rbNote:'Cherche dans Radio Browser, un annuaire libre de stations. Seul ce que vous avez écrit est envoyé.',searchingSt:'Recherche…',nResults:'{0} résultats',noStResults:'« {0} » introuvable. Essayez avec moins de mots ou collez le lien de sa page.',rbFail:'Impossible de joindre l\'annuaire des stations. Réessayez plus tard.',tryBtn:'▶ Essayer',backResults:'‹ Retour',testingNow:'Test en cours…',worksNow:'✓ Ça marche. Le test est en lecture.',stopTest:'Arrêter le test',testStopped:'Test arrêté',nameInList:'Nom dans votre liste',saveAlsoIn:'Enregistrer aussi dans',seeLink:'Voir le lien du flux',saveStation:'Enregistrer la station',pageLabel:'Lien de la page de la station',pageHelp:'Copiez le lien de la page où vous écoutez la radio dans le navigateur et collez-le ici.',webPageNote:'Dans la version web, les navigateurs empêchent de lire d\'autres pages : utilisez l\'app ou cherchez par nom.',findStream:'🔎 Trouver le flux',lookingPage:'Analyse de la page…',foundStream:'✓ Flux trouvé',foundPerm:'C\'était un lien qui peut expirer. Prometeo l\'a remplacé par le lien permanent du fournisseur ({0}).',foundPlain:'Prometeo a trouvé le lien du flux dans la page.',mayExpire:'Attention : ce lien contient un code qui peut expirer. S\'il ne marche plus, cherchez la station par nom.',notFoundT:'Flux introuvable sur cette page',notFoundMsg:'Certaines stations cachent leur lecteur ou utilisent des liens qui expirent. Pas de souci, essayez une de ces options :',optSearch:'Chercher par nom',optSearchSub:'Nous avons déjà écrit « {0} » pour vous',optDirect:'Écrire le lien direct',optDirectSub:'Si quelqu\'un vous l\'a donné (.mp3, .aac, .m3u8…)',continueBtn:'Tester et continuer',stationDefault:'Station',rbCredit:'Recherche de stations : Radio Browser (radio-browser.info), annuaire libre et communautaire. Utilisé seulement quand vous touchez Chercher.',
  privHidden:'{0} audios privés masqués',privHidden1:'1 audio privé masqué',privCleaned1:'🔒 1 audio WhatsApp ou enregistrement ne s\'affiche plus dans votre musique',privHiddenSub:'WhatsApp et enregistrements. Non affichés ici.',privSee:'Voir les réglages ›',privSetT:'Ce que cherche Prometeo',privSetA:'Ce que cherche Prometeo',privSetIntro:'En cherchant la musique, Prometeo laisse de côté les notes vocales et les enregistrements pour protéger votre vie privée. Rien n\'est supprimé du téléphone.',privToggle:'Inclure les audios privés',privOffRec:'Désactivé · recommandé',privOnNow:'Activé · dans leur propre section',privFolders:'Dossiers ignorés',pk_wav:'WhatsApp · notes vocales',pk_waa:'WhatsApp · audios reçus',pk_wab:'WhatsApp Business',pk_tg:'Telegram',pk_sg:'Signal',pk_call:'Enregistrements d\'appels',pk_rec:'Dictaphone',done:'OK',privAskT:'Afficher les audios privés ?',privAsk1:'Ils peuvent contenir des notes vocales personnelles de WhatsApp, Telegram ou des enregistrements d\'appels.',privAsk2:'Ils apparaîtront seulement dans la section « Privés », jamais mélangés à votre musique ni dans « Tout lire ». Vous pouvez les masquer à nouveau quand vous voulez.',privNo:'Plutôt pas',privYes:'Oui, afficher',segMusic:'🎵 Musique · {0}',segPriv:'🔒 Privés · {0}',privInfo:'Ces audios ne se mélangent pas à votre musique, ni dans « Tout lire » ni en aléatoire. Ils ne se lisent que si vous en touchez un.',privHideAgain:'🙈 Masquer à nouveau les audios privés',privEmpty:'Aucun audio privé.',privSrc:'Audio privé',authTitle:'Ouvrir les audios privés',authSub:'Utilisez votre empreinte, votre code PIN ou votre schéma',noLockT:'Votre téléphone n\'a pas de verrouillage',noLock1:'Pour protéger vos audios privés, Prometeo utilise le verrouillage d\'écran du téléphone : empreinte, code PIN ou schéma.',noLock2:'Configurez-en un et revenez ici. Votre musique continue de fonctionner normalement.',setLock:'Configurer le verrouillage',notNow:'Pas maintenant',authFail:'Vérification impossible',privHiddenToast:'Audios privés masqués 🔒',privCleaned:'🔒 {0} audios WhatsApp ou enregistrements ne s\'affichent plus dans votre musique',rAll:'Toutes · {0}',rFav:'⭐ Favorites · {0}',rNewList:'＋ Nouvelle liste',editListBtn:'✎ Modifier',delListBtn:'🗑 Supprimer',favAdd:'Ajouter aux favorites',favDel:'Retirer des favorites',newRListT:'Nouvelle liste de stations',editRListT:'Modifier la liste',pickSt:'Choisissez les stations',nChosen:'{0} choisies',saveListBtn:'Enregistrer la liste',rListEmpty:'Cette liste est vide.\nTouchez ✎ Modifier pour ajouter des stations.',rFavEmpty:'Pas encore de favorites.\nTouchez ☆ sur une station.',delRListQ:'Supprimer la liste « {0} » ? Les stations ne sont pas supprimées.',delRListT:'Supprimer la liste',inList:'{0} · {1} sur {2}',listSavedOk:'Liste enregistrée ✓',listDeletedOk:'Liste supprimée',needStations:'Choisissez au moins une station',myLists:'Mes listes',m3uGroups:'Groupes de la liste M3U',tvFav:'⭐ Favoris · {0}',tvNew:'＋ Nouvelle',chFavAdd:'Ajouter aux favoris',chFavDel:'Retirer des favoris',inFav:'Dans les Favoris',notInFav:'Ajouter aux Favoris',tapToRemove:'Touchez pour retirer',tapToAdd:'Touchez pour ajouter',addToMyLists:'Ajouter à mes listes',createList:'＋ Créer une liste',watchNow:'▶ Regarder',newTvListT:'Nouvelle liste de chaînes',fromList:'De la liste : {0}',tvFavEmpty:'Pas encore de favoris.\nTouchez ☆ sur une chaîne.',tvListEmpty:'Cette liste est vide.\nAppuyez longuement sur une chaîne pour l\'ajouter.',holdHint:'Appuyez longuement sur une chaîne pour l\'enregistrer dans vos listes.',chMissing:'N\'est plus dans vos listes M3U',delTvListQ:'Supprimer la liste « {0} » ? Les chaînes ne sont pas supprimées.',addedToList:'Ajouté à « {0} » ✓',nCh:'{0} chaînes',
  testFailNative:'Vérification impossible ici. Enregistrez-la et touchez-la : le lecteur de l\'app ouvre plus de types de stations.',
@@ -1335,7 +1395,7 @@ function updateNowText(){
 function updateMini(){
   if(radioId){ const st=stationById(radioId), show=!!st && currentTab!=='ahora';
     $('mini').classList.toggle('hidden',!show); document.body.classList.toggle('has-mini',show);
-    if(st){ $('miniTitle').textContent=st.name; $('miniSub').textContent=radioFilter!=='all' && radioPool().includes(st)? radioPosText(st) : t('live'); } return; }
+    if(st){ $('miniTitle').textContent=st.name; $('miniSub').textContent=st.tv || (radioFilter!=='all' && radioPool().includes(st))? radioPosText(st) : t('live'); } return; }
   $('miniSub').textContent=t('tapOpen');
   const s=currentId && songById(currentId);
   const show=!!s && currentTab!=='ahora';
@@ -1355,7 +1415,7 @@ function switchTab(name){
   document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('active',b.dataset.tab===name));
   if(name==='ahora') requestAnimationFrame(sizeCanvas);
   if(name==='radio') renderRadio();
-  updateMini(); window.scrollTo(0,0);
+  updateMini(); window.scrollTo(0,0); tviSync(true);
 }
 
 /* ================= VENTANAS (MODAL) ================= */
@@ -1364,12 +1424,12 @@ function modal(title, build, actions){
   return new Promise(res=>{
     const m=$('modal'), b=$('mBody'), a=$('mActions'); let done=false;
     $('mTitle').textContent=title; b.textContent=''; a.textContent='';
-    const close=v=>{ if(done) return; done=true; modalOpen=false; m.classList.add('hidden'); m.onclick=null; m._close=null; res(v); };
+    const close=v=>{ if(done) return; done=true; modalOpen=false; m.classList.add('hidden'); m.onclick=null; m._close=null; res(v); tviSync(); };
     if(build) build(b,close);
     (actions||[]).forEach(([label,fn,cls])=>{ const bt=el('button',cls||'btn-pill',label); bt.onclick=()=>close(fn()); a.appendChild(bt); });
     m.onclick=e=>{ if(e.target===m) close(null); };
     m._close=()=>close(null);
-    m.classList.remove('hidden'); modalOpen=true;
+    m.classList.remove('hidden'); modalOpen=true; tviSync();
     const inp=b.querySelector('input'); if(inp) setTimeout(()=>{ inp.focus(); inp.select(); },80);
   });
 }
@@ -1496,6 +1556,7 @@ function onBack(){
   const m=$('modal');
   if(modalOpen && m._close){ m._close(); return; }
   if(currentTab==='playlists' && openPl){ closePlDetail(); return; }
+  if(tvInlineCh && currentTab==='radio' && tvPane==='tv'){ closeTvInline(); return; }
   if(currentTab!=='ahora'){ switchTab('ahora'); return; }
   const bm=bgPlugin();
   if(bm && !audio.paused){ try{ bm.moveToBackground(); return; }catch(e){} }
@@ -1512,7 +1573,7 @@ document.addEventListener('deviceready',()=>{
     }catch(e){}
   }
   document.addEventListener('backbutton',onBack,false);
-  if(window.PrometeoMusic){ PM=window.PrometeoMusic; document.body.classList.add('native'); if(PM.onRadio) PM.onRadio(onRadioNative); translateStatic(); renderLib(); nativeStart(); }
+  if(window.PrometeoMusic){ PM=window.PrometeoMusic; document.body.classList.add('native'); if(PM.onRadio) PM.onRadio(onRadioNative); if(PM.onTv) PM.onTv(onTvEvent); translateStatic(); renderLib(); nativeStart(); }
 },false);
 
 /* ================= PORTADA, ARTISTA Y ÁLBUM DESDE EL ARCHIVO (v41) =================
@@ -1676,7 +1737,8 @@ const NR=()=>!!(PM && PM.radioPlay);
 function radioPaused(){ return NR()? !(nrState==='online' || nrState==='connecting' || nrState==='reconnecting') : radioAudio.paused; }
 function radioPauseAny(){ if(NR()){ nrState='paused'; PM.radioPause().catch(()=>{}); setRadioState('paused'); setPlayIcon(); carState(); } else radioAudio.pause(); }
 function startStream(url){
-  if(NR()){ nrState='connecting'; PM.radioPlay(url,(stationById(radioId)||{}).name||'').catch(e=>onRadioNative({type:'error',value:String(e)})); }
+  url=freshUrl(url);
+  if(NR()){ nrState='connecting'; const cs=stationById(radioId)||{}; PM.radioPlay(url,cs.name||'',cs.tv?'tv':'').catch(e=>onRadioNative({type:'error',value:String(e)})); }
   else { radioAudio.src=url; const p=radioAudio.play(); if(p && p.catch) p.catch(()=>{}); }
 }
 function onRadioNative(ev){
@@ -1685,7 +1747,7 @@ function onRadioNative(ev){
   else if(ev.type==='title'){ radioNowTitle=String(ev.value||'').trim(); $('radioNow').textContent=radioNowTitle? '♪ '+radioNowTitle : ''; sendCarRadio(); }
   else if(ev.type==='error'){ nrState='paused'; setRadioState('paused'); setPlayIcon(); carState(); const st=stationById(radioId); toast(navigator.onLine===false? t('noNet') : t('radioFail',st? st.name : '')); }
 }
-const stationById=id=>radios.find(r=>r.id===id);
+const stationById=id=> id===TVA? tvAudioStation() : radios.find(r=>r.id===id);
 function saveRadios(){ store.set('radios',radios); }
 function stInitials(n){ const w=String(n||'').trim().split(/\s+/).filter(x=>/^\p{L}/u.test(x));
   if(w.length>1) return (w[0][0]+w[1][0]).toUpperCase(); if(w.length) return w[0].slice(0,2).toUpperCase(); return '📻'; }
@@ -1757,6 +1819,7 @@ async function editStation(st){
     };
     row.appendChild(bt); row.appendChild(bc); row.appendChild(bs); b.appendChild(row);
     b.appendChild(el('p','privacy-small',t('radioPrivacy')));
+    b.appendChild(el('p','privacy-small',t('noHost')));
   },[]);
   if(!res) return;
   if(st){ st.name=res.name; const changed=st.url!==res.url; st.url=res.url; saveRadios();
@@ -1786,6 +1849,7 @@ function updateRadioText(){
 }
 /* "Radio • 2 de 8", o "Carro · 1 de 4" si se está usando una lista */
 function radioPosText(st){
+  if(st && st.tv && tvAudio) return t('tvAudioPos',tvAudio.i+1,tvAudio.pool.length);
   const pool=radioPool(), i=pool.indexOf(st);
   if(radioFilter!=='all' && i>=0) return t('inList', radioFilter==='fav'? t('rFav','').replace(/ · $/,'') : (radioListById(radioFilter)||{}).name, i+1, pool.length);
   return t('radioOfN',radios.indexOf(st)+1,radios.length);
@@ -1798,6 +1862,7 @@ function updateRadioTimes(){
 function setRadioState(s){ radioState=s; updateRadioTimes(); }
 function playRadio(id){
   const st=stationById(id); if(!st) return;
+  if(tvInlineCh) closeTvInline();
   if(navigator.onLine===false) toast(t('noNet'));
   if(!audio.paused) audio.pause();
   radioId=id; document.body.classList.add('radio-on');
@@ -1812,6 +1877,7 @@ function toggleRadio(){
   else radioPauseAny();
 }
 function switchStation(dir){
+  if(radioId===TVA && tvAudio){ const n=tvAudio.pool.length; if(!n) return; tvAudio.i=(tvAudio.i+dir+n)%n; playRadio(TVA); return; }
   let pool=radioPool(); if(!pool.length) pool=radios; if(!pool.length) return;
   let i=pool.findIndex(r=>r.id===radioId);
   i= i<0? (dir>0? 0 : pool.length-1) : (i+dir+pool.length)%pool.length;
@@ -1836,7 +1902,7 @@ function sendCarRadio(){
   let art=''; const img=$('coverImg');
   if(PM && PM.nowPlaying){
     try{ if(img.complete && img.naturalWidth){ const c=document.createElement('canvas'); c.width=c.height=320; c.getContext('2d').drawImage(img,0,0,320,320); art=c.toDataURL('image/jpeg',0.85).split(',')[1]||''; } }catch(e){}
-    PM.nowPlaying({title:radioNowTitle||st.name, artist:radioNowTitle? st.name : t('radioLiveCar'), album:'Prometeo Radio', duration:0, art}).catch(()=>{});
+    PM.nowPlaying({title:radioNowTitle||st.name, artist:radioNowTitle? st.name : t(st.tv?'tvAudioCar':'radioLiveCar'), album:'Prometeo Radio', duration:0, art, kind:'radio'}).catch(()=>{});
   }
   if('mediaSession' in navigator){ try{ navigator.mediaSession.metadata=new MediaMetadata({title:st.name,artist:t('radioLiveCar'),album:'Prometeo Radio'}); }catch(e){} }
 }
@@ -1859,7 +1925,7 @@ radioAudio.addEventListener('error',()=>{
   const st=stationById(radioId); setRadioState('paused'); setPlayIcon(); carState();
   toast(navigator.onLine===false? t('noNet') : t('radioFail',st? st.name : ''));
 });
-audio.addEventListener('play',()=>{ if(radioId) stopRadio(false); });
+audio.addEventListener('play',()=>{ if(radioId) stopRadio(false); if(tvInlineCh) closeTvInline(); });
 
 /* ================= TV / IPTV Y LISTAS M3U (v41) =================
    Las listas las agrega el usuario (dirección o archivo). Prometeo solo se conecta al descargar
@@ -1885,7 +1951,7 @@ async function loadTv(){ try{ tvLists=(await dbAll('tv'))||[]; }catch(e){ tvList
 function allChannels(){ const o=[]; tvLists.forEach(L=>L.channels.forEach(c=>o.push(c))); return o; }
 function chColor(s){ let h=0; for(let i=0;i<s.length;i++) h=(h*31+s.charCodeAt(i))>>>0; return ST_COLORS[h%ST_COLORS.length]; }
 function setRadioPane(p){ tvPane=p; $('segSt').classList.toggle('on',p==='st'); $('segTv').classList.toggle('on',p==='tv');
-  $('paneSt').classList.toggle('hidden',p!=='st'); $('paneTv').classList.toggle('hidden',p!=='tv'); if(p==='tv') renderTv(); }
+  $('paneSt').classList.toggle('hidden',p!=='st'); $('paneTv').classList.toggle('hidden',p!=='tv'); if(p==='tv') renderTv(); tviSync(true); }
 function renderTv(){
   const all=allChannels();
   $('tvCount').textContent=t(all.length===1?'ch1':'chN',all.length);
@@ -1899,6 +1965,7 @@ function renderTv(){
     ls.appendChild(r);
   });
   const has=all.length>0;
+  renderTvResume();
   renderTvMy(has);
   const sel=tvSelItems();
   $('tvSearch').classList.toggle('hidden',!has && !sel); $('tvGroups').classList.toggle('hidden',!has || !!sel);
@@ -1916,6 +1983,7 @@ function renderTv(){
   const list=base.filter(ch=>(sel || !tvGroup || ch.g===tvGroup) && (!q || ch.n.toLowerCase().includes(q) || (ch.g||'').toLowerCase().includes(q)));
   if(sel && !base.length){ c.appendChild(el('div','empty',t(tvSel==='fav'?'tvFavEmpty':'tvListEmpty'))); return; }
   const urls=new Set(all.map(x=>x.u));
+  tvShown=list.filter(ch=>!ch.missing);
   const frag=document.createDocumentFragment();
   list.slice(0,200).forEach(ch=>{
     const r=el('div','song-item'+(ch.missing?' missing':'')); r.appendChild(stTile({name:ch.n,color:chColor(ch.n)}));
@@ -1923,17 +1991,90 @@ function renderTv(){
     info.onclick=()=>playChannel(ch); r.appendChild(info);
     const fav=isFavCh(ch,urls), sb=el('button','icon-btn star'+(fav?'':' off'),fav?'★':'☆'); sb.title=t(fav?'chFavDel':'chFavAdd'); sb.setAttribute('aria-label',sb.title);
     sb.onclick=e=>{ e.stopPropagation(); toggleFavCh(ch); }; r.appendChild(sb);
+    if(!ch.missing){ const mb=el('button','icon-btn more','⋮'); mb.title=t('chMore'); mb.setAttribute('aria-label',t('chMore')); mb.onclick=e=>{ e.stopPropagation(); openChSheet(ch); }; r.appendChild(mb); }
     onLongPress(r,()=>openChSheet(ch));
     frag.appendChild(r);
   });
   c.appendChild(frag);
   if(list.length>200) c.appendChild(el('div','empty',t('moreCh',list.length-200)));
 }
-function playChannel(ch){
+/* ================= REPRODUCTOR DE TV (v41) =================
+   Se le pasa la lista que estás viendo (grupo, favoritos, mi lista o búsqueda) para cambiar de canal dentro de ella. */
+let tvShown=[];
+const TV_KEYS=['live','nOfM','next','sleep','window','audioOnly','channels','searchCh','all','favs','close','back','screenFit','fit','fill','zoom','quality','qAuto','qHigh','qMed','qLow','audioLang','audio','subs','subsOff',
+  'sleepT','sleepOff','sleepIn','onlyOpts','lock','unlock','lockedHint','unlocked','reconnecting','attempt','tryOther','release','keepSliding','chNofM','favAdd','favDel','favAdded','favRemoved','settings','prevCh','nextCh','pause','play','watching','oneCh','noPip'];
+function tvStrings(){ const o={fail:t('tvFail')}; TV_KEYS.forEach(k=>o[k]=t('tv_'+k)); return o; }
+function tvPoolFor(ch){ const p=tvShown.includes(ch)? tvShown : (tvShown.find(c=>c.u===ch.u)? tvShown : [ch]); return p; }
+function playChannel(ch, pool){
+  if(PM && PM.tvInline){ openTvInline(ch, pool); return; }
+  openTvFull(ch, pool);
+}
+/* ---- TV en pequeño (arriba, dentro de la app) ---- */
+function tviVisible(){ return !!tvInlineCh && currentTab==='radio' && tvPane==='tv' && !modalOpen; }
+function tviRect(){ const r=$('tvInlineVideo').getBoundingClientRect(); return {x:r.left, y:r.top, w:r.width, h:r.height, vw:window.innerWidth}; }
+function tviSync(pauseIfHidden){
+  const box=$('tvInline'); if(!box) return;
+  const showBox=!!tvInlineCh && currentTab==='radio' && tvPane==='tv';
+  box.classList.toggle('hidden',!showBox); document.body.classList.toggle('tvi-on',showBox);
+  if(showBox){ const tb=document.querySelector('.topbar'); box.style.top=(tb? tb.getBoundingClientRect().bottom : 0)+'px'; document.body.style.setProperty('--tvih',(box.offsetHeight+6)+'px'); }
+  if(!tvInlineCh || !PM || !PM.tvInlineRect) return;
+  if(tviVisible()) requestAnimationFrame(()=>{ if(tviVisible()) PM.tvInlineRect(tviRect()).catch(()=>{}); });
+  else { PM.tvInlineRect({show:false}).catch(()=>{}); if(pauseIfHidden && !showBox) PM.tvInlineCmd('pause').catch(()=>{}); }
+}
+function tviRender(){
+  const ch=tvInlineCh; if(!ch) return;
+  $('tvInlineName').textContent=ch.n;
+  const sub=$('tvInlineSub'); const st=tviState;
+  sub.className=st==='playing'? 'live' : '';
+  sub.textContent= st==='playing'? t('tviLive')+(tviPool.length>1? ' · '+t('tv_nOfM',tviIdx+1,tviPool.length) : '')
+    : st==='paused'? t('paused') : st==='reconnecting'? t('reconnecting') : st==='error'? t('tvFail') : t('connecting');
+  $('tvInlineState').textContent= st==='error'? t('tvFail') : '';
+  $('tviPlay').textContent= st==='playing'||st==='buffering'||st===''? '⏸' : '▶';
+  const fav=isFavCh(ch); const fb=$('tviFav'); fb.textContent=fav?'★':'☆'; fb.classList.toggle('off',!fav); fb.title=t(fav?'chFavDel':'chFavAdd');
+  $('tviPrev').classList.toggle('hidden',tviPool.length<2); $('tviNext').classList.toggle('hidden',tviPool.length<2);
+  $('tviFull').title=t('tviFull'); $('tviClose').title=t('tviClose');
+  const box=$('tvInline'); if(!box.classList.contains('hidden')) document.body.style.setProperty('--tvih',(box.offsetHeight+6)+'px');
+}
+function openTvInline(ch, pool){
   if(radioId) stopRadio(false);
   if(!audio.paused) audio.pause();
   if(navigator.onLine===false) toast(t('noNet'));
-  if(PM && PM.playVideo){ toast(t('opening',ch.n)); PM.playVideo(ch.u,ch.n,t('tvFail')).catch(()=>toast(t('tvFail'))); return; }
+  tviPool=(pool && pool.length)? pool.slice() : tvPoolFor(ch).slice();
+  tviIdx=Math.max(0,tviPool.indexOf(ch)); if(tviPool[tviIdx]!==ch){ const k=tviPool.findIndex(c=>c.u===ch.u); if(k>=0) tviIdx=k; else { tviPool.unshift(ch); tviIdx=0; } }
+  tvInlineCh=ch; tviState='';
+  store.set('tvLast',{u:ch.u, n:ch.n, g:ch.g||''});
+  tviRender(); tviSync(); renderTvResume();
+  requestAnimationFrame(()=>{ if(tvInlineCh===ch) PM.tvInline(ch.u, tviVisible()? tviRect() : {show:false}).catch(()=>{ tviState='error'; tviRender(); }); });
+}
+function tviMove(dir){ if(tviPool.length<2) return; tviIdx=(tviIdx+dir+tviPool.length)%tviPool.length; openTvInline(tviPool[tviIdx], tviPool); }
+function closeTvInline(){
+  tvInlineCh=null; tviState=''; tviFromFull=false;
+  if(PM && PM.tvClose) PM.tvClose().catch(()=>{});
+  tviSync(); if(currentTab==='radio' && tvPane==='tv') renderTv();
+}
+function tviFull(){
+  const ch=tvInlineCh; if(!ch) return;
+  PM.tvInlineCmd('pause').catch(()=>{});
+  tviFromFull=true; tviAudioStarted=false;
+  openTvFull(ch, tviPool);
+}
+$('tviPrev').onclick=()=>tviMove(-1); $('tviNext').onclick=()=>tviMove(1);
+$('tviPlay').onclick=()=>{ if(!tvInlineCh) return; if(tviState==='error'){ openTvInline(tvInlineCh,tviPool); return; } PM.tvInlineCmd('toggle').catch(()=>{}); };
+$('tviFav').onclick=()=>{ if(tvInlineCh){ toggleFavCh(tvInlineCh); tviRender(); } };
+$('tviFull').onclick=tviFull; $('tviClose').onclick=closeTvInline;
+window.addEventListener('resize',()=>tviSync());
+/* ---- TV a pantalla completa ---- */
+function openTvFull(ch, pool){
+  if(radioId) stopRadio(false);
+  if(!audio.paused) audio.pause();
+  if(navigator.onLine===false) toast(t('noNet'));
+  if(PM && PM.playVideo){
+    pool=(pool && pool.length)? pool : tvPoolFor(ch); let i=pool.indexOf(ch); if(i<0) i=Math.max(0,pool.findIndex(c=>c.u===ch.u));
+    if(pool.length>3000){ const a=Math.max(0,i-1500); pool=pool.slice(a,a+3000); i-=a; }   /* listas gigantes: los 3000 canales alrededor */
+    tvLastPool=pool;
+    const urls=new Set(allChannels().map(x=>x.u));
+    const opts={list:pool.map(c=>({n:c.n,u:c.u,g:c.g||'',f:isFavCh(c,urls)})), i, s:tvStrings(), aspect:store.get('tvAspect','fit'), quality:store.get('tvQuality','auto')};
+    toast(t('opening',ch.n)); PM.playVideo(ch.u,ch.n,t('tvFail'),opts).catch(()=>toast(t('tvFail'))); return; }
   /* versión web: reproductor de la página (abre los formatos que soporte el navegador) */
   modal(ch.n,(b)=>{
     const v=el('video'); v.controls=true; v.autoplay=true; v.setAttribute('playsinline',''); v.style.width='100%'; v.style.borderRadius='12px'; v.style.background='#000';
@@ -1983,6 +2124,7 @@ async function addListDialog(){
     };
     row.appendChild(bc); row.appendChild(bs); b.appendChild(row);
     b.appendChild(el('p','privacy-small',t('tvNote')));
+    b.appendChild(el('p','privacy-small',t('noHost')));
   },[]);
   if(!res) return;
   let text=res.text;
@@ -1998,14 +2140,39 @@ async function refreshList(L){
   toast(t('loadingList'));
   let text; try{ text=await fetchListText(L.url); }catch(e){ toast(t('listFail',(e && e.message)||e||'error')); return; }
   const ch=parseM3U(text).filter(e=>STREAM_RE.test(e.u)); if(!ch.length){ toast(t('listEmptyErr')); return; }
-  L.channels=ch.map(e=>({n:e.n||e.u, g:e.g||'', u:e.u}));
+  const hid=new Set(L.hidden||[]);
+  L.channels=ch.filter(e=>!hid.has(e.u)).map(e=>({n:e.n||e.u, g:e.g||'', u:e.u}));
   try{ await dbPut('tv',L); }catch(e){} renderTv(); toast(t('listUpdated',L.channels.length));
+}
+/* Quita de Favoritos, Mis listas, "Seguir viendo" y del solo audio los canales que ya no existen en ninguna lista */
+function purgeChannels(gone){
+  const still=new Set(allChannels().map(c=>c.u));
+  const dead=c=>gone.has(c.u) && !still.has(c.u);
+  const nf=tvFav.filter(c=>!dead(c)); if(nf.length!==tvFav.length){ tvFav=nf; saveTvFav(); }
+  let ch=false; tvMy.forEach(L=>{ const k=L.items.filter(c=>!dead(c)); if(k.length!==L.items.length){ L.items=k; ch=true; } }); if(ch) saveTvMy();
+  const last=store.get('tvLast',null); if(last && dead(last)) store.set('tvLast',null);
+  if(radioId===TVA && tvAudio){ const cur=tvAudio.pool[tvAudio.i]; tvAudio.pool=tvAudio.pool.filter(c=>!dead(c)); if(cur && dead(cur)){ stopRadio(false); tvAudio=null; } else if(cur) tvAudio.i=Math.max(0,tvAudio.pool.indexOf(cur)); }
+  tvLastPool=tvLastPool.filter(c=>!dead(c));
+  if(PM && PM.tvClose && tvInlineCh && dead(tvInlineCh)) closeTvInline();
 }
 async function deleteList(L){
   const yes=await modal(t('delListT'),b=>b.appendChild(el('p','m-msg',t('delListQ',L.name,L.channels.length))),[[t('cancel'),()=>false,'btn-pill'],[t('del'),()=>true,'btn-danger']]);
   if(!yes) return;
   try{ await dbDel('tv',L.id); }catch(e){}
-  tvLists=tvLists.filter(x=>x.id!==L.id); renderTv(); toast(t('listDel'));
+  tvLists=tvLists.filter(x=>x.id!==L.id);
+  purgeChannels(new Set(L.channels.map(c=>c.u)));
+  renderTv(); toast(t('listDel'));
+}
+async function deleteChannel(ch){
+  const L=tvLists.find(x=>x.channels.includes(ch)); if(!L) return;
+  const yes=await modal(t('delChT'),b=>{ b.appendChild(el('p','m-msg',t('delChQ',ch.n,L.name))); if(L.url) b.appendChild(el('p','field-help',t('delChM3U'))); },[[t('cancel'),()=>false,'btn-pill'],[t('del'),()=>true,'btn-danger']]);
+  if(!yes) return;
+  L.channels=L.channels.filter(c=>c!==ch);
+  if(L.url){ L.hidden=(L.hidden||[]); if(!L.hidden.includes(ch.u)) L.hidden.push(ch.u); }
+  if(!L.channels.length && L.mine){ try{ await dbDel('tv',L.id); }catch(e){} tvLists=tvLists.filter(x=>x!==L); }
+  else { try{ await dbPut('tv',L); }catch(e){} }
+  purgeChannels(new Set([ch.u]));
+  renderTv(); toast(t('chDeleted'));
 }
 async function addChannelDialog(){
   let nameIn, urlIn;
@@ -2046,6 +2213,8 @@ function carCoverB64(s){
 }
 /* Si el archivo no trae artista, se separa "Artista - Canción" del nombre (para el carro y la pantalla de bloqueo) */
 function carMeta(s){
+  /* Audio privado: en la pantalla de bloqueo, la notificación y el carro no se muestra el nombre ni quién lo mandó */
+  if(s.priv) return {title:t('privSrc'), artist:'', album:'Prometeo Player'};
   let title=s.title||s.name, artist=s.artist||'';
   if(!artist){ const m=String(s.name||'').match(/^\s*(.+?)\s+[-–—]\s+(.+)$/); if(m){ artist=m[1].trim(); if(!s.title) title=m[2].trim(); } }
   return {title, artist, album:s.album||sourceName()};
@@ -2055,10 +2224,10 @@ function sendCar(s){
   if(!PM || !PM.nowPlaying || !s) return;
   const d=isFinite(audio.duration)? Math.round(audio.duration*1000) : 0;
   const cm=carMeta(s);
-  PM.nowPlaying({title:cm.title, artist:cm.artist, album:cm.album, duration:s.id===currentId? d : 0, art:carCoverB64(s)}).catch(()=>{});
+  PM.nowPlaying({title:cm.title, artist:cm.artist, album:cm.album, duration:s.id===currentId? d : 0, art:s.priv? '' : carCoverB64(s)}).catch(()=>{});
 }
-function carState(){ if(radioId){ if(PM && PM.playState) PM.playState(!radioPaused(),0).catch(()=>{}); return; }
-  if(PM && PM.playState && currentId) PM.playState(!audio.paused,(audio.currentTime||0)*1000).catch(()=>{}); }
+function carState(){ if(radioId){ if(PM && PM.playState) PM.playState(!radioPaused(),0,'radio').catch(()=>{}); return; }
+  if(PM && PM.playState && currentId) PM.playState(!audio.paused,(audio.currentTime||0)*1000,'music').catch(()=>{}); }
 function carControl(ev){
   const a=ev && ev.action;
   if(radioId){ if(a==='play'){ if(radioPaused()) toggleRadio(); } else if(a==='pause') radioPauseAny(); else if(a==='next') switchStation(1); else if(a==='prev') switchStation(-1); return; }
@@ -2273,6 +2442,56 @@ async function deleteRadioList(L){
   radioLists=radioLists.filter(x=>x.id!==L.id); saveRadioLists(); setRadioFilter('all'); toast(t('listDeletedOk'));
 }
 
+/* Lo que avisa el reproductor de TV: favorito, canal que estás viendo, solo audio, ajustes */
+let tvLastPool=[];
+function onTvEvent(ev){
+  if(!ev || !ev.type) return;
+  const all=allChannels();
+  const find=()=>all.find(c=>c.u===ev.u) || {n:ev.n, u:ev.u, g:ev.g||''};
+  if(ev.type==='fav'){ const ch=find(), i=itemIndex(tvFav,ch); if(ev.on && i<0) tvFav.push(chSnap(ch)); else if(!ev.on && i>=0) tvFav.splice(i,1); saveTvFav(); if(currentTab==='radio') renderTv(); }
+  else if(ev.type==='watch'){ store.set('tvLast',{u:ev.u, n:ev.n, g:ev.g||''}); }
+  else if(ev.type==='settings'){ if(ev.aspect) store.set('tvAspect',ev.aspect); if(ev.quality) store.set('tvQuality',ev.quality); }
+  else if(ev.type==='inline'){
+    if(!tvInlineCh) return;
+    if(ev.state==='tap'){ tviFull(); return; }
+    if(ev.u && ev.u!==tvInlineCh.u) return;
+    tviState=ev.state; tviRender(); }
+  else if(ev.type==='audio'){ tviAudioStarted=true; if(tvInlineCh){ tvInlineCh=null; if(PM.tvClose) PM.tvClose().catch(()=>{}); tviSync(); }
+    const pool=tvLastPool.length? tvLastPool : [find()]; let i=pool.findIndex(c=>c.u===ev.u); if(i<0){ pool.unshift(find()); i=0; } startTvAudio(pool,i); }
+  else if(ev.type==='closed'){
+    /* Al salir de la pantalla completa vuelve al recuadro pequeño, en el canal que estabas viendo */
+    if(tviFromFull && tvInlineCh && !tviAudioStarted){
+      tviFromFull=false; const last=store.get('tvLast',null);
+      let ch=tvInlineCh; if(last && last.u){ const m=tviPool.find(c=>c.u===last.u) || allChannels().find(c=>c.u===last.u); if(m) ch=m; }
+      if(allChannels().some(c=>c.u===ch.u)) openTvInline(ch, tviPool); else closeTvInline();
+    }
+    if(currentTab==='radio' && tvPane==='tv') renderTv(); }
+}
+function renderTvResume(){
+  const box=$('tvResume'); box.textContent='';
+  const last=store.get('tvLast',null);
+  if(!last || !last.u || tvInlineCh){ box.classList.add('hidden'); return; }
+  const r=resolveCh(Object.assign({},last));
+  /* Si ese canal ya no está en ninguna de tus listas (por ejemplo, borraste la lista), la tarjeta se quita sola */
+  if(!r.ch){ store.set('tvLast',null); box.classList.add('hidden'); return; }
+  const ch=r.ch;
+  box.classList.remove('hidden');
+  const row=el('div','rs-row'); row.appendChild(stTile({name:ch.n,color:chColor(ch.n)}));
+  const info=el('div','song-info'); info.appendChild(el('small','rs-k',t('tvResume'))); info.appendChild(el('b',null,ch.n)); row.appendChild(info);
+  const w=el('button','btn-ok',t('tvWatch')); w.onclick=()=>playChannel(ch); row.appendChild(w);
+  const x=el('button','icon-btn','✕'); x.title=t('tvResumeDel'); x.setAttribute('aria-label',t('tvResumeDel'));
+  x.onclick=()=>{ store.set('tvLast',null); renderTvResume(); }; row.appendChild(x); box.appendChild(row);
+  if(PM && PM.radioPlay){ const a=el('button','btn-ghost',t('tvListen')); a.onclick=()=>{ const pool=tvPoolFor(ch); startTvAudio(pool,Math.max(0,pool.indexOf(ch))); }; box.appendChild(a); }
+}
+/* ---- TV en solo audio: usa el mismo reproductor que la radio (notificación, volante, reconexión, segundo plano) ---- */
+const TVA='__tvaudio__';
+let tvAudio=null;
+function tvAudioStation(){ if(!tvAudio || !tvAudio.pool.length) return null; const c=tvAudio.pool[tvAudio.i]; return {id:TVA, name:c.n, url:c.u, color:chColor(c.n), tv:true}; }
+function startTvAudio(pool,i){
+  tvAudio={pool:pool.slice(), i:Math.max(0,Math.min(i,pool.length-1))};
+  playRadio(TVA); const st=tvAudioStation(); if(st) toast(t('tvAudioOn',st.name));
+}
+
 /* ================= FAVORITOS Y LISTAS DE CANALES (v41) =================
    Se guardan con la dirección y el nombre del canal: si actualizas la lista M3U, se reconocen igual. */
 function saveTvFav(){ store.set('tvFav',tvFav); } function saveTvMy(){ store.set('tvMyLists',tvMy); }
@@ -2338,8 +2557,10 @@ async function openChSheet(ch){
       row.appendChild(cb); row.appendChild(el('span',null,L.name)); row.appendChild(el('small',null,t('nCh',L.items.length))); b.appendChild(row);
     });
     const nb=el('button','m-item new',t('createList')); nb.onclick=()=>close('new'); b.appendChild(nb);
+    if(L0){ const db=el('button','m-item del-ch'); db.appendChild(el('b',null,t('delCh'))); db.appendChild(el('small',null,t('delChSub',L0.name))); db.onclick=()=>close('del'); b.appendChild(db); }
   },[[t('watchNow'),()=>'play','btn-pill'],[t('done'),()=>null,'btn-ok']]);
   if(r==='again') return openChSheet(ch);
+  if(r==='del'){ await deleteChannel(ch); return; }
   if(r==='new'){ await newTvList(ch); return; }
   if(r==='play') playChannel(ch);
 }
@@ -2391,28 +2612,38 @@ function ccFlag(cc){ cc=String(cc||'').toUpperCase(); if(!/^[A-Z]{2}$/.test(cc))
 function stSub(c){ return [ccFlag(c.cc)+(c.place? ' '+c.place : ''), [c.codec, c.br? c.br+' kbps' : ''].filter(Boolean).join(' ')].filter(Boolean).join(' · '); }
 
 /* ---- encontrar la transmisión dentro de una página ---- */
-const AD_PARAMS=/^(amsparams|awparams|skey|aw_0_[\w.]+|listenerid|dist|cb|source|playerid|lsid|ttag|us_privacy|gdpr\w*)$/i;
+/* Los parámetros de publicidad y medición de las emisoras (amsparams, awparams, listenerid, dist…) se RESPETAN:
+   así la emisora cuenta a sus oyentes y cobra sus anuncios igual que con su propio reproductor. */
 const TOKEN_PARAMS=/^(token|hdnts|sig|signature|expires|exp|auth|key|policy|jwt|st|e|md5)$/i;
 /* Proveedor conocido -> su link permanente */
 function permanentStream(u){
   let url; try{ url=new URL(u); }catch(e){ return null; }
   const host=url.hostname.toLowerCase();
   if(/streamtheworld\.com$/.test(host)){
+    /* Ya es el link permanente: se deja tal cual (con sus parámetros) */
+    if(/^playerservices\.streamtheworld\.com$/.test(host) && /\/livestream-redirect\//i.test(url.pathname)) return {url:u, prov:'StreamTheWorld'};
     const m=url.pathname.match(/\/([A-Z0-9_]+?)(AAC)?(?:_SC)?\.(mp3|aac)$/i) || url.pathname.match(/livestream-redirect\/([A-Z0-9_]+?)(AAC)?\.(mp3|aac)$/i);
     if(m){ const cs=m[1].toUpperCase(), aac=!!m[2]||/aac/i.test(m[3]);
-      return {url:'https://playerservices.streamtheworld.com/api/livestream-redirect/'+cs+(aac?'AAC.aac':'.mp3'), prov:'StreamTheWorld'}; }
+      /* El servidor de turno (que cambia) pasa al link permanente, conservando los parámetros de la emisora */
+      return {url:'https://playerservices.streamtheworld.com/api/livestream-redirect/'+cs+(aac?'AAC.aac':'.mp3')+url.search, prov:'StreamTheWorld'}; }
   }
-  if(/streamguys1\.com$/.test(host)) return {url:url.origin+url.pathname, prov:'StreamGuys'};
-  if(/(^|\.)zeno\.fm$/.test(host) && /^\/[a-z0-9]+\/?$/i.test(url.pathname)) return {url:url.origin+url.pathname.replace(/\/$/,''), prov:'Zeno'};
+  /* StreamGuys y Zeno ya son links permanentes: se dejan exactamente como vienen */
+  if(/(^|\.)streamguys1\.com$/.test(host)) return {url:u, prov:'StreamGuys'};
+  if(/(^|\.)zeno\.fm$/.test(host) && /^\/[a-z0-9]+\/?$/i.test(url.pathname)) return {url:u, prov:'Zeno'};
   return null;
 }
 function cleanStream(u){
   const p=permanentStream(u); if(p) return {url:p.url, prov:p.prov, changed:p.url!==u, risky:false};
   let url; try{ url=new URL(u); }catch(e){ return {url:u, changed:false, risky:false}; }
-  let changed=false, risky=false;
-  [...url.searchParams.keys()].forEach(k=>{ if(AD_PARAMS.test(k)){ url.searchParams.delete(k); changed=true; } else if(TOKEN_PARAMS.test(k)) risky=true; });
-  const out=url.toString().replace(/\?$/,'');
-  return {url:out, changed:changed && out!==u, risky};
+  const risky=[...url.searchParams.keys()].some(k=>TOKEN_PARAMS.test(k));
+  return {url:u, changed:false, risky};
+}
+/* skey = marca de hora que pone el reproductor de la emisora (no es una clave). Se pone al día en cada reproducción,
+   igual que hace el reproductor oficial; el resto del link no se toca. */
+const SKEY_RE=/(skey(?:%3A|%3D|:|=))(\d{10,13})/gi;
+function hasSkey(u){ SKEY_RE.lastIndex=0; return SKEY_RE.test(String(u||'')); }
+function freshUrl(u){
+  return String(u||'').replace(SKEY_RE,(m,k,n)=>k+(n.length>=13? String(Date.now()) : String(Math.floor(Date.now()/1000))));
 }
 function scoreStream(u){
   let url; try{ url=new URL(u); }catch(e){ return 0; }
@@ -2459,6 +2690,7 @@ function guessNameFromUrl(u){ try{ const h=new URL(u).hostname.replace(/^www\./,
 let previewA=null;
 function stopPreview(){ if(previewA){ try{ previewA.pause(); previewA.removeAttribute('src'); previewA.load(); }catch(e){} previewA=null; } }
 function previewStream(url, ms){
+  url=freshUrl(url);
   stopPreview();
   if(!audio.paused) audio.pause();
   if(radioId && !radioPaused()) radioPauseAny();
@@ -2552,7 +2784,8 @@ async function addStationEasy(){
         o.onclick=()=>{ stopPreview(); tab='search'; lastQ=g; results=null; status=''; detail=null; draw(); }; fb.appendChild(o); b.appendChild(fb); }
       else if(d.found){ const fb=el('div','ok-box'); fb.appendChild(el('b',null,t('foundStream'))); fb.appendChild(el('small',null, d.changed && d.prov? t('foundPerm',d.prov) : t('foundPlain'))); b.appendChild(fb); }
       else if(d.changed && d.prov){ const fb=el('div','ok-box'); fb.appendChild(el('small',null,t('foundPerm',d.prov))); b.appendChild(fb); }
-      if(d.risky) b.appendChild(el('p','field-help',t('mayExpire')));
+      if(hasSkey(d.url)) b.appendChild(el('p','field-help',t('keepFresh')));
+      else if(d.risky) b.appendChild(el('p','field-help',t('mayExpire')));
       const tb=el('div','test-box'); tb.appendChild(el('i')); const msg=el('span',null,t('testingNow')); tb.appendChild(msg);
       const stop=el('button','icon-btn stop-btn','⏸'); stop.title=t('stopTest'); stop.setAttribute('aria-label',t('stopTest')); stop.onclick=()=>{ stopPreview(); stop.classList.add('hidden'); msg.textContent=t('testStopped'); };
       tb.appendChild(stop); b.appendChild(tb);
@@ -2571,6 +2804,7 @@ async function addStationEasy(){
       const bs=el('button','btn-ok',t('saveStation')); bs.onclick=()=>{ const nv=n.value.trim(); if(!nv){ toast(t('needName')); n.focus(); return; } close({name:nv, url:d.url, lists:[...d.lists]}); };
       row.appendChild(bc); row.appendChild(bs); b.appendChild(row);
       b.appendChild(el('p','privacy-small',t('radioPrivacy')));
+      b.appendChild(el('p','privacy-small',t('noHost')));
     };
     draw();
   },[]);
@@ -2647,6 +2881,7 @@ function openLicenses(){
     });
     b.appendChild(el('div','m-label',t('fullLicense')));
     b.appendChild(el('div','lic-pre',($('licApache')||{}).textContent||''));
+    b.appendChild(el('p','privacy-small',t('noHost')));
     b.appendChild(el('p','privacy-small',t('notAffiliated')));
     b.appendChild(el('p','privacy-small',t('rbCredit')));
     b.appendChild(el('p','privacy-small',t('aiCredit')));
@@ -2667,6 +2902,7 @@ function openAbout(){
     w.appendChild(el('div','m-label',t('poweredBy')));
     CREDITS.slice(0,3).forEach(c=>{ const d=el('div','credit'); d.appendChild(el('b',null,c.name)); d.appendChild(el('div',null,c.copy+' · '+c.lic)); w.appendChild(d); });
     w.appendChild(el('p','privacy-small',t('moreLibs',CREDITS.length-3)));
+    w.appendChild(el('p','privacy-small',t('noHost')));
     w.appendChild(el('p','privacy-small',t('rbCredit')));
     w.appendChild(el('p','privacy-small',t('aiCredit')));
     w.appendChild(el('p','privacy-small','Prometeo Player © 2026 Lanchalex. '+t('rights')));

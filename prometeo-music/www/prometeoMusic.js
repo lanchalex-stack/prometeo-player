@@ -19,22 +19,35 @@ module.exports = {
     nowPlaying: function (info) {
         return new Promise(function (ok, fail) { exec(ok, fail, 'PrometeoMusic', 'nowPlaying', [info || {}]); });
     },
-    /** play/pausa y posición actual (ms) para el carro */
-    playState: function (playing, posMs) {
-        return new Promise(function (ok, fail) { exec(ok, fail, 'PrometeoMusic', 'playState', [!!playing, Math.round(posMs || 0)]); });
+    /** play/pausa y posición actual (ms) para el carro; kind 'music' protege la música en segundo plano */
+    playState: function (playing, posMs, kind) {
+        return new Promise(function (ok, fail) { exec(ok, fail, 'PrometeoMusic', 'playState', [!!playing, Math.round(posMs || 0), kind || '']); });
     },
     /* ---- Radio con ExoPlayer ---- */
     /** eventos de la radio: fn({type:'state', value:'connecting'|'online'|'paused'} | {type:'title', value} | {type:'error', value}) */
     onRadio: function (fn) {
         exec(function (ev) { if (ev && fn) fn(ev); }, function () {}, 'PrometeoMusic', 'radioEvents', []);
     },
-    radioPlay: function (url, name) { return new Promise(function (ok, fail) { exec(ok, fail, 'PrometeoMusic', 'radioPlay', [url, name || '']); }); },
+    /** mode 'tv' = canal de TV en solo audio (sin video, calidad más baja) */
+    radioPlay: function (url, name, mode) { return new Promise(function (ok, fail) { exec(ok, fail, 'PrometeoMusic', 'radioPlay', [url, name || '', mode || '']); }); },
     radioPause: function () { return new Promise(function (ok, fail) { exec(ok, fail, 'PrometeoMusic', 'radioPause', []); }); },
     radioStop: function () { return new Promise(function (ok, fail) { exec(ok, fail, 'PrometeoMusic', 'radioStop', []); }); },
     /* ---- TV / IPTV ---- */
     /** abre el canal a pantalla completa con ExoPlayer */
-    playVideo: function (url, title, errorText) {
-        return new Promise(function (ok, fail) { exec(ok, fail, 'PrometeoMusic', 'playVideo', [url, title || '', errorText || '']); });
+    /** opts (opcional): {list:[{n,u,g,f}], i, s:{textos}, aspect, quality} para cambiar de canal dentro del reproductor */
+    playVideo: function (url, title, errorText, opts) {
+        return new Promise(function (ok, fail) { exec(ok, fail, 'PrometeoMusic', 'playVideo', [url, title || '', errorText || '', opts || null]); });
+    },
+    /** TV en pequeño dentro de la app: rect = {x, y, w, h, vw} del recuadro en la página */
+    tvInline: function (url, rect) { return new Promise(function (ok, fail) { exec(ok, fail, 'PrometeoMusic', 'tvInline', [url, rect]); }); },
+    /** mueve u oculta ({show:false}) el recuadro del TV pequeño */
+    tvInlineRect: function (rect) { return new Promise(function (ok, fail) { exec(ok, fail, 'PrometeoMusic', 'tvInlineRect', [rect]); }); },
+    /** 'play' | 'pause' | 'toggle' */
+    tvInlineCmd: function (cmd) { return new Promise(function (ok, fail) { exec(ok, fail, 'PrometeoMusic', 'tvInlineCmd', [cmd]); }); },
+    tvClose: function () { return new Promise(function (ok, fail) { exec(ok, fail, 'PrometeoMusic', 'tvClose', []); }); },
+    /** avisos del reproductor de TV: fn({type:'fav'|'watch'|'audio'|'settings'|'closed', ...}) */
+    onTv: function (fn) {
+        exec(function (ev) { if (ev && fn) fn(ev); }, function () {}, 'PrometeoMusic', 'tvEvents', []);
     },
     /** descarga el texto de una lista M3U */
     fetchText: function (url) { return new Promise(function (ok, fail) { exec(ok, fail, 'PrometeoMusic', 'fetchText', [url]); }); },
