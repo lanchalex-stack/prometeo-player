@@ -41,7 +41,7 @@
 - 📺 **Canales de TV / IPTV** con listas **M3U** (link o archivo del teléfono), en pantalla completa con **ExoPlayer**.
   - **⭐ Favoritos y listas propias** de canales. Se conservan aunque actualices la lista M3U.
   - El canal se abre primero **en pequeño, arriba**, con la lista debajo (para cambiar, marcar ⭐ o borrar canales mientras lo ves). Con **⛶** pasa a pantalla completa.
-  - Cualquier canal se puede **borrar** (botón ⋮), venga de una lista M3U o agregado a mano.
+  - Cualquier canal se puede **borrar** (botón ⋮), venga de una lista M3U o agregado a mano. Los agregados a mano también se pueden **editar** (nombre y link).
   - **Reproductor de TV completo**:
     - cambias de canal con ▲ ▼ o deslizando el dedo, y tienes la lista de canales con buscador sin salir del video;
     - ajuste de pantalla (Ajustar, Rellenar, Zoom, 16:9, 4:3), y brillo y volumen deslizando a los lados;

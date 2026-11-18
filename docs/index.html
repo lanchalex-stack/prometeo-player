@@ -61,6 +61,9 @@ button{font-family:inherit;cursor:pointer;color:inherit}
 .tvi-info small{display:block;font-size:11px;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tvi-info small.live{color:var(--red);font-weight:800}
 body.tvi-on #view-radio{padding-top:var(--tvih,0px)}
+.m-item.edit-ch{display:flex;flex-direction:column;align-items:flex-start;gap:2px;margin-top:14px}
+.m-item.edit-ch small{color:var(--mut);font-weight:600;font-size:11px}
+.m-item.edit-ch + .m-item.del-ch{margin-top:8px}
 .m-item.del-ch{color:var(--red);display:flex;flex-direction:column;align-items:flex-start;gap:2px;margin-top:14px;border-color:rgba(255,77,94,.4)}
 .m-item.del-ch small{color:var(--mut);font-weight:600;font-size:11px}
 .icon-btn.more{font-size:20px;font-weight:900}
@@ -634,6 +637,7 @@ const VERSION='41';
 const LANGS={es:'Español',en:'English',pt:'Português',fr:'Français'};
 const I18N={
 es:{
+ editCh:'✏️ Editar canal',editChSub:'Cambiar el nombre o el link',editChT:'Editar canal',chUpdated:'Canal actualizado',
  tviFull:'Pantalla completa',tviClose:'Cerrar el canal',tviLive:'● EN VIVO',tviTap:'Toca el video para verlo en grande',
  chMore:'Opciones del canal',delCh:'🗑 Borrar canal',delChSub:'Se quita de "{0}", de Favoritos y de tus listas',delChT:'Borrar canal',delChQ:'¿Borrar "{0}"? Se quita de "{1}", de Favoritos y de tus listas.',chDeleted:'Canal borrado',delChM3U:'Si actualizas la lista M3U, este canal no vuelve a aparecer.',
  tvResumeDel:'Quitar de "Seguir viendo"',
@@ -696,6 +700,7 @@ es:{
  aboutT:'Acerca de',version:'Versión {0}',devBy:'Desarrollado por',feat1:'Funciona sin internet (solo la radio y la TV que agregues lo usan)',feat2:'No recopila ningún dato tuyo',
  feat3:'Tu música y audios en un solo lugar',madeWith:'Hecho con cariño para la familia · 2026'},
 en:{
+ editCh:'✏️ Edit channel',editChSub:'Change the name or the link',editChT:'Edit channel',chUpdated:'Channel updated',
  tviFull:'Full screen',tviClose:'Close the channel',tviLive:'● LIVE',tviTap:'Tap the video to see it full screen',
  chMore:'Channel options',delCh:'🗑 Delete channel',delChSub:'Removed from "{0}", Favorites and your lists',delChT:'Delete channel',delChQ:'Delete "{0}"? It is removed from "{1}", Favorites and your lists.',chDeleted:'Channel deleted',delChM3U:'If you refresh the M3U list, this channel will not come back.',
  tvResumeDel:'Remove from "Keep watching"',
@@ -758,6 +763,7 @@ en:{
  aboutT:'About',version:'Version {0}',devBy:'Developed by',feat1:'Works offline (only the radio and TV you add use the internet)',feat2:'Collects none of your data',
  feat3:'Your music and audio in one place',madeWith:'Made with love for the family · 2026'},
 pt:{
+ editCh:'✏️ Editar canal',editChSub:'Mudar o nome ou o link',editChT:'Editar canal',chUpdated:'Canal atualizado',
  tviFull:'Tela cheia',tviClose:'Fechar o canal',tviLive:'● AO VIVO',tviTap:'Toque no vídeo para ver em tela cheia',
  chMore:'Opções do canal',delCh:'🗑 Apagar canal',delChSub:'Sai de "{0}", dos Favoritos e das suas listas',delChT:'Apagar canal',delChQ:'Apagar "{0}"? Ele sai de "{1}", dos Favoritos e das suas listas.',chDeleted:'Canal apagado',delChM3U:'Se você atualizar a lista M3U, este canal não volta.',
  tvResumeDel:'Tirar de "Continuar assistindo"',
@@ -820,6 +826,7 @@ pt:{
  aboutT:'Sobre',version:'Versão {0}',devBy:'Desenvolvido por',feat1:'Funciona sem internet (só o rádio e a TV que você adicionar usam)',feat2:'Não coleta nenhum dado seu',
  feat3:'Sua música e áudios em um só lugar',madeWith:'Feito com carinho para a família · 2026'},
 fr:{
+ editCh:'✏️ Modifier la chaîne',editChSub:'Changer le nom ou le lien',editChT:'Modifier la chaîne',chUpdated:'Chaîne mise à jour',
  tviFull:'Plein écran',tviClose:'Fermer la chaîne',tviLive:'● EN DIRECT',tviTap:'Touchez la vidéo pour la voir en grand',
  chMore:'Options de la chaîne',delCh:'🗑 Supprimer la chaîne',delChSub:'Retirée de « {0} », des Favoris et de vos listes',delChT:'Supprimer la chaîne',delChQ:'Supprimer « {0} » ? Elle est retirée de « {1} », des Favoris et de vos listes.',chDeleted:'Chaîne supprimée',delChM3U:'Si vous actualisez la liste M3U, cette chaîne ne reviendra pas.',
  tvResumeDel:'Retirer de « Continuer à regarder »',
@@ -2163,6 +2170,22 @@ async function deleteList(L){
   purgeChannels(new Set(L.channels.map(c=>c.u)));
   renderTv(); toast(t('listDel'));
 }
+/* Editar un canal agregado a mano: nombre y link. Favoritos, tus listas y "Seguir viendo" se actualizan solos */
+async function editChannel(ch){
+  const L=tvLists.find(x=>x.channels.includes(ch)); if(!L) return;
+  const res=await channelForm(t('editChT'),{n:ch.n,u:ch.u});
+  if(!res || (res.n===ch.n && res.u===ch.u)) return;
+  const oldU=ch.u, urlChanged=res.u!==oldU;
+  ch.n=res.n; ch.u=res.u;
+  try{ await dbPut('tv',L); }catch(e){ toast(t('saveFail')); return; }
+  const fix=c=>{ if(c && c.u===oldU){ c.n=res.n; c.u=res.u; return true; } return false; };
+  if(tvFav.map(fix).some(Boolean)) saveTvFav();
+  let my=false; tvMy.forEach(M=>M.items.forEach(c=>{ if(fix(c)) my=true; })); if(my) saveTvMy();
+  const last=store.get('tvLast',null); if(fix(last)) store.set('tvLast',last);
+  if(tvInlineCh===ch){ if(urlChanged) openTvInline(ch,tviPool); else tviRender(); }
+  if(radioId===TVA && tvAudio && tvAudio.pool[tvAudio.i]===ch && urlChanged) playRadio(TVA);
+  renderTv(); toast(t('chUpdated'));
+}
 async function deleteChannel(ch){
   const L=tvLists.find(x=>x.channels.includes(ch)); if(!L) return;
   const yes=await modal(t('delChT'),b=>{ b.appendChild(el('p','m-msg',t('delChQ',ch.n,L.name))); if(L.url) b.appendChild(el('p','field-help',t('delChM3U'))); },[[t('cancel'),()=>false,'btn-pill'],[t('del'),()=>true,'btn-danger']]);
@@ -2174,17 +2197,21 @@ async function deleteChannel(ch){
   purgeChannels(new Set([ch.u]));
   renderTv(); toast(t('chDeleted'));
 }
-async function addChannelDialog(){
+/* Formulario de canal (agregar o editar): devuelve {n,u} o null */
+function channelForm(title, init){
   let nameIn, urlIn;
-  const res=await modal(t('addChannelT'),(b,close)=>{
-    b.appendChild(el('label','field-label',t('chName'))); nameIn=el('input','search'); nameIn.type='text'; nameIn.maxLength=60; b.appendChild(nameIn);
-    b.appendChild(el('label','field-label',t('chUrl'))); urlIn=el('input','search'); urlIn.type='url'; urlIn.placeholder='https://…/canal.m3u8'; urlIn.autocapitalize='off'; urlIn.spellcheck=false; b.appendChild(urlIn);
+  return modal(title,(b,close)=>{
+    b.appendChild(el('label','field-label',t('chName'))); nameIn=el('input','search'); nameIn.type='text'; nameIn.maxLength=60; nameIn.value=(init&&init.n)||''; b.appendChild(nameIn);
+    b.appendChild(el('label','field-label',t('chUrl'))); urlIn=el('input','search'); urlIn.type='url'; urlIn.placeholder='https://…/canal.m3u8'; urlIn.autocapitalize='off'; urlIn.spellcheck=false; urlIn.value=(init&&init.u)||''; b.appendChild(urlIn);
     const row=el('div','st-actions');
     const bc=el('button','btn-pill',t('cancel')); bc.onclick=()=>close(null);
     const bs=el('button','btn-ok',t('save')); bs.onclick=()=>{ const n=nameIn.value.trim(), u=urlIn.value.trim();
       if(!n){ toast(t('needName')); return; } if(!STREAM_RE.test(u)){ toast(t('badUrl')); return; } close({n,u}); };
     row.appendChild(bc); row.appendChild(bs); b.appendChild(row);
   },[]);
+}
+async function addChannelDialog(){
+  const res=await channelForm(t('addChannelT'));
   if(!res) return;
   let L=tvLists.find(x=>x.mine);
   if(!L){ L={id:'lmine', name:t('myChannels'), url:'', mine:true, channels:[], added:0}; tvLists.unshift(L); }
@@ -2453,7 +2480,7 @@ function onTvEvent(ev){
   else if(ev.type==='settings'){ if(ev.aspect) store.set('tvAspect',ev.aspect); if(ev.quality) store.set('tvQuality',ev.quality); }
   else if(ev.type==='inline'){
     if(!tvInlineCh) return;
-    if(ev.state==='tap'){ tviFull(); return; }
+    if(ev.state==='tap') return;   /* tocar el video no hace nada: la pantalla completa es solo con el botón ⛶ */
     if(ev.u && ev.u!==tvInlineCh.u) return;
     tviState=ev.state; tviRender(); }
   else if(ev.type==='audio'){ tviAudioStarted=true; if(tvInlineCh){ tvInlineCh=null; if(PM.tvClose) PM.tvClose().catch(()=>{}); tviSync(); }
@@ -2557,10 +2584,12 @@ async function openChSheet(ch){
       row.appendChild(cb); row.appendChild(el('span',null,L.name)); row.appendChild(el('small',null,t('nCh',L.items.length))); b.appendChild(row);
     });
     const nb=el('button','m-item new',t('createList')); nb.onclick=()=>close('new'); b.appendChild(nb);
+    if(L0 && L0.mine){ const eb=el('button','m-item edit-ch'); eb.appendChild(el('b',null,t('editCh'))); eb.appendChild(el('small',null,t('editChSub'))); eb.onclick=()=>close('edit'); b.appendChild(eb); }
     if(L0){ const db=el('button','m-item del-ch'); db.appendChild(el('b',null,t('delCh'))); db.appendChild(el('small',null,t('delChSub',L0.name))); db.onclick=()=>close('del'); b.appendChild(db); }
   },[[t('watchNow'),()=>'play','btn-pill'],[t('done'),()=>null,'btn-ok']]);
   if(r==='again') return openChSheet(ch);
   if(r==='del'){ await deleteChannel(ch); return; }
+  if(r==='edit'){ await editChannel(ch); return; }
   if(r==='new'){ await newTvList(ch); return; }
   if(r==='play') playChannel(ch);
 }
