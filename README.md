@@ -37,6 +37,10 @@
   - Sigue sonando en segundo plano y con la pantalla apagada.
   - Si se pierde la señal, se reconecta sola.
   - Muestra la canción que está sonando, si la emisora la envía.
+- 📡 **Chromecast**: manda tu música, la radio y los canales de TV a tu televisor o bocina con Chromecast (misma red Wi-Fi). Los botones de siempre controlan el TV y las canciones pasan solas a la siguiente. Las emisoras y los canales que el televisor no puede abrir solo pasan por el teléfono ("puente" dentro de tu Wi-Fi); si aun así no se puede, Prometeo te avisa.
+- 🎚️ **Ecualizador**: Pop, Rock, Techno, Dance, Vocal, Latino, Reggaetón, Salsa, Hip-hop, Jazz, Clásica, Acústico, Bajos + y Agudos +, o el tuyo con 5 barras, más refuerzo de bajos y sonido envolvente. Funciona con la música, la radio y la TV en el teléfono.
+- 💾 **Copia de seguridad**: guarda en un archivo tus emisoras, canales, listas, favoritos, playlists y ajustes, y restáuralos (sumando o reemplazando) en el mismo teléfono o en otro. La **copia automática** se actualiza sola cada vez que cambias algo (un solo archivo), y de las copias manuales se guardan las últimas 5. Todo queda en Descargas/Prometeo y nunca sale del teléfono.
+- 🌙 **Temporizador para dormir** en música y radio (también mientras transmites al Chromecast): 15, 30, 60, 90 min o al terminar la canción.
 - 🎵 **Tu música, protegida en segundo plano**: notificación con controles en el panel y en la pantalla de bloqueo, para que el ahorro de batería del teléfono (por ejemplo "Optimizar" de Samsung) no la corte. Los audios privados aparecen ahí solo como "Audio privado".
 - 📺 **Canales de TV / IPTV** con listas **M3U** (link o archivo del teléfono), en pantalla completa con **ExoPlayer**.
   - **⭐ Favoritos y listas propias** de canales. Se conservan aunque actualices la lista M3U.
@@ -106,7 +110,7 @@ La primera compilación descarga ExoPlayer y las librerías de AndroidX, así qu
 **Prometeo Player** fue desarrollado por **Lanchalex**, con asistencia de **Meta AI** y **Claude (Anthropic)**.
 El ícono fue generado con **Meta AI** por Lanchalex.
 
-Prometeo existe gracias a estos proyectos de código abierto. Todos usan la **Apache License 2.0**:
+Prometeo existe gracias a estos proyectos de código abierto, todos con la **Apache License 2.0**:
 
 | Proyecto | Autor | Para qué lo usa Prometeo |
 |---|---|---|
@@ -119,11 +123,17 @@ Prometeo existe gracias a estos proyectos de código abierto. Todos usan la **Ap
 | [JetBrains Annotations](https://github.com/JetBrains/java-annotations) 13.0 | JetBrains s.r.o. | Anotaciones de código |
 | [JSpecify](https://github.com/jspecify/jspecify) 1.0.0 | The JSpecify Authors | Anotaciones de código |
 
+Además, para **Chromecast** usa el **[Google Cast SDK](https://developers.google.com/cast)** (`play-services-cast-framework` 22.1.0, © Google LLC). Es gratuito pero **no** es de código abierto: se usa bajo el [Android Software Development Kit License Agreement](https://developer.android.com/studio/terms). Junto con él va [AndroidX MediaRouter](https://developer.android.com/jetpack/androidx/releases/mediarouter) 1.7.0 (Apache 2.0), que busca los aparatos en tu Wi-Fi.
+
 **Servicio usado (no va dentro de la app):** [Radio Browser](https://www.radio-browser.info), directorio comunitario, libre y gratuito de emisoras, de uso permitido en software gratis y de pago. Prometeo solo lo consulta cuando tocas **Buscar**. Gracias a su comunidad por mantenerlo.
 
 La lista completa, con cada librería y su versión, está en **[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)**. El texto completo de la licencia está en **[LICENSES/Apache-2.0.txt](LICENSES/Apache-2.0.txt)**. También se pueden ver dentro de la app, en **ⓘ Acerca de → Licencias**.
 
-Prometeo Player es un proyecto independiente. No está afiliado ni respaldado por Google, The Apache Software Foundation, JetBrains, Meta, Anthropic ni Radio Browser. Android es una marca de Google LLC. StreamTheWorld (Triton Digital), StreamGuys y Zeno.fm son marcas de sus dueños: Prometeo solo reconoce sus links públicos de transmisión. Los demás nombres mencionados son marcas de sus respectivos dueños.
+Prometeo Player es un proyecto independiente. No está afiliado ni respaldado por Google, The Apache Software Foundation, JetBrains, Meta, Anthropic ni Radio Browser. Android, Chromecast, Google Cast y Google TV son marcas de Google LLC. StreamTheWorld (Triton Digital), StreamGuys y Zeno.fm son marcas de sus dueños: Prometeo solo reconoce sus links públicos de transmisión. Los demás nombres mencionados son marcas de sus respectivos dueños.
+
+## 🔒 Política de privacidad
+
+https://lanchalex-stack.github.io/prometeo-player/privacidad.html
 
 ## 📢 Aviso
 

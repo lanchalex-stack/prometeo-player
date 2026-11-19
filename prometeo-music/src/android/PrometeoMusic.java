@@ -238,6 +238,56 @@ public class PrometeoMusic extends CordovaPlugin {
             cb.sendPluginResult(r);
             return true;
         }
+        /* ---- 🎚️ Ecualizador (radio y TV; la música se ecualiza en la app) ---- */
+        if ("audioFx".equals(action)) {
+            AudioFx.set(args.optJSONObject(0));
+            cb.success();
+            return true;
+        }
+        /* ---- Chromecast ---- */
+        if ("castEvents".equals(action)) {
+            castCallback = cb;
+            PluginResult r = new PluginResult(PluginResult.Status.NO_RESULT);
+            r.setKeepCallback(true);
+            cb.sendPluginResult(r);
+            return true;
+        }
+        if (action.startsWith("cast")) {
+            final JSONArray a = args;
+            cordova.getActivity().runOnUiThread(new Runnable() {
+                public void run() {
+                    try {
+                        CastHelper c = cast();
+                        switch (action) {
+                            case "castAvailable": {
+                                JSONObject o = new JSONObject();
+                                o.put("ok", c.available()); o.put("on", c.available() && c.isConnected()); o.put("device", c.available() ? c.deviceName() : "");
+                                cb.success(o); break;
+                            }
+                            case "castScan": c.scan(a.optBoolean(0, true)); cb.success(c.routes()); break;
+                            case "castConnect": if (c.connect(a.optString(0, ""))) cb.success(); else cb.error("notFound"); break;
+                            case "castDisconnect": c.disconnect(); cb.success(); break;
+                            case "castLoad": {
+                                JSONObject o = a.optJSONObject(0);
+                                String err = o == null ? "bad" : c.load(o);
+                                if (err == null) {
+                                    /* Música (o emisora/canal por el puente) en el TV: el teléfono se la pasa, así que la app se mantiene activa */
+                                    if ("music".equals(o.optString("kind")) || o.optBoolean("relay", false)) {
+                                        RadioService.sessionToken = session().getSessionToken();
+                                        RadioService.startMusic(cordova.getContext(), o.optString("title", ""), o.optString("artist", ""), true);
+                                    }
+                                    cb.success();
+                                } else cb.error(err);
+                                break;
+                            }
+                            case "castCmd": c.command(a.optString(0, ""), a.optLong(1, 0)); cb.success(); break;
+                            default: cb.error("unknown");
+                        }
+                    } catch (Throwable e) { cb.error(String.valueOf(e.getMessage())); }
+                }
+            });
+            return true;
+        }
         /* ---- TV en pequeño, dentro de la app ---- */
         if ("tvInline".equals(action) || "tvInlineRect".equals(action) || "tvInlineCmd".equals(action) || "tvClose".equals(action)) {
             final String url = args.optString(0, "");
@@ -292,6 +342,33 @@ public class PrometeoMusic extends CordovaPlugin {
                         for (String h : names) out.put(h);
                     } catch (Exception ignored) { }
                     cb.success(out);
+                }
+            });
+            return true;
+        }
+        /* Copia de seguridad: guarda un archivo de texto en Descargas/Prometeo (no sale del teléfono) */
+        if ("saveDownload".equals(action)) {
+            final String name = args.optString(0, "prometeo.json").replaceAll("[\\\\/:*?\"<>|]", "_");
+            final String text = args.optString(1, "");
+            final boolean overwrite = args.optBoolean(2, false);
+            cordova.getThreadPool().execute(new Runnable() {
+                public void run() {
+                    try { cb.success(saveDownload(name, text, overwrite)); }
+                    catch (Exception e) { cb.error(String.valueOf(e.getMessage())); }
+                }
+            });
+            return true;
+        }
+        /* Copias de seguridad que Prometeo guardó en Descargas/Prometeo (las más nuevas primero) */
+        if ("listDownloads".equals(action) || "readDownload".equals(action) || "deleteDownload".equals(action)) {
+            final String id = args.optString(0, "");
+            cordova.getThreadPool().execute(new Runnable() {
+                public void run() {
+                    try {
+                        if ("listDownloads".equals(action)) cb.success(listDownloads());
+                        else if ("readDownload".equals(action)) cb.success(readDownload(id));
+                        else { deleteDownload(id); cb.success(); }
+                    } catch (Exception e) { cb.error(String.valueOf(e.getMessage())); }
                 }
             });
             return true;
@@ -598,6 +675,20 @@ public class PrometeoMusic extends CordovaPlugin {
     private ExoPlayer radio;
     private CallbackContext radioCallback, tvCallback;
     private TvInline tvInline;
+    private CastHelper castHelper;
+    private CallbackContext castCallback;
+
+    private CastHelper cast() {
+        if (castHelper == null) castHelper = new CastHelper(cordova.getActivity(), new CastHelper.Events() {
+            public void send(JSONObject o) {
+                CallbackContext c = castCallback; if (c == null) return;
+                PluginResult r = new PluginResult(PluginResult.Status.OK, o);
+                r.setKeepCallback(true);
+                c.sendPluginResult(r);
+            }
+        });
+        return castHelper;
+    }
 
     private void sendTv(JSONObject o) {
         CallbackContext c = tvCallback; if (c == null) return;
@@ -720,6 +811,137 @@ public class PrometeoMusic extends CordovaPlugin {
     }
 
     /** ¿Fue un problema de señal/servidor (vale la pena reintentar) o un link malo (no insistir)? */
+    /** Escribe el archivo y devuelve dónde quedó (para mostrárselo al usuario) */
+    private static final String DL_REL = android.os.Environment.DIRECTORY_DOWNLOADS + "/Prometeo/";
+
+    private java.io.File dlDir() {
+        return new java.io.File(cordova.getContext().getExternalFilesDir(android.os.Environment.DIRECTORY_DOWNLOADS), "Prometeo");
+    }
+
+    /** Busca un archivo NUESTRO en Descargas/Prometeo (Android solo nos deja ver los que creó esta instalación).
+        LIKE: sin importar mayúsculas, por si la carpeta ya existía como "prometeo" */
+    private android.net.Uri findOwn(String name) {
+        android.database.Cursor c = null;
+        try {
+            c = cordova.getContext().getContentResolver().query(MediaStore.Downloads.EXTERNAL_CONTENT_URI,
+                    new String[]{ MediaStore.MediaColumns._ID },
+                    MediaStore.MediaColumns.DISPLAY_NAME + "=? COLLATE NOCASE AND " + MediaStore.MediaColumns.RELATIVE_PATH + " LIKE ?",
+                    new String[]{ name, DL_REL }, null);
+            if (c != null && c.moveToFirst()) return android.content.ContentUris.withAppendedId(MediaStore.Downloads.EXTERNAL_CONTENT_URI, c.getLong(0));
+        } catch (Exception ignored) {
+        } finally { if (c != null) c.close(); }
+        return null;
+    }
+
+    /** overwrite=true: si ya existe (y es nuestro) se reescribe; si no (por ejemplo, después de reinstalar) se crea uno nuevo */
+    private String saveDownload(String name, String text, boolean overwrite) throws Exception {
+        byte[] data = text.getBytes("UTF-8");
+        android.content.Context ctx = cordova.getContext();
+        if (Build.VERSION.SDK_INT >= 29) {
+            android.net.Uri uri = overwrite ? findOwn(name) : null;
+            if (uri != null) {
+                java.io.OutputStream os = ctx.getContentResolver().openOutputStream(uri, "wt");
+                if (os == null) throw new Exception("no se pudo escribir");
+                try { os.write(data); } finally { os.close(); }
+                try {
+                    android.content.ContentValues v = new android.content.ContentValues();
+                    v.put(MediaStore.MediaColumns.DATE_MODIFIED, System.currentTimeMillis() / 1000);
+                    ctx.getContentResolver().update(uri, v, null, null);
+                } catch (Exception ignored) { }
+                return "Download/Prometeo/" + name;
+            }
+            android.content.ContentValues v = new android.content.ContentValues();
+            v.put(MediaStore.MediaColumns.DISPLAY_NAME, name);
+            v.put(MediaStore.MediaColumns.MIME_TYPE, "application/json");
+            v.put(MediaStore.MediaColumns.RELATIVE_PATH, android.os.Environment.DIRECTORY_DOWNLOADS + "/Prometeo");
+            uri = ctx.getContentResolver().insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, v);
+            if (uri == null) throw new Exception("no se pudo crear el archivo");
+            java.io.OutputStream os = ctx.getContentResolver().openOutputStream(uri);
+            if (os == null) throw new Exception("no se pudo escribir");
+            try { os.write(data); } finally { os.close(); }
+            String real = name;
+            android.database.Cursor c = null;
+            try {
+                c = ctx.getContentResolver().query(uri, new String[]{ MediaStore.MediaColumns.DISPLAY_NAME }, null, null, null);
+                if (c != null && c.moveToFirst() && c.getString(0) != null) real = c.getString(0);
+            } catch (Exception ignored) {
+            } finally { if (c != null) c.close(); }
+            return "Download/Prometeo/" + real;
+        }
+        /* Android 9 o menos: carpeta de la app (no necesita permisos) */
+        java.io.File dir = dlDir();
+        if (!dir.exists() && !dir.mkdirs()) throw new Exception("no se pudo crear la carpeta");
+        java.io.File f = new java.io.File(dir, name);
+        if (!overwrite && f.exists()) {
+            String base = name.endsWith(".json") ? name.substring(0, name.length() - 5) : name;
+            for (int i = 1; f.exists() && i < 100; i++) f = new java.io.File(dir, base + " (" + i + ").json");
+        }
+        java.io.FileOutputStream fo = new java.io.FileOutputStream(f);
+        try { fo.write(data); } finally { fo.close(); }
+        return f.getAbsolutePath();
+    }
+
+    private JSONArray listDownloads() throws Exception {
+        JSONArray a = new JSONArray();
+        if (Build.VERSION.SDK_INT >= 29) {
+            android.database.Cursor c = null;
+            try {
+                c = cordova.getContext().getContentResolver().query(MediaStore.Downloads.EXTERNAL_CONTENT_URI,
+                        new String[]{ MediaStore.MediaColumns._ID, MediaStore.MediaColumns.DISPLAY_NAME, MediaStore.MediaColumns.DATE_MODIFIED, MediaStore.MediaColumns.SIZE },
+                        MediaStore.MediaColumns.RELATIVE_PATH + " LIKE ?", new String[]{ DL_REL },
+                        MediaStore.MediaColumns.DATE_MODIFIED + " DESC");
+                while (c != null && c.moveToNext()) {
+                    String n = c.getString(1);
+                    if (n == null || !n.toLowerCase(java.util.Locale.ROOT).endsWith(".json")) continue;
+                    JSONObject o = new JSONObject();
+                    o.put("id", android.content.ContentUris.withAppendedId(MediaStore.Downloads.EXTERNAL_CONTENT_URI, c.getLong(0)).toString());
+                    o.put("name", n);
+                    o.put("date", c.getLong(2) * 1000);
+                    o.put("size", c.getLong(3));
+                    a.put(o);
+                }
+            } finally { if (c != null) c.close(); }
+            return a;
+        }
+        java.io.File[] fs = dlDir().listFiles();
+        if (fs == null) return a;
+        java.util.Arrays.sort(fs, new java.util.Comparator<java.io.File>() {
+            public int compare(java.io.File x, java.io.File y) { return Long.compare(y.lastModified(), x.lastModified()); }
+        });
+        for (java.io.File f : fs) {
+            if (!f.getName().toLowerCase(java.util.Locale.ROOT).endsWith(".json")) continue;
+            JSONObject o = new JSONObject();
+            o.put("id", f.getAbsolutePath()); o.put("name", f.getName()); o.put("date", f.lastModified()); o.put("size", f.length());
+            a.put(o);
+        }
+        return a;
+    }
+
+    /** Solo archivos de Descargas/Prometeo (de esta app) */
+    private boolean ownId(String id) {
+        if (id.startsWith("content://")) return id.startsWith(MediaStore.Downloads.EXTERNAL_CONTENT_URI.toString() + "/");
+        try { return new java.io.File(id).getCanonicalPath().startsWith(dlDir().getCanonicalPath() + java.io.File.separator); }
+        catch (Exception e) { return false; }
+    }
+
+    private String readDownload(String id) throws Exception {
+        if (!ownId(id)) throw new Exception("not allowed");
+        InputStream in = id.startsWith("content://") ? cordova.getContext().getContentResolver().openInputStream(android.net.Uri.parse(id)) : new java.io.FileInputStream(id);
+        if (in == null) throw new Exception("no se pudo leer");
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        try {
+            byte[] buf = new byte[16384]; int n;
+            while ((n = in.read(buf)) > 0) { out.write(buf, 0, n); if (out.size() > 20 * 1024 * 1024) throw new Exception("too big"); }
+        } finally { in.close(); }
+        return new String(out.toByteArray(), StandardCharsets.UTF_8);
+    }
+
+    private void deleteDownload(String id) throws Exception {
+        if (!ownId(id)) throw new Exception("not allowed");
+        if (id.startsWith("content://")) cordova.getContext().getContentResolver().delete(android.net.Uri.parse(id), null, null);
+        else new java.io.File(id).delete();
+    }
+
     static boolean isNetworkProblem(PlaybackException e) {
         switch (e.errorCode) {
             case PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED:
@@ -765,6 +987,8 @@ public class PrometeoMusic extends CordovaPlugin {
         netCallback = null;
     }
 
+    private int radioFx = 0;
+
     private void radioPlay(String url, String name) {
         if (radio == null) {
             DefaultHttpDataSource.Factory http = new DefaultHttpDataSource.Factory()
@@ -777,6 +1001,8 @@ public class PrometeoMusic extends CordovaPlugin {
                     .setAudioAttributes(new AudioAttributes.Builder().setUsage(C.USAGE_MEDIA).setContentType(C.AUDIO_CONTENT_TYPE_MUSIC).build(), true)
                     .build();
             radio.setHandleAudioBecomingNoisy(true);   /* si se desconecta el Bluetooth, se pausa */
+            radioFx = AudioFx.newSession(cordova.getContext());
+            if (radioFx > 0) { radio.setAudioSessionId(radioFx); AudioFx.attach(radioFx); }   /* 🎚️ ecualizador */
             /* Mantiene el wifi y el procesador despiertos mientras suena la radio con la pantalla apagada */
             radio.setWakeMode(C.WAKE_MODE_NETWORK);
             radio.addListener(new Player.Listener() {
@@ -919,6 +1145,7 @@ public class PrometeoMusic extends CordovaPlugin {
         mainHandler.removeCallbacks(stopIfIdle);
         RadioService.controls = null; RadioService.music = false; RadioService.art = null;
         if (radio != null) { radio.release(); radio = null; }
+        if (radioFx > 0) { AudioFx.detach(radioFx); radioFx = 0; }
         RadioService.stop(cordova.getContext());
         if (btRegistered) {
             try { ((AudioManager) cordova.getContext().getSystemService(Context.AUDIO_SERVICE)).unregisterAudioDeviceCallback(btCallback); } catch (Exception ignored) { }
@@ -929,6 +1156,8 @@ public class PrometeoMusic extends CordovaPlugin {
         radioCallback = null;
         tvCallback = null; VideoActivity.events = null;
         if (tvInline != null) { tvInline.release(); tvInline = null; }
+        if (castHelper != null) { castHelper.release(); castHelper = null; }
+        castCallback = null;
     }
 
     /** Sirve el archivo original directamente a la página (no se copia nada). */

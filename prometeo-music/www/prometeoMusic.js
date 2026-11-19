@@ -38,6 +38,25 @@ module.exports = {
     playVideo: function (url, title, errorText, opts) {
         return new Promise(function (ok, fail) { exec(ok, fail, 'PrometeoMusic', 'playVideo', [url, title || '', errorText || '', opts || null]); });
     },
+    /* ---- Chromecast ---- */
+    castAvailable: function () { return new Promise(function (ok, fail) { exec(ok, fail, 'PrometeoMusic', 'castAvailable', []); }); },
+    castScan: function (on) { return new Promise(function (ok, fail) { exec(ok, fail, 'PrometeoMusic', 'castScan', [on !== false]); }); },
+    castConnect: function (id) { return new Promise(function (ok, fail) { exec(ok, fail, 'PrometeoMusic', 'castConnect', [id]); }); },
+    castDisconnect: function () { return new Promise(function (ok, fail) { exec(ok, fail, 'PrometeoMusic', 'castDisconnect', []); }); },
+    /** o = {kind:'music'|'radio'|'tv', url | mid+ext+mime, title, artist, pos, dur} */
+    castLoad: function (o) { return new Promise(function (ok, fail) { exec(ok, fail, 'PrometeoMusic', 'castLoad', [o]); }); },
+    /** 'play' | 'pause' | 'toggle' | 'stop' | 'seek' (ms) */
+    castCmd: function (c, ms) { return new Promise(function (ok, fail) { exec(ok, fail, 'PrometeoMusic', 'castCmd', [c, Math.round(ms || 0)]); }); },
+    /** avisos: {type:'cast', state, device} | {type:'castRoutes', list} | {type:'castStatus', state, idle, pos, dur, kind} */
+    onCast: function (fn) { exec(function (ev) { if (ev && fn) fn(ev); }, function () {}, 'PrometeoMusic', 'castEvents', []); },
+    /** guarda un archivo de texto en Descargas/Prometeo; devuelve la ruta */
+    /* Copias de seguridad en Descargas/Prometeo. overwrite=true reescribe la copia automática */
+    saveDownload: function (name, text, overwrite) { return new Promise(function (ok, fail) { exec(ok, fail, 'PrometeoMusic', 'saveDownload', [name, text, !!overwrite]); }); },
+    listDownloads: function () { return new Promise(function (ok, fail) { exec(ok, fail, 'PrometeoMusic', 'listDownloads', []); }); },
+    readDownload: function (id) { return new Promise(function (ok, fail) { exec(ok, fail, 'PrometeoMusic', 'readDownload', [id]); }); },
+    deleteDownload: function (id) { return new Promise(function (ok, fail) { exec(ok, fail, 'PrometeoMusic', 'deleteDownload', [id]); }); },
+    /* Ecualizador de la radio y la TV: {on, bands:[5 dB], bass:0..100, virt:0..100} */
+    audioFx: function (o) { return new Promise(function (ok, fail) { exec(ok, fail, 'PrometeoMusic', 'audioFx', [o]); }); },
     /** TV en pequeño dentro de la app: rect = {x, y, w, h, vw} del recuadro en la página */
     tvInline: function (url, rect) { return new Promise(function (ok, fail) { exec(ok, fail, 'PrometeoMusic', 'tvInline', [url, rect]); }); },
     /** mueve u oculta ({show:false}) el recuadro del TV pequeño */

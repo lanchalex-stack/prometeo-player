@@ -3,3 +3,7 @@ platforms/
 plugins/
 *.apk
 respaldo_v40/
+*.aab
+*.jks
+*.keystore
+build.json

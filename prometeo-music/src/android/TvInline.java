@@ -87,6 +87,8 @@ final class TvInline {
                 .setAudioAttributes(new AudioAttributes.Builder().setUsage(C.USAGE_MEDIA).setContentType(C.AUDIO_CONTENT_TYPE_MOVIE).build(), true)
                 .build();
         player.setHandleAudioBecomingNoisy(true);
+        fxSession = AudioFx.newSession(act);
+        if (fxSession > 0) { player.setAudioSessionId(fxSession); AudioFx.attach(fxSession); }   /* 🎚️ ecualizador */
         player.setTrackSelectionParameters(player.getTrackSelectionParameters().buildUpon().setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true).build());
         player.addListener(new Player.Listener() {
             @Override public void onIsPlayingChanged(boolean playing) { if (playing) { retry = 0; emit("playing", null); } else if (player != null && player.getPlaybackState() == Player.STATE_READY) emit("paused", null); }
@@ -156,10 +158,13 @@ final class TvInline {
         if (box != null) box.setVisibility(View.GONE);
     }
 
+    private int fxSession = 0;
+
     void release() {
         h.removeCallbacks(retryRun);
         if (view != null) view.setPlayer(null);
         if (player != null) { player.release(); player = null; }
+        if (fxSession > 0) { AudioFx.detach(fxSession); fxSession = 0; }
         if (box != null && box.getParent() != null) ((ViewGroup) box.getParent()).removeView(box);
         box = null; view = null;
     }

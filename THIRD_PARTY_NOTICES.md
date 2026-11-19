@@ -95,6 +95,19 @@ The Apache Software Foundation (http://www.apache.org/).
 | `androidx.viewpager:viewpager` | 1.0.0 |
 | `androidx.webkit:webkit` | 1.14.0 |
 
+## Google Cast SDK (Chromecast)
+
+- **Componente:** `com.google.android.gms:play-services-cast-framework:22.1.0` (y sus dependencias de Google Play services)
+- **Autor:** © Google LLC
+- **Licencia:** Android Software Development Kit License Agreement — https://developer.android.com/studio/terms (gratuita; **no** es de código abierto)
+- **Uso en Prometeo:** botón 📡 para transmitir música, radio y TV a un Chromecast o televisor/bocina con Chromecast incorporado, en la misma red Wi-Fi. Solo se activa cuando el usuario toca 📡. En el televisor se usa el reproductor estándar de Google (Default Media Receiver); Prometeo no tiene servidores propios.
+- **Servicio:** al transmitir, el televisor descarga la radio o el canal directamente de su dirección; la música del teléfono se la pasa Prometeo por la red Wi-Fi local, con una dirección temporal que cambia en cada conexión.
+- Chromecast, Google Cast y Google TV son marcas de Google LLC.
+
+## AndroidX MediaRouter
+
+- **Componente:** `androidx.mediarouter:mediarouter:1.7.0` — © The Android Open Source Project — Apache License 2.0 (`LICENSES/Apache-2.0.txt`). Busca los aparatos con Chromecast en tu Wi-Fi.
+
 ## Guava
 
 - **Autor:** The Guava Authors

@@ -466,6 +466,8 @@ public class VideoActivity extends Activity {
                 .setAudioAttributes(new AudioAttributes.Builder().setUsage(C.USAGE_MEDIA).setContentType(C.AUDIO_CONTENT_TYPE_MOVIE).build(), true)
                 .build();
         player.setHandleAudioBecomingNoisy(true);
+        fxSession = AudioFx.newSession(this);
+        if (fxSession > 0) { player.setAudioSessionId(fxSession); AudioFx.attach(fxSession); }   /* 🎚️ ecualizador */
         /* Subtítulos apagados al empezar (se prenden desde Ajustes) */
         player.setTrackSelectionParameters(player.getTrackSelectionParameters().buildUpon().setTrackTypeDisabled(C.TRACK_TYPE_TEXT, true).build());
         applyQuality();
@@ -1241,12 +1243,15 @@ public class VideoActivity extends Activity {
         super.onBackPressed();
     }
 
+    private int fxSession = 0;
+
     @Override
     protected void onDestroy() {
         h.removeCallbacksAndMessages(null);
         if (pipReceiver != null) { try { unregisterReceiver(pipReceiver); } catch (Exception ignored) { } pipReceiver = null; }
         if (view != null) view.setPlayer(null);
         if (player != null) { player.release(); player = null; }
+        if (fxSession > 0) { AudioFx.detach(fxSession); fxSession = 0; }
         JSONObject e = new JSONObject();
         try { e.put("type", "closed"); } catch (Exception ignored) { }
         emit(e);

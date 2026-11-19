@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
         xmlns:android="http://schemas.android.com/apk/res/android"
-        id="prometeo-music" version="1.5.0">
+        id="prometeo-music" version="1.7.0">
     <name>Prometeo Music</name>
     <description>Música del teléfono sin copiarla, sesión para el carro, radio y TV con ExoPlayer (AndroidX Media3). Sin recopilar datos.</description>
     <author>Lanchalex</author>
@@ -32,6 +32,10 @@
             <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
             <!-- Audios privados: pedir la huella, el PIN o el patrón del teléfono (lo verifica Android) -->
             <uses-permission android:name="android.permission.USE_BIOMETRIC" />
+            <!-- Chromecast: saber la dirección del teléfono en tu Wi-Fi para pasarle tu música al televisor -->
+            <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+            <!-- Ecualizador: aplicar el ecualizador de Android al sonido de la radio y la TV de Prometeo (permiso normal, sin aviso) -->
+            <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
         </config-file>
         <!-- Radio: muchas emisoras transmiten con http:// (sin s). Esto solo permite reproducirlas. -->
         <edit-config file="AndroidManifest.xml" target="/manifest/application" mode="merge">
@@ -39,6 +43,9 @@
         </edit-config>
         <!-- Pantalla completa para ver canales de TV / IPTV -->
         <config-file target="AndroidManifest.xml" parent="/manifest/application">
+            <!-- Chromecast (Google Cast) -->
+            <meta-data android:name="com.google.android.gms.cast.framework.OPTIONS_PROVIDER_CLASS_NAME"
+                       android:value="com.prometeo.music.CastOptionsProvider" />
             <!-- Ventana flotante (PiP): el canal sigue en una ventanita mientras usas otras apps -->
             <activity android:name="com.prometeo.music.VideoActivity"
                       android:exported="false"
@@ -57,11 +64,18 @@
         <source-file src="src/android/VideoActivity.java" target-dir="src/com/prometeo/music" />
         <source-file src="src/android/RadioService.java" target-dir="src/com/prometeo/music" />
         <source-file src="src/android/TvInline.java" target-dir="src/com/prometeo/music" />
+        <source-file src="src/android/CastHelper.java" target-dir="src/com/prometeo/music" />
+        <source-file src="src/android/CastServer.java" target-dir="src/com/prometeo/music" />
+        <source-file src="src/android/CastOptionsProvider.java" target-dir="src/com/prometeo/music" />
+        <source-file src="src/android/AudioFx.java" target-dir="src/com/prometeo/music" />
         <!-- ExoPlayer (AndroidX Media3) — © The Android Open Source Project — Apache License 2.0 -->
         <!-- WebViewAssetLoader (para leer la música sin copiarla); Cordova la usa pero no la comparte con los plugins -->
         <framework src="androidx.webkit:webkit:1.14.0" />
         <framework src="androidx.media3:media3-exoplayer:1.9.4" />
         <framework src="androidx.media3:media3-exoplayer-hls:1.9.4" />
         <framework src="androidx.media3:media3-ui:1.9.4" />
+        <!-- Chromecast: SDK de Google Cast (servicios de Google Play) y el buscador de aparatos de AndroidX -->
+        <framework src="com.google.android.gms:play-services-cast-framework:22.1.0" />
+        <framework src="androidx.mediarouter:mediarouter:1.7.0" />
     </platform>
 </plugin>

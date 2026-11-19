@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#141414">
 <title>Prometeo Player v41</title>
 <style>
@@ -61,6 +61,22 @@ button{font-family:inherit;cursor:pointer;color:inherit}
 .tvi-info small{display:block;font-size:11px;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tvi-info small.live{color:var(--red);font-weight:800}
 body.tvi-on #view-radio{padding-top:var(--tvih,0px)}
+#btnCast.on{color:var(--acc);border-color:var(--acc);box-shadow:0 0 0 2px rgba(var(--accrgb),.25)}
+.cast-bar{box-sizing:border-box;width:100%;min-width:0;max-width:100%;overflow:hidden;display:flex;align-items:center;gap:4px;margin-top:8px;padding:6px 8px 6px 12px;border:1px solid var(--acc);border-radius:14px;background:rgba(var(--accrgb),.08)}
+.cast-bar.hidden{display:none}
+.cb-info{flex:1;min-width:0}.cb-info b{display:block;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--acc)}
+.cb-info small{display:block;font-size:11px;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cast-bar .icon-btn{flex:none;width:34px;height:34px}
+.cast-bar .cb-play{background:var(--acc);color:var(--onacc);border-color:var(--acc)}
+.cast-dev{display:flex;align-items:center;gap:10px;width:100%}
+.cast-dev .cd-ic{font-size:20px}
+.cast-dev.on{border-color:var(--acc)}.cast-dev.on b{color:var(--acc)}
+.now-btns{margin-top:12px}.now-btns .btn-ghost{margin-top:0;width:auto;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.now-btns #btnCurToPl{flex:1 1 auto}
+#btnSleep{flex:0 0 auto;padding-left:16px;padding-right:16px}
+#btnSleep.on{border-color:var(--acc);color:var(--acc);font-weight:900}
+.bk-box{margin-top:14px;padding:12px;border:1px solid var(--line);border-radius:16px;text-align:left}
+.bk-box .two-btn .btn-ghost{flex:1;margin-top:0}
 .m-item.edit-ch{display:flex;flex-direction:column;align-items:flex-start;gap:2px;margin-top:14px}
 .m-item.edit-ch small{color:var(--mut);font-weight:600;font-size:11px}
 .m-item.edit-ch + .m-item.del-ch{margin-top:8px}
@@ -265,13 +281,56 @@ input.search:focus{border-color:var(--acc)}
 
 .toast{position:fixed;left:50%;bottom:calc(150px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(10px);background:#242424;border:1px solid #333;color:#fff;padding:10px 16px;border-radius:20px;font-size:13px;opacity:0;pointer-events:none;transition:.25s;z-index:60;max-width:88vw;text-align:center}
 .toast.show{opacity:1;transform:translateX(-50%)}
+/* ===== v42: la app nunca se corre de lado (aunque un nombre largo no quepa) ===== */
+html,body{overflow-x:clip;max-width:100%}
+/* ===== v42: cabecera con el ícono de Prometeo ===== */
+.topbar{display:block}
+.tb-main{display:flex;align-items:center;gap:12px;min-width:0}
+.tb-left{flex:1;min-width:0;display:flex;flex-direction:column;gap:9px}
+.tb-title{display:flex;align-items:center;gap:8px;min-width:0}
+.topbar h1{font-size:21px;flex:0 1 auto}
+.tb-logo{width:72px;height:72px;flex:none;border-radius:19px;object-fit:cover;box-shadow:0 0 0 2px rgba(var(--accrgb),.6),0 0 16px rgba(var(--accrgb),.4),0 0 26px rgba(224,64,251,.25)}
+.top-actions{gap:7px}
+.top-btn{width:38px;height:38px}.top-btn svg{width:19px;height:19px}
+#btnEq.on{color:#e040fb;border-color:#e040fb;box-shadow:0 0 0 2px rgba(224,64,251,.25),0 0 12px rgba(224,64,251,.35)}
+@media (max-width:380px){ .tb-logo{width:60px;height:60px;border-radius:16px} .topbar h1{font-size:18px} .top-btn{width:34px;height:34px} .top-actions{gap:5px} }
+@media (max-width:330px){ .tb-logo{display:none} }
+.cast-bar{margin-top:10px}
+/* ===== v42: ecualizador ===== */
+.eq-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:2px 2px 10px}
+.eq-head b{font-size:15px}
+.sw{position:relative;width:48px;height:28px;flex:none;border-radius:14px;background:var(--card2);border:1px solid var(--line2);padding:0;transition:background .15s}
+.sw::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:var(--soft);transition:transform .15s,background .15s}
+.sw.on{background:var(--acc);border-color:var(--acc)}.sw.on::after{transform:translateX(20px);background:var(--onacc)}
+.eq-chips{flex-wrap:wrap;overflow:visible;margin-top:0}
+.eq-off .eq-bands,.eq-off .eq-sl{opacity:.4}
+.eq-bands{display:flex;justify-content:space-between;gap:4px;margin:12px 0 4px;padding:0 2px}
+.eq-band{display:flex;flex-direction:column;align-items:center;flex:1;min-width:0}
+.eq-band .db{font-size:11px;font-weight:800;color:var(--acc);height:14px}
+.eq-band input{writing-mode:vertical-lr;direction:rtl;width:30px;height:130px;margin:6px 0;accent-color:var(--acc)}
+.eq-band small{font-size:10px;color:var(--mut);white-space:nowrap}
+.eq-sl{margin-top:10px}.eq-sl label{display:flex;justify-content:space-between;font-size:13px;font-weight:700}
+.eq-sl label span{color:var(--acc)}
+.eq-sl input{width:100%;accent-color:#e040fb}
+.bk-auto{display:flex;align-items:center;gap:10px;margin:4px 2px 10px}
+.bk-auto div{flex:1;min-width:0}.bk-auto b{display:block;font-size:13px}.bk-auto small{display:block;font-size:11px;color:var(--mut)}
+.bk-last{font-size:12px;color:var(--soft);margin:0 2px 10px}
+.bk-item{display:flex;align-items:center;gap:10px;width:100%;text-align:left}
 </style>
 </head>
 <body>
 
 <header class="topbar">
-  <h1>🔥 Prometeo <span>Player</span></h1>
+ <div class="tb-main">
+ <div class="tb-left">
+  <div class="tb-title"><h1>🔥 Prometeo <span>Player</span></h1><button class="ver" id="btnVer" data-i18n-aria="diagBtn" aria-label="Diagnóstico">v41</button></div>
   <div class="top-actions">
+    <button class="top-btn hidden" id="btnCast" aria-label="Transmitir">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 18v.01"/><path d="M3 14a4 4 0 0 1 4 4"/><path d="M3 10a8 8 0 0 1 8 8"/><path d="M3 6.5V6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4.5"/></svg>
+    </button>
+    <button class="top-btn" id="btnEq" aria-label="Ecualizador">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4v6"/><path d="M6 14v6"/><circle cx="6" cy="12" r="2"/><path d="M12 4v2"/><path d="M12 10v10"/><circle cx="12" cy="8" r="2"/><path d="M18 4v10"/><path d="M18 18v2"/><circle cx="18" cy="16" r="2"/></svg>
+    </button>
     <button class="top-btn" id="btnSkin" data-i18n-aria="skinBtn" aria-label="Cambiar skin">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.6-.8 1.6-1.6 0-.5-.2-.9-.5-1.2-.3-.3-.5-.7-.5-1.2 0-.9.7-1.6 1.6-1.6H16a5 5 0 0 0 5-5c0-4-4-7.4-9-7.4z"/><circle cx="7.5" cy="11" r="1"/><circle cx="10" cy="7" r="1"/><circle cx="15" cy="7.5" r="1"/></svg>
     </button>
@@ -281,7 +340,16 @@ input.search:focus{border-color:var(--acc)}
     <button class="top-btn" id="btnAbout" data-i18n-aria="aboutBtn" aria-label="Acerca de">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6"/><path d="M12 7.5v.01"/></svg>
     </button>
-    <button class="ver" id="btnVer" data-i18n-aria="diagBtn" aria-label="Diagnóstico">v41</button>
+  </div>
+ </div>
+ <img class="tb-logo" id="tbLogo" alt="Prometeo Player">
+ </div>
+  <div id="castBar" class="cast-bar hidden">
+    <div class="cb-info"><b id="castDev"></b><small id="castWhat"></small></div>
+    <button class="icon-btn" id="castPrev" aria-label="⏮">⏮</button>
+    <button class="icon-btn cb-play" id="castPlay" aria-label="⏯">⏸</button>
+    <button class="icon-btn" id="castNext" aria-label="⏭">⏭</button>
+    <button class="icon-btn" id="castX" aria-label="✕">✕</button>
   </div>
 </header>
 
@@ -317,7 +385,7 @@ input.search:focus{border-color:var(--acc)}
     </div>
     <div class="radio-hint radio-only" data-i18n="switchHint">⏮ ⏭ cambian de emisora</div>
     <button class="btn-ghost radio-only" id="btnBackMusic" data-i18n="backToMusic">🎵 Volver a mi música</button>
-    <button class="btn-ghost" id="btnCurToPl" data-i18n="addToPlBtn">＋ Agregar a playlist</button>
+    <div class="two-btn now-btns"><button class="btn-ghost" id="btnCurToPl" data-i18n="addToPlBtn">＋ Agregar a playlist</button><button class="btn-ghost" id="btnSleep">🌙 Dormir</button></div>
     <label class="btn-add picker" style="margin-top:10px"><span data-i18n="addSongs">＋ Agregar canciones</span><input type="file" class="songPicker" multiple></label>
     <button class="btn-add btn-scan" style="margin-top:10px" data-i18n="scanBtn">🔍 Buscar música en el teléfono</button>
   </div>
@@ -616,8 +684,9 @@ function cleanName(n){ const c=String(n||'').replace(/\.[a-z0-9]{2,5}$/i,'').rep
 function shuffleArr(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
 const store = {
   get(k,d){ try{ const v=localStorage.getItem('prometeo_'+k); return v===null? d : JSON.parse(v); }catch(e){ return d; } },
-  set(k,v){ try{ localStorage.setItem('prometeo_'+k, JSON.stringify(v)); }catch(e){} }
+  set(k,v){ try{ localStorage.setItem('prometeo_'+k, JSON.stringify(v)); }catch(e){} if(bkReady) bkWatch(k); }
 };
+var bkReady=false;   /* copia automática: se activa cuando la app ya arrancó */
 let toastT;
 function toast(msg){ const t=$('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),2300); }
 /* Estado de v41: audios privados, listas de emisoras y favoritos de canales (se usa en varias partes) */
@@ -630,6 +699,7 @@ let radioFilter=store.get('radioFilter','all');
 let tvFav=store.get('tvFav',[]); if(!Array.isArray(tvFav)) tvFav=[];
 let tvMy=store.get('tvMyLists',[]); if(!Array.isArray(tvMy)) tvMy=[];
 let tvInlineCh=null, tviPool=[], tviIdx=0, tviState='', tviFromFull=false, tviAudioStarted=false;   /* TV en pequeño */
+let castOn=false, castDevName='', castKind='', castPlaying=false, castPos=0, castDur=0, castTvPool=[], castTvIdx=0, castTitle='', castPicker=null, castBuf=false, castTry=null;   /* Chromecast */
 let tvSel='';
 
 /* ================= IDIOMAS (v41) ================= */
@@ -637,6 +707,9 @@ const VERSION='41';
 const LANGS={es:'Español',en:'English',pt:'Português',fr:'Français'};
 const I18N={
 es:{
+ useCast:'Transmitir al televisor por Chromecast (solo cuando tocas 📡)',
+ castBtn:'Transmitir al TV',castT:'Transmitir a…',castSearching:'Buscando televisores y bocinas en tu Wi-Fi…',castNone:'No encuentro ninguno. Revisa que el teléfono y el Chromecast estén en el mismo Wi-Fi.',castConnecting:'Conectando a {0}…',castOn:'📡 Transmitiendo a {0}',castOff:'Se desconectó el televisor',castStop:'✕ Dejar de transmitir',castUnavailable:'Este teléfono no tiene los servicios de Google para Chromecast',castFail:'El televisor no pudo reproducir esto',castFailTv:'Este canal no se pudo mandar al televisor (ni directo ni por el teléfono). Prueba otro.',castNoWifi:'Para mandar tu música, el teléfono tiene que estar en el Wi-Fi',castNoFile:'Esta canción no se puede transmitir (no está en la memoria del teléfono)',castConnFail:'No se pudo conectar. Intenta otra vez.',castNothing:'Pon una canción, una emisora o un canal y sonará en el televisor',castMusic:'Música',castRadio:'Radio',castTv:'TV',
+ bkTitle:'💾 Copia de seguridad',bkSave:'💾 Guardar copia',bkRestore:'📂 Restaurar copia',bkHelp:'Guarda tus emisoras, canales, listas, favoritos, playlists y ajustes en un archivo del teléfono. Úsalo antes de cambiar de teléfono o de desinstalar. Tu música no va dentro: se vuelve a encontrar sola.',bkSaved:'Copia guardada en {0}',bkFail:'No se pudo guardar la copia',bkBad:'Ese archivo no es una copia de Prometeo',bkWhat:'Esta copia es del {0} y tiene {1}, {2} y {3}.',bkMerge:'➕ Sumar a lo que tengo',bkReplace:'♻️ Reemplazar todo',bkReplaceQ:'Se borra lo que tienes ahora (emisoras, canales, listas, playlists y ajustes) y queda lo de la copia. Tu música no se toca.',bkDone:'Copia restaurada ✓',bkChoose:'Elige el archivo de la copia (prometeo-copia-….json)',slpBtn:'🌙 Dormir',slpBtnOn:'🌙 {0}',slpT:'Temporizador para dormir',slpHelp:'La música o la radio se detienen solas cuando se acaba el tiempo.',slpOff:'Apagado',slpEnd:'Al terminar la canción',slpSet:'🌙 Se detiene en {0} min',slpSetEnd:'🌙 Se detiene al terminar la canción',slpCancel:'🌙 Temporizador apagado',slpDone:'🌙 Buenas noches',
  editCh:'✏️ Editar canal',editChSub:'Cambiar el nombre o el link',editChT:'Editar canal',chUpdated:'Canal actualizado',
  tviFull:'Pantalla completa',tviClose:'Cerrar el canal',tviLive:'● EN VIVO',tviTap:'Toca el video para verlo en grande',
  chMore:'Opciones del canal',delCh:'🗑 Borrar canal',delChSub:'Se quita de "{0}", de Favoritos y de tus listas',delChT:'Borrar canal',delChQ:'¿Borrar "{0}"? Se quita de "{1}", de Favoritos y de tus listas.',chDeleted:'Canal borrado',delChM3U:'Si actualizas la lista M3U, este canal no vuelve a aparecer.',
@@ -700,6 +773,9 @@ es:{
  aboutT:'Acerca de',version:'Versión {0}',devBy:'Desarrollado por',feat1:'Funciona sin internet (solo la radio y la TV que agregues lo usan)',feat2:'No recopila ningún dato tuyo',
  feat3:'Tu música y audios en un solo lugar',madeWith:'Hecho con cariño para la familia · 2026'},
 en:{
+ useCast:'Casting to the TV with Chromecast (only when you tap 📡)',
+ castBtn:'Cast to TV',castT:'Cast to…',castSearching:'Looking for TVs and speakers on your Wi-Fi…',castNone:'None found. Check that the phone and the Chromecast are on the same Wi-Fi.',castConnecting:'Connecting to {0}…',castOn:'📡 Casting to {0}',castOff:'The TV disconnected',castStop:'✕ Stop casting',castUnavailable:'This phone does not have Google services for Chromecast',castFail:'The TV could not play this',castFailTv:'This channel could not be sent to the TV (neither directly nor through the phone). Try another one.',castNoWifi:'To send your music, the phone must be on Wi-Fi',castNoFile:'This song cannot be cast (it is not in the phone storage)',castConnFail:'Could not connect. Try again.',castNothing:'Play a song, station or channel and it will play on the TV',castMusic:'Music',castRadio:'Radio',castTv:'TV',
+ bkTitle:'💾 Backup',bkSave:'💾 Save backup',bkRestore:'📂 Restore backup',bkHelp:'Saves your stations, channels, lists, favorites, playlists and settings to a file on the phone. Use it before changing phones or uninstalling. Your music is not inside: it is found again on its own.',bkSaved:'Backup saved to {0}',bkFail:'Could not save the backup',bkBad:'That file is not a Prometeo backup',bkWhat:'This backup is from {0} and has {1}, {2} and {3}.',bkMerge:'➕ Add to what I have',bkReplace:'♻️ Replace everything',bkReplaceQ:'What you have now (stations, channels, lists, playlists and settings) is erased and the backup takes its place. Your music is not touched.',bkDone:'Backup restored ✓',bkChoose:'Choose the backup file (prometeo-copia-….json)',slpBtn:'🌙 Sleep',slpBtnOn:'🌙 {0}',slpT:'Sleep timer',slpHelp:'Music or radio stops on its own when time is up.',slpOff:'Off',slpEnd:'When the song ends',slpSet:'🌙 Stops in {0} min',slpSetEnd:'🌙 Stops when the song ends',slpCancel:'🌙 Timer off',slpDone:'🌙 Good night',
  editCh:'✏️ Edit channel',editChSub:'Change the name or the link',editChT:'Edit channel',chUpdated:'Channel updated',
  tviFull:'Full screen',tviClose:'Close the channel',tviLive:'● LIVE',tviTap:'Tap the video to see it full screen',
  chMore:'Channel options',delCh:'🗑 Delete channel',delChSub:'Removed from "{0}", Favorites and your lists',delChT:'Delete channel',delChQ:'Delete "{0}"? It is removed from "{1}", Favorites and your lists.',chDeleted:'Channel deleted',delChM3U:'If you refresh the M3U list, this channel will not come back.',
@@ -763,6 +839,9 @@ en:{
  aboutT:'About',version:'Version {0}',devBy:'Developed by',feat1:'Works offline (only the radio and TV you add use the internet)',feat2:'Collects none of your data',
  feat3:'Your music and audio in one place',madeWith:'Made with love for the family · 2026'},
 pt:{
+ useCast:'Transmitir para a TV pelo Chromecast (só quando você toca em 📡)',
+ castBtn:'Transmitir para a TV',castT:'Transmitir para…',castSearching:'Procurando TVs e caixas de som no seu Wi-Fi…',castNone:'Não encontrei nenhum. Veja se o celular e o Chromecast estão no mesmo Wi-Fi.',castConnecting:'Conectando a {0}…',castOn:'📡 Transmitindo para {0}',castOff:'A TV se desconectou',castStop:'✕ Parar de transmitir',castUnavailable:'Este celular não tem os serviços do Google para Chromecast',castFail:'A TV não conseguiu tocar isto',castFailTv:'Este canal não pôde ir para a TV (nem direto nem pelo celular). Tente outro.',castNoWifi:'Para mandar sua música, o celular precisa estar no Wi-Fi',castNoFile:'Esta música não pode ser transmitida (não está na memória do celular)',castConnFail:'Não foi possível conectar. Tente de novo.',castNothing:'Toque uma música, rádio ou canal e vai sair na TV',castMusic:'Música',castRadio:'Rádio',castTv:'TV',
+ bkTitle:'💾 Cópia de segurança',bkSave:'💾 Salvar cópia',bkRestore:'📂 Restaurar cópia',bkHelp:'Salva suas rádios, canais, listas, favoritos, playlists e ajustes num arquivo do celular. Use antes de trocar de celular ou desinstalar. Sua música não vai dentro: é encontrada de novo sozinha.',bkSaved:'Cópia salva em {0}',bkFail:'Não foi possível salvar a cópia',bkBad:'Esse arquivo não é uma cópia do Prometeo',bkWhat:'Esta cópia é de {0} e tem {1}, {2} e {3}.',bkMerge:'➕ Somar ao que tenho',bkReplace:'♻️ Substituir tudo',bkReplaceQ:'O que você tem agora (rádios, canais, listas, playlists e ajustes) é apagado e fica o da cópia. Sua música não é tocada.',bkDone:'Cópia restaurada ✓',bkChoose:'Escolha o arquivo da cópia (prometeo-copia-….json)',slpBtn:'🌙 Dormir',slpBtnOn:'🌙 {0}',slpT:'Timer para dormir',slpHelp:'A música ou a rádio param sozinhas quando o tempo acaba.',slpOff:'Desligado',slpEnd:'Ao terminar a música',slpSet:'🌙 Para em {0} min',slpSetEnd:'🌙 Para ao terminar a música',slpCancel:'🌙 Timer desligado',slpDone:'🌙 Boa noite',
  editCh:'✏️ Editar canal',editChSub:'Mudar o nome ou o link',editChT:'Editar canal',chUpdated:'Canal atualizado',
  tviFull:'Tela cheia',tviClose:'Fechar o canal',tviLive:'● AO VIVO',tviTap:'Toque no vídeo para ver em tela cheia',
  chMore:'Opções do canal',delCh:'🗑 Apagar canal',delChSub:'Sai de "{0}", dos Favoritos e das suas listas',delChT:'Apagar canal',delChQ:'Apagar "{0}"? Ele sai de "{1}", dos Favoritos e das suas listas.',chDeleted:'Canal apagado',delChM3U:'Se você atualizar a lista M3U, este canal não volta.',
@@ -826,6 +905,9 @@ pt:{
  aboutT:'Sobre',version:'Versão {0}',devBy:'Desenvolvido por',feat1:'Funciona sem internet (só o rádio e a TV que você adicionar usam)',feat2:'Não coleta nenhum dado seu',
  feat3:'Sua música e áudios em um só lugar',madeWith:'Feito com carinho para a família · 2026'},
 fr:{
+ useCast:'Diffuser vers la TV avec Chromecast (seulement quand vous touchez 📡)',
+ castBtn:'Caster vers la TV',castT:'Caster vers…',castSearching:'Recherche de TV et d\'enceintes sur votre Wi-Fi…',castNone:'Aucun trouvé. Vérifiez que le téléphone et le Chromecast sont sur le même Wi-Fi.',castConnecting:'Connexion à {0}…',castOn:'📡 Diffusion sur {0}',castOff:'La TV s\'est déconnectée',castStop:'✕ Arrêter la diffusion',castUnavailable:'Ce téléphone n\'a pas les services Google pour Chromecast',castFail:'La TV n\'a pas pu lire ceci',castFailTv:'Cette chaîne n\'a pas pu être envoyée à la TV (ni directement ni via le téléphone). Essayez-en une autre.',castNoWifi:'Pour envoyer votre musique, le téléphone doit être en Wi-Fi',castNoFile:'Ce morceau ne peut pas être diffusé (il n\'est pas dans la mémoire du téléphone)',castConnFail:'Connexion impossible. Réessayez.',castNothing:'Lancez un morceau, une station ou une chaîne et ça sortira sur la TV',castMusic:'Musique',castRadio:'Radio',castTv:'TV',
+ bkTitle:'💾 Sauvegarde',bkSave:'💾 Enregistrer une copie',bkRestore:'📂 Restaurer une copie',bkHelp:'Enregistre vos stations, chaînes, listes, favoris, playlists et réglages dans un fichier du téléphone. À utiliser avant de changer de téléphone ou de désinstaller. Votre musique n\'est pas dedans : elle est retrouvée toute seule.',bkSaved:'Copie enregistrée dans {0}',bkFail:'Impossible d\'enregistrer la copie',bkBad:'Ce fichier n\'est pas une copie de Prometeo',bkWhat:'Cette copie date du {0} et contient {1}, {2} et {3}.',bkMerge:'➕ Ajouter à ce que j\'ai',bkReplace:'♻️ Tout remplacer',bkReplaceQ:'Ce que vous avez maintenant (stations, chaînes, listes, playlists et réglages) est effacé et remplacé par la copie. Votre musique n\'est pas touchée.',bkDone:'Copie restaurée ✓',bkChoose:'Choisissez le fichier de la copie (prometeo-copia-….json)',slpBtn:'🌙 Veille',slpBtnOn:'🌙 {0}',slpT:'Minuterie de veille',slpHelp:'La musique ou la radio s\'arrête toute seule à la fin du temps.',slpOff:'Désactivée',slpEnd:'À la fin du morceau',slpSet:'🌙 S\'arrête dans {0} min',slpSetEnd:'🌙 S\'arrête à la fin du morceau',slpCancel:'🌙 Minuterie désactivée',slpDone:'🌙 Bonne nuit',
  editCh:'✏️ Modifier la chaîne',editChSub:'Changer le nom ou le lien',editChT:'Modifier la chaîne',chUpdated:'Chaîne mise à jour',
  tviFull:'Plein écran',tviClose:'Fermer la chaîne',tviLive:'● EN DIRECT',tviTap:'Touchez la vidéo pour la voir en grand',
  chMore:'Options de la chaîne',delCh:'🗑 Supprimer la chaîne',delChSub:'Retirée de « {0} », des Favoris et de vos listes',delChT:'Supprimer la chaîne',delChQ:'Supprimer « {0} » ? Elle est retirée de « {1} », des Favoris et de vos listes.',chDeleted:'Chaîne supprimée',delChM3U:'Si vous actualisez la liste M3U, cette chaîne ne reviendra pas.',
@@ -889,6 +971,24 @@ fr:{
  aboutT:'À propos',version:'Version {0}',devBy:'Développé par',feat1:'Fonctionne hors ligne (seules la radio et la TV que vous ajoutez utilisent internet)',feat2:'Ne collecte aucune de vos données',
  feat3:'Votre musique et vos audios au même endroit',madeWith:'Fait avec amour pour la famille · 2026'}
 };
+
+/* v42: textos nuevos (ecualizador, copia automática, plurales) */
+Object.assign(I18N.es,{eqT:'Ecualizador',eqOn:'Ecualizador activado',eqBass:'🔊 Refuerzo de bajos',eqVirt:'🎧 Sonido envolvente',eqNote:'Al mover una barrita se guarda como "✏️ Mío". Funciona con la música, la radio y la TV en el teléfono. Mientras transmites al Chromecast, el sonido lo ajusta el televisor.',
+ eq_normal:'Normal',eq_pop:'Pop',eq_rock:'Rock',eq_techno:'Techno',eq_dance:'Dance',eq_vocal:'Vocal',eq_latino:'Latino',eq_reggaeton:'Reggaetón',eq_salsa:'Salsa',eq_hiphop:'Hip-hop',eq_jazz:'Jazz',eq_clasica:'Clásica',eq_acustico:'Acústico',eq_bajos:'Bajos +',eq_agudos:'Agudos +',eq_mio:'✏️ Mío',
+ bkAuto:'Copia automática',bkAutoSub:'Se actualiza sola cada vez que cambias algo',bkAutoOff:'Copia automática apagada',bkLast:'Última copia: {0}',bkNever:'Todavía no hay copia automática',agoNow:'hace un momento',agoMin:'hace {0} min',agoH:'hace {0} h',agoD:'hace {0} días',
+ bkPickT:'¿Qué copia quieres restaurar?',bkAutoTag:'⚡ Copia automática',bkOther:'📂 Otro archivo…',bkR1:'1 emisora',bkRN:'{0} emisoras',bkT1:'1 lista de canales',bkTN:'{0} listas de canales',bkP1:'1 playlist',bkPN:'{0} playlists'});
+Object.assign(I18N.en,{eqT:'Equalizer',eqOn:'Equalizer on',eqBass:'🔊 Bass boost',eqVirt:'🎧 Surround sound',eqNote:'Moving a slider saves it as "✏️ Mine". Works with music, radio and TV on the phone. While casting to Chromecast, the TV sets the sound.',
+ eq_normal:'Normal',eq_pop:'Pop',eq_rock:'Rock',eq_techno:'Techno',eq_dance:'Dance',eq_vocal:'Vocal',eq_latino:'Latin',eq_reggaeton:'Reggaeton',eq_salsa:'Salsa',eq_hiphop:'Hip-hop',eq_jazz:'Jazz',eq_clasica:'Classical',eq_acustico:'Acoustic',eq_bajos:'Bass +',eq_agudos:'Treble +',eq_mio:'✏️ Mine',
+ bkAuto:'Automatic backup',bkAutoSub:'Updates itself every time you change something',bkAutoOff:'Automatic backup off',bkLast:'Last backup: {0}',bkNever:'No automatic backup yet',agoNow:'just now',agoMin:'{0} min ago',agoH:'{0} h ago',agoD:'{0} days ago',
+ bkPickT:'Which backup do you want to restore?',bkAutoTag:'⚡ Automatic backup',bkOther:'📂 Another file…',bkR1:'1 station',bkRN:'{0} stations',bkT1:'1 channel list',bkTN:'{0} channel lists',bkP1:'1 playlist',bkPN:'{0} playlists'});
+Object.assign(I18N.pt,{eqT:'Equalizador',eqOn:'Equalizador ligado',eqBass:'🔊 Reforço de graves',eqVirt:'🎧 Som envolvente',eqNote:'Ao mover uma barrinha, fica salvo como "✏️ Meu". Funciona com a música, a rádio e a TV no celular. Enquanto transmite para o Chromecast, quem ajusta o som é a TV.',
+ eq_normal:'Normal',eq_pop:'Pop',eq_rock:'Rock',eq_techno:'Techno',eq_dance:'Dance',eq_vocal:'Vocal',eq_latino:'Latino',eq_reggaeton:'Reggaeton',eq_salsa:'Salsa',eq_hiphop:'Hip-hop',eq_jazz:'Jazz',eq_clasica:'Clássica',eq_acustico:'Acústico',eq_bajos:'Graves +',eq_agudos:'Agudos +',eq_mio:'✏️ Meu',
+ bkAuto:'Cópia automática',bkAutoSub:'Se atualiza sozinha toda vez que você muda algo',bkAutoOff:'Cópia automática desligada',bkLast:'Última cópia: {0}',bkNever:'Ainda não há cópia automática',agoNow:'agora mesmo',agoMin:'há {0} min',agoH:'há {0} h',agoD:'há {0} dias',
+ bkPickT:'Qual cópia você quer restaurar?',bkAutoTag:'⚡ Cópia automática',bkOther:'📂 Outro arquivo…',bkR1:'1 rádio',bkRN:'{0} rádios',bkT1:'1 lista de canais',bkTN:'{0} listas de canais',bkP1:'1 playlist',bkPN:'{0} playlists'});
+Object.assign(I18N.fr,{eqT:'Égaliseur',eqOn:'Égaliseur activé',eqBass:'🔊 Renfort des basses',eqVirt:'🎧 Son surround',eqNote:'Bouger une barre l\'enregistre comme « ✏️ Le mien ». Fonctionne avec la musique, la radio et la TV sur le téléphone. Pendant la diffusion Chromecast, c\'est la TV qui règle le son.',
+ eq_normal:'Normal',eq_pop:'Pop',eq_rock:'Rock',eq_techno:'Techno',eq_dance:'Dance',eq_vocal:'Voix',eq_latino:'Latino',eq_reggaeton:'Reggaeton',eq_salsa:'Salsa',eq_hiphop:'Hip-hop',eq_jazz:'Jazz',eq_clasica:'Classique',eq_acustico:'Acoustique',eq_bajos:'Basses +',eq_agudos:'Aigus +',eq_mio:'✏️ Le mien',
+ bkAuto:'Copie automatique',bkAutoSub:'Se met à jour toute seule à chaque changement',bkAutoOff:'Copie automatique désactivée',bkLast:'Dernière copie : {0}',bkNever:'Pas encore de copie automatique',agoNow:'à l\'instant',agoMin:'il y a {0} min',agoH:'il y a {0} h',agoD:'il y a {0} jours',
+ bkPickT:'Quelle copie voulez-vous restaurer ?',bkAutoTag:'⚡ Copie automatique',bkOther:'📂 Autre fichier…',bkR1:'1 station',bkRN:'{0} stations',bkT1:'1 liste de chaînes',bkTN:'{0} listes de chaînes',bkP1:'1 playlist',bkPN:'{0} playlists'});
 function phoneLang(){
   const list=(navigator.languages&&navigator.languages.length)? navigator.languages : [navigator.language||'es'];
   for(const l of list){ const c=String(l||'').slice(0,2).toLowerCase(); if(I18N[c]) return c; }
@@ -955,8 +1055,8 @@ function tx(name, mode, fn){
   });
 }
 const dbAll=n=>tx(n,'readonly',s=>s.getAll());
-const dbPut=(n,v)=>tx(n,'readwrite',s=>s.put(v));
-const dbDel=(n,k)=>tx(n,'readwrite',s=>s.delete(k));
+const dbPut=(n,v)=>{ if(bkReady && (n==='tv'||n==='playlists')) bkSoon(); return tx(n,'readwrite',s=>s.put(v)); };
+const dbDel=(n,k)=>{ if(bkReady && (n==='tv'||n==='playlists')) bkSoon(); return tx(n,'readwrite',s=>s.delete(k)); };
 const dbGet=(n,k)=>tx(n,'readonly',s=>s.get(k));
 /* Guarda la info de la canción y sus bytes juntos (si falla uno, no se guarda nada) */
 function putSongWithAudio(meta,buf){
@@ -1196,12 +1296,13 @@ function loadById(id,autoplay,seek){
   store.set('last',id); store.set('pos',0);
   updateNowText(); markCurrent(); updateMini(); updateMediaSession(s);
   setPlayIcon();
+  if(castOn){ castSong(s, seek||0, autoplay); }
   songBlob(s).then(b=>{
     if(seq!==loadSeq) return;
     curBlob=b; showCoverFor(s,b,seq);
-    if(useDataUrl) return blobToDataURL(b).then(u=>{ if(seq!==loadSeq) return; srcStage=1; setSrc(u); if(autoplay) play(); });
+    if(useDataUrl) return blobToDataURL(b).then(u=>{ if(seq!==loadSeq) return; srcStage=1; setSrc(u); if(autoplay && !castOn) play(); });
     setSrc(URL.createObjectURL(b));
-    if(autoplay) play();
+    if(autoplay && !castOn) play();
   }).catch(()=>{
     if(seq!==loadSeq) return;
     s.broken=true; renderLib();
@@ -1210,6 +1311,7 @@ function loadById(id,autoplay,seek){
 }
 function play(){
   if(!currentId) return;
+  if(castOn){ if(castKind==='music') PM.castCmd('play').catch(()=>{}); else { const s=songById(currentId); if(s) castSong(s,0,true); } return; }
   if(actx && actx.state==='suspended') actx.resume().catch(()=>{});
   const p=audio.play();
   if(p && p.catch) p.catch(err=>{
@@ -1228,6 +1330,7 @@ function togglePlay(){
     else pickSongs();
     return;
   }
+  if(castOn){ if(castKind==='music') PM.castCmd('toggle').catch(()=>{}); else { const s=songById(currentId); if(s) castSong(s,0,true); } return; }
   if(audio.paused) play(); else audio.pause();
 }
 function nextSong(auto){
@@ -1241,7 +1344,8 @@ function nextSong(auto){
   loadById(queue[p],true);
 }
 function prevSong(){
-  if(audio.currentTime>3){ audio.currentTime=0; return; }
+  if(castOn && castKind==='music' && castPos>3000){ PM.castCmd('seek',0).catch(()=>{}); return; }
+  if(!castOn && audio.currentTime>3){ audio.currentTime=0; return; }
   if(!queue.length) return;
   let p=qPos-1; if(p<0) p=queue.length-1;
   loadById(queue[p],true);
@@ -1258,10 +1362,10 @@ function resetNow(){
 
 /* ---- eventos del audio ---- */
 function setFill(pct){ progress.style.setProperty('--p',pct+'%'); }
-function setPlayIcon(){ const ic=(radioId? radioPaused() : audio.paused)?'▶':'⏸'; $('btnPlay').textContent=ic; $('miniPlay').textContent=ic; }
+function setPlayIcon(){ const ic=(radioId? radioPaused() : (castOn && castKind==='music'? !castPlaying : audio.paused))?'▶':'⏸'; $('btnPlay').textContent=ic; $('miniPlay').textContent=ic; }
 audio.addEventListener('play',()=>{ setPlayIcon(); bgMode(true); if(actx && actx.state==='suspended') actx.resume().catch(()=>{}); });
 audio.addEventListener('pause',()=>{ setPlayIcon(); savePos(true); });
-audio.addEventListener('playing',()=>{ errStreak=0; setPlayIcon(); if(vMode!=='off'){ ensureGraph(); if(actx && actx.state==='suspended') actx.resume().catch(()=>{}); } });
+audio.addEventListener('playing',()=>{ errStreak=0; setPlayIcon(); if(vMode!=='off' || eqActive()){ ensureGraph(); if(actx && actx.state==='suspended') actx.resume().catch(()=>{}); } });
 audio.addEventListener('loadedmetadata',()=>{
   $('tDur').textContent=fmt(audio.duration);
   if(pendingSeek>0 && isFinite(audio.duration) && pendingSeek<audio.duration-2) audio.currentTime=pendingSeek;
@@ -1301,7 +1405,9 @@ audio.addEventListener('canplay',()=>{ if(srcStage===1 && !useDataUrl){ useDataU
 function savePos(force){ const now=Date.now(); if(force || now-lastSave>5000){ lastSave=now; if(currentId && posFor===currentId) store.set('pos',audio.currentTime||0); } }
 
 progress.addEventListener('input',()=>{ dragging=true; setFill(progress.value/10); if(isFinite(audio.duration)) $('tCur').textContent=fmt(progress.value/1000*audio.duration); });
-progress.addEventListener('change',()=>{ if(isFinite(audio.duration) && audio.duration>0) audio.currentTime=progress.value/1000*audio.duration; dragging=false; });
+progress.addEventListener('change',()=>{
+  if(castOn && castKind==='music' && castDur>0){ PM.castCmd('seek',progress.value/1000*castDur).catch(()=>{}); dragging=false; return; }
+  if(isFinite(audio.duration) && audio.duration>0) audio.currentTime=progress.value/1000*audio.duration; dragging=false; });
 
 /* ================= RENDER ================= */
 function songRow(s, onPlay, btns){
@@ -1469,7 +1575,8 @@ function ensureGraph(){
     actx=new AC();
     const src=actx.createMediaElementSource(audio);
     an=actx.createAnalyser(); an.fftSize=512; an.smoothingTimeConstant=0.8;
-    src.connect(an); an.connect(actx.destination);
+    const last=eqBuild(src);   /* 🎚️ ecualizador entre la canción y el visualizador */
+    last.connect(an); an.connect(actx.destination);
     freq=new Uint8Array(an.frequencyBinCount); wave=new Uint8Array(an.fftSize);
   }catch(e){ an=null; }
 }
@@ -1533,9 +1640,26 @@ function frame(){
   ctx.clearRect(0,0,W,H);
   if(radioId){ drawRadio(); return; }
   if(vMode==='off'){ drawIdle(t('vizOff')); return; }
+  /* Con Chromecast la música suena en el TV (no en el teléfono): el visualizador se mueve con una animación al ritmo */
+  if(castOn && castKind==='music'){ if(!castPlaying){ drawIdle(''); return; } castSynth(); (drawers[vMode]||drawBars)(); return; }
   if(!an || audio.paused){ drawIdle(currentId? '' : t('addToStart')); return; }
   an.getByteFrequencyData(freq); an.getByteTimeDomainData(wave);
   (drawers[vMode]||drawBars)();
+}
+let synthPrev=null;
+function castSynth(){
+  if(!freq || freq.length!==256) freq=new Uint8Array(256);
+  if(!wave || wave.length!==512) wave=new Uint8Array(512);
+  if(!synthPrev) synthPrev=new Float32Array(256);
+  const tm=performance.now()/1000, beat=0.72+0.28*Math.pow(Math.max(0,Math.sin(tm*Math.PI*2*1.03)),3);
+  for(let k=0;k<256;k++){
+    const env=Math.max(0,1-k/150)*0.85+0.08;
+    const n=0.55+0.25*Math.sin(tm*3.1+k*0.37)+0.2*Math.sin(tm*7.3+k*1.7)*Math.random();
+    const target=255*env*n*beat;
+    synthPrev[k]+= (target-synthPrev[k])*0.25;
+    freq[k]=Math.max(0,Math.min(255,synthPrev[k]|0));
+  }
+  for(let i=0;i<512;i++){ wave[i]=128+Math.round((Math.sin(i/512*Math.PI*6+tm*5)*38+Math.sin(i/512*Math.PI*17+tm*9)*14)*beat); }
 }
 
 /* ================= SEGUNDO PLANO / CONTROLES DEL SISTEMA ================= */
@@ -1580,7 +1704,7 @@ document.addEventListener('deviceready',()=>{
     }catch(e){}
   }
   document.addEventListener('backbutton',onBack,false);
-  if(window.PrometeoMusic){ PM=window.PrometeoMusic; document.body.classList.add('native'); if(PM.onRadio) PM.onRadio(onRadioNative); if(PM.onTv) PM.onTv(onTvEvent); translateStatic(); renderLib(); nativeStart(); }
+  if(window.PrometeoMusic){ PM=window.PrometeoMusic; document.body.classList.add('native'); if(PM.onRadio) PM.onRadio(onRadioNative); if(PM.onTv) PM.onTv(onTvEvent); castInit(); eqSync(); translateStatic(); renderLib(); nativeStart(); }
 },false);
 
 /* ================= PORTADA, ARTISTA Y ÁLBUM DESDE EL ARCHIVO (v41) =================
@@ -1741,10 +1865,11 @@ let radios=store.get('radios',[]); if(!Array.isArray(radios)) radios=[];
 let radioId=null, radioStart=0, radioTick=null, radioState='', nrState='', radioNowTitle='';
 /* En la app, la radio suena con ExoPlayer (más compatible). En la web, con el <audio> de la página. */
 const NR=()=>!!(PM && PM.radioPlay);
-function radioPaused(){ return NR()? !(nrState==='online' || nrState==='connecting' || nrState==='reconnecting') : radioAudio.paused; }
-function radioPauseAny(){ if(NR()){ nrState='paused'; PM.radioPause().catch(()=>{}); setRadioState('paused'); setPlayIcon(); carState(); } else radioAudio.pause(); }
+function radioPaused(){ return (NR() || castOn)? !(nrState==='online' || nrState==='connecting' || nrState==='reconnecting') : radioAudio.paused; }
+function radioPauseAny(){ if(castOn && castKind==='radio'){ nrState='paused'; PM.castCmd('pause').catch(()=>{}); setRadioState('paused'); setPlayIcon(); return; } if(NR()){ nrState='paused'; PM.radioPause().catch(()=>{}); setRadioState('paused'); setPlayIcon(); carState(); } else radioAudio.pause(); }
 function startStream(url){
   url=freshUrl(url);
+  if(castOn){ nrState='connecting'; const cs=stationById(radioId)||{}; castRadio(url, cs); return; }
   if(NR()){ nrState='connecting'; const cs=stationById(radioId)||{}; PM.radioPlay(url,cs.name||'',cs.tv?'tv':'').catch(e=>onRadioNative({type:'error',value:String(e)})); }
   else { radioAudio.src=url; const p=radioAudio.play(); if(p && p.catch) p.catch(()=>{}); }
 }
@@ -1892,7 +2017,7 @@ function switchStation(dir){
 }
 function stopRadio(forSong){
   radioAudio.pause(); radioAudio.removeAttribute('src'); radioAudio.load();
-  if(NR()) PM.radioStop().catch(()=>{}); nrState=''; radioNowTitle=''; $('radioNow').textContent='';
+  if(NR()) PM.radioStop().catch(()=>{}); if(castOn && castKind==='radio'){ PM.castCmd('stop').catch(()=>{}); castKind=''; castRender(); } nrState=''; radioNowTitle=''; $('radioNow').textContent='';
   radioId=null; radioStart=0; document.body.classList.remove('radio-on');
   if(radioTick){ clearInterval(radioTick); radioTick=null; }
   clearCover(); renderRadio();
@@ -2013,6 +2138,7 @@ const TV_KEYS=['live','nOfM','next','sleep','window','audioOnly','channels','sea
 function tvStrings(){ const o={fail:t('tvFail')}; TV_KEYS.forEach(k=>o[k]=t('tv_'+k)); return o; }
 function tvPoolFor(ch){ const p=tvShown.includes(ch)? tvShown : (tvShown.find(c=>c.u===ch.u)? tvShown : [ch]); return p; }
 function playChannel(ch, pool){
+  if(castOn){ castTv(ch, pool); return; }
   if(PM && PM.tvInline){ openTvInline(ch, pool); return; }
   openTvFull(ch, pool);
 }
@@ -2258,6 +2384,8 @@ function carState(){ if(radioId){ if(PM && PM.playState) PM.playState(!radioPaus
 function carControl(ev){
   const a=ev && ev.action;
   if(radioId){ if(a==='play'){ if(radioPaused()) toggleRadio(); } else if(a==='pause') radioPauseAny(); else if(a==='next') switchStation(1); else if(a==='prev') switchStation(-1); return; }
+  if(castOn && castKind==='tv'){ if(a==='play'||a==='pause') PM.castCmd(a).catch(()=>{}); else if(a==='next') castMove(1); else if(a==='prev') castMove(-1); return; }
+  if(castOn && castKind==='music'){ if(a==='play'||a==='pause') PM.castCmd(a).catch(()=>{}); else if(a==='next') nextSong(false); else if(a==='prev') prevSong(); else if(a==='seek' && isFinite(ev.pos)) PM.castCmd('seek',ev.pos).catch(()=>{}); return; }
   if(a==='play'){ if(audio.paused){ if(currentId) play(); else togglePlay(); } }
   else if(a==='pause') audio.pause();
   else if(a==='next') nextSong(false);
@@ -2885,12 +3013,14 @@ function openLang(){
   },[[t('close'),()=>null,'btn-pill']]);
 }
 const PROMETEO_LOGO='data:image/jpeg;base64,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';
+{ const lg=$('tbLogo'); if(lg) lg.src=PROMETEO_LOGO; }   /* v42: ícono de Prometeo en la cabecera */
 /* Componentes de código abierto que usa Prometeo (créditos y licencias) */
 const CREDITS=[
   {name:'AndroidX Media3 (ExoPlayer) 1.9.4', copy:'© The Android Open Source Project', lic:'Apache License 2.0', use:'useMedia3', src:'https://github.com/androidx/media'},
   {name:'Apache Cordova (cordova-android 15)', copy:'© The Apache Software Foundation', lic:'Apache License 2.0', use:'useCordova', src:'https://github.com/apache/cordova-android',
    notice:'Apache Cordova\nCopyright 2015-2020 The Apache Software Foundation\n\nThis product includes software developed at\nThe Apache Software Foundation (http://www.apache.org/).'},
-  {name:'AndroidX (AppCompat, Core, WebKit, Activity, Fragment, Lifecycle, Emoji2, RecyclerView…)', copy:'© The Android Open Source Project', lic:'Apache License 2.0', use:'useAndroidx', src:'https://android.googlesource.com/platform/frameworks/support'},
+  {name:'AndroidX (AppCompat, Core, WebKit, Activity, Fragment, Lifecycle, Emoji2, RecyclerView, MediaRouter…)', copy:'© The Android Open Source Project', lic:'Apache License 2.0', use:'useAndroidx', src:'https://android.googlesource.com/platform/frameworks/support'},
+  {name:'Google Cast SDK (play-services-cast-framework 22.1.0)', copy:'© Google LLC', lic:'Android Software Development Kit License (gratis, no es de código abierto)', use:'useCast', src:'https://developers.google.com/cast'},
   {name:'Guava 33.3.1 (+ failureaccess 1.0.2)', copy:'© The Guava Authors', lic:'Apache License 2.0', use:'useGuava', src:'https://github.com/google/guava'},
   {name:'Kotlin Standard Library 2.1.21', copy:'© JetBrains s.r.o. and Kotlin Programming Language contributors', lic:'Apache License 2.0', use:'useKotlin', src:'https://github.com/JetBrains/kotlin'},
   {name:'kotlinx.coroutines 1.6.4', copy:'© JetBrains s.r.o. and Kotlin Programming Language contributors', lic:'Apache License 2.0', use:'useKotlin', src:'https://github.com/Kotlin/kotlinx.coroutines'},
@@ -2928,6 +3058,14 @@ function openAbout(){
     [['📴','feat1'],['🛡️','feat2'],['🎵','feat3']].forEach(([ic,k])=>{ const r=el('div'); r.appendChild(el('span',null,ic)); r.appendChild(el('span',null,t(k))); f.appendChild(r); });
     w.appendChild(f);
     w.appendChild(el('p','about-foot',t('madeWith')));
+    const bk=el('div','bk-box'); bk.appendChild(el('div','m-label',t('bkTitle'))); bk.appendChild(el('p','privacy-small',t('bkHelp')));
+    if(PM && PM.saveDownload){ const ar=el('div','bk-auto'); const tx=el('div'); tx.appendChild(el('b',null,t('bkAuto'))); tx.appendChild(el('small',null,t('bkAutoSub'))); ar.appendChild(tx);
+      const sw=el('button','sw'+(store.get('bkAuto',true)?' on':'')); sw.setAttribute('role','switch'); sw.setAttribute('aria-label',t('bkAuto'));
+      const last=el('p','bk-last',bkLastText());
+      sw.onclick=()=>{ const v=!store.get('bkAuto',true); store.set('bkAuto',v); sw.classList.toggle('on',v); if(v) bkSoon(1); last.textContent=bkLastText(); };
+      ar.appendChild(sw); bk.appendChild(ar); bk.appendChild(last); }
+    const br=el('div','two-btn'); const b1=el('button','btn-ghost',t('bkSave')); b1.onclick=()=>saveBackup(); const b2=el('button','btn-ghost',t('bkRestore')); b2.onclick=()=>{ $('modal')._close&&$('modal')._close(null); setTimeout(restoreBackup,50); };
+    br.appendChild(b1); br.appendChild(b2); bk.appendChild(br); w.appendChild(bk);
     w.appendChild(el('div','m-label',t('poweredBy')));
     CREDITS.slice(0,3).forEach(c=>{ const d=el('div','credit'); d.appendChild(el('b',null,c.name)); d.appendChild(el('div',null,c.copy+' · '+c.lic)); w.appendChild(d); });
     w.appendChild(el('p','privacy-small',t('moreLibs',CREDITS.length-3)));
@@ -2939,13 +3077,381 @@ function openAbout(){
   },[[t('licenses'),()=>'lic','btn-pill'],[t('close'),()=>null,'btn-ok']]).then(v=>{ if(v==='lic') openLicenses(); });
 }
 
+/* ================= CHROMECAST (v41) =================
+   Mientras estás conectado a un televisor o bocina, lo que pongas (canción, emisora o canal) suena allá.
+   La música la pasa el teléfono por tu Wi-Fi. La radio también va por el teléfono ("puente"): así suenan las emisoras
+   que el televisor no puede abrir solo. Un canal de TV primero se intenta directo y, si el televisor no puede, por el puente. */
+/* Vigilante: si en 20 s no empezó a sonar en el TV, se prueba por el puente o se avisa (nada de quedarse en "Conectando…") */
+function castWatch(kind, relay, onFail){
+  if(castTry && castTry.timer) clearTimeout(castTry.timer);
+  castTry={kind, relay, onFail, timer:setTimeout(()=>{ if(castTry && castTry.kind===castKind){ const f=castTry.onFail; castTry=null; f(); } },20000)};
+}
+function castWatchDone(){ if(castTry && castTry.timer) clearTimeout(castTry.timer); castTry=null; }
+function castRender(){
+  const b=$('btnCast'); if(b){ b.classList.toggle('on',castOn); b.title=t('castBtn'); b.setAttribute('aria-label',t('castBtn')); }
+  const bar=$('castBar'); bar.classList.toggle('hidden',!castOn);
+  if(!castOn) return;
+  $('castDev').textContent=t('castOn',castDevName||'TV');
+  $('castWhat').textContent= castKind? (t(castKind==='music'?'castMusic':castKind==='radio'?'castRadio':'castTv')+' · '+castTitle) : t('castNothing');
+  $('castPlay').textContent=(castKind==='radio' && radioId? !radioPaused() : (castPlaying || (castKind==='tv' && castBuf)))? '⏸' : '▶';
+  $('castPrev').classList.toggle('hidden',!castKind); $('castNext').classList.toggle('hidden',!castKind); $('castPlay').classList.toggle('hidden',!castKind);
+}
+function castErr(e){ const m=String(e||''); toast(t(m==='noWifi'?'castNoWifi':m==='noSession'?'castConnFail':'castFail')); }
+function castSong(s,posSec,autoplay){
+  if(s.mid==null){ toast(t('castNoFile')); return; }
+  const fn=s.fileName||s.name||''; const ext=(fn.match(/\.([a-z0-9]{2,5})$/i)||[])[1]||'mp3';
+  const m=carMeta(s);
+  castKind='music'; castTitle=m.title; castPlaying=true; castPos=(posSec||0)*1000; castDur=s.duration||0; castRender();
+  if(!audio.paused) audio.pause();
+  PM.castLoad({kind:'music', mid:s.mid, ext:ext.toLowerCase(), mime:s.mime||'', title:m.title, artist:m.artist||'', pos:Math.round((posSec||0)*1000), dur:s.duration||0}).catch(castErr);
+}
+function castRadio(url, st){
+  castKind='radio'; castTitle=st.name||''; castPlaying=false; castBuf=true; castRender();
+  const fail=()=>{ PM.castCmd('stop').catch(()=>{}); castBuf=false; onRadioNative({type:'error',value:'cast'}); castRender(); };
+  castWatch('radio', true, fail);
+  PM.castLoad({kind:'radio', url, relay:true, title:st.name||'Prometeo Radio', artist:st.tv? t('tvAudioCar') : t('radioLiveCar')}).catch(e=>{ castWatchDone(); castErr(e); castBuf=false; onRadioNative({type:'state',value:'paused'}); castRender(); });
+}
+function castTv(ch, pool){
+  if(radioId) stopRadio(false);
+  if(!audio.paused) audio.pause();
+  if(tvInlineCh){ tvInlineCh=null; if(PM.tvClose) PM.tvClose().catch(()=>{}); tviSync(); }
+  castTvPool=(pool && pool.length)? pool.slice() : tvPoolFor(ch).slice(); castTvIdx=Math.max(0,castTvPool.findIndex(c=>c.u===ch.u)); if(castTvPool[castTvIdx]!==ch && castTvPool[castTvIdx] && castTvPool[castTvIdx].u!==ch.u){ castTvPool.unshift(ch); castTvIdx=0; }
+  castKind='tv'; castTitle=ch.n; castPlaying=false; castBuf=true; castRender();
+  store.set('tvLast',{u:ch.u, n:ch.n, g:ch.g||''});
+  toast(t('opening',ch.n));
+  castTvLoad(ch, false);
+}
+/* primero directo (gasta menos batería); si el televisor no puede, por el puente del teléfono; si tampoco, avisa */
+function castTvLoad(ch, relay){
+  const fail=()=>{ if(!castOn || castKind!=='tv' || castTitle!==ch.n) return;
+    if(!relay){ castTvLoad(ch, true); return; }
+    PM.castCmd('stop').catch(()=>{}); castPlaying=false; castBuf=false; castRender(); toast(t('castFailTv')); };
+  castWatch('tv', relay, fail);
+  PM.castLoad({kind:'tv', url:ch.u, relay, title:ch.n, artist:ch.g||''}).catch(e=>{ castWatchDone(); castBuf=false; castRender(); castErr(e); });
+}
+function castMove(dir){
+  if(castKind==='music') { if(dir>0) nextSong(false); else prevSong(); }
+  else if(castKind==='radio') switchStation(dir);
+  else if(castKind==='tv' && castTvPool.length>1){ castTvIdx=(castTvIdx+dir+castTvPool.length)%castTvPool.length; castTv(castTvPool[castTvIdx], castTvPool); }
+}
+function castToggle(){
+  if(castKind==='music') togglePlay();
+  else if(castKind==='radio') toggleRadio();
+  else if(castKind==='tv') PM.castCmd('toggle').catch(()=>{});
+}
+/* al conectarse, lo que estaba sonando pasa al televisor */
+function castTakeOver(){
+  if(radioId){ const st=stationById(radioId); if(st && !radioPaused()){ if(NR()) PM.radioStop().catch(()=>{}); startStream(st.url); } return; }
+  if(tvInlineCh){ const ch=tvInlineCh, pool=tviPool; castTv(ch,pool); return; }
+  if(currentId && !audio.paused){ const s=songById(currentId); if(s) castSong(s, audio.currentTime||0, true); }
+}
+function onCastEvent(ev){
+  if(!ev || !ev.type) return;
+  if(ev.type==='castRoutes'){ if(castPicker) castPicker(ev.list||[]); return; }
+  if(ev.type==='cast'){
+    if(ev.state==='connected'){ const was=castOn; castOn=true; castDevName=ev.device||castDevName; castRender(); if(!was){ toast(t('castOn',castDevName)); castTakeOver(); } }
+    else if(ev.state==='disconnected'){
+      castWatchDone();
+      if(castOn){ const k=castKind; castOn=false; castKind=''; castPlaying=false; castBuf=false;
+        if(k==='radio' && radioId){ nrState='paused'; setRadioState('paused'); }
+        if(k==='music' && currentId && castPos>0){ try{ audio.currentTime=castPos/1000; }catch(e){} }
+        toast(t('castOff')); }
+      castRender(); setPlayIcon(); }
+    else if(ev.state==='failed'){ castOn=false; castRender(); toast(t('castConnFail')); }
+    return;
+  }
+  if(ev.type==='castStatus' && castOn){
+    castPlaying=ev.state==='playing'; castBuf=ev.state==='buffering';
+    if(ev.state==='playing' && castTry && castTry.kind===ev.kind) castWatchDone();
+    /* error del televisor: el vigilante decide (probar por el puente o avisar) */
+    if(ev.state==='idle' && ev.idle==='error' && castTry && castTry.kind===ev.kind && ev.kind!=='music'){ const f=castTry.onFail; castWatchDone(); f(); castRender(); return; }
+    if(ev.kind===castKind || !ev.kind){
+      if(castKind==='music'){
+        if(ev.pos>=0) castPos=ev.pos; if(ev.dur>0) castDur=ev.dur;
+        if(!dragging && castDur>0){ const pct=Math.min(100,castPos/castDur*100); progress.value=Math.round(pct*10); setFill(pct); $('tCur').textContent=fmt(castPos/1000); $('tDur').textContent=fmt(castDur/1000); }
+        if(ev.state==='idle' && ev.idle==='finished'){ castPlaying=false;
+          if(slpAtEnd){ slpAtEnd=false; slpLabel(); toast(t('slpDone')); }   /* 🌙 "al terminar la canción": el TV se queda callado */
+          else if(repeatMode===2 && currentId) loadById(currentId,true); else nextSong(true); }
+        else if(ev.state==='idle' && ev.idle==='error'){ castPlaying=false; toast(t('castFail')); }
+        setPlayIcon();
+      } else if(castKind==='radio' && radioId){
+        const v= ev.state==='playing'? 'online' : ev.state==='buffering'? 'connecting' : 'paused';
+        if(ev.state==='idle' && ev.idle==='error') onRadioNative({type:'error',value:'cast'}); else onRadioNative({type:'state',value:v});
+      } else if(castKind==='tv'){
+        if(ev.state==='idle' && ev.idle==='error'){ castPlaying=false; castBuf=false; toast(t('castFailTv')); }
+      }
+    }
+    castRender();
+  }
+}
+async function openCastPicker(){
+  let avail=null; try{ avail=await PM.castAvailable(); }catch(e){}
+  if(!avail || !avail.ok){ toast(t('castUnavailable')); return; }
+  let list=[]; let box=null;
+  const draw=()=>{ if(!box) return; box.textContent='';
+    if(!list.length){ box.appendChild(el('p','m-msg',t('castSearching'))); const h=el('p','field-help',t('castNone')); h.style.opacity='.75'; box.appendChild(h); return; }
+    list.forEach(d=>{ const b=el('button','m-item cast-dev'+(d.on?' on':'')); b.appendChild(el('span','cd-ic',d.on?'📡':'📺')); const i=el('div','song-info'); i.appendChild(el('b',null,d.name)); if(d.desc) i.appendChild(el('small',null,d.desc)); b.appendChild(i);
+      b.onclick=()=>{ $('modal')._close && $('modal')._close(null); if(d.on) return; toast(t('castConnecting',d.name)); castDevName=d.name; PM.castConnect(d.id).catch(()=>toast(t('castConnFail'))); };
+      box.appendChild(b); }); };
+  castPicker=l=>{ list=l; draw(); };
+  try{ list=await PM.castScan(true); }catch(e){ list=[]; }
+  const r=await modal(t('castT'),b=>{ box=el('div'); b.appendChild(box); draw(); },
+    castOn? [[t('castStop'),()=>'stop','btn-danger'],[t('close'),()=>null,'btn-ok']] : [[t('close'),()=>null,'btn-ok']]);
+  castPicker=null; PM.castScan(false).catch(()=>{});
+  if(r==='stop') PM.castDisconnect().catch(()=>{});
+}
+async function castInit(){
+  if(!PM || !PM.castAvailable) return;
+  PM.onCast(onCastEvent);
+  try{ const a=await PM.castAvailable(); if(a && a.ok){ $('btnCast').classList.remove('hidden'); document.body.classList.add('has-cast'); if(a.on){ castOn=true; castDevName=a.device||''; } castRender(); } }catch(e){}
+}
+$('btnCast').onclick=openCastPicker;
+$('castPrev').onclick=()=>castMove(-1); $('castNext').onclick=()=>castMove(1); $('castPlay').onclick=castToggle; $('castX').onclick=()=>PM.castDisconnect().catch(()=>{});
+
+/* ================= COPIA DE SEGURIDAD (v41) =================
+   Un archivo .json en Descargas/Prometeo. No sale del teléfono. La música no va dentro (se vuelve a encontrar). */
+const BK_KEYS=['radios','radioLists','tvFav','tvMyLists','tvAspect','tvQuality','skin','lang','vmode','repeat','shuffle','hidden','privOn','eq'];
+async function buildBackup(){
+  const prefs={}; BK_KEYS.forEach(k=>{ const v=store.get(k,undefined); if(v!==undefined) prefs[k]=v; });
+  /* Las playlists guardan también cómo se llaman sus canciones, para encontrarlas en otro teléfono */
+  const used=new Set(); playlists.forEach(p=>(p.songIds||[]).forEach(id=>used.add(id)));
+  const songInfo={}; songs.forEach(x=>{ if(used.has(x.id)) songInfo[x.id]={n:x.name||'', t:x.title||'', a:x.artist||'', z:x.size||0}; });
+  return {app:'Prometeo Player', kind:'backup', v:1, ver:VERSION, date:new Date().toISOString(),
+    prefs, tv:tvLists.map(L=>({id:L.id,name:L.name,url:L.url||'',mine:!!L.mine,channels:L.channels,hidden:L.hidden||[],added:L.added||0})),
+    playlists:playlists.map(p=>({id:p.id,name:p.name,songIds:(p.songIds||[]).slice(),created:p.created||0})), songInfo};
+}
+async function saveBackup(){
+  try{
+    const data=JSON.stringify(await buildBackup());
+    const d=new Date(), pad=n=>String(n).padStart(2,'0');
+    const name='prometeo-copia-'+d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate())+'-'+pad(d.getHours())+pad(d.getMinutes())+'.json';
+    if(PM && PM.saveDownload){ const where=await PM.saveDownload(name,data); toast(t('bkSaved',where)); bkPrune(); return where; }
+    const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([data],{type:'application/json'})); a.download=name; document.body.appendChild(a); a.click(); a.remove();
+    toast(t('bkSaved',name)); return name;
+  }catch(e){ toast(t('bkFail')); return null; }
+}
+function pickBackupFile(){
+  return new Promise(res=>{
+    const fi=document.createElement('input'); fi.type='file'; fi.accept='.json,application/json,text/plain,*/*';
+    fi.onchange=()=>{ const f=fi.files&&fi.files[0]; if(!f) return res(null); const r=new FileReader(); r.onload=()=>res(String(r.result||'')); r.onerror=()=>res(null); r.readAsText(f); };
+    fi.click();
+  });
+}
+function findSongFor(id,info){
+  if(songs.some(x=>x.id===id)) return id;
+  if(!info) return null;
+  const m=songs.find(x=>info.n && x.name===info.n && (!info.z || !x.size || x.size===info.z))
+    || songs.find(x=>info.t && x.title===info.t && (x.artist||'')===(info.a||''));
+  return m? m.id : null;
+}
+async function restoreBackup(){
+  const txt=await chooseBackup(); if(!txt) return;
+  let B; try{ B=JSON.parse(txt); }catch(e){ B=null; }
+  if(!B || B.app!=='Prometeo Player' || B.kind!=='backup'){ toast(t('bkBad')); return; }
+  const P=B.prefs||{}, nR=(P.radios||[]).length, nT=(B.tv||[]).length, nP=(B.playlists||[]).length;
+  let when=''; try{ when=new Date(B.date).toLocaleString(LANG); }catch(e){}
+  const mode=await modal(t('bkRestore').replace(/^\S+\s/,''),b=>{
+    b.appendChild(el('p','m-msg',t('bkWhat',when,t(nR===1?'bkR1':'bkRN',nR),t(nT===1?'bkT1':'bkTN',nT),t(nP===1?'bkP1':'bkPN',nP))));
+  },[[t('cancel'),()=>null,'btn-pill'],[t('bkMerge'),()=>'merge','btn-pill'],[t('bkReplace'),()=>'replace','btn-danger']]);
+  if(!mode) return;
+  if(mode==='replace'){
+    const yes=await modal(t('bkReplace'),b=>b.appendChild(el('p','m-msg',t('bkReplaceQ'))),[[t('cancel'),()=>false,'btn-pill'],[t('bkReplace'),()=>true,'btn-danger']]);
+    if(!yes) return;
+  }
+  if(radioId) stopRadio(false); if(tvInlineCh) closeTvInline();
+  const isRep=mode==='replace';
+  /* ---- emisoras y sus listas ---- */
+  const inR=Array.isArray(P.radios)? P.radios : [];
+  if(isRep){ radios=inR.slice(); radioLists=Array.isArray(P.radioLists)? P.radioLists.slice() : []; }
+  else { const urls=new Set(radios.map(r=>r.url)), ids=new Set(radios.map(r=>r.id)); inR.forEach(r=>{ if(r && r.url && !urls.has(r.url)){ if(ids.has(r.id)) r=Object.assign({},r,{id:'r'+uid()}); radios.push(r); urls.add(r.url); ids.add(r.id); } });
+    (P.radioLists||[]).forEach(L=>{ if(L && !radioLists.some(x=>x.name===L.name)) radioLists.push(Object.assign({},L,{id:'rl'+uid(), ids:(L.ids||[]).filter(id=>radios.some(r=>r.id===id))})); }); }
+  saveRadios(); saveRadioLists();
+  /* ---- canales ---- */
+  const inT=Array.isArray(B.tv)? B.tv : [];
+  if(isRep){ for(const L of tvLists){ try{ await dbDel('tv',L.id); }catch(e){} } tvLists=[]; }
+  for(const L0 of inT){
+    if(!L0 || !Array.isArray(L0.channels)) continue;
+    let L=Object.assign({},L0);
+    const same=tvLists.find(x=>x.id===L.id || (L.url && x.url===L.url) || (L.mine && x.mine));
+    if(same){ const u=new Set(same.channels.map(c=>c.u)); L.channels.forEach(c=>{ if(c && c.u && !u.has(c.u)){ same.channels.push(c); u.add(c.u); } }); L=same; }
+    else tvLists.push(L);
+    try{ await dbPut('tv',L); }catch(e){}
+  }
+  const keyU=a=>new Set((a||[]).map(c=>c.u));
+  if(isRep){ tvFav=Array.isArray(P.tvFav)? P.tvFav : []; tvMy=Array.isArray(P.tvMyLists)? P.tvMyLists : []; }
+  else { const f=keyU(tvFav); (P.tvFav||[]).forEach(c=>{ if(c && !f.has(c.u)){ tvFav.push(c); f.add(c.u); } }); (P.tvMyLists||[]).forEach(L=>{ if(L && !tvMy.some(x=>x.name===L.name)) tvMy.push(Object.assign({},L,{id:'tm'+uid()})); }); }
+  saveTvFav(); saveTvMy();
+  /* ---- playlists ---- */
+  const info=B.songInfo||{};
+  if(isRep){ for(const p of playlists){ try{ await dbDel('playlists',p.id); }catch(e){} } playlists=[]; }
+  for(const p0 of (B.playlists||[])){
+    if(!p0 || !p0.name) continue;
+    const ids=[]; (p0.songIds||[]).forEach(id=>{ const m=findSongFor(id,info[id]); if(m && !ids.includes(m)) ids.push(m); });
+    let p=playlists.find(x=>x.id===p0.id) || (!isRep && playlists.find(x=>x.name===p0.name));
+    if(p){ ids.forEach(id=>{ if(!p.songIds.includes(id)) p.songIds.push(id); }); }
+    else { p={id:p0.id||('p'+uid()), name:p0.name, songIds:ids, created:p0.created||Date.now()}; playlists.push(p); }
+    try{ await dbPut('playlists',p); }catch(e){}
+  }
+  /* ---- ajustes (solo al reemplazar) ---- */
+  if(isRep){ ['tvAspect','tvQuality','skin','vmode','repeat','shuffle','hidden','privOn','eq'].forEach(k=>{ if(P[k]!==undefined) store.set(k,P[k]); });
+    if(P.eq && typeof P.eq==='object'){ eqS=Object.assign(eqDefault(),P.eq); eqSync(); }
+    if(P.skin && SKINS[P.skin]){ skin=P.skin; applySkin(); }
+    if(P.vmode) vMode=P.vmode; if(P.repeat!==undefined) repeatMode=P.repeat; if(P.shuffle!==undefined) shuffle=P.shuffle;
+    if(P.lang && P.lang!==LANG && I18N[P.lang]){ store.set('lang',P.lang); } }
+  radioFilter='all';
+  renderAll(); if(typeof renderTv==='function' && currentTab==='radio' && tvPane==='tv') renderTv();
+  toast(t('bkDone'));
+  if(isRep && P.lang && P.lang!==LANG && I18N[P.lang]) setTimeout(()=>location.reload(),900);
+}
+
+/* ================= 🎚️ ECUALIZADOR (v42) =================
+   Música del teléfono: se ecualiza dentro de la app (Web Audio). Radio y TV: el ecualizador de Android
+   sobre el sonido de Prometeo. En el Chromecast no aplica (ahí el sonido lo pone el televisor). */
+const EQ_F=[60,230,910,3600,14000];
+const EQ_PRESETS={normal:[0,0,0,0,0],pop:[-1,2,4,2,-1],rock:[5,3,-1,3,5],techno:[5,3,0,2,4],dance:[6,4,0,2,3],vocal:[-2,-1,4,3,0],
+  latino:[4,2,0,2,3],reggaeton:[6,4,-1,1,2],salsa:[3,1,1,3,4],hiphop:[6,4,0,1,2],jazz:[3,2,-1,2,3],clasica:[4,2,-1,2,4],acustico:[3,1,2,2,2],bajos:[7,5,1,0,0],agudos:[0,0,1,4,7]};
+const EQ_ORDER=Object.keys(EQ_PRESETS).concat(['mio']);
+function eqDefault(){ return {on:false,preset:'normal',bands:[0,0,0,0,0],mine:[0,0,0,0,0],bass:0,virt:0}; }
+let eqS=(()=>{ const v=store.get('eq',null); return (v && typeof v==='object')? Object.assign(eqDefault(),v) : eqDefault(); })();
+let eqNodes=null;
+function eqActive(){ return !!eqS.on && (eqS.bands.some(x=>x) || eqS.bass>0 || eqS.virt>0); }
+function eqBuild(src){
+  try{
+    const f=EQ_F.map((hz,i)=>{ const b=actx.createBiquadFilter(); b.type=i===0?'lowshelf':i===4?'highshelf':'peaking'; b.frequency.value=hz; b.Q.value=1; return b; });
+    const bass=actx.createBiquadFilter(); bass.type='lowshelf'; bass.frequency.value=110;
+    const pre=actx.createGain();
+    /* sonido envolvente: ensancha el estéreo (si la canción es mono, primero la pasa a estéreo) */
+    const up=actx.createGain(); up.channelCount=2; up.channelCountMode='explicit'; up.channelInterpretation='speakers';
+    const sp=actx.createChannelSplitter(2), mg=actx.createChannelMerger(2);
+    const ll=actx.createGain(), rr=actx.createGain(), lr=actx.createGain(), rl=actx.createGain();
+    src.connect(pre); pre.connect(f[0]); for(let i=0;i<4;i++) f[i].connect(f[i+1]); f[4].connect(bass); bass.connect(up); up.connect(sp);
+    sp.connect(ll,0); sp.connect(lr,0); sp.connect(rr,1); sp.connect(rl,1);
+    ll.connect(mg,0,0); rl.connect(mg,0,0); rr.connect(mg,0,1); lr.connect(mg,0,1);
+    eqNodes={f,bass,pre,ll,rr,lr,rl}; eqApplyWeb(); return mg;
+  }catch(e){ eqNodes=null; return src; }
+}
+function eqApplyWeb(){
+  if(!eqNodes) return; const on=!!eqS.on, N=eqNodes;
+  N.f.forEach((b,i)=>{ b.gain.value= on? (+eqS.bands[i]||0) : 0; });
+  const bassDb= on? eqS.bass*0.12 : 0; N.bass.gain.value=bassDb;
+  const head=Math.max(0,...(on? eqS.bands : [0]).map(Number))+bassDb*0.6;   /* bajar un poco el volumen de entrada para que no distorsione */
+  N.pre.gain.value=Math.pow(10,-head*0.6/20);
+  const w= on? 1+eqS.virt/100*1.2 : 1, same=(1+w)/2, cross=(1-w)/2;
+  N.ll.gain.value=same; N.rr.gain.value=same; N.lr.gain.value=cross; N.rl.gain.value=cross;
+}
+function eqSync(){
+  store.set('eq',eqS); eqApplyWeb();
+  if(eqActive() && !audio.paused && !actx) ensureGraph();
+  if(PM && PM.audioFx) PM.audioFx({on:!!eqS.on, bands:eqS.bands.map(Number), bass:eqS.bass|0, virt:eqS.virt|0}).catch(()=>{});
+  const b=$('btnEq'); if(b){ b.classList.toggle('on',eqActive()); b.title=t('eqT'); b.setAttribute('aria-label',t('eqT')); }
+}
+function openEq(){
+  modal(t('eqT'),b=>{
+    const wrap=el('div',eqS.on?'':'eq-off'); b.appendChild(wrap);
+    const hd=el('div','eq-head'); hd.appendChild(el('b',null,t('eqOn'))); const sw=el('button','sw'+(eqS.on?' on':'')); sw.setAttribute('role','switch'); sw.setAttribute('aria-label',t('eqOn')); hd.appendChild(sw); wrap.appendChild(hd);
+    const chips=el('div','chips eq-chips'); wrap.appendChild(chips);
+    const bands=el('div','eq-bands'); wrap.appendChild(bands);
+    const ins=[], dbs=[];
+    const lbl=v=>(v>0?'+':'')+v;
+    const paint=()=>{ wrap.className=eqS.on?'':'eq-off'; sw.classList.toggle('on',!!eqS.on);
+      chips.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x.dataset.k===eqS.preset));
+      eqS.bands.forEach((v,i)=>{ ins[i].value=v; dbs[i].textContent=lbl(+v); }); };
+    EQ_ORDER.forEach(k=>{ const c=el('button',null,t('eq_'+k)); c.dataset.k=k; c.onclick=()=>{ eqS.preset=k; eqS.bands=(k==='mio'? eqS.mine : EQ_PRESETS[k]).slice(); eqS.on=true; paint(); eqSync(); }; chips.appendChild(c); });
+    EQ_F.forEach((hz,i)=>{ const bx=el('div','eq-band'); const d=el('span','db'); const r=el('input'); r.type='range'; r.min=-12; r.max=12; r.step=1; r.setAttribute('aria-label',hz<1000? hz+' Hz' : (hz/1000)+' kHz');
+      r.oninput=()=>{ eqS.bands[i]=+r.value; eqS.mine=eqS.bands.slice(); eqS.preset='mio'; eqS.on=true; paint(); eqSync(); };
+      bx.appendChild(d); bx.appendChild(r); bx.appendChild(el('small',null,hz<1000? hz+' Hz' : (hz/1000)+' kHz')); bands.appendChild(bx); ins.push(r); dbs.push(d); });
+    const slider=(key,label)=>{ const w=el('div','eq-sl'); const l=el('label'); const sp=el('span'); l.appendChild(el('b',null,label)); l.appendChild(sp); const r=el('input'); r.type='range'; r.min=0; r.max=100; r.step=5; r.value=eqS[key]; sp.textContent=eqS[key]+'%';
+      r.oninput=()=>{ eqS[key]=+r.value; sp.textContent=r.value+'%'; eqS.on=true; paint(); eqSync(); }; w.appendChild(l); w.appendChild(r); wrap.appendChild(w); };
+    slider('bass',t('eqBass')); slider('virt',t('eqVirt'));
+    wrap.appendChild(el('p','privacy-small',t('eqNote')));
+    sw.onclick=()=>{ eqS.on=!eqS.on; paint(); eqSync(); };
+    paint();
+  },[[t('close'),()=>null,'btn-ok']]);
+}
+$('btnEq').onclick=openEq;
+eqSync();
+
+/* ================= COPIA AUTOMÁTICA (v42) =================
+   Un solo archivo (prometeo-copia-auto.json) que se reescribe solo unos segundos después de cada cambio.
+   Las copias de 💾 se guardan aparte y quedan solo las últimas 5. */
+const BK_AUTO='prometeo-copia-auto.json';
+let bkT=null;
+function bkWatch(k){ try{ if(BK_KEYS.includes(k)) bkSoon(); }catch(e){} }
+function bkSoon(ms){ if(!store.get('bkAuto',true) || !PM || !PM.saveDownload) return; clearTimeout(bkT); bkT=setTimeout(bkAutoSave, ms||5000); }
+async function bkAutoSave(){
+  bkT=null;
+  try{ const data=JSON.stringify(await buildBackup()); await PM.saveDownload(BK_AUTO,data,true); store.set('bkLast',Date.now()); }catch(e){}
+}
+function bkAgo(ms){ const m=Math.floor((Date.now()-ms)/60000); if(m<1) return t('agoNow'); if(m<60) return t('agoMin',m); const h=Math.floor(m/60); if(h<24) return t('agoH',h); return t('agoD',Math.floor(h/24)); }
+function bkLastText(){ if(!store.get('bkAuto',true)) return t('bkAutoOff'); const l=store.get('bkLast',0); return l? t('bkLast',bkAgo(l))+' ✅' : t('bkNever'); }
+async function bkPrune(){
+  try{ const list=await PM.listDownloads(); const man=(list||[]).filter(x=>/^prometeo-copia-\d{8}-\d{4}/.test(x.name||'')).sort((a,b)=>b.date-a.date);
+    for(const x of man.slice(5)){ try{ await PM.deleteDownload(x.id); }catch(e){} } }catch(e){}
+}
+/* Restaurar: primero las copias que Prometeo encuentra (la automática arriba), o buscar otro archivo */
+async function chooseBackup(){
+  let list=[]; if(PM && PM.listDownloads){ try{ list=(await PM.listDownloads())||[]; }catch(e){ list=[]; } }
+  list=list.filter(x=>/^prometeo-copia/.test(x.name||''));
+  if(!list.length){ toast(t('bkChoose')); return pickBackupFile(); }
+  const isAuto=x=>/^prometeo-copia-auto/.test(x.name);
+  list.sort((a,b)=> (isAuto(b)-isAuto(a)) || (b.date-a.date));
+  const pick=await modal(t('bkPickT'),(b,close)=>{
+    list.forEach(x=>{ const when=x.date? new Date(x.date).toLocaleString(LANG) : '';
+      b.appendChild(optRow(false, el('span','opt-ic',isAuto(x)?'⚡':'💾'), isAuto(x)? t('bkAuto') : x.name.replace(/\.json$/,''), when+(x.size? ' · '+Math.max(1,Math.round(x.size/1024))+' KB' : ''), ()=>close(x))); });
+  },[[t('cancel'),()=>null,'btn-pill'],[t('bkOther'),()=>'other','btn-pill']]);
+  if(!pick) return null;
+  if(pick==='other'){ toast(t('bkChoose')); return pickBackupFile(); }
+  try{ return await PM.readDownload(pick.id); }catch(e){ toast(t('bkBad')); return null; }
+}
+setTimeout(()=>{ bkReady=true; if(PM && PM.saveDownload && store.get('bkAuto',true) && !store.get('bkLast',0)) bkSoon(3000); },6000);
+
+/* ================= TEMPORIZADOR PARA DORMIR (música y radio) ================= */
+let slpEnd=0, slpAtEnd=false, slpTimer=null;
+function slpLabel(){
+  const b=$('btnSleep'); if(!b) return;
+  if(slpAtEnd){ b.textContent=t('slpBtnOn','♪'); b.classList.add('on'); return; }
+  if(slpEnd){ const left=Math.max(0,slpEnd-Date.now()), m=Math.floor(left/60000), sec=Math.floor(left%60000/1000);
+    b.textContent=t('slpBtnOn',m+':'+String(sec).padStart(2,'0')); b.classList.add('on'); return; }
+  b.textContent=t('slpBtn'); b.classList.remove('on');
+}
+function slpStop(){
+  slpEnd=0; slpAtEnd=false; clearInterval(slpTimer); slpTimer=null; slpLabel();
+  if(castOn && castKind==='music'){ if(castPlaying) PM.castCmd('pause').catch(()=>{}); }
+  else if(castOn && castKind==='tv'){ PM.castCmd('pause').catch(()=>{}); }
+  else if(radioId){ if(!radioPaused()) toggleRadio(); } else if(!audio.paused) audio.pause();
+  if(tvInlineCh && PM && PM.tvInlineCmd) PM.tvInlineCmd('pause').catch(()=>{});
+  toast(t('slpDone'));
+}
+function setSleep(min){
+  clearInterval(slpTimer); slpTimer=null; slpAtEnd=false; slpEnd=0;
+  if(min==='end'){ slpAtEnd=true; toast(t('slpSetEnd')); }
+  else if(min>0){ slpEnd=Date.now()+min*60000; toast(t('slpSet',min));
+    slpTimer=setInterval(()=>{ if(slpEnd && Date.now()>=slpEnd) slpStop(); else slpLabel(); },1000); }
+  else toast(t('slpCancel'));
+  slpLabel();
+}
+/* "al terminar la canción": se para justo cuando termina (en vez de pasar a la siguiente) */
+audio.addEventListener('ended',e=>{ if(slpAtEnd){ e.stopImmediatePropagation(); slpAtEnd=false; slpLabel(); setTimeout(()=>{ if(!audio.paused) audio.pause(); toast(t('slpDone')); },0); } },true);
+async function openSleep(){
+  const cur=slpAtEnd? 'end' : (slpEnd? 'on' : 0);
+  const r=await modal(t('slpT'),(b,close)=>{
+    b.appendChild(el('p','field-help',t('slpHelp')));
+    const row=el('div','chips wrap');
+    [[0,t('slpOff')],[15,'15 min'],[30,'30 min'],[60,'60 min'],[90,'90 min'],['end',t('slpEnd')]].forEach(([v,l])=>{
+      const c=el('button',v===cur? 'on':'',l); c.onclick=()=>close({v}); row.appendChild(c); });
+    b.appendChild(row);
+    if(slpEnd){ const p=el('p','field-help'); p.textContent=$('btnSleep').textContent; b.appendChild(p); }
+  },[[t('close'),()=>null,'btn-ok']]);
+  if(r) setSleep(r.v);
+}
+
 /* ================= BOTONES ================= */
 $('btnSkin').onclick=openSkins; $('btnLang').onclick=openLang; $('btnAbout').onclick=openAbout;
 $('btnPlay').onclick=()=>radioId? toggleRadio() : togglePlay(); $('miniPlay').onclick=()=>radioId? toggleRadio() : togglePlay();
 $('btnNext').onclick=()=>radioId? switchStation(1) : nextSong(false); $('btnPrev').onclick=()=>radioId? switchStation(-1) : prevSong();
 $('btnAddStation').onclick=()=>addStationEasy(); $('btnBackMusic').onclick=()=>stopRadio(false);
 $('btnRepeat').onclick=cycleRepeat; $('btnShuffle').onclick=toggleShuffle;
-$('btnCurToPl').onclick=()=>addToPlaylist(currentId);
+$('btnCurToPl').onclick=()=>addToPlaylist(currentId); $('btnSleep').onclick=openSleep; slpLabel();
 $('btnPlayAll').onclick=()=>{ const mus=musicSongs(); if(!mus.length){ toast(t('noSongs')); return; } playFrom({type:'lib'}, shuffle? shuffleArr(mus.map(s=>s.id))[0] : mus[0].id); switchTab('ahora'); };
 $('btnNewPl').onclick=()=>newPlaylist();
 $('btnPlBack').onclick=closePlDetail;
