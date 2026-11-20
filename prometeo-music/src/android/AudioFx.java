@@ -25,6 +25,7 @@ final class AudioFx {
     private static boolean on = false;
     private static final double[] db = new double[5];
     private static int bass = 0, virt = 0;
+    private static final double K = 1.8;
 
     private static final class Fx { Equalizer eq; BassBoost bb; Virtualizer vz; }
     private static final Map<Integer, Fx> live = new HashMap<>();
@@ -86,7 +87,7 @@ final class AudioFx {
                 short[] range = f.eq.getBandLevelRange();
                 for (short i = 0; i < n; i++) {
                     double hz = f.eq.getCenterFreq(i) / 1000.0;
-                    int mb = (int) Math.round(curve(hz) * 100);
+                    int mb = (int) Math.round(curve(hz) * K * 100);   /* K: más fuerte, para que se note en la radio */
                     mb = Math.max(range[0], Math.min(range[1], mb));
                     f.eq.setBandLevel(i, (short) (on ? mb : 0));
                 }

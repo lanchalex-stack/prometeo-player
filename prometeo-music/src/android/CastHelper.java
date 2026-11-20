@@ -182,6 +182,11 @@ final class CastHelper {
                     : ps == MediaStatus.PLAYER_STATE_PAUSED ? "paused"
                     : ps == MediaStatus.PLAYER_STATE_BUFFERING || ps == MediaStatus.PLAYER_STATE_LOADING ? "buffering" : "idle";
             o.put("type", "castStatus"); o.put("state", st); o.put("kind", kind);
+            /* De qué pedido es este estado: mientras el televisor siga con lo anterior, se informa el pedido anterior */
+            MediaInfo mi = null;
+            try { mi = rmc.getMediaInfo(); } catch (Exception ignored) { }
+            boolean mine = mi != null && sentUrl != null && sentUrl.equals(mi.getContentId());
+            o.put("req", mine ? sentReq : prevReq);
             if (ps == MediaStatus.PLAYER_STATE_IDLE) {
                 int r = rmc.getIdleReason();
                 o.put("idle", r == MediaStatus.IDLE_REASON_FINISHED ? "finished" : r == MediaStatus.IDLE_REASON_ERROR ? "error"
@@ -204,11 +209,13 @@ final class CastHelper {
         attach(s);
         if (rmc == null) return "noSession";
         kind = o.optString("kind", "radio");
+        wantReq = o.optInt("req", 0);
         final int myGen = ++gen;
         String url = o.optString("url", "");
         String mime = o.optString("mime", "");
         boolean music = "music".equals(kind);
         boolean relay = !music && o.optBoolean("relay", false);
+        if (server != null && !"radio".equals(kind)) server.stopLive();   /* ya no se necesita la radio en pedacitos */
         if (music || relay) {
             try {
                 if (server == null) server = new CastServer(act);
@@ -234,29 +241,66 @@ final class CastHelper {
         final String k = kind;
         new Thread(new Runnable() { public void run() {
             String[] info = null;
-            try { info = CastServer.probe(src); } catch (Exception ignored) { }
+            String err = "";
+            try { info = CastServer.probe(src); } catch (Exception ex) { err = Net.why(ex); }
             final String[] fi = info;
+            final String why = err;
             h.post(new Runnable() { public void run() {
                 if (myGen != gen) return;   /* ya se pidió otra cosa */
                 CastServer sv = server;
-                String u = (fi == null || sv == null) ? null : sv.relayFor(fi[0], "1".equals(fi[1]) ? "m3u8" : CastServer.extOf(fi[0]));
+                String u = null, mime = fi == null ? "" : fi[2], mode = "relay";
+                /* Radio en chorro (MP3/AAC): en pedacitos, así el televisor arranca enseguida.
+                   Si el pedido dice plain:true (ya se probó en pedacitos y no anduvo), va como chorro. */
+                boolean audio = mime.equals("audio/mpeg") || mime.equals("audio/aac");
+                if (fi != null && sv != null && "radio".equals(k) && "0".equals(fi[1]) && audio && !o.optBoolean("plain", false)) {
+                    u = sv.hlsFor(fi[0], mime.equals("audio/aac"));
+                    if (u != null) {
+                        mode = "hls";
+                        mime = "application/x-mpegURL";
+                        try { o.put("seg", fi[2].equals("audio/aac") ? "aac" : "mp3"); } catch (Exception ignored) { }
+                    }
+                }
+                if (u == null && fi != null && sv != null) {
+                    u = sv.relayFor(fi[0], "1".equals(fi[1]) ? "m3u8" : CastServer.extOf(fi[0]));
+                    try { if (fi.length > 3) o.put("seg", fi[3]); } catch (Exception ignored) { }
+                }
+                info(k, fi, mode, src, why);
                 if (u == null) { loadError(k, 0); return; }
-                send(o, u, fi[2]);
+                send(o, u, mime);
             } });
         } }, "prometeo-cast-probe").start();
         return null;
     }
 
     private int gen = 0;
+    private int sentReq = 0, prevReq = 0;
+    private String sentUrl = null;
+
+    private int wantReq = 0;
+
+    /** Para el diagnóstico (botón v41): qué se averiguó de la emisora o canal y cómo se mandó */
+    private void info(String k, String[] fi, String mode, String src, String why) {
+        JSONObject e = new JSONObject();
+        try {
+            e.put("type", "castInfo"); e.put("kind", k); e.put("mode", fi == null ? "fail" : mode);
+            e.put("mime", fi == null ? "" : fi[2]); e.put("seg", fi != null && fi.length > 3 ? fi[3] : "");
+            String host = ""; try { host = new java.net.URL(src).getHost(); } catch (Exception ignored) { }
+            e.put("host", host); e.put("req", wantReq); e.put("why", why == null ? "" : why);
+        } catch (Exception ignored) { }
+        emit(e);
+    }
 
     private void loadError(String k, int code) {
         JSONObject e = new JSONObject();
-        try { e.put("type", "castStatus"); e.put("state", "idle"); e.put("idle", "error"); e.put("kind", k); e.put("code", code); } catch (Exception ignored) { }
+        try { e.put("type", "castStatus"); e.put("state", "idle"); e.put("idle", "error"); e.put("kind", k); e.put("code", code); e.put("req", wantReq); } catch (Exception ignored) { }
         emit(e);
     }
 
     private void send(JSONObject o, String url, String mime) {
         if (rmc == null) { loadError(kind, -1); return; }
+        if (sentReq != o.optInt("req", 0)) prevReq = sentReq;
+        sentReq = o.optInt("req", 0);
+        sentUrl = url;
         boolean music = "music".equals(kind);
         MediaMetadata md = new MediaMetadata(music ? MediaMetadata.MEDIA_TYPE_MUSIC_TRACK : ("tv".equals(kind) ? MediaMetadata.MEDIA_TYPE_MOVIE : MediaMetadata.MEDIA_TYPE_MUSIC_TRACK));
         md.putString(MediaMetadata.KEY_TITLE, o.optString("title", "Prometeo"));
@@ -267,6 +311,12 @@ final class CastHelper {
                 .setContentType(mime)
                 .setMetadata(md);
         if (music && o.optLong("dur", 0) > 0) mb.setStreamDuration(o.optLong("dur"));
+        /* Listas HLS: decirle al televisor de qué son los pedacitos (sin esto, las de radio en AAC no suenan) */
+        String seg = o.optString("seg", "");
+        try {
+            if (seg.equals("aac") || seg.equals("mp3")) mb.setHlsSegmentFormat(seg);
+            else if (seg.equals("fmp4")) { mb.setHlsSegmentFormat("fmp4"); if ("tv".equals(kind)) mb.setHlsVideoSegmentFormat("fmp4"); }
+        } catch (Throwable ignored) { }
         MediaLoadRequestData req = new MediaLoadRequestData.Builder()
                 .setMediaInfo(mb.build())
                 .setAutoplay(true)
@@ -303,7 +353,7 @@ final class CastHelper {
                 case "play": rmc.play(); break;
                 case "pause": rmc.pause(); break;
                 case "toggle": if (rmc.isPlaying()) rmc.pause(); else rmc.play(); break;
-                case "stop": rmc.stop(); keepAwake(false); break;
+                case "stop": rmc.stop(); keepAwake(false); if (server != null) server.stopLive(); break;
                 case "seek": rmc.seek(new MediaSeekOptions.Builder().setPosition(Math.max(0, ms)).build()); break;
                 default: break;
             }

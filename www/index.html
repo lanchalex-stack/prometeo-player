@@ -699,7 +699,8 @@ let radioFilter=store.get('radioFilter','all');
 let tvFav=store.get('tvFav',[]); if(!Array.isArray(tvFav)) tvFav=[];
 let tvMy=store.get('tvMyLists',[]); if(!Array.isArray(tvMy)) tvMy=[];
 let tvInlineCh=null, tviPool=[], tviIdx=0, tviState='', tviFromFull=false, tviAudioStarted=false;   /* TV en pequeño */
-let castOn=false, castDevName='', castKind='', castPlaying=false, castPos=0, castDur=0, castTvPool=[], castTvIdx=0, castTitle='', castPicker=null, castBuf=false, castTry=null;   /* Chromecast */
+let castOn=false, castDevName='', castKind='', castPlaying=false, castPos=0, castDur=0, castTvPool=[], castTvIdx=0, castTitle='', castPicker=null, castBuf=false, castTry=null, castReq=0, castLastState='';
+const castModeFor={};   /* Chromecast */
 let tvSel='';
 
 /* ================= IDIOMAS (v41) ================= */
@@ -1651,15 +1652,19 @@ function castSynth(){
   if(!freq || freq.length!==256) freq=new Uint8Array(256);
   if(!wave || wave.length!==512) wave=new Uint8Array(512);
   if(!synthPrev) synthPrev=new Float32Array(256);
-  const tm=performance.now()/1000, beat=0.72+0.28*Math.pow(Math.max(0,Math.sin(tm*Math.PI*2*1.03)),3);
+  /* v41b: más viva (antes se veía lenta): golpe de bajo a ~120 por minuto, saltos rápidos y caída suave como la música real */
+  const tm=performance.now()/1000, ph=(tm*2.0)%1, kick=Math.exp(-ph*7), snare=Math.exp(-((ph+0.5)%1)*9)*0.6;
   for(let k=0;k<256;k++){
-    const env=Math.max(0,1-k/150)*0.85+0.08;
-    const n=0.55+0.25*Math.sin(tm*3.1+k*0.37)+0.2*Math.sin(tm*7.3+k*1.7)*Math.random();
-    const target=255*env*n*beat;
-    synthPrev[k]+= (target-synthPrev[k])*0.25;
+    const env=Math.max(0,1-k/140)*0.8+0.1;
+    const lowBand=k<24? kick*0.55 : k<80? snare*0.35 : 0;
+    const n=0.35+0.22*Math.sin(tm*9.7+k*0.41)+0.18*Math.sin(tm*15.3+k*1.9)+0.3*Math.random()+lowBand;
+    const target=255*env*Math.min(1.1,n);
+    const a=target>synthPrev[k]? 0.65 : 0.22;
+    synthPrev[k]+= (target-synthPrev[k])*a;
     freq[k]=Math.max(0,Math.min(255,synthPrev[k]|0));
   }
-  for(let i=0;i<512;i++){ wave[i]=128+Math.round((Math.sin(i/512*Math.PI*6+tm*5)*38+Math.sin(i/512*Math.PI*17+tm*9)*14)*beat); }
+  const amp=0.55+kick*0.6+snare*0.3;
+  for(let i=0;i<512;i++){ wave[i]=128+Math.round((Math.sin(i/512*Math.PI*6+tm*11)*34+Math.sin(i/512*Math.PI*19+tm*17)*16+(Math.random()-.5)*10)*amp); }
 }
 
 /* ================= SEGUNDO PLANO / CONTROLES DEL SISTEMA ================= */
@@ -3084,8 +3089,25 @@ function openAbout(){
 /* Vigilante: si en 20 s no empezó a sonar en el TV, se prueba por el puente o se avisa (nada de quedarse en "Conectando…") */
 function castWatch(kind, relay, onFail){
   if(castTry && castTry.timer) clearTimeout(castTry.timer);
-  castTry={kind, relay, onFail, timer:setTimeout(()=>{ if(castTry && castTry.kind===castKind){ const f=castTry.onFail; castTry=null; f(); } },20000)};
+  const req=++castReq;
+  castTry={kind, relay, onFail, req, mode:'', playSince:0, timer:setTimeout(()=>{ if(castTry && castTry.req===req){
+    if(castTry.playSince && castPlaying){ castWatchDone(); return; }   /* está sonando: todo bien */
+    const f=castTry.onFail; castTry=null; castLog('⏱ 20 s sin sonar'); f(); } },20000)};
+  castStallSince=0;
+  return req;
 }
+/* Registro de Chromecast para el diagnóstico (botón v41): los últimos pasos, para saber por qué algo no suena */
+const castLogList=[];
+function castLog(txt){ const d=new Date(); castLogList.push(String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')+':'+String(d.getSeconds()).padStart(2,'0')+' '+txt); if(castLogList.length>30) castLogList.shift(); }
+/* Si el TV se queda "esperando" más de 25 s (ya sonando antes), se avisa en vez de quedarse en "Conectando…" */
+let castStallSince=0;
+setInterval(()=>{
+  if(!castOn || castTry || !castStallSince || !castBuf) return;
+  if(Date.now()-castStallSince<25000) return;
+  castStallSince=0; castLog('⏱ 25 s esperando');
+  if(castKind==='radio' && radioId){ PM.castCmd('stop').catch(()=>{}); castBuf=false; onRadioNative({type:'error',value:'cast'}); castRender(); }
+  else if(castKind==='tv'){ PM.castCmd('stop').catch(()=>{}); castPlaying=false; castBuf=false; castRender(); toast(t('castFailTv')); }
+},2000);
 function castWatchDone(){ if(castTry && castTry.timer) clearTimeout(castTry.timer); castTry=null; }
 function castRender(){
   const b=$('btnCast'); if(b){ b.classList.toggle('on',castOn); b.title=t('castBtn'); b.setAttribute('aria-label',t('castBtn')); }
@@ -3105,11 +3127,16 @@ function castSong(s,posSec,autoplay){
   if(!audio.paused) audio.pause();
   PM.castLoad({kind:'music', mid:s.mid, ext:ext.toLowerCase(), mime:s.mime||'', title:m.title, artist:m.artist||'', pos:Math.round((posSec||0)*1000), dur:s.duration||0}).catch(castErr);
 }
-function castRadio(url, st){
+function castRadio(url, st, plain){
   castKind='radio'; castTitle=st.name||''; castPlaying=false; castBuf=true; castRender();
-  const fail=()=>{ PM.castCmd('stop').catch(()=>{}); castBuf=false; onRadioNative({type:'error',value:'cast'}); castRender(); };
-  castWatch('radio', true, fail);
-  PM.castLoad({kind:'radio', url, relay:true, title:st.name||'Prometeo Radio', artist:st.tv? t('tvAudioCar') : t('radioLiveCar')}).catch(e=>{ castWatchDone(); castErr(e); castBuf=false; onRadioNative({type:'state',value:'paused'}); castRender(); });
+  let req=0;
+  /* primero en pedacitos (arranca rápido); si así no suena, como chorro; si tampoco, avisa */
+  const fail=()=>{ if(!castOn || castKind!=='radio' || !radioId) return;
+    if(!plain && castModeFor[req]==='hls'){ castLog('↻ probando como chorro'); castRadio(url, st, true); return; }
+    PM.castCmd('stop').catch(()=>{}); castBuf=false; onRadioNative({type:'error',value:'cast'}); castRender(); };
+  req=castWatch('radio', true, fail);
+  castLog('📻 '+(st.name||'')+(plain? ' (chorro)' : ''));
+  PM.castLoad({kind:'radio', url, relay:true, plain:!!plain, req, title:st.name||'Prometeo Radio', artist:st.tv? t('tvAudioCar') : t('radioLiveCar')}).catch(e=>{ castWatchDone(); castErr(e); castBuf=false; onRadioNative({type:'state',value:'paused'}); castRender(); });
 }
 function castTv(ch, pool){
   if(radioId) stopRadio(false);
@@ -3126,8 +3153,9 @@ function castTvLoad(ch, relay){
   const fail=()=>{ if(!castOn || castKind!=='tv' || castTitle!==ch.n) return;
     if(!relay){ castTvLoad(ch, true); return; }
     PM.castCmd('stop').catch(()=>{}); castPlaying=false; castBuf=false; castRender(); toast(t('castFailTv')); };
-  castWatch('tv', relay, fail);
-  PM.castLoad({kind:'tv', url:ch.u, relay, title:ch.n, artist:ch.g||''}).catch(e=>{ castWatchDone(); castBuf=false; castRender(); castErr(e); });
+  const req=castWatch('tv', relay, fail);
+  castLog('📺 '+ch.n+(relay? ' (por el teléfono)' : ' (directo)'));
+  PM.castLoad({kind:'tv', url:ch.u, relay, req, title:ch.n, artist:ch.g||''}).catch(e=>{ castWatchDone(); castBuf=false; castRender(); castErr(e); });
 }
 function castMove(dir){
   if(castKind==='music') { if(dir>0) nextSong(false); else prevSong(); }
@@ -3148,6 +3176,7 @@ function castTakeOver(){
 function onCastEvent(ev){
   if(!ev || !ev.type) return;
   if(ev.type==='castRoutes'){ if(castPicker) castPicker(ev.list||[]); return; }
+  if(ev.type==='castInfo'){ castModeFor[ev.req]=ev.mode; castLog('ℹ️ '+(ev.mode==='hls'?'en pedacitos':ev.mode==='relay'?'por el teléfono':ev.mode==='fail'?'no se pudo abrir':ev.mode)+' · '+(ev.mime||'?')+(ev.seg?' ('+ev.seg+')':'')+' · '+(ev.host||'')+(ev.why?' · ❗ '+ev.why:'')); return; }
   if(ev.type==='cast'){
     if(ev.state==='connected'){ const was=castOn; castOn=true; castDevName=ev.device||castDevName; castRender(); if(!was){ toast(t('castOn',castDevName)); castTakeOver(); } }
     else if(ev.state==='disconnected'){
@@ -3161,8 +3190,18 @@ function onCastEvent(ev){
     return;
   }
   if(ev.type==='castStatus' && castOn){
+    /* Mientras se espera una emisora o canal nuevo, los avisos de lo que el TV tenía antes no cuentan
+       (antes un "sonando" viejo apagaba el vigilante y se quedaba en "Conectando…" para siempre) */
+    if(castTry && ev.req!=null && ev.req!==castTry.req) return;
+    const st2=ev.state+(ev.idle&&ev.state==='idle'?'/'+ev.idle:'');
+    if(st2!==castLastState){ castLastState=st2; castLog('TV: '+st2); }
     castPlaying=ev.state==='playing'; castBuf=ev.state==='buffering';
-    if(ev.state==='playing' && castTry && castTry.kind===ev.kind) castWatchDone();
+    if(ev.state==='buffering'){ if(!castStallSince) castStallSince=Date.now(); } else castStallSince=0;
+    /* el vigilante se da por bueno solo cuando lleva unos segundos sonando de verdad (un "sonando" de un instante no cuenta) */
+    if(castTry && castTry.kind===ev.kind){
+      if(ev.state==='playing'){ if(!castTry.playSince) castTry.playSince=Date.now(); else if(Date.now()-castTry.playSince>=4000) castWatchDone(); }
+      else castTry.playSince=0;
+    }
     /* error del televisor: el vigilante decide (probar por el puente o avisar) */
     if(ev.state==='idle' && ev.idle==='error' && castTry && castTry.kind===ev.kind && ev.kind!=='music'){ const f=castTry.onFail; castWatchDone(); f(); castRender(); return; }
     if(ev.kind===castKind || !ev.kind){
@@ -3308,6 +3347,7 @@ async function restoreBackup(){
    Música del teléfono: se ecualiza dentro de la app (Web Audio). Radio y TV: el ecualizador de Android
    sobre el sonido de Prometeo. En el Chromecast no aplica (ahí el sonido lo pone el televisor). */
 const EQ_F=[60,230,910,3600,14000];
+const EQ_K=1.6;   /* fuerza del ecualizador */
 const EQ_PRESETS={normal:[0,0,0,0,0],pop:[-1,2,4,2,-1],rock:[5,3,-1,3,5],techno:[5,3,0,2,4],dance:[6,4,0,2,3],vocal:[-2,-1,4,3,0],
   latino:[4,2,0,2,3],reggaeton:[6,4,-1,1,2],salsa:[3,1,1,3,4],hiphop:[6,4,0,1,2],jazz:[3,2,-1,2,3],clasica:[4,2,-1,2,4],acustico:[3,1,2,2,2],bajos:[7,5,1,0,0],agudos:[0,0,1,4,7]};
 const EQ_ORDER=Object.keys(EQ_PRESETS).concat(['mio']);
@@ -3317,7 +3357,7 @@ let eqNodes=null;
 function eqActive(){ return !!eqS.on && (eqS.bands.some(x=>x) || eqS.bass>0 || eqS.virt>0); }
 function eqBuild(src){
   try{
-    const f=EQ_F.map((hz,i)=>{ const b=actx.createBiquadFilter(); b.type=i===0?'lowshelf':i===4?'highshelf':'peaking'; b.frequency.value=hz; b.Q.value=1; return b; });
+    const f=EQ_F.map((hz,i)=>{ const b=actx.createBiquadFilter(); b.type=i===0?'lowshelf':i===4?'highshelf':'peaking'; b.frequency.value=i===0?90:i===4?9000:hz; b.Q.value=0.8; return b; });
     const bass=actx.createBiquadFilter(); bass.type='lowshelf'; bass.frequency.value=110;
     const pre=actx.createGain();
     /* sonido envolvente: ensancha el estéreo (si la canción es mono, primero la pasa a estéreo) */
@@ -3327,16 +3367,20 @@ function eqBuild(src){
     src.connect(pre); pre.connect(f[0]); for(let i=0;i<4;i++) f[i].connect(f[i+1]); f[4].connect(bass); bass.connect(up); up.connect(sp);
     sp.connect(ll,0); sp.connect(lr,0); sp.connect(rr,1); sp.connect(rl,1);
     ll.connect(mg,0,0); rl.connect(mg,0,0); rr.connect(mg,0,1); lr.connect(mg,0,1);
-    eqNodes={f,bass,pre,ll,rr,lr,rl}; eqApplyWeb(); return mg;
+    /* limitador: deja subir los bajos sin que suene roto */
+    const lim=actx.createDynamicsCompressor(); lim.threshold.value=-2; lim.knee.value=0; lim.ratio.value=20; lim.attack.value=0.003; lim.release.value=0.15;
+    mg.connect(lim);
+    eqNodes={f,bass,pre,ll,rr,lr,rl}; eqApplyWeb(); return lim;
   }catch(e){ eqNodes=null; return src; }
 }
 function eqApplyWeb(){
   if(!eqNodes) return; const on=!!eqS.on, N=eqNodes;
-  N.f.forEach((b,i)=>{ b.gain.value= on? (+eqS.bands[i]||0) : 0; });
-  const bassDb= on? eqS.bass*0.12 : 0; N.bass.gain.value=bassDb;
-  const head=Math.max(0,...(on? eqS.bands : [0]).map(Number))+bassDb*0.6;   /* bajar un poco el volumen de entrada para que no distorsione */
-  N.pre.gain.value=Math.pow(10,-head*0.6/20);
-  const w= on? 1+eqS.virt/100*1.2 : 1, same=(1+w)/2, cross=(1-w)/2;
+  /* v41b: más fuerte (antes casi no se notaba): cada paso de la barrita vale 1.6 dB */
+  N.f.forEach((b,i)=>{ b.gain.value= on? Math.max(-18,Math.min(18,(+eqS.bands[i]||0)*EQ_K)) : 0; });
+  const bassDb= on? eqS.bass*0.16 : 0; N.bass.gain.value=bassDb;
+  const head=Math.max(0,...(on? eqS.bands : [0]).map(Number))*EQ_K+bassDb*0.5;   /* bajar solo un poco el volumen de entrada (el limitador hace el resto) */
+  N.pre.gain.value=Math.pow(10,-head*0.3/20);
+  const w= on? 1+eqS.virt/100*1.6 : 1, same=(1+w)/2, cross=(1-w)/2;
   N.ll.gain.value=same; N.rr.gain.value=same; N.lr.gain.value=cross; N.rl.gain.value=cross;
 }
 function eqSync(){
@@ -3525,6 +3569,7 @@ async function diagnose(){
     catch(e){ lines.push(t('curSong')+': ❌ '+t('readFail')); }
   }
   lines.push(t('dataMode')+': '+t(useDataUrl?'yes':'no'));
+  if(castLogList.length){ lines.push(''); lines.push('— Chromecast —'); castLogList.forEach(x=>lines.push(x)); }
   modal(t('diagT'),bx=>{ const pre=el('p','m-msg',lines.join('\n')); pre.style.whiteSpace='pre-line'; pre.style.userSelect='text'; bx.appendChild(pre); },[[t('close'),()=>null,'btn-ok']]);
 }
 $('btnVer').onclick=()=>{ toast(t('diagnosing')); diagnose(); };

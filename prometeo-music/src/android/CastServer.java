@@ -13,7 +13,6 @@ import java.io.OutputStream;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
-import java.net.HttpURLConnection;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URL;
@@ -58,6 +57,7 @@ final class CastServer {
 
     synchronized void stop() {
         running = false;
+        stopLive();
         try { if (ss != null) ss.close(); } catch (Exception ignored) { }
         if (pool != null) pool.shutdownNow();
         ss = null; pool = null;
@@ -73,6 +73,60 @@ final class CastServer {
     }
 
     static final String UA = "PrometeoPlayer/41";
+
+    /* ---------------- radio en pedacitos (HLS) ---------------- */
+    private LiveHls live;
+
+    synchronized void stopLive() { if (live != null) { live.stop(); live = null; } }
+
+    /** Dirección de la lista de pedacitos de una emisora (MP3 o AAC); empieza a recibirla ya */
+    synchronized String hlsFor(String upstream, boolean aac) {
+        String ip = localIp();
+        if (ip == null || ss == null) return null;
+        stopLive();
+        byte[] r = new byte[6]; new SecureRandom().nextBytes(r);
+        StringBuilder sb = new StringBuilder(); for (byte b : r) sb.append(String.format(Locale.ROOT, "%02x", b & 0xff));
+        live = new LiveHls(sb.toString(), upstream, aac);
+        return base(ip) + "/h/" + live.id + "/live.m3u8";
+    }
+
+    private void serveLive(String rest, boolean head, OutputStream out) throws Exception {
+        LiveHls L;
+        synchronized (this) { L = live; }
+        int sl = rest.indexOf('/');
+        if (L == null || sl < 0 || !rest.substring(0, sl).equals(L.id)) { send(out, "404 Not Found", null, 0, null, null); return; }
+        String file = rest.substring(sl + 1);
+        if (file.startsWith("live.m3u8")) {
+            String ip = localIp();
+            String pl = L.playlist(base(ip == null ? "127.0.0.1" : ip) + "/h/" + L.id + "/");
+            if (pl == null) { send(out, "503 Service Unavailable", null, 0, null, null); return; }
+            byte[] body = pl.getBytes(StandardCharsets.UTF_8);
+            sendNoCache(out, "application/vnd.apple.mpegurl", body.length);
+            if (!head) out.write(body);
+            out.flush();
+            return;
+        }
+        int dot = file.indexOf('.');
+        long seq;
+        try { seq = Long.parseLong(dot > 0 ? file.substring(0, dot) : file); } catch (Exception e) { send(out, "404 Not Found", null, 0, null, null); return; }
+        byte[] data = L.segment(seq);
+        if (data == null) { send(out, "404 Not Found", null, 0, null, null); return; }
+        sendNoCache(out, L.mime(), data.length);
+        if (!head) out.write(data);
+        out.flush();
+    }
+
+    private static void sendNoCache(OutputStream out, String mime, long len) throws Exception {
+        StringBuilder h = new StringBuilder();
+        h.append("HTTP/1.1 200 OK\r\n");
+        h.append("Content-Type: ").append(mime).append("\r\n");
+        h.append("Content-Length: ").append(len).append("\r\n");
+        h.append("Access-Control-Allow-Origin: *\r\n");
+        h.append("Access-Control-Allow-Headers: Range, Content-Type\r\n");
+        h.append("Cache-Control: no-cache\r\n");
+        h.append("Connection: close\r\n\r\n");
+        out.write(h.toString().getBytes("ISO-8859-1"));
+    }
 
     /** Dirección "puente" para una emisora o canal de internet */
     String relayFor(String upstream, String ext) {
@@ -102,27 +156,9 @@ final class CastServer {
         return e.isEmpty() || e.length() > 5 ? "bin" : e;
     }
 
-    /** Abre una dirección de internet siguiendo redirecciones (también http↔https) */
-    static HttpURLConnection open(String address, String range) throws Exception {
-        URL url = new URL(address);
-        for (int hop = 0; hop < 8; hop++) {
-            HttpURLConnection c = (HttpURLConnection) url.openConnection();
-            c.setInstanceFollowRedirects(false);
-            c.setConnectTimeout(15000);
-            c.setReadTimeout(25000);
-            c.setRequestProperty("User-Agent", UA);
-            c.setRequestProperty("Accept", "*/*");
-            c.setRequestProperty("Icy-MetaData", "0");
-            if (range != null) c.setRequestProperty("Range", range);
-            int code = c.getResponseCode();
-            if (code >= 300 && code < 400 && c.getHeaderField("Location") != null) {
-                url = new URL(url, c.getHeaderField("Location"));
-                c.disconnect();
-                continue;
-            }
-            return c;
-        }
-        throw new Exception("too many redirects");
+    /** Abre una dirección de internet con el mismo "cartero" que el reproductor del teléfono (ver Net) */
+    static Net.Resp open(String address, String range) throws Exception {
+        return Net.open(address, range);
     }
 
     /** Qué es una dirección: lista HLS, lista .pls/.m3u de radio, o audio/video directo.
@@ -130,11 +166,11 @@ final class CastServer {
     static String[] probe(String address) throws Exception {
         String cur = address;
         for (int depth = 0; depth < 3; depth++) {
-            HttpURLConnection c = open(cur, null);
+            Net.Resp c = open(cur, null);
             try {
                 int code = c.getResponseCode();
                 if (code >= 400) throw new Exception("HTTP " + code);
-                String fin = c.getURL().toString();
+                String fin = c.finalUrl();
                 String ct = c.getContentType() == null ? "" : c.getContentType().toLowerCase(Locale.ROOT);
                 String ext = extOf(fin);
                 boolean maybeList = ct.contains("mpegurl") || ct.contains("scpls") || ext.equals("m3u8") || ext.equals("m3u") || ext.equals("pls")
@@ -144,7 +180,15 @@ final class CastServer {
                 InputStream in = c.getInputStream();
                 byte[] head = readSome(in, 2048);
                 String txt = new String(head, StandardCharsets.ISO_8859_1).trim();
-                if (txt.startsWith("#EXTM3U") && txt.contains("#EXT-X-")) return new String[]{ fin, "1", "application/x-mpegURL" };
+                if (txt.startsWith("#EXTM3U") && txt.contains("#EXT-X-")) {
+                    /* Lista HLS: averiguar de qué son los pedacitos (el televisor necesita saberlo si son AAC o fMP4) */
+                    ByteArrayOutputStream all = new ByteArrayOutputStream(); all.write(head);
+                    byte[] b = new byte[16384]; int n;
+                    while ((n = in.read(b)) > 0) { all.write(b, 0, n); if (all.size() > 512 * 1024) break; }
+                    String seg = "";
+                    try { seg = hlsSegmentKind(new String(all.toByteArray(), StandardCharsets.UTF_8), fin, 0); } catch (Exception ignored) { }
+                    return new String[]{ fin, "1", "application/x-mpegURL", seg };
+                }
                 if (txt.startsWith("#EXTM3U") || txt.startsWith("[playlist]") || txt.startsWith("http")) {
                     String inner = firstUrl(new String(head, StandardCharsets.UTF_8), fin);
                     if (inner != null) { cur = inner; continue; }
@@ -153,6 +197,34 @@ final class CastServer {
             } finally { c.disconnect(); }
         }
         return new String[]{ cur, "0", "audio/mpeg" };
+    }
+
+    /** Tipo de los pedacitos de una lista HLS: "aac", "mp3", "fmp4", "ts" o "" si no se sabe */
+    static String hlsSegmentKind(String m3u, String base, int depth) throws Exception {
+        boolean master = m3u.contains("#EXT-X-STREAM-INF");
+        if (m3u.contains("#EXT-X-MAP")) return "fmp4";
+        String[] lines = m3u.split("\\r?\\n");
+        for (String line : lines) {
+            String l = line.trim();
+            if (l.isEmpty() || l.startsWith("#")) continue;
+            String abs = abs(base, l);
+            if (master) {
+                if (depth > 1) return "";
+                Net.Resp c = open(abs, null);
+                try {
+                    if (c.getResponseCode() >= 400) return "";
+                    byte[] body = readSome(c.getInputStream(), 512 * 1024);
+                    return hlsSegmentKind(new String(body, StandardCharsets.UTF_8), c.finalUrl(), depth + 1);
+                } finally { c.disconnect(); }
+            }
+            String e = extOf(abs);
+            if (e.equals("aac") || e.equals("adts")) return "aac";
+            if (e.equals("mp3")) return "mp3";
+            if (e.equals("mp4") || e.equals("m4s") || e.equals("m4a") || e.equals("m4v") || e.equals("cmfa") || e.equals("cmfv")) return "fmp4";
+            if (e.equals("ts")) return "ts";
+            return "";
+        }
+        return "";
     }
 
     static String mimeOf(String ct, String ext) {
@@ -244,6 +316,7 @@ final class CastServer {
             String path = p.length > 1 ? p[1] : "";
             boolean head = "HEAD".equals(method);
             if ("OPTIONS".equals(method)) { send(out, "204 No Content", null, 0, null, null); s.close(); return; }
+            if (("GET".equals(method) || head) && path.startsWith("/" + token + "/h/")) { serveLive(path.substring(token.length() + 4), head, out); s.close(); return; }
             if (("GET".equals(method) || head) && path.startsWith("/" + token + "/p/")) { relay(path.substring(token.length() + 4), range, head, out); s.close(); return; }
             String pre = "/" + token + "/a/";
             if (!("GET".equals(method) || head) || !path.startsWith(pre)) { send(out, "404 Not Found", null, 0, null, null); s.close(); return; }
@@ -298,15 +371,18 @@ final class CastServer {
 
     /* ---------------- puente: emisoras y canales ---------------- */
     private void relay(String rest, String range, boolean head, OutputStream out) {
-        HttpURLConnection c = null;
+        Net.Resp c = null;
         try {
             int sl = rest.indexOf('/');
             String upstream = unb64(sl >= 0 ? rest.substring(0, sl) : rest);
             if (!upstream.startsWith("http://") && !upstream.startsWith("https://")) { send(out, "400 Bad Request", null, 0, null, null); return; }
-            c = open(upstream, range);
+            /* "Range: bytes=0-" (lo que pide el televisor al empezar) NO se pasa a la emisora: muchas emisoras en vivo
+               (Shoutcast, CDN) responden mal a eso y el televisor se queda en "Conectando…". El teléfono tampoco lo pide. */
+            String fwd = (range == null || range.replace(" ", "").equalsIgnoreCase("bytes=0-")) ? null : range;
+            c = open(upstream, fwd);
             int code = c.getResponseCode();
             if (code >= 400) { send(out, "502 Bad Gateway", null, 0, null, null); return; }
-            String fin = c.getURL().toString();
+            String fin = c.finalUrl();
             String ct = c.getContentType() == null ? "" : c.getContentType().toLowerCase(Locale.ROOT);
             String ext = extOf(fin);
             InputStream in = c.getInputStream();
@@ -325,10 +401,10 @@ final class CastServer {
                     out.flush();
                     return;
                 }
-                streamOut(out, head, code, c, mimeOf(ct, ext), in, first);
+                streamOut(out, head, fwd == null ? 200 : code, c, mimeOf(ct, ext), in, first);
                 return;
             }
-            streamOut(out, head, code, c, mimeOf(ct, ext), in, null);
+            streamOut(out, head, fwd == null ? 200 : code, c, mimeOf(ct, ext), in, null);
         } catch (Exception e) {
             try { send(out, "502 Bad Gateway", null, 0, null, null); } catch (Exception ignored) { }
         } finally {
@@ -336,13 +412,14 @@ final class CastServer {
         }
     }
 
-    private void streamOut(OutputStream out, boolean head, int code, HttpURLConnection c, String mime, InputStream in, byte[] pre) throws Exception {
-        long len = c.getContentLengthLong();
+    private void streamOut(OutputStream out, boolean head, int code, Net.Resp c, String mime, InputStream in, byte[] pre) throws Exception {
+        long len = code == 206 ? c.getContentLengthLong() : (c.getHeaderField("Content-Range") == null ? c.getContentLengthLong() : -1);
         String cr = c.getHeaderField("Content-Range");
         StringBuilder h = new StringBuilder();
         h.append("HTTP/1.1 ").append(code == 206 && cr != null ? "206 Partial Content" : "200 OK").append("\r\n");
         h.append("Content-Type: ").append(mime).append("\r\n");
         if (len >= 0) h.append("Content-Length: ").append(len).append("\r\n");
+        else h.append("Accept-Ranges: none\r\n");   /* en vivo: no se puede saltar */
         if (code == 206 && cr != null) h.append("Content-Range: ").append(cr).append("\r\n");
         h.append("Access-Control-Allow-Origin: *\r\n");
         h.append("Access-Control-Allow-Headers: Range, Content-Type\r\n");
