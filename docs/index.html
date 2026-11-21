@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#141414">
-<title>Prometeo Player v41</title>
+<title>Prometeo Player v42</title>
 <style>
 /* ===== Skins: cada skin solo cambia estas variables ===== */
 :root,[data-skin="neon"]{--bg:#0a0a0a;--card:#141414;--card2:#1c1c1c;--line:#232323;--line2:#2c2c2c;--acc:#00e5ff;--accrgb:0,229,255;--onacc:#000;--txt:#fff;--txt2:#ddd;--soft:#aaa;--mut:#8a8a8a;--dim:#666;--viz:#070b0c;--sheet:#161616;--input:#202020;--mini:#1a1f20;--miniline:#2a3a3c;--thumb:#fff;--overlay:rgba(0,0,0,.7);--red:#ff4d5e}
@@ -12,6 +12,8 @@
 [data-skin="pink"]{--bg:#0d070b;--card:#170d14;--card2:#21121c;--line:#2e1a27;--line2:#3a2131;--acc:#ff6fb1;--accrgb:255,111,177;--onacc:#000;--txt:#fff;--txt2:#f0dbe6;--soft:#c9a9b9;--mut:#a68a98;--dim:#806676;--viz:#0a0408;--sheet:#1a0f17;--input:#21121c;--mini:#24121e;--miniline:#4d2440}
 [data-skin="amatista"]{--bg:#0b0812;--card:#161124;--card2:#1e1730;--line:#221a36;--line2:#2e2448;--acc:#b388ff;--accrgb:179,136,255;--onacc:#000;--txt:#fff;--txt2:#e2dcf0;--soft:#b3aac9;--mut:#9188aa;--dim:#6f6788;--viz:#08060e;--sheet:#181227;--input:#1e1730;--mini:#1c1530;--miniline:#3a2d60}
 [data-skin="claro"]{--bg:#f4f5f7;--card:#ffffff;--card2:#f0f2f5;--line:#e3e5e8;--line2:#d3d7dd;--acc:#0077b6;--accrgb:0,119,182;--onacc:#fff;--txt:#15171a;--txt2:#2a2e33;--soft:#4a5058;--mut:#5f6670;--dim:#6b7280;--viz:#eaf1f7;--sheet:#ffffff;--input:#f0f2f5;--mini:#ffffff;--miniline:#cfd6de;--thumb:#0077b6;--overlay:rgba(0,0,0,.45);--red:#d9314a}
+[data-skin="esmeralda"]{--bg:#040a05;--card:#0b150d;--card2:#122016;--line:#1a2b1e;--line2:#22392a;--acc:#39ff6a;--accrgb:57,255,106;--onacc:#000;--txt:#fff;--txt2:#dbeadf;--soft:#a9c4b0;--mut:#8fa894;--dim:#6a8270;--viz:#030804;--sheet:#0d170f;--input:#122016;--mini:#0f1c12;--miniline:#1f4a2a}
+[data-skin="bn"]{--bg:#000;--card:#0f0f0f;--card2:#1a1a1a;--line:#262626;--line2:#333;--acc:#fff;--accrgb:255,255,255;--onacc:#000;--txt:#fff;--txt2:#e6e6e6;--soft:#b5b5b5;--mut:#9a9a9a;--dim:#707070;--viz:#050505;--sheet:#121212;--input:#1a1a1a;--mini:#141414;--miniline:#3a3a3a}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{background:var(--bg);color:var(--txt);font-family:system-ui,-apple-system,Roboto,sans-serif}
 body{padding-bottom:calc(76px + env(safe-area-inset-bottom));overflow-x:hidden;user-select:none;-webkit-user-select:none;transition:background .25s}
@@ -279,6 +281,53 @@ input.search:focus{border-color:var(--acc)}
 .about-feats div{display:flex;align-items:center;gap:10px;background:var(--card2);border-radius:14px;padding:12px;font-size:13px;color:var(--txt2)}
 .about-foot{margin-top:14px;font-size:12px;color:var(--mut)}
 
+/* ===== v42 ===== */
+.add-opt{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--card2);border:1px solid var(--line2);border-radius:16px;padding:11px 12px;margin-bottom:9px;color:var(--txt)}
+.add-opt.main{border-color:var(--acc);box-shadow:0 0 0 1px rgba(var(--accrgb),.35)}
+.ao-ic{width:42px;height:42px;flex:none;border-radius:13px;display:grid;place-items:center;font-size:20px;background:rgba(var(--accrgb),.1);border:1px solid rgba(var(--accrgb),.35)}
+.ao-tx{flex:1;min-width:0}.ao-tx b{display:block;font-size:14.5px}.ao-tx small{display:block;color:var(--mut);font-size:11.5px;margin-top:2px;line-height:1.35}
+.ao-bd{flex:none;font-size:11px;font-weight:900;border-radius:10px;padding:0}
+.ao-bd.on{background:var(--acc);color:var(--onacc);padding:3px 8px}.ao-bd.red{background:var(--red);color:#fff;padding:3px 8px}
+.fold-list{margin:4px 0 6px}.fold-list.all .fold-row{opacity:.6}
+.fold-row{display:flex;align-items:center;gap:10px;width:100%;padding:10px 2px;border-bottom:1px solid var(--line2);text-align:left;background:none;border-left:0;border-right:0;border-top:0;color:var(--txt);cursor:pointer}
+.fold-row input{width:20px;height:20px;flex:none;accent-color:var(--acc)}
+.fold-row .fi{font-size:19px;flex:none;width:24px;text-align:center}.fold-row .ft{flex:1;min-width:0}
+.fold-row .ft b{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.fold-row .ft small{display:block;color:var(--dim);font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fold-row .cnt{flex:none;font-size:11.5px;font-weight:800;color:var(--acc);background:rgba(var(--accrgb),.1);border-radius:10px;padding:3px 8px}.fold-row .cnt.all{color:var(--mut);background:var(--card2)}
+.fold-row.priv{margin-top:6px;border:1px dashed var(--line2);border-radius:12px;padding:10px}
+.choice{display:flex;align-items:flex-start;gap:12px;width:100%;text-align:left;border:1px solid var(--line2);background:var(--card2);border-radius:16px;padding:12px;margin-bottom:9px;color:var(--txt)}
+.choice.on{border:2px solid var(--acc);background:rgba(var(--accrgb),.06)}
+.choice .radio{width:20px;height:20px;border-radius:50%;border:2px solid var(--dim);flex:none;margin-top:1px}.choice.on .radio{border:6px solid var(--acc)}
+.choice .ct{flex:1;min-width:0}.choice .ct b{display:block;font-size:14.5px}.choice .ct small{display:block;color:var(--mut);font-size:11.5px;margin-top:3px;line-height:1.35}
+.choice .rec{display:inline-block;background:var(--acc);color:var(--onacc);font-size:10.5px;font-weight:900;border-radius:8px;padding:2px 7px;margin-top:6px}
+.meter{height:8px;border-radius:5px;background:var(--line2);overflow:hidden;margin:7px 0 2px}.meter i{display:block;height:100%;background:var(--acc);border-radius:5px}
+.org-line{font-size:13px;color:var(--txt2);margin:5px 2px}.org-line.bad{color:var(--red)}
+.org-info{margin-top:10px;font-size:12.5px;color:var(--txt2);line-height:1.5}.org-info div{display:flex;gap:8px}.org-info span:first-child{flex:none}
+.org-sum{background:var(--card2);border:1px solid var(--line2);border-radius:14px;padding:12px;margin-top:4px;font-size:13px;line-height:1.6}
+.org-sum .big{font-size:20px;font-weight:900;color:var(--acc);text-align:center;margin-top:6px}
+.org-done{text-align:center}.org-done .big{font-size:40px;font-weight:900;color:var(--acc)}.org-done .org-line{text-align:left}
+.org-box{background:var(--card2);border:1px solid var(--line2);border-radius:14px;padding:12px;margin-top:12px}
+.org-h{display:flex;justify-content:space-between;align-items:center}.org-h small{color:var(--mut)}.org-name{display:block;color:var(--mut);font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.undo-bar{position:fixed;left:50%;bottom:calc(150px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(10px);display:flex;align-items:center;gap:12px;background:#242424;border:1px solid #333;color:#fff;padding:8px 8px 8px 16px;border-radius:22px;font-size:13px;opacity:0;pointer-events:none;transition:.25s;z-index:61;max-width:92vw}
+.undo-bar.show{opacity:1;pointer-events:auto;transform:translateX(-50%)}
+.undo-bar span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.undo-bar button{flex:none;background:var(--acc);color:var(--onacc);border:0;border-radius:16px;padding:7px 12px;font-weight:900;font-size:13px}
+.link-blk{background:var(--card2);border:1px solid var(--line2);border-radius:14px;padding:4px 12px 12px;margin:6px 0 12px}
+.link-blk .field-label{margin:10px 0 6px}
+.link-txt{font-family:ui-monospace,monospace;font-size:12px;line-height:1.45;word-break:break-all;user-select:text;-webkit-user-select:text;color:var(--txt2);background:var(--input);border-radius:10px;padding:8px 10px;max-height:5.2em;overflow:auto}
+.link-btns{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.link-btns .btn-pill{flex:1 1 auto;min-width:0}
+.link-orig{margin-top:8px;background:none;border:0;color:var(--acc);font-weight:800;font-size:12.5px;padding:4px 0}
+.ab-btn{background:var(--card2);border:1px solid var(--line2);color:var(--soft);font-size:11px;font-weight:800;border-radius:12px;padding:3px 10px;font-variant-numeric:tabular-nums;max-width:58%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ab-btn.on{border-color:var(--acc);color:var(--acc)}.ab-btn.set{background:var(--acc);color:var(--onacc)}
+body.radio-on #btnAB{display:none}
+.eq-extra{margin-top:16px;padding-top:12px;border-top:1px solid var(--line2)}
+.boost-warn{font-size:12px;color:#ffb020;margin:4px 2px 0}
+.sil-row{margin-top:14px;gap:12px}.sil-row small{display:block;color:var(--mut);font-size:11.5px;font-weight:600;margin-top:2px}
+.vol-note{border-color:rgba(var(--accrgb),.55)}
+.song-item.is-broken .song-info small{color:#ffb020}
+.back-btn{flex:none;white-space:nowrap}
+.m-item.list-act{display:flex;flex-direction:column;align-items:flex-start;gap:2px}.m-item.list-act small{color:var(--mut);font-weight:600;font-size:11px}
+[data-skin="bn"] .tb-logo{box-shadow:0 0 0 2px rgba(255,255,255,.75),0 0 16px rgba(255,255,255,.28)}
 .toast{position:fixed;left:50%;bottom:calc(150px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(10px);background:#242424;border:1px solid #333;color:#fff;padding:10px 16px;border-radius:20px;font-size:13px;opacity:0;pointer-events:none;transition:.25s;z-index:60;max-width:88vw;text-align:center}
 .toast.show{opacity:1;transform:translateX(-50%)}
 /* ===== v42: la app nunca se corre de lado (aunque un nombre largo no quepa) ===== */
@@ -323,7 +372,7 @@ html,body{overflow-x:clip;max-width:100%}
 <header class="topbar">
  <div class="tb-main">
  <div class="tb-left">
-  <div class="tb-title"><h1>🔥 Prometeo <span>Player</span></h1><button class="ver" id="btnVer" data-i18n-aria="diagBtn" aria-label="Diagnóstico">v41</button></div>
+  <div class="tb-title"><h1>🔥 Prometeo <span>Player</span></h1><button class="ver" id="btnVer" data-i18n-aria="diagBtn" aria-label="Diagnóstico">v42</button></div>
   <div class="top-actions">
     <button class="top-btn hidden" id="btnCast" aria-label="Transmitir">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 18v.01"/><path d="M3 14a4 4 0 0 1 4 4"/><path d="M3 10a8 8 0 0 1 8 8"/><path d="M3 6.5V6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4.5"/></svg>
@@ -371,7 +420,7 @@ html,body{overflow-x:clip;max-width:100%}
     <div id="curArtist" class="song-artist"></div>
     <div id="curSub" class="song-sub">Agrega música desde Biblioteca</div>
     <input type="range" id="progress" min="0" max="1000" step="1" value="0">
-    <div class="times"><span id="tCur">0:00</span><span id="tDur">0:00</span></div>
+    <div class="times"><span id="tCur">0:00</span><button id="btnAB" class="ab-btn" type="button">A-B</button><span id="tDur">0:00</span></div>
     <div class="radio-bar radio-only"></div>
     <div class="radio-times radio-only"><span id="radioElapsed"></span><span id="radioStatus"></span></div>
     <div class="ctrl-row">
@@ -387,7 +436,7 @@ html,body{overflow-x:clip;max-width:100%}
     <button class="btn-ghost radio-only" id="btnBackMusic" data-i18n="backToMusic">🎵 Volver a mi música</button>
     <div class="two-btn now-btns"><button class="btn-ghost" id="btnCurToPl" data-i18n="addToPlBtn">＋ Agregar a playlist</button><button class="btn-ghost" id="btnSleep">🌙 Dormir</button></div>
     <label class="btn-add picker" style="margin-top:10px"><span data-i18n="addSongs">＋ Agregar canciones</span><input type="file" class="songPicker" multiple></label>
-    <button class="btn-add btn-scan" style="margin-top:10px" data-i18n="scanBtn">🔍 Buscar música en el teléfono</button>
+    <button class="btn-add btn-scan" style="margin-top:10px" data-i18n="addMusicBtn">＋ Agregar música</button>
   </div>
   <div class="card">
     <div class="card-title"><span data-i18n="queue">Cola</span><small id="queueInfo"></small></div>
@@ -401,8 +450,9 @@ html,body{overflow-x:clip;max-width:100%}
     <div class="card-title"><span data-i18n="library">Biblioteca</span><span class="title-right"><small id="libCount">0 canciones</small><button class="icon-btn hidden" id="btnPrivSet" data-i18n-aria="privSetA" aria-label="Qué busca Prometeo">⚙️</button></span></div>
     <div id="libSeg" class="seg lib-seg hidden" role="tablist"></div>
     <label class="btn-add picker"><span data-i18n="addSongs">＋ Agregar canciones</span><input type="file" class="songPicker" multiple></label>
-    <button class="btn-add btn-scan" data-i18n="scanBtn">🔍 Buscar música en el teléfono</button>
+    <button class="btn-add btn-scan" data-i18n="addMusicBtn">＋ Agregar música</button>
     <button class="btn-ghost" id="btnPlayAll" data-i18n="playAll">▶ Reproducir todo</button>
+    <div id="orgBox" class="org-box hidden"></div>
     <div id="libList" class="list"></div>
   </div>
 </section>
@@ -691,7 +741,8 @@ let toastT;
 function toast(msg){ const t=$('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),2300); }
 /* Estado de v41: audios privados, listas de emisoras y favoritos de canales (se usa en varias partes) */
 const PRIV_KINDS=['wav','waa','wab','tg','sg','call','rec'];
-function musicSongs(){ return songs.filter(s=>!s.priv); } function privSongs(){ return songs.filter(s=>s.priv); }
+function musicSongs(){ return songs.filter(s=>!s.priv && !s.temp); } function privSongs(){ return songs.filter(s=>s.priv && !s.temp); }
+function tmpSongsOf(v){ return songs.filter(s=>s.temp && s.vol===v); }
 let privOn=store.get('privOn',false), libSeg='music', privUnlockedAt=0, authBusy=false;
 const PRIV_UNLOCK_MS=5*60*1000;
 let radioLists=store.get('radioLists',[]); if(!Array.isArray(radioLists)) radioLists=[];
@@ -704,7 +755,7 @@ const castModeFor={};   /* Chromecast */
 let tvSel='';
 
 /* ================= IDIOMAS (v41) ================= */
-const VERSION='41';
+const VERSION='42';
 const LANGS={es:'Español',en:'English',pt:'Português',fr:'Français'};
 const I18N={
 es:{
@@ -990,6 +1041,203 @@ Object.assign(I18N.fr,{eqT:'Égaliseur',eqOn:'Égaliseur activé',eqBass:'🔊 R
  eq_normal:'Normal',eq_pop:'Pop',eq_rock:'Rock',eq_techno:'Techno',eq_dance:'Dance',eq_vocal:'Voix',eq_latino:'Latino',eq_reggaeton:'Reggaeton',eq_salsa:'Salsa',eq_hiphop:'Hip-hop',eq_jazz:'Jazz',eq_clasica:'Classique',eq_acustico:'Acoustique',eq_bajos:'Basses +',eq_agudos:'Aigus +',eq_mio:'✏️ Le mien',
  bkAuto:'Copie automatique',bkAutoSub:'Se met à jour toute seule à chaque changement',bkAutoOff:'Copie automatique désactivée',bkLast:'Dernière copie : {0}',bkNever:'Pas encore de copie automatique',agoNow:'à l\'instant',agoMin:'il y a {0} min',agoH:'il y a {0} h',agoD:'il y a {0} jours',
  bkPickT:'Quelle copie voulez-vous restaurer ?',bkAutoTag:'⚡ Copie automatique',bkOther:'📂 Autre fichier…',bkR1:'1 station',bkRN:'{0} stations',bkT1:'1 liste de chaînes',bkTN:'{0} listes de chaînes',bkP1:'1 playlist',bkPN:'{0} playlists'});
+/* ================= TEXTOS v42 ================= */
+Object.assign(I18N.es,{sdSkipped:'💾 Tarjeta no conectada: se saltó "{0}"',noneAvail:'No hay canciones disponibles en esta cola',addMusicBtn:'＋ Agregar música',libEmptyNative:'No hay canciones todavía.\nToca "＋ Agregar música".',tapScan:'Toca "＋ Agregar música"',dec:',',
+ amT:'＋ Agregar música',amSub:'¿Cómo quieres agregarla?',amAll:'Buscar en todo el teléfono',amAllSub:'Encuentra la música aunque esté regada en cualquier carpeta',
+ amFold:'Elegir carpetas',amFoldSub:'Marca de qué carpetas tomar la música',amLoose:'Elegir canciones sueltas',amLooseSub:'Abre el selector de archivos de Android',
+ amRem:'Canciones quitadas',amRemSub:'Las que sacaste de Prometeo, para devolverlas',amOrg:'Ordenar mi música',amOrgSub:'Juntar la música regada en Música/Prometeo (opcional)',
+ amNote:'Los archivos se quedan donde están: Prometeo no los mueve ni los copia (salvo que tú elijas "Ordenar").',nNew:'{0} nuevas',
+ foldT:'📂 Elegir carpetas',foldSub:'Solo salen las carpetas que tienen música.',foldAll:'Todas las carpetas (automático)',foldAllSub:'Como hasta ahora: toda la música del teléfono',
+ foldNone:'No se encontró música en el teléfono',foldPriv:'Audios privados',foldPrivSub:'WhatsApp, Telegram, grabaciones… (se manejan en ⚙️ con tu huella, PIN o patrón)',
+ foldNote:'☑️ Las carpetas que marques se revisan solas cada vez que abres Prometeo. Desmarcar una carpeta no quita las canciones que ya están.',
+ plusNew:'+{0} nuevas',nAll:'{0} · todas',addN:'Agregar {0} canciones',internalMem:'Memoria interna',sdCard:'Tarjeta SD',
+ pickFail:'No se pudo abrir el selector de archivos',toPriv:'🔒 {0} a Privados',alreadyLib:'{0} ya estaban',repaired:'🔧 {0} canción(es) reparada(s)',
+ remT:'♻️ Canciones quitadas',remSub:'Las que sacaste de Prometeo. El archivo nunca se borró del teléfono.',remNone:'No hay canciones quitadas',
+ removedOn:'quitada el {0}',giveBack:'↩ Devolver',giveBackAll:'↩ Devolver todas',giveBackAllQ:'¿Devolver las {0} canciones a la Biblioteca?',
+ remPriv:'🔒 Ver también los audios privados quitados',gaveBack:'↩ {0} devuelta(s) a la Biblioteca',goneN:'{0} ya no está(n) en el teléfono',
+ undo:'Deshacer',undone:'Listo, se deshizo',songRemoved:'Quitada: {0}',
+ sdOffRow:'💾 Tarjeta no conectada',sdOffT:'"{0}" está en una tarjeta que no está conectada',missingRow:'⚠️ No se encuentra el archivo (¿se borró o sacaste la tarjeta?)',
+ findAgain:'Buscar de nuevo',stillMissing:'Sigue sin aparecer. Puedes quitarla de Prometeo.',
+ volT:'💾 Se conectó una memoria',volHas:'"{0}" tiene {1}. ¿Qué quieres hacer?',volInLib:'{0} ya están en tu Biblioteca · {1} nuevas',
+ volAdd:'Agregar a la Biblioteca',volAddNew:'Agregar las {0} nuevas',volAddSub:'Cuando la conectes otra vez, Prometeo te vuelve a preguntar',
+ volListen:'Solo escuchar ahora',volListenSub:'Temporal: al desconectarla desaparecen y no ensucian la Biblioteca',volNo:'No, ahora no',volNoSub:'No se agrega nada',
+ volRemove:'Quitarlas de la Biblioteca',volRemoveSub:'Los archivos de la tarjeta no se borran',volLater:'💾 Puedes decidir después desde la Biblioteca',
+ volPendT:'💾 {0} conectada',volDecide:'Decidir ›',volTmpOn:'💾 {0}: escuchando sin agregar',volRemoved:'{0} canción(es) quitada(s) de la Biblioteca',
+ volGone:'💾 Se desconectó: {0}',tmpInfo:'Música de "{0}" solo por ahora: al desconectarla desaparece de Prometeo.',tmpKeep:'✅ Mejor agregarlas a la Biblioteca',
+ tmpSrc:'💾 {0}',tmpNoPl:'Primero agrega esta canción a la Biblioteca',
+ usbMsg:'Se conectó "{0}". Android no deja que las apps vean solas la música de esta memoria.',usbHelp:'Toca "Permitir acceso" y en la ventana de Android elige la memoria (o una carpeta).',usbAllow:'Permitir acceso',usbEmpty:'No se encontró música en esa memoria',
+ orgT:'🗂️ Ordenar mi música',orgHas:'Tienes {0} canciones regadas en {1} carpetas:',orgOnPhone:'📱 Teléfono: {0} canciones',orgOnSd:'💾 Tarjeta SD: {0} canciones',
+ orgWhat:'¿Qué quieres hacer?',orgLeave:'📌 Dejarlas donde están',orgLeaveSub:'No se toca nada. Prometeo las sigue encontrando igual.',
+ orgDo:'📦 Ordenar en Música/Prometeo',orgDoSub:'Se <b>mueven</b> (no se copian): no ocupa espacio extra.',orgFolders:'Carpetas a ordenar',
+ orgKeep:'Tus playlists, favoritos y "Seguir escuchando" se mantienen',orgPriv:'Los audios privados no se tocan',orgDups:'{0} canción(es) repetida(s) → se deja una',
+ orgAndroid:'Android te pedirá permiso para mover archivos de otras apps',orgNext:'Siguiente ›',orgLeft:'📌 Tu música se queda donde está',
+ orgWhereT:'¿Dónde quieres tu carpeta?',orgWhereSub:'Música/Prometeo',orgRec:'Recomendado · no llena el teléfono',freeOf:'Libre {0} de {1}',
+ orgWillDo:'Lo que va a pasar:',orgIntToSd:'📱→💾 {0} canciones del teléfono pasan a la tarjeta',orgSdStay:'💾 {0} canciones de la tarjeta se ordenan ahí mismo',
+ orgIntStay:'📱 {0} canciones se ordenan en el teléfono',orgFree:'+{0} libres en tu teléfono',orgSdRule:'Prometeo nunca pasa música de la tarjeta SD al teléfono por su cuenta.',
+ orgNow:'Ordenar ahora',orgNoSpace:'No hay espacio suficiente: hacen falta {0} y hay {1} libres',orgRunning:'🗂️ Ordenando…',orgNofM:'{0} de {1}',
+ orgKeepListening:'Puedes seguir escuchando música mientras tanto.',orgDenied:'No se movió nada (Android no dio permiso)',orgFail:'No se pudo ordenar: {0}',
+ orgOld:'Ordenar necesita Android 11 o más nuevo',orgBusy:'Ya se está ordenando…',orgNothing:'Tu música ya está ordenada ✓',
+ orgDoneT:'✅ Listo',orgDoneSub:'canciones ordenadas en {0}',orgFreed:'🆓 Se liberaron {0} en el teléfono',orgDupsDone:'♻️ {0} repetida(s) juntada(s)',orgFailed:'⚠️ {0} no se pudieron mover',
+ lmT:'Opciones de la lista',lmRename:'Cambiar nombre',lmRenamed:'Nombre cambiado ✓',lmLink:'Cambiar enlace M3U',lmLinkSub:'Pega el link nuevo: se prueba antes de guardarlo',
+ lmFile:'Cambiar por un archivo .m3u',lmFileSub:'Para listas guardadas en el teléfono',lmRefresh:'Actualizar canales',lmRefreshSub:'Vuelve a cargar la misma lista',
+ lmDelete:'Borrar lista',lmDeleteSub:'Se puede deshacer unos segundos',fromFile:'desde un archivo',lmLinkHelp:'Solo se revisa que la lista cargue. Si no carga, se queda el link anterior.',
+ lmTestIdle:'Pega el link y toca "Probar y guardar"',lmTestSave:'Probar y guardar',lmFail:'⚠️ No se pudo cargar ({0}). Se queda el link anterior.',lmLoaded:'✅ Lista cargada · {0} canales',
+ lmFewerT:'¿Reemplazar la lista?',lmFewer:'La lista nueva tiene {0} canales en vez de {1}. ¿Reemplazar?',lmReplace:'Reemplazar',listDelU:'Lista borrada: {0}',
+ chLink:'🔗 Link del canal',copy:'Copiar',share:'Compartir',editLink:'Editar link',linkCopied:'🔗 Link copiado',copyFail:'No se pudo copiar',
+ backOrig:'↩ Volver al link original de la lista',origWas:'Link original de la lista: {0}',editLinkHelp:'Prometeo lo prueba antes de guardarlo. Al actualizar la lista, tu link se mantiene.',
+ linkFailT:'⚠️ No se pudo abrir',linkFail:'El link no respondió ({0}).',linkFailHelp:'A veces un link funciona en la TV pero no justo ahora. ¿Lo guardas igual?',
+ saveAnyway:'Guardar igual',linkOk:'✅ Link actualizado',linkSaved:'✏️ Link guardado',linkOrig:'↩ Se volvió al link original',testing:'Probando…',
+ sk_esmeralda:'Esmeralda',sk_esmeralda_d:'Verde brillante que resalta',sk_bn:'Blanco y Negro',sk_bn_d:'Elegante, sin colores',
+ abA:'A marcado en {0} · toca otra vez para marcar B',abOn:'🔁 Repitiendo de {0} a {1}',abOff:'Repetir A-B apagado',abShort:'B tiene que ir después de A',abCast:'Repetir A-B no funciona mientras transmites al TV',
+ boostT:'🔊 Volumen extra',boostSub:'Para música, radio y TV en el teléfono. Tiene un tope seguro (200 %).',boostWarn:'⚠️ Súbelo con cuidado: cuida tus oídos y tus parlantes.',
+ silT:'⏩ Saltar silencios',silSub:'Para podcasts, clases y notas de voz. En la radio en vivo no aplica.',silOnT:'⏩ Saltar silencios: activado',silOffT:'Saltar silencios: apagado'});
+Object.assign(I18N.en,{sdSkipped:'💾 Card not connected: skipped "{0}"',noneAvail:'No songs available in this queue',addMusicBtn:'＋ Add music',libEmptyNative:'No songs yet.\nTap "＋ Add music".',tapScan:'Tap "＋ Add music"',dec:'.',
+ amT:'＋ Add music',amSub:'How do you want to add it?',amAll:'Search the whole phone',amAllSub:'Finds your music even if it is scattered in any folder',
+ amFold:'Choose folders',amFoldSub:'Pick which folders to take music from',amLoose:'Choose single songs',amLooseSub:'Opens the Android file picker',
+ amRem:'Removed songs',amRemSub:'The ones you took out of Prometeo, to bring them back',amOrg:'Organize my music',amOrgSub:'Gather scattered music in Music/Prometeo (optional)',
+ amNote:'Files stay where they are: Prometeo does not move or copy them (unless you choose "Organize").',nNew:'{0} new',
+ foldT:'📂 Choose folders',foldSub:'Only folders that contain music are shown.',foldAll:'All folders (automatic)',foldAllSub:'As before: all the music on the phone',
+ foldNone:'No music found on the phone',foldPriv:'Private audios',foldPrivSub:'WhatsApp, Telegram, recordings… (managed in ⚙️ with your fingerprint, PIN or pattern)',
+ foldNote:'☑️ Folders you check are reviewed automatically every time you open Prometeo. Unchecking a folder does not remove songs already added.',
+ plusNew:'+{0} new',nAll:'{0} · all',addN:'Add {0} songs',internalMem:'Internal storage',sdCard:'SD card',
+ pickFail:'Could not open the file picker',toPriv:'🔒 {0} to Private',alreadyLib:'{0} were already there',repaired:'🔧 {0} song(s) repaired',
+ remT:'♻️ Removed songs',remSub:'The ones you took out of Prometeo. The file was never deleted from the phone.',remNone:'No removed songs',
+ removedOn:'removed on {0}',giveBack:'↩ Bring back',giveBackAll:'↩ Bring all back',giveBackAllQ:'Bring the {0} songs back to the Library?',
+ remPriv:'🔒 Also show removed private audios',gaveBack:'↩ {0} back in the Library',goneN:'{0} no longer on the phone',
+ undo:'Undo',undone:'Done, undone',songRemoved:'Removed: {0}',
+ sdOffRow:'💾 Card not connected',sdOffT:'"{0}" is on a card that is not connected',missingRow:'⚠️ File not found (deleted, or card removed?)',
+ findAgain:'Search again',stillMissing:'Still not found. You can remove it from Prometeo.',
+ volT:'💾 A storage device was connected',volHas:'"{0}" has {1}. What do you want to do?',volInLib:'{0} are already in your Library · {1} new',
+ volAdd:'Add to the Library',volAddNew:'Add the {0} new ones',volAddSub:'Next time you connect it, Prometeo asks again',
+ volListen:'Just listen now',volListenSub:'Temporary: when you disconnect it they disappear and do not clutter the Library',volNo:'No, not now',volNoSub:'Nothing is added',
+ volRemove:'Remove them from the Library',volRemoveSub:'Files on the card are not deleted',volLater:'💾 You can decide later from the Library',
+ volPendT:'💾 {0} connected',volDecide:'Decide ›',volTmpOn:'💾 {0}: listening without adding',volRemoved:'{0} song(s) removed from the Library',
+ volGone:'💾 Disconnected: {0}',tmpInfo:'Music from "{0}" for now only: when you disconnect it, it disappears from Prometeo.',tmpKeep:'✅ Add them to the Library instead',
+ tmpSrc:'💾 {0}',tmpNoPl:'First add this song to the Library',
+ usbMsg:'"{0}" was connected. Android does not let apps see the music on this drive by themselves.',usbHelp:'Tap "Allow access" and choose the drive (or a folder) in the Android window.',usbAllow:'Allow access',usbEmpty:'No music found on that drive',
+ orgT:'🗂️ Organize my music',orgHas:'You have {0} songs scattered in {1} folders:',orgOnPhone:'📱 Phone: {0} songs',orgOnSd:'💾 SD card: {0} songs',
+ orgWhat:'What do you want to do?',orgLeave:'📌 Leave them where they are',orgLeaveSub:'Nothing is touched. Prometeo keeps finding them.',
+ orgDo:'📦 Organize in Music/Prometeo',orgDoSub:'They are <b>moved</b> (not copied): no extra space used.',orgFolders:'Folders to organize',
+ orgKeep:'Your playlists, favorites and "Keep listening" stay the same',orgPriv:'Private audios are not touched',orgDups:'{0} duplicate song(s) → one is kept',
+ orgAndroid:'Android will ask your permission to move files from other apps',orgNext:'Next ›',orgLeft:'📌 Your music stays where it is',
+ orgWhereT:'Where do you want your folder?',orgWhereSub:'Music/Prometeo',orgRec:'Recommended · does not fill the phone',freeOf:'{0} free of {1}',
+ orgWillDo:'What will happen:',orgIntToSd:'📱→💾 {0} songs move from the phone to the card',orgSdStay:'💾 {0} songs on the card are organized there',
+ orgIntStay:'📱 {0} songs are organized on the phone',orgFree:'+{0} free on your phone',orgSdRule:'Prometeo never moves music from the SD card to the phone on its own.',
+ orgNow:'Organize now',orgNoSpace:'Not enough space: {0} needed and {1} free',orgRunning:'🗂️ Organizing…',orgNofM:'{0} of {1}',
+ orgKeepListening:'You can keep listening to music meanwhile.',orgDenied:'Nothing was moved (Android did not give permission)',orgFail:'Could not organize: {0}',
+ orgOld:'Organizing needs Android 11 or newer',orgBusy:'Already organizing…',orgNothing:'Your music is already organized ✓',
+ orgDoneT:'✅ Done',orgDoneSub:'songs organized in {0}',orgFreed:'🆓 {0} freed on the phone',orgDupsDone:'♻️ {0} duplicate(s) merged',orgFailed:'⚠️ {0} could not be moved',
+ lmT:'List options',lmRename:'Rename',lmRenamed:'Name changed ✓',lmLink:'Change M3U link',lmLinkSub:'Paste the new link: it is tested before saving',
+ lmFile:'Replace with an .m3u file',lmFileSub:'For lists saved on the phone',lmRefresh:'Update channels',lmRefreshSub:'Reloads the same list',
+ lmDelete:'Delete list',lmDeleteSub:'Can be undone for a few seconds',fromFile:'from a file',lmLinkHelp:'Only checks that the list loads. If it does not, the previous link stays.',
+ lmTestIdle:'Paste the link and tap "Test and save"',lmTestSave:'Test and save',lmFail:'⚠️ Could not load ({0}). The previous link stays.',lmLoaded:'✅ List loaded · {0} channels',
+ lmFewerT:'Replace the list?',lmFewer:'The new list has {0} channels instead of {1}. Replace?',lmReplace:'Replace',listDelU:'List deleted: {0}',
+ chLink:'🔗 Channel link',copy:'Copy',share:'Share',editLink:'Edit link',linkCopied:'🔗 Link copied',copyFail:'Could not copy',
+ backOrig:'↩ Back to the list\'s original link',origWas:'Original link from the list: {0}',editLinkHelp:'Prometeo tests it before saving. When the list updates, your link is kept.',
+ linkFailT:'⚠️ Could not open',linkFail:'The link did not respond ({0}).',linkFailHelp:'Sometimes a link works on the TV but not right now. Save it anyway?',
+ saveAnyway:'Save anyway',linkOk:'✅ Link updated',linkSaved:'✏️ Link saved',linkOrig:'↩ Back to the original link',testing:'Testing…',
+ sk_esmeralda:'Emerald',sk_esmeralda_d:'Bright green that stands out',sk_bn:'Black & White',sk_bn_d:'Elegant, no colors',
+ abA:'A set at {0} · tap again to set B',abOn:'🔁 Repeating from {0} to {1}',abOff:'A-B repeat off',abShort:'B has to come after A',abCast:'A-B repeat does not work while casting to the TV',
+ boostT:'🔊 Extra volume',boostSub:'For music, radio and TV on the phone. It has a safe limit (200 %).',boostWarn:'⚠️ Turn it up carefully: protect your ears and speakers.',
+ silT:'⏩ Skip silences',silSub:'For podcasts, classes and voice notes. Does not apply to live radio.',silOnT:'⏩ Skip silences: on',silOffT:'Skip silences: off'});
+Object.assign(I18N.pt,{sdSkipped:'💾 Cartão não conectado: pulou "{0}"',noneAvail:'Não há músicas disponíveis nesta fila',addMusicBtn:'＋ Adicionar música',libEmptyNative:'Ainda não há músicas.\nToque em "＋ Adicionar música".',tapScan:'Toque em "＋ Adicionar música"',dec:',',
+ amT:'＋ Adicionar música',amSub:'Como você quer adicionar?',amAll:'Buscar no celular inteiro',amAllSub:'Encontra a música mesmo espalhada em qualquer pasta',
+ amFold:'Escolher pastas',amFoldSub:'Marque de quais pastas pegar a música',amLoose:'Escolher músicas avulsas',amLooseSub:'Abre o seletor de arquivos do Android',
+ amRem:'Músicas removidas',amRemSub:'As que você tirou do Prometeo, para devolver',amOrg:'Organizar minha música',amOrgSub:'Juntar a música espalhada em Música/Prometeo (opcional)',
+ amNote:'Os arquivos ficam onde estão: o Prometeo não move nem copia (a menos que você escolha "Organizar").',nNew:'{0} novas',
+ foldT:'📂 Escolher pastas',foldSub:'Só aparecem as pastas que têm música.',foldAll:'Todas as pastas (automático)',foldAllSub:'Como até agora: toda a música do celular',
+ foldNone:'Nenhuma música encontrada no celular',foldPriv:'Áudios privados',foldPrivSub:'WhatsApp, Telegram, gravações… (ficam em ⚙️ com sua digital, PIN ou padrão)',
+ foldNote:'☑️ As pastas marcadas são revisadas sozinhas toda vez que você abre o Prometeo. Desmarcar uma pasta não remove as músicas que já estão.',
+ plusNew:'+{0} novas',nAll:'{0} · todas',addN:'Adicionar {0} músicas',internalMem:'Memória interna',sdCard:'Cartão SD',
+ pickFail:'Não foi possível abrir o seletor de arquivos',toPriv:'🔒 {0} para Privados',alreadyLib:'{0} já estavam',repaired:'🔧 {0} música(s) reparada(s)',
+ remT:'♻️ Músicas removidas',remSub:'As que você tirou do Prometeo. O arquivo nunca foi apagado do celular.',remNone:'Não há músicas removidas',
+ removedOn:'removida em {0}',giveBack:'↩ Devolver',giveBackAll:'↩ Devolver todas',giveBackAllQ:'Devolver as {0} músicas para a Biblioteca?',
+ remPriv:'🔒 Ver também os áudios privados removidos',gaveBack:'↩ {0} devolvida(s) à Biblioteca',goneN:'{0} não está(ão) mais no celular',
+ undo:'Desfazer',undone:'Pronto, desfeito',songRemoved:'Removida: {0}',
+ sdOffRow:'💾 Cartão não conectado',sdOffT:'"{0}" está em um cartão que não está conectado',missingRow:'⚠️ Arquivo não encontrado (apagado ou cartão removido?)',
+ findAgain:'Buscar de novo',stillMissing:'Ainda não aparece. Você pode removê-la do Prometeo.',
+ volT:'💾 Uma memória foi conectada',volHas:'"{0}" tem {1}. O que você quer fazer?',volInLib:'{0} já estão na sua Biblioteca · {1} novas',
+ volAdd:'Adicionar à Biblioteca',volAddNew:'Adicionar as {0} novas',volAddSub:'Quando você conectar de novo, o Prometeo pergunta de novo',
+ volListen:'Só ouvir agora',volListenSub:'Temporário: ao desconectar, somem e não bagunçam a Biblioteca',volNo:'Não, agora não',volNoSub:'Nada é adicionado',
+ volRemove:'Removê-las da Biblioteca',volRemoveSub:'Os arquivos do cartão não são apagados',volLater:'💾 Você pode decidir depois na Biblioteca',
+ volPendT:'💾 {0} conectado',volDecide:'Decidir ›',volTmpOn:'💾 {0}: ouvindo sem adicionar',volRemoved:'{0} música(s) removida(s) da Biblioteca',
+ volGone:'💾 Desconectado: {0}',tmpInfo:'Música de "{0}" só por agora: ao desconectar, some do Prometeo.',tmpKeep:'✅ Melhor adicionar à Biblioteca',
+ tmpSrc:'💾 {0}',tmpNoPl:'Primeiro adicione esta música à Biblioteca',
+ usbMsg:'"{0}" foi conectado. O Android não deixa os apps verem sozinhos a música desta memória.',usbHelp:'Toque em "Permitir acesso" e escolha a memória (ou uma pasta) na janela do Android.',usbAllow:'Permitir acesso',usbEmpty:'Nenhuma música encontrada nessa memória',
+ orgT:'🗂️ Organizar minha música',orgHas:'Você tem {0} músicas espalhadas em {1} pastas:',orgOnPhone:'📱 Celular: {0} músicas',orgOnSd:'💾 Cartão SD: {0} músicas',
+ orgWhat:'O que você quer fazer?',orgLeave:'📌 Deixar onde estão',orgLeaveSub:'Nada é tocado. O Prometeo continua encontrando.',
+ orgDo:'📦 Organizar em Música/Prometeo',orgDoSub:'São <b>movidas</b> (não copiadas): não ocupa espaço extra.',orgFolders:'Pastas a organizar',
+ orgKeep:'Suas playlists, favoritos e "Continuar ouvindo" continuam iguais',orgPriv:'Os áudios privados não são tocados',orgDups:'{0} música(s) repetida(s) → fica uma',
+ orgAndroid:'O Android vai pedir permissão para mover arquivos de outros apps',orgNext:'Próximo ›',orgLeft:'📌 Sua música fica onde está',
+ orgWhereT:'Onde você quer sua pasta?',orgWhereSub:'Música/Prometeo',orgRec:'Recomendado · não enche o celular',freeOf:'{0} livres de {1}',
+ orgWillDo:'O que vai acontecer:',orgIntToSd:'📱→💾 {0} músicas do celular vão para o cartão',orgSdStay:'💾 {0} músicas do cartão são organizadas nele mesmo',
+ orgIntStay:'📱 {0} músicas são organizadas no celular',orgFree:'+{0} livres no seu celular',orgSdRule:'O Prometeo nunca passa música do cartão SD para o celular por conta própria.',
+ orgNow:'Organizar agora',orgNoSpace:'Não há espaço suficiente: precisa de {0} e há {1} livres',orgRunning:'🗂️ Organizando…',orgNofM:'{0} de {1}',
+ orgKeepListening:'Você pode continuar ouvindo música enquanto isso.',orgDenied:'Nada foi movido (o Android não deu permissão)',orgFail:'Não foi possível organizar: {0}',
+ orgOld:'Organizar precisa do Android 11 ou mais novo',orgBusy:'Já está organizando…',orgNothing:'Sua música já está organizada ✓',
+ orgDoneT:'✅ Pronto',orgDoneSub:'músicas organizadas em {0}',orgFreed:'🆓 {0} liberados no celular',orgDupsDone:'♻️ {0} repetida(s) juntada(s)',orgFailed:'⚠️ {0} não puderam ser movidas',
+ lmT:'Opções da lista',lmRename:'Mudar nome',lmRenamed:'Nome alterado ✓',lmLink:'Mudar link M3U',lmLinkSub:'Cole o link novo: ele é testado antes de salvar',
+ lmFile:'Trocar por um arquivo .m3u',lmFileSub:'Para listas salvas no celular',lmRefresh:'Atualizar canais',lmRefreshSub:'Carrega de novo a mesma lista',
+ lmDelete:'Excluir lista',lmDeleteSub:'Dá para desfazer por alguns segundos',fromFile:'de um arquivo',lmLinkHelp:'Só se verifica se a lista carrega. Se não carregar, fica o link anterior.',
+ lmTestIdle:'Cole o link e toque em "Testar e salvar"',lmTestSave:'Testar e salvar',lmFail:'⚠️ Não foi possível carregar ({0}). Fica o link anterior.',lmLoaded:'✅ Lista carregada · {0} canais',
+ lmFewerT:'Substituir a lista?',lmFewer:'A lista nova tem {0} canais em vez de {1}. Substituir?',lmReplace:'Substituir',listDelU:'Lista excluída: {0}',
+ chLink:'🔗 Link do canal',copy:'Copiar',share:'Compartilhar',editLink:'Editar link',linkCopied:'🔗 Link copiado',copyFail:'Não foi possível copiar',
+ backOrig:'↩ Voltar ao link original da lista',origWas:'Link original da lista: {0}',editLinkHelp:'O Prometeo testa antes de salvar. Ao atualizar a lista, seu link é mantido.',
+ linkFailT:'⚠️ Não foi possível abrir',linkFail:'O link não respondeu ({0}).',linkFailHelp:'Às vezes um link funciona na TV, mas não agora. Salvar mesmo assim?',
+ saveAnyway:'Salvar mesmo assim',linkOk:'✅ Link atualizado',linkSaved:'✏️ Link salvo',linkOrig:'↩ Voltou ao link original',testing:'Testando…',
+ sk_esmeralda:'Esmeralda',sk_esmeralda_d:'Verde brilhante que se destaca',sk_bn:'Preto e Branco',sk_bn_d:'Elegante, sem cores',
+ abA:'A marcado em {0} · toque de novo para marcar B',abOn:'🔁 Repetindo de {0} a {1}',abOff:'Repetir A-B desligado',abShort:'B precisa vir depois de A',abCast:'Repetir A-B não funciona enquanto transmite para a TV',
+ boostT:'🔊 Volume extra',boostSub:'Para música, rádio e TV no celular. Tem um limite seguro (200 %).',boostWarn:'⚠️ Aumente com cuidado: proteja seus ouvidos e alto-falantes.',
+ silT:'⏩ Pular silêncios',silSub:'Para podcasts, aulas e mensagens de voz. Não se aplica à rádio ao vivo.',silOnT:'⏩ Pular silêncios: ligado',silOffT:'Pular silêncios: desligado'});
+Object.assign(I18N.fr,{sdSkipped:'💾 Carte non connectée : « {0} » sautée',noneAvail:'Aucune chanson disponible dans cette file',addMusicBtn:'＋ Ajouter de la musique',libEmptyNative:'Pas encore de chansons.\nTouchez « ＋ Ajouter de la musique ».',tapScan:'Touchez « ＋ Ajouter de la musique »',dec:',',
+ amT:'＋ Ajouter de la musique',amSub:'Comment voulez-vous l\'ajouter ?',amAll:'Chercher dans tout le téléphone',amAllSub:'Trouve la musique même éparpillée dans n\'importe quel dossier',
+ amFold:'Choisir des dossiers',amFoldSub:'Cochez les dossiers d\'où prendre la musique',amLoose:'Choisir des chansons',amLooseSub:'Ouvre le sélecteur de fichiers d\'Android',
+ amRem:'Chansons retirées',amRemSub:'Celles que vous avez retirées de Prometeo, pour les remettre',amOrg:'Ranger ma musique',amOrgSub:'Rassembler la musique éparpillée dans Musique/Prometeo (facultatif)',
+ amNote:'Les fichiers restent où ils sont : Prometeo ne les déplace ni ne les copie (sauf si vous choisissez « Ranger »).',nNew:'{0} nouvelles',
+ foldT:'📂 Choisir des dossiers',foldSub:'Seuls les dossiers contenant de la musique s\'affichent.',foldAll:'Tous les dossiers (automatique)',foldAllSub:'Comme avant : toute la musique du téléphone',
+ foldNone:'Aucune musique trouvée sur le téléphone',foldPriv:'Audios privés',foldPrivSub:'WhatsApp, Telegram, enregistrements… (gérés dans ⚙️ avec votre empreinte, code ou schéma)',
+ foldNote:'☑️ Les dossiers cochés sont vérifiés à chaque ouverture de Prometeo. Décocher un dossier ne retire pas les chansons déjà ajoutées.',
+ plusNew:'+{0} nouvelles',nAll:'{0} · toutes',addN:'Ajouter {0} chansons',internalMem:'Mémoire interne',sdCard:'Carte SD',
+ pickFail:'Impossible d\'ouvrir le sélecteur de fichiers',toPriv:'🔒 {0} vers Privés',alreadyLib:'{0} y étaient déjà',repaired:'🔧 {0} chanson(s) réparée(s)',
+ remT:'♻️ Chansons retirées',remSub:'Celles que vous avez retirées de Prometeo. Le fichier n\'a jamais été supprimé du téléphone.',remNone:'Aucune chanson retirée',
+ removedOn:'retirée le {0}',giveBack:'↩ Remettre',giveBackAll:'↩ Tout remettre',giveBackAllQ:'Remettre les {0} chansons dans la Bibliothèque ?',
+ remPriv:'🔒 Voir aussi les audios privés retirés',gaveBack:'↩ {0} remise(s) dans la Bibliothèque',goneN:'{0} n\'est (ne sont) plus sur le téléphone',
+ undo:'Annuler',undone:'C\'est annulé',songRemoved:'Retirée : {0}',
+ sdOffRow:'💾 Carte non connectée',sdOffT:'« {0} » est sur une carte non connectée',missingRow:'⚠️ Fichier introuvable (supprimé ou carte retirée ?)',
+ findAgain:'Chercher à nouveau',stillMissing:'Toujours introuvable. Vous pouvez la retirer de Prometeo.',
+ volT:'💾 Une mémoire a été connectée',volHas:'« {0} » contient {1}. Que voulez-vous faire ?',volInLib:'{0} sont déjà dans votre Bibliothèque · {1} nouvelles',
+ volAdd:'Ajouter à la Bibliothèque',volAddNew:'Ajouter les {0} nouvelles',volAddSub:'À la prochaine connexion, Prometeo vous redemandera',
+ volListen:'Juste écouter maintenant',volListenSub:'Temporaire : en la déconnectant, elles disparaissent sans encombrer la Bibliothèque',volNo:'Non, pas maintenant',volNoSub:'Rien n\'est ajouté',
+ volRemove:'Les retirer de la Bibliothèque',volRemoveSub:'Les fichiers de la carte ne sont pas supprimés',volLater:'💾 Vous pourrez décider plus tard depuis la Bibliothèque',
+ volPendT:'💾 {0} connectée',volDecide:'Décider ›',volTmpOn:'💾 {0} : écoute sans ajouter',volRemoved:'{0} chanson(s) retirée(s) de la Bibliothèque',
+ volGone:'💾 Déconnectée : {0}',tmpInfo:'Musique de « {0} » pour l\'instant seulement : en la déconnectant, elle disparaît de Prometeo.',tmpKeep:'✅ Plutôt les ajouter à la Bibliothèque',
+ tmpSrc:'💾 {0}',tmpNoPl:'Ajoutez d\'abord cette chanson à la Bibliothèque',
+ usbMsg:'« {0} » a été connectée. Android ne laisse pas les applis voir seules la musique de cette mémoire.',usbHelp:'Touchez « Autoriser l\'accès » et choisissez la mémoire (ou un dossier) dans la fenêtre d\'Android.',usbAllow:'Autoriser l\'accès',usbEmpty:'Aucune musique trouvée sur cette mémoire',
+ orgT:'🗂️ Ranger ma musique',orgHas:'Vous avez {0} chansons éparpillées dans {1} dossiers :',orgOnPhone:'📱 Téléphone : {0} chansons',orgOnSd:'💾 Carte SD : {0} chansons',
+ orgWhat:'Que voulez-vous faire ?',orgLeave:'📌 Les laisser où elles sont',orgLeaveSub:'Rien n\'est touché. Prometeo continue de les trouver.',
+ orgDo:'📦 Ranger dans Musique/Prometeo',orgDoSub:'Elles sont <b>déplacées</b> (pas copiées) : aucun espace en plus.',orgFolders:'Dossiers à ranger',
+ orgKeep:'Vos playlists, favoris et « Continuer l\'écoute » restent intacts',orgPriv:'Les audios privés ne sont pas touchés',orgDups:'{0} chanson(s) en double → une seule est gardée',
+ orgAndroid:'Android vous demandera l\'autorisation de déplacer des fichiers d\'autres applis',orgNext:'Suivant ›',orgLeft:'📌 Votre musique reste où elle est',
+ orgWhereT:'Où voulez-vous votre dossier ?',orgWhereSub:'Musique/Prometeo',orgRec:'Recommandé · ne remplit pas le téléphone',freeOf:'{0} libres sur {1}',
+ orgWillDo:'Ce qui va se passer :',orgIntToSd:'📱→💾 {0} chansons du téléphone passent sur la carte',orgSdStay:'💾 {0} chansons de la carte sont rangées sur la carte',
+ orgIntStay:'📱 {0} chansons sont rangées sur le téléphone',orgFree:'+{0} libres sur votre téléphone',orgSdRule:'Prometeo ne déplace jamais de lui-même la musique de la carte SD vers le téléphone.',
+ orgNow:'Ranger maintenant',orgNoSpace:'Pas assez d\'espace : il faut {0} et il reste {1}',orgRunning:'🗂️ Rangement…',orgNofM:'{0} sur {1}',
+ orgKeepListening:'Vous pouvez continuer à écouter de la musique pendant ce temps.',orgDenied:'Rien n\'a été déplacé (Android n\'a pas donné l\'autorisation)',orgFail:'Rangement impossible : {0}',
+ orgOld:'Ranger nécessite Android 11 ou plus récent',orgBusy:'Rangement déjà en cours…',orgNothing:'Votre musique est déjà rangée ✓',
+ orgDoneT:'✅ Terminé',orgDoneSub:'chansons rangées dans {0}',orgFreed:'🆓 {0} libérés sur le téléphone',orgDupsDone:'♻️ {0} doublon(s) fusionné(s)',orgFailed:'⚠️ {0} n\'ont pas pu être déplacées',
+ lmT:'Options de la liste',lmRename:'Renommer',lmRenamed:'Nom modifié ✓',lmLink:'Changer le lien M3U',lmLinkSub:'Collez le nouveau lien : il est testé avant d\'être enregistré',
+ lmFile:'Remplacer par un fichier .m3u',lmFileSub:'Pour les listes enregistrées sur le téléphone',lmRefresh:'Mettre à jour les chaînes',lmRefreshSub:'Recharge la même liste',
+ lmDelete:'Supprimer la liste',lmDeleteSub:'Annulable pendant quelques secondes',fromFile:'depuis un fichier',lmLinkHelp:'On vérifie seulement que la liste se charge. Sinon, l\'ancien lien reste.',
+ lmTestIdle:'Collez le lien et touchez « Tester et enregistrer »',lmTestSave:'Tester et enregistrer',lmFail:'⚠️ Chargement impossible ({0}). L\'ancien lien reste.',lmLoaded:'✅ Liste chargée · {0} chaînes',
+ lmFewerT:'Remplacer la liste ?',lmFewer:'La nouvelle liste a {0} chaînes au lieu de {1}. Remplacer ?',lmReplace:'Remplacer',listDelU:'Liste supprimée : {0}',
+ chLink:'🔗 Lien de la chaîne',copy:'Copier',share:'Partager',editLink:'Modifier le lien',linkCopied:'🔗 Lien copié',copyFail:'Copie impossible',
+ backOrig:'↩ Revenir au lien d\'origine de la liste',origWas:'Lien d\'origine de la liste : {0}',editLinkHelp:'Prometeo le teste avant de l\'enregistrer. Votre lien est gardé quand la liste se met à jour.',
+ linkFailT:'⚠️ Ouverture impossible',linkFail:'Le lien n\'a pas répondu ({0}).',linkFailHelp:'Parfois un lien marche sur la TV mais pas maintenant. L\'enregistrer quand même ?',
+ saveAnyway:'Enregistrer quand même',linkOk:'✅ Lien mis à jour',linkSaved:'✏️ Lien enregistré',linkOrig:'↩ Retour au lien d\'origine',testing:'Test en cours…',
+ sk_esmeralda:'Émeraude',sk_esmeralda_d:'Vert vif qui ressort',sk_bn:'Noir et Blanc',sk_bn_d:'Élégant, sans couleurs',
+ abA:'A placé à {0} · touchez encore pour placer B',abOn:'🔁 Répétition de {0} à {1}',abOff:'Répétition A-B désactivée',abShort:'B doit venir après A',abCast:'La répétition A-B ne marche pas pendant la diffusion sur la TV',
+ boostT:'🔊 Volume supplémentaire',boostSub:'Pour la musique, la radio et la TV sur le téléphone. Limite sûre (200 %).',boostWarn:'⚠️ Montez-le avec prudence : protégez vos oreilles et vos haut-parleurs.',
+ silT:'⏩ Sauter les silences',silSub:'Pour les podcasts, cours et messages vocaux. Ne s\'applique pas à la radio en direct.',silOnT:'⏩ Sauter les silences : activé',silOffT:'Sauter les silences : désactivé'});
 function phoneLang(){
   const list=(navigator.languages&&navigator.languages.length)? navigator.languages : [navigator.language||'es'];
   for(const l of list){ const c=String(l||'').slice(0,2).toLowerCase(); if(I18N[c]) return c; }
@@ -1014,9 +1262,12 @@ const SKINS={
   fuego:   {bg:'#0d0806',bar:'#1a110c',acc:'#ff7a1a',hue:8,  span:40, lit:45},
   pink:    {bg:'#0d070b',bar:'#170d14',acc:'#ff6fb1',hue:332,span:-40,lit:52},
   amatista:{bg:'#0b0812',bar:'#161124',acc:'#b388ff',hue:262,span:45, lit:55},
-  claro:   {bg:'#f4f5f7',bar:'#ffffff',acc:'#0077b6',hue:200,span:30, lit:34}
+  claro:   {bg:'#f4f5f7',bar:'#ffffff',acc:'#0077b6',hue:200,span:30, lit:34},
+  /* v42 */
+  esmeralda:{bg:'#040a05',bar:'#0b150d',acc:'#39ff6a',hue:128,span:34, lit:46},
+  bn:      {bg:'#000000',bar:'#0f0f0f',acc:'#ffffff',hue:0,  span:0,  lit:58, sat:0}
 };
-const SKIN_ORDER=['neon','fuego','pink','amatista','claro'];
+const SKIN_ORDER=['neon','fuego','pink','amatista','claro','esmeralda','bn'];
 let skin=store.get('skin','neon'); if(!SKINS[skin]) skin='neon';
 function applySkin(){
   document.documentElement.setAttribute('data-skin',skin);
@@ -1165,25 +1416,36 @@ async function addFiles(files){
   else if(ok) toast(t('savedSome',ok,fail,lastErr));
   else toast(t('savedNone',lastErr));
 }
-function pickSongs(){ switchTab('biblioteca'); if(PM) scanPhone(true); else toast(t('tapAdd')); }
+function pickSongs(){ switchTab('biblioteca'); if(PM) openAddMenu(); else toast(t('tapAdd')); }
 
 async function deleteSong(id){
   const s=songById(id); if(!s) return;
-  const yes=await confirmBox(t('delSongT'),t('delSongQ',s.name));
-  if(!yes) return;
+  const phone=s.mid!=null || !!s.uri;
+  /* Las copias guardadas DENTRO de la app (versiones viejas) sí se borran de verdad: por eso se pregunta.
+     Las canciones del teléfono solo se quitan de Prometeo (el archivo no se toca): al instante y con "Deshacer". */
+  if(!phone){ const yes=await confirmBox(t('delSongT'),t('delSongQ',s.name)); if(!yes) return; }
   const wasCurrent=id===currentId, wasPlaying=wasCurrent && !audio.paused;
   let nextId=null;
   if(wasCurrent){ const i=queue.indexOf(id); nextId=queue[i+1]||queue[i-1]||null; }
+  const pls=playlists.filter(p=>p.songIds.includes(id)).map(p=>({p, i:p.songIds.indexOf(id)}));
   try{ await delSongWithAudio(id); }catch(e){ toast(t('delFail')); return; }
-  if(s.mid!=null){ const h=store.get('hidden',[]); if(!h.includes(s.mid)){ h.push(s.mid); store.set('hidden',h); } }
+  if(phone) hideSong(s);
   songs=songs.filter(x=>x.id!==id);
-  for(const p of playlists){ if(p.songIds.includes(id)){ p.songIds=p.songIds.filter(x=>x!==id); try{ await dbPut('playlists',p); }catch(e){} } }
+  for(const {p} of pls){ p.songIds=p.songIds.filter(x=>x!==id); try{ await dbPut('playlists',p); }catch(e){} }
   queue=queue.filter(x=>x!==id);
   if(wasCurrent){
     stopAudio();
     if(nextId && songById(nextId)) loadById(nextId,wasPlaying); else resetNow();
   } else qPos=queue.indexOf(currentId);
-  renderAll(); toast(t('songDeleted'));
+  renderAll();
+  if(!phone){ toast(t('songDeleted')); return; }
+  toastUndo(t('songRemoved',s.name), async()=>{
+    unhide(hidKey(s));
+    try{ await dbPut('songs',songRecord(s)); }catch(e){ toast(t('saveFail')); return; }
+    if(!songById(s.id)) songs.push(s); sortSongs();
+    for(const {p,i} of pls){ if(!p.songIds.includes(s.id)){ p.songIds.splice(Math.min(i,p.songIds.length),0,s.id); try{ await dbPut('playlists',p); }catch(e){} } }
+    if(queueSource.type==='lib') buildQueue(); renderAll(); toast(t('undone'));
+  });
 }
 
 /* ================= PLAYLISTS ================= */
@@ -1214,6 +1476,7 @@ async function deletePl(p){
 }
 async function addToPlaylist(songId){
   if(!songId || !songById(songId)){ toast(t('pickFirst')); return; }
+  if(songById(songId).temp){ toast(t('tmpNoPl')); return; }
   let p=await modal(t('addToPlT'),(b,close)=>{
     if(!playlists.length) b.appendChild(el('p','m-msg',t('noPlYet')));
     playlists.forEach(pl=>{
@@ -1241,6 +1504,7 @@ async function removeFromPl(p,songId){
 
 /* ================= COLA ================= */
 function sourceIds(){
+  if(queueSource.type==='tmp'){ const L=tmpSongsOf(queueSource.vol); if(L.length) return L.map(s=>s.id); queueSource={type:'lib'}; store.set('src',queueSource); }
   if(queueSource.type==='priv'){ const s=songById(queueSource.id); if(s) return [s.id]; queueSource={type:'lib'}; store.set('src',queueSource); }
   if(queueSource.type==='pl'){
     const p=plById(queueSource.id);
@@ -1257,7 +1521,7 @@ function buildQueue(){
   }
   queue=ids; qPos=currentId? queue.indexOf(currentId) : -1;
 }
-function sourceName(){ if(queueSource.type==='priv') return t('privSrc'); if(queueSource.type==='pl'){ const p=plById(queueSource.id); if(p) return t('plSrc',p.name); } return t('library'); }
+function sourceName(){ if(queueSource.type==='tmp') return t('tmpSrc',volLabel(queueSource.vol)); if(queueSource.type==='priv') return t('privSrc'); if(queueSource.type==='pl'){ const p=plById(queueSource.id); if(p) return t('plSrc',p.name); } return t('library'); }
 function playFrom(src,id){
   queueSource=src; store.set('src',src);
   currentId=id; buildQueue(); renderQueue();
@@ -1271,6 +1535,12 @@ function stopAudio(){
 }
 let loadSeq=0, srcStage=0, curBlob=null, posFor=null; /* posFor = canción cuyo audio está cargado */
 async function songBlob(s){
+  if(s.uri && s.mid==null){ /* v42: canción elegida con el selector de Android o de una memoria USB permitida */
+    const r=await fetch(PM? PM.uriUrl(s.uri) : s.uri);
+    if(!r.ok) throw new Error('missing');
+    const b=await r.blob(); if(!b.size) throw new Error('missing');
+    return (s.mime && b.type!==s.mime)? new Blob([b],{type:s.mime}) : b;
+  }
   if(s.mid!=null){ /* canción del teléfono: se lee directo del archivo original, sin copia */
     const r=await fetch(PM? PM.url(s.mid) : '/__prometeo_music__/'+s.mid);
     if(!r.ok) throw new Error('missing');
@@ -1284,14 +1554,40 @@ async function songBlob(s){
 }
 function blobToDataURL(b){ return new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(r.result); r.onerror=()=>rej(r.error); r.readAsDataURL(b); }); }
 function setSrc(url){ if(currentUrl && currentUrl!==url && currentUrl.indexOf('blob:')===0) URL.revokeObjectURL(currentUrl); currentUrl=url; audio.src=url; posFor=currentId; }
-function loadById(id,autoplay,seek){
+/* v42: canciones que no se pueden abrir (tarjeta SD sacada, archivo borrado): se saltan sin mezclar títulos */
+let skipGuard=0;
+function songAvail(s){ return !!s && !s.broken; }
+function nextAvail(id, dir){
+  const n=queue.length; if(!n) return null; const i=Math.max(0,queue.indexOf(id));
+  for(let k=1;k<=n;k++){ const j=((i+dir*k)%n+n)%n; const x=songById(queue[j]); if(x && songAvail(x) && x.id!==id) return x.id; }
+  return null;
+}
+function skipFrom(id, dir, autoplay){
+  if(skipGuard>=Math.max(1,queue.length)){ skipGuard=0; stopAudio(); setPlayIcon(); toast(t('noneAvail')); return; }
+  skipGuard++;
+  const nx=nextAvail(id, dir||1);
+  if(nx) loadById(nx, autoplay, 0, dir||1); else { skipGuard=0; stopAudio(); setPlayIcon(); toast(t('noneAvail')); }
+}
+function loadById(id,autoplay,seek,dir){
   const s=songById(id); if(!s) return;
+  if(s.broken && isRemVol(s.vol) && !volMounted(s.vol) && (s.mid!=null || s.uri)){
+    /* está en una tarjeta que no está conectada: no se intenta abrir */
+    if(dir){ toast(t('sdSkipped',s.name)); skipFrom(id, dir, autoplay); return; }
+    /* tocada a propósito: queda elegida pero sin audio (nada suena con un título que no es) */
+    if(radioId) stopRadio(true);
+    ++loadSeq; stopAudio(); curBlob=null; posFor=null; clearCover(); abClear();
+    currentId=id; qPos=queue.indexOf(id); if(qPos<0){ buildQueue(); qPos=queue.indexOf(id); }
+    progress.value=0; setFill(0); $('tCur').textContent='0:00'; $('tDur').textContent='0:00';
+    updateNowText(); markCurrent(); updateMini(); setPlayIcon();
+    toast(t('sdOffT',s.name));
+    return;
+  }
   if(radioId) stopRadio(true);
   const seq=++loadSeq;
   currentId=id; qPos=queue.indexOf(id);
   if(qPos<0){ buildQueue(); qPos=queue.indexOf(id); }
   if(!audio.paused) audio.pause();
-  pendingSeek=seek||0; srcStage=0; curBlob=null; posFor=null; clearCover();
+  pendingSeek=seek||0; srcStage=0; curBlob=null; posFor=null; clearCover(); abClear();
   audio.loop=(repeatMode===2);
   progress.value=0; setFill(0); $('tCur').textContent='0:00'; $('tDur').textContent='0:00';
   store.set('last',id); store.set('pos',0);
@@ -1306,12 +1602,17 @@ function loadById(id,autoplay,seek){
     if(autoplay && !castOn) play();
   }).catch(()=>{
     if(seq!==loadSeq) return;
+    /* v42: se descarga el audio anterior, así nunca suena una canción con el título de otra */
+    stopAudio(); curBlob=null; posFor=null;
     s.broken=true; renderLib();
-    toast(t(s.mid!=null?'missing':'broken',s.name));
+    toast(t((s.mid!=null||s.uri)? (isRemVol(s.vol) && !volMounted(s.vol)? 'sdSkipped' : 'missing') : 'broken',s.name));
+    if(autoplay && queue.length>1) setTimeout(()=>{ if(seq===loadSeq) skipFrom(id, dir||1, true); },900);
+    else setPlayIcon();
   });
 }
 function play(){
   if(!currentId) return;
+  if(!castOn && !audio.getAttribute('src')){ loadById(currentId,true,0,1); return; }
   if(castOn){ if(castKind==='music') PM.castCmd('play').catch(()=>{}); else { const s=songById(currentId); if(s) castSong(s,0,true); } return; }
   if(actx && actx.state==='suspended') actx.resume().catch(()=>{});
   const p=audio.play();
@@ -1342,14 +1643,14 @@ function nextSong(auto){
     if(shuffle){ const ids=shuffleArr(sourceIds()); if(ids.length>1 && ids[0]===currentId) ids.push(ids.shift()); queue=ids; renderQueue(); }
     p=0;
   }
-  loadById(queue[p],true);
+  loadById(queue[p],true,0,1);
 }
 function prevSong(){
   if(castOn && castKind==='music' && castPos>3000){ PM.castCmd('seek',0).catch(()=>{}); return; }
   if(!castOn && audio.currentTime>3){ audio.currentTime=0; return; }
   if(!queue.length) return;
   let p=qPos-1; if(p<0) p=queue.length-1;
-  loadById(queue[p],true);
+  loadById(queue[p],true,0,-1);
 }
 function cycleRepeat(){ repeatMode=(repeatMode+1)%3; audio.loop=(repeatMode===2); store.set('repeat',repeatMode); applyModeButtons(); toast(t('rep'+repeatMode)); }
 function toggleShuffle(){ shuffle=!shuffle; store.set('shuffle',shuffle); buildQueue(); applyModeButtons(); renderQueue(); updateNowText(); toast(t(shuffle?'shufOn':'shufOff')); }
@@ -1366,7 +1667,7 @@ function setFill(pct){ progress.style.setProperty('--p',pct+'%'); }
 function setPlayIcon(){ const ic=(radioId? radioPaused() : (castOn && castKind==='music'? !castPlaying : audio.paused))?'▶':'⏸'; $('btnPlay').textContent=ic; $('miniPlay').textContent=ic; }
 audio.addEventListener('play',()=>{ setPlayIcon(); bgMode(true); if(actx && actx.state==='suspended') actx.resume().catch(()=>{}); });
 audio.addEventListener('pause',()=>{ setPlayIcon(); savePos(true); });
-audio.addEventListener('playing',()=>{ errStreak=0; setPlayIcon(); if(vMode!=='off' || eqActive()){ ensureGraph(); if(actx && actx.state==='suspended') actx.resume().catch(()=>{}); } });
+audio.addEventListener('playing',()=>{ errStreak=0; skipGuard=0; setPlayIcon(); if(vMode!=='off' || fxNeeded()){ ensureGraph(); if(actx && actx.state==='suspended') actx.resume().catch(()=>{}); } });
 audio.addEventListener('loadedmetadata',()=>{
   $('tDur').textContent=fmt(audio.duration);
   if(pendingSeek>0 && isFinite(audio.duration) && pendingSeek<audio.duration-2) audio.currentTime=pendingSeek;
@@ -1413,10 +1714,20 @@ progress.addEventListener('change',()=>{
 /* ================= RENDER ================= */
 function songRow(s, onPlay, btns){
   const r=el('div','song-item'+(s.id===currentId?' current':'')); r.dataset.id=s.id;
-  const info=el('div','song-info'); info.appendChild(el('b',null,s.name)); info.appendChild(el('small',null,s.broken? t(s.mid!=null?'missingRow':'brokenRow') : (s.artist? s.artist+' • '+s.fileName : s.fileName)));
+  const info=el('div','song-info'); info.appendChild(el('b',null,s.name)); info.appendChild(el('small',null,s.broken? brokenText(s) : (s.artist? s.artist+' • '+s.fileName : s.fileName)));
   info.onclick=onPlay; r.appendChild(info);
   (btns||[]).forEach(([ic,title,fn,cls])=>{ const b=el('button','icon-btn'+(cls?' '+cls:''),ic); b.title=title; b.onclick=e=>{ e.stopPropagation(); fn(); }; r.appendChild(b); });
   return r;
+}
+function brokenText(s){ return (isRemVol(s.vol) && !volMounted(s.vol))? t('sdOffRow') : t(s.mid!=null||s.uri?'missingRow':'brokenRow'); }
+function libButtons(s){
+  if(s.broken && (s.mid!=null || s.uri)) return [['🔍',t('findAgain'),findAgain],['🗑',t('del'),()=>deleteSong(s.id),'del']];
+  return [['＋',t('addToPlT'),()=>addToPlaylist(s.id)],['🗑',t('del'),()=>deleteSong(s.id),'del']];
+}
+async function findAgain(){
+  const out=await scanPhone(true,{mode:'only',rescan:true,quiet:true,silent:true});
+  const still=songs.filter(s=>s.broken && !s.temp).length;
+  toast(out && out.repaired? t('repaired',out.repaired) : (still? t('stillMissing') : t('scanNone')));
 }
 function renderLib(){
   const c=$('libList'); c.textContent='';
@@ -1424,12 +1735,35 @@ function renderLib(){
   $('libCount').textContent=nSongs(mus.length)+' • '+t('offline');
   $('btnPrivSet').classList.toggle('hidden',!native);
   const seg=$('libSeg'); seg.textContent='';
-  const showSeg=native && privOn;
-  if(!showSeg || (libSeg==='priv' && !privUnlocked())) libSeg='music';
+  const tmpVols=[...new Set(songs.filter(s=>s.temp).map(s=>s.vol))];
+  const showPriv=native && privOn;
+  if(libSeg==='priv' && (!showPriv || !privUnlocked())) libSeg='music';
+  if(String(libSeg).indexOf('tmp:')===0 && !tmpVols.includes(libSeg.slice(4))) libSeg='music';
+  const showSeg=showPriv || tmpVols.length>0;
   seg.classList.toggle('hidden',!showSeg);
-  if(showSeg) [['music',t('segMusic',mus.length)],['priv',t('segPriv',prv.length)]].forEach(([k,txt])=>{ const b=el('button',libSeg===k?'on':'',txt); b.onclick=()=>setLibSeg(k); seg.appendChild(b); });
-  $('btnPlayAll').classList.toggle('hidden',libSeg==='priv');
-  document.querySelectorAll('#view-biblioteca .btn-scan').forEach(b=>b.classList.toggle('hidden-priv',libSeg==='priv'));
+  if(showSeg){
+    const segs=[['music',t('segMusic',mus.length)]];
+    tmpVols.forEach(v=>segs.push(['tmp:'+v,'💾 '+volLabel(v)+' · '+tmpSongsOf(v).length]));
+    if(showPriv) segs.push(['priv',t('segPriv',prv.length)]);
+    segs.forEach(([k,txt])=>{ const b=el('button',libSeg===k?'on':'',txt); b.onclick=()=>setLibSeg(k); seg.appendChild(b); });
+  }
+  $('btnPlayAll').classList.toggle('hidden',libSeg!=='music');
+  document.querySelectorAll('#view-biblioteca .btn-scan').forEach(b=>b.classList.toggle('hidden-priv',libSeg!=='music'));
+  /* v42: tarjeta conectada que espera tu respuesta */
+  if(volPending && libSeg==='music'){
+    const n=el('button','priv-note vol-note'); n.appendChild(el('span',null,'💾'));
+    const tx=el('div','tx'); tx.appendChild(el('b',null,t('volPendT',volPending.label))); tx.appendChild(el('span',null,nSongs(volPending.n))); n.appendChild(tx);
+    n.appendChild(el('span','go',t('volDecide'))); n.onclick=decidePending; c.appendChild(n);
+  }
+  if(String(libSeg).indexOf('tmp:')===0){
+    const v=libSeg.slice(4), L=tmpSongsOf(v);
+    const info=el('div','priv-info'); info.appendChild(el('span',null,'💾')); info.appendChild(el('span',null,t('tmpInfo',volLabel(v)))); c.appendChild(info);
+    const pa=el('button','btn-ghost',t('playAll')); pa.style.marginBottom='6px'; pa.onclick=()=>{ if(L.length){ playFrom({type:'tmp',vol:v}, L[0].id); switchTab('ahora'); } }; c.appendChild(pa);
+    L.forEach(s=>c.appendChild(songRow(s,()=>{ playFrom({type:'tmp',vol:v},s.id); switchTab('ahora'); })));
+    const keep=el('button','btn-ghost',t('tmpKeep')); keep.onclick=async()=>{ const vv=vols.find(x=>x.name===v)||{name:v,label:volLabel(v)}; const fresh=L.map(s=>({mid:s.mid, uri:s.uri, name:s.fileName, size:s.size, mime:s.mime, folder:s.folder})); songs=songs.filter(s=>!(s.temp && s.vol===v)); libSeg='music'; await volAnswer(vv,'add',fresh.filter(f=>f.uri).length? fresh : [],L.length); };
+    c.appendChild(keep);
+    return;
+  }
   if(libSeg==='priv'){
     const info=el('div','priv-info'); info.appendChild(el('span',null,'ⓘ')); info.appendChild(el('span',null,t('privInfo'))); c.appendChild(info);
     if(!prv.length) c.appendChild(el('div','empty',t('privEmpty')));
@@ -1438,15 +1772,10 @@ function renderLib(){
     const h=el('button','btn-ghost',t('privHideAgain')); h.onclick=hidePrivAgain; c.appendChild(h);
     return;
   }
-  if(native && !privOn && prv.length){
-    const n=el('button','priv-note'); n.appendChild(el('span',null,'🔒'));
-    const tx=el('span','tx'); tx.appendChild(el('b',null,t(prv.length===1?'privHidden1':'privHidden',prv.length))); tx.appendChild(el('span',null,t('privHiddenSub'))); n.appendChild(tx);
-    n.appendChild(el('span','go',t('privSee'))); n.onclick=openPrivSettings; c.appendChild(n);
-  }
+  /* v42: ya no se muestra aquí ningún aviso de audios privados: solo se ven desde ⚙️ (con huella, PIN o patrón) */
   if(!mus.length){ c.appendChild(el('div','empty',t(PM?'libEmptyNative':'libEmpty'))); return; }
   const frag=document.createDocumentFragment();
-  mus.forEach(s=>frag.appendChild(songRow(s,()=>{ playFrom({type:'lib'},s.id); switchTab('ahora'); },
-    [['＋',t('addToPlT'),()=>addToPlaylist(s.id)],['🗑',t('del'),()=>deleteSong(s.id),'del']])));
+  mus.forEach(s=>{ const r=songRow(s,()=>{ playFrom({type:'lib'},s.id); switchTab('ahora'); },libButtons(s)); if(s.broken) r.classList.add('is-broken'); frag.appendChild(r); });
   c.appendChild(frag);
 }
 function renderSearch(){
@@ -1593,7 +1922,7 @@ function drawBars(){
   for(let i=0;i<n;i++){
     let v=0; for(let j=0;j<step;j++) v+=freq[i*step+j]; v=v/step/255;
     const h=Math.max(3,v*H*0.92);
-    ctx.fillStyle='hsl('+(S.hue+i*S.span/n)+',100%,'+(S.lit+v*28)+'%)';
+    ctx.fillStyle='hsl('+(S.hue+i*S.span/n)+','+(S.sat==null?100:S.sat)+'%,'+(S.lit+v*28)+'%)';
     fillRound(i*(bw+gap),H-h,bw,h,Math.min(3,bw/2));
   }
 }
@@ -1611,7 +1940,7 @@ function drawCircle(){
   ctx.lineWidth=2.5; ctx.lineCap='round';
   for(let i=0;i<n;i++){
     const v=freq[Math.floor(i*150/n)]/255, a=i/n*Math.PI*2-Math.PI/2, len=3+v*base*0.27;
-    ctx.strokeStyle='hsl('+(S.hue+i/n*S.span*2)+',100%,'+(S.lit+6+v*22)+'%)';
+    ctx.strokeStyle='hsl('+(S.hue+i/n*S.span*2)+','+(S.sat==null?100:S.sat)+'%,'+(S.lit+6+v*22)+'%)';
     ctx.beginPath(); ctx.moveTo(cx+Math.cos(a)*r,cy+Math.sin(a)*r); ctx.lineTo(cx+Math.cos(a)*(r+len),cy+Math.sin(a)*(r+len)); ctx.stroke();
   }
 }
@@ -1935,6 +2264,8 @@ async function editStation(st){
     nameIn=el('input','search'); nameIn.type='text'; nameIn.value=st? st.name : ''; nameIn.maxLength=60; b.appendChild(nameIn);
     b.appendChild(el('label','field-label',t('stUrl')));
     urlIn=el('input','search'); urlIn.type='url'; urlIn.value=st? st.url : ''; urlIn.placeholder='https://…'; urlIn.autocapitalize='off'; urlIn.spellcheck=false; b.appendChild(urlIn);
+    if(st){ const lr=el('div','link-btns'); const c1=el('button','btn-pill','📋 '+t('copy')); c1.onclick=()=>{ const v=urlIn.value.trim(); if(v) copyLink(v); };
+      const c2=el('button','btn-pill','📤 '+t('share')); c2.onclick=()=>{ const v=urlIn.value.trim(); if(v) shareLink(v,nameIn.value.trim()); }; lr.appendChild(c1); lr.appendChild(c2); b.appendChild(lr); }
     b.appendChild(el('p','field-help',t('urlHelp')));
     box=el('div','test-box'); box.appendChild(el('i')); const msg=el('span',null,t('testIdle')); box.appendChild(msg); b.appendChild(box);
     const row=el('div','st-actions');
@@ -2098,7 +2429,8 @@ function renderTv(){
     info.appendChild(el('b',null,'📋 '+L.name)); info.appendChild(el('small',null,t(L.channels.length===1?'ch1':'chN',L.channels.length)+(L.url? ' • '+L.url.replace(/^https?:\/\//i,'') : '')));
     r.appendChild(info);
     if(L.url){ const b=el('button','icon-btn','⟳'); b.title=t('refresh'); b.setAttribute('aria-label',t('refresh')); b.onclick=()=>refreshList(L); r.appendChild(b); }
-    const d=el('button','icon-btn del','🗑'); d.title=t('del'); d.setAttribute('aria-label',t('del')); d.onclick=()=>deleteList(L); r.appendChild(d);
+    const d=el('button','icon-btn more','⋮'); d.title=t('lmT'); d.setAttribute('aria-label',t('lmT')); d.onclick=()=>openListMenu(L); r.appendChild(d);
+    onLongPress(r,()=>openListMenu(L));
     ls.appendChild(r);
   });
   const has=all.length>0;
@@ -2124,7 +2456,7 @@ function renderTv(){
   const frag=document.createDocumentFragment();
   list.slice(0,200).forEach(ch=>{
     const r=el('div','song-item'+(ch.missing?' missing':'')); r.appendChild(stTile({name:ch.n,color:chColor(ch.n)}));
-    const info=el('div','song-info'); info.appendChild(el('b',null,ch.n)); info.appendChild(el('small',null,ch.missing? t('chMissing') : (ch.g||ch.u.replace(/^[a-z]+:\/\//i,''))));
+    const info=el('div','song-info'); info.appendChild(el('b',null,ch.n)); info.appendChild(el('small',null,ch.missing? t('chMissing') : (ch.o? '✏️ ' : '')+(ch.g||ch.u.replace(/^[a-z]+:\/\//i,''))));
     info.onclick=()=>playChannel(ch); r.appendChild(info);
     const fav=isFavCh(ch,urls), sb=el('button','icon-btn star'+(fav?'':' off'),fav?'★':'☆'); sb.title=t(fav?'chFavDel':'chFavAdd'); sb.setAttribute('aria-label',sb.title);
     sb.onclick=e=>{ e.stopPropagation(); toggleFavCh(ch); }; r.appendChild(sb);
@@ -2278,9 +2610,138 @@ async function refreshList(L){
   toast(t('loadingList'));
   let text; try{ text=await fetchListText(L.url); }catch(e){ toast(t('listFail',(e && e.message)||e||'error')); return; }
   const ch=parseM3U(text).filter(e=>STREAM_RE.test(e.u)); if(!ch.length){ toast(t('listEmptyErr')); return; }
-  const hid=new Set(L.hidden||[]);
-  L.channels=ch.filter(e=>!hid.has(e.u)).map(e=>({n:e.n||e.u, g:e.g||'', u:e.u}));
-  try{ await dbPut('tv',L); }catch(e){} renderTv(); toast(t('listUpdated',L.channels.length));
+  if(await replaceChannels(L,ch)) toast(t('listUpdated',L.channels.length));
+}
+/* v42: los links que corregiste a mano (✏️) se mantienen al actualizar la lista */
+function buildChannels(L, entries){
+  const hid=new Set(L.hidden||[]), over=L.over||{};
+  return entries.filter(e=>!hid.has(e.u)).map(e=>{ const c={n:e.n||e.u, g:e.g||'', u:e.u}; if(over[e.u]){ c.o=e.u; c.u=over[e.u]; } return c; });
+}
+/* Cambia los canales de una lista. Favoritos, tus listas y "Seguir viendo" se conservan (se reconocen por el nombre) */
+async function replaceChannels(L, entries, url){
+  const old=L.channels.length, n=entries.length;
+  if(old>=10 && n<old*0.5){
+    const yes=await modal(t('lmFewerT'),b=>b.appendChild(el('p','m-msg',t('lmFewer',n,old))),[[t('cancel'),()=>false,'btn-pill'],[t('lmReplace'),()=>true,'btn-ok']]);
+    if(!yes) return false;
+  }
+  const oldUrls=new Set(L.channels.map(c=>c.u));
+  if(url!==undefined) L.url=url;
+  L.channels=buildChannels(L, entries);
+  try{ await dbPut('tv',L); }catch(e){ toast(t('saveFail')); return false; }
+  const all=allChannels(); let f=false, m=false;
+  tvFav.forEach(it=>{ if(resolveCh(it,all).moved) f=true; }); tvMy.forEach(M=>M.items.forEach(it=>{ if(resolveCh(it,all).moved) m=true; }));
+  if(f) saveTvFav(); if(m) saveTvMy();
+  const last=store.get('tvLast',null); if(last && resolveCh(last,all).moved) store.set('tvLast',last);
+  const now=new Set(all.map(c=>c.u)); purgeChannels(new Set([...oldUrls].filter(u=>!now.has(u))));
+  renderTv(); return true;
+}
+/* Menú ⋮ de una lista M3U: cambiar nombre, cambiar link o archivo, actualizar y borrar (con deshacer) */
+async function openListMenu(L){
+  const r=await modal('📋 '+L.name,(b,close)=>{
+    b.appendChild(el('p','m-sub',t(L.channels.length===1?'ch1':'chN',L.channels.length)+(L.url? ' · '+L.url.replace(/^https?:\/\//i,'') : (L.mine? '' : ' · '+t('fromFile')))));
+    const it=(ic,title,sub,key,cls)=>{ const bt=el('button','m-item list-act'+(cls?' '+cls:'')); bt.appendChild(el('b',null,ic+' '+title)); if(sub) bt.appendChild(el('small',null,sub)); bt.onclick=()=>close(key); b.appendChild(bt); };
+    it('✏️',t('lmRename'),'','rename');
+    if(!L.mine){ it('🔗',t('lmLink'),t('lmLinkSub'),'link'); it('📂',t('lmFile'),t('lmFileSub'),'file'); }
+    if(L.url) it('🔄',t('lmRefresh'),t('lmRefreshSub'),'refresh');
+    it('🗑️',t('lmDelete'),t('lmDeleteSub'),'delete','del-ch');
+  },[[t('close'),()=>null,'btn-pill']]);
+  if(r==='rename'){ const n=await askText(t('lmRename'),L.name); if(n && n!==L.name){ L.name=n; try{ await dbPut('tv',L); }catch(e){} renderTv(); toast(t('lmRenamed')); } }
+  else if(r==='link') await changeListLink(L);
+  else if(r==='file') await changeListFile(L);
+  else if(r==='refresh') await refreshList(L);
+  else if(r==='delete') await deleteListUndo(L);
+}
+async function changeListLink(L){
+  let inp, box, msg, bs;
+  const res=await modal(t('lmLink'),(b,close)=>{
+    b.appendChild(el('p','m-sub',L.name));
+    b.appendChild(el('label','field-label',t('listUrl')));
+    inp=el('input','search'); inp.type='url'; inp.value=L.url||''; inp.placeholder='https://…/lista.m3u'; inp.autocapitalize='off'; inp.spellcheck=false; b.appendChild(inp);
+    b.appendChild(el('p','field-help',t('lmLinkHelp')));
+    box=el('div','test-box'); box.appendChild(el('i')); msg=el('span',null,t('lmTestIdle')); box.appendChild(msg); b.appendChild(box);
+    const row=el('div','st-actions'); const bc=el('button','btn-pill',t('cancel')); bc.onclick=()=>close(null);
+    bs=el('button','btn-ok',t('lmTestSave'));
+    bs.onclick=async()=>{
+      const u=inp.value.trim();
+      if(!validUrl(u)){ box.className='test-box bad'; msg.textContent=t('badUrl'); return; }
+      if(navigator.onLine===false){ box.className='test-box bad'; msg.textContent=t('noNet'); return; }
+      box.className='test-box'; msg.textContent=t('loadingList'); bs.disabled=true;
+      let text; try{ text=await fetchListText(u); }catch(e){ box.className='test-box bad'; msg.textContent=t('lmFail',(e && e.message)||e||'error'); bs.disabled=false; return; }
+      const ch=parseM3U(text).filter(e=>STREAM_RE.test(e.u));
+      if(!ch.length){ box.className='test-box bad'; msg.textContent=t('listEmptyErr'); bs.disabled=false; return; }
+      box.className='test-box ok'; msg.textContent=t('lmLoaded',ch.length);
+      setTimeout(()=>close({u, ch}),500);
+    };
+    row.appendChild(bc); row.appendChild(bs); b.appendChild(row);
+  },[]);
+  if(!res) return;
+  if(await replaceChannels(L,res.ch,res.u)) toast(t('lmLoaded',L.channels.length));
+}
+function changeListFile(L){
+  return new Promise(res=>{
+    const fi=document.createElement('input'); fi.type='file'; fi.accept='.m3u,.m3u8,audio/x-mpegurl,application/x-mpegurl,text/plain,*/*';
+    fi.onchange=async()=>{ const f=fi.files && fi.files[0]; if(!f) return res();
+      let text=''; try{ text=await f.text(); }catch(e){ toast(t('listFail',e)); return res(); }
+      const ch=parseM3U(text).filter(e=>STREAM_RE.test(e.u)); if(!ch.length){ toast(t('listEmptyErr')); return res(); }
+      if(await replaceChannels(L,ch,'')) toast(t('lmLoaded',L.channels.length)); res(); };
+    fi.click();
+  });
+}
+async function deleteListUndo(L){
+  try{ await dbDel('tv',L.id); }catch(e){}
+  tvLists=tvLists.filter(x=>x.id!==L.id); renderTv();
+  const gone=new Set(L.channels.map(c=>c.u)); let undone=false;
+  const tm=setTimeout(()=>{ if(undone) return; purgeChannels(gone); if(currentTab==='radio' && tvPane==='tv') renderTv(); },6500);
+  toastUndo(t('listDelU',L.name), async()=>{ undone=true; clearTimeout(tm); try{ await dbPut('tv',L); }catch(e){} if(!tvLists.includes(L)) tvLists.push(L); tvLists.sort((a,b)=>a.added-b.added); renderTv(); toast(t('undone')); });
+}
+/* ---- v42: link de un canal o emisora: ver, copiar, compartir y ✏️ editar ---- */
+function copyLink(u){
+  const ok=()=>toast(t('linkCopied'));
+  if(PM && PM.copyText){ PM.copyText(u).then(ok).catch(()=>toast(t('copyFail'))); return; }
+  try{ navigator.clipboard.writeText(u).then(ok).catch(()=>toast(t('copyFail'))); }catch(e){ toast(t('copyFail')); }
+}
+function shareLink(u, title){
+  if(PM && PM.shareText){ PM.shareText(u, title||'').catch(()=>copyLink(u)); return; }
+  if(navigator.share){ navigator.share({title:title||'Prometeo', text:u}).catch(()=>{}); return; }
+  copyLink(u);
+}
+async function editChLink(ch, L){
+  let inp;
+  const u=await modal(t('editLink'),(b,close)=>{
+    b.appendChild(el('p','m-sub',ch.n));
+    inp=el('input','search'); inp.type='url'; inp.value=ch.u; inp.autocapitalize='off'; inp.spellcheck=false; b.appendChild(inp);
+    if(ch.o) b.appendChild(el('p','field-help',t('origWas',ch.o)));
+    b.appendChild(el('p','field-help',t('editLinkHelp')));
+    const row=el('div','st-actions'); const bc=el('button','btn-pill',t('cancel')); bc.onclick=()=>close(null);
+    const bs=el('button','btn-ok',t('save')); bs.onclick=()=>{ const v=inp.value.trim(); if(!STREAM_RE.test(v) || /\s/.test(v)){ toast(t('badUrl')); return; } close(v); };
+    row.appendChild(bc); row.appendChild(bs); b.appendChild(row);
+  },[]);
+  if(!u || u===ch.u) return;
+  let ok=true, why='';
+  if(PM && PM.probeUrl && /^https?:/i.test(u)){
+    toast(t('testing'));
+    try{ const r=await PM.probeUrl(u); ok=!!r.ok; why=r.why || (r.code? 'HTTP '+r.code : ''); }catch(e){ ok=false; why=String(e); }
+  }
+  if(!ok){
+    const keep=await modal(t('linkFailT'),b=>{ b.appendChild(el('p','m-msg',t('linkFail',why||'?'))); b.appendChild(el('p','field-help',t('linkFailHelp'))); },
+      [[t('cancel'),()=>false,'btn-pill'],[t('saveAnyway'),()=>true,'btn-ok']]);
+    if(!keep) return;
+  }
+  await setChLink(ch, L, u);
+  toast(ok? t('linkOk') : t('linkSaved'));
+}
+async function setChLink(ch, L, u){
+  const orig=ch.o||ch.u, oldU=ch.u; L.over=L.over||{};
+  if(u===orig){ delete L.over[orig]; delete ch.o; } else { L.over[orig]=u; ch.o=orig; }
+  ch.u=u;
+  try{ await dbPut('tv',L); }catch(e){ toast(t('saveFail')); return; }
+  const fix=c=>{ if(c && c.u===oldU){ c.u=u; return true; } return false; };
+  if(tvFav.map(fix).some(Boolean)) saveTvFav();
+  let my=false; tvMy.forEach(M=>M.items.forEach(c=>{ if(fix(c)) my=true; })); if(my) saveTvMy();
+  const last=store.get('tvLast',null); if(fix(last)) store.set('tvLast',last);
+  if(tvInlineCh===ch) openTvInline(ch,tviPool);
+  if(radioId===TVA && tvAudio && tvAudio.pool[tvAudio.i]===ch) playRadio(TVA);
+  renderTv();
 }
 /* Quita de Favoritos, Mis listas, "Seguir viendo" y del solo audio los canales que ya no existen en ninguna lista */
 function purgeChannels(gone){
@@ -2322,7 +2783,7 @@ async function deleteChannel(ch){
   const yes=await modal(t('delChT'),b=>{ b.appendChild(el('p','m-msg',t('delChQ',ch.n,L.name))); if(L.url) b.appendChild(el('p','field-help',t('delChM3U'))); },[[t('cancel'),()=>false,'btn-pill'],[t('del'),()=>true,'btn-danger']]);
   if(!yes) return;
   L.channels=L.channels.filter(c=>c!==ch);
-  if(L.url){ L.hidden=(L.hidden||[]); if(!L.hidden.includes(ch.u)) L.hidden.push(ch.u); }
+  if(L.url){ L.hidden=(L.hidden||[]); const ou=ch.o||ch.u; if(!L.hidden.includes(ou)) L.hidden.push(ou); }
   if(!L.channels.length && L.mine){ try{ await dbDel('tv',L.id); }catch(e){} tvLists=tvLists.filter(x=>x!==L); }
   else { try{ await dbPut('tv',L); }catch(e){} }
   purgeChannels(new Set([ch.u]));
@@ -2404,7 +2865,8 @@ function carControl(ev){
 let PM=null, appReady=false, scanning=false, nativeStarted=false;
 const NO_PLAY_MIME=/wma|amr|aiff|midi|x-ms/i, NO_PLAY_EXT=/\.(wma|amr|aiff?|midi?|3ga)$/i;
 function songRecord(s){ const r={id:s.id,name:s.name,fileName:s.fileName,mime:s.mime,size:s.size,added:s.added||Date.now()};
-  if(s.mid!=null) r.mid=s.mid; if(s.artist) r.artist=s.artist; if(s.album) r.album=s.album; if(s.title) r.title=s.title; if(s.priv) r.priv=s.priv; return r; }
+  if(s.mid!=null) r.mid=s.mid; if(s.artist) r.artist=s.artist; if(s.album) r.album=s.album; if(s.title) r.title=s.title; if(s.priv) r.priv=s.priv;
+  if(s.uri) r.uri=s.uri; if(s.vol) r.vol=s.vol; if(s.folder!=null) r.folder=s.folder; if(s.dur) r.dur=s.dur; return r; }
 /* Una copia de la v40 pasa a usar el original: se guarda la referencia y se borra la copia (en un solo paso) */
 function linkCopy(meta){
   return new Promise((res,rej)=>{
@@ -2417,74 +2879,578 @@ function nativeStart(){
   if(!PM || !appReady || nativeStarted) return; nativeStarted=true;
   renderLib();
   if(PM.onControl){ PM.onControl(carControl); const s=currentId && songById(currentId); if(s){ sendCar(s); carState(); } }
+  if(PM.onVolumes) PM.onVolumes(onVolEvent);
+  document.addEventListener('resume',()=>{ setTimeout(()=>{ checkVolumes(); if(!scanning && !orgRun) scanPhone(false,{silent:true}); },800); },false);
+  refreshVols().catch(()=>{});
   PM.hasPermission().then(ok=>{
-    if(ok) return scanPhone(false);
+    if(ok) return scanPhone(false).then(()=>checkVolumes());
     if(!store.get('askedPerm',false)){ store.set('askedPerm',true); return askPermission(); }
   }).catch(()=>{});
 }
 async function askPermission(){
   const go=await modal(t('scanBtn').replace(/^🔍\s*/,''),b=>{ b.appendChild(el('p','m-msg',t('permAsk'))); },
     [[t('cancel'),()=>false,'btn-pill'],[t('allow'),()=>true,'btn-ok']]);
-  if(go) scanPhone(true);
+  if(go){ await scanPhone(true); checkVolumes(); }
 }
-async function scanPhone(manual){
-  if(!PM || !db) return;
-  if(scanning || adding){ if(manual) toast(t('stillSaving')); return; }
+/* ================= v42: AGREGAR MÚSICA =================
+   Regla de fondo: el usuario decide. Lo que hace a propósito se hace al instante (y se puede deshacer);
+   lo que Prometeo haría solo, o lo que mueve archivos, se pregunta antes. Los archivos se quedan donde están. */
+let phoneList=null, vols=[], tmpSongs=[], volPending=null, orgRun=false;
+const PRIMARY_VOL='external_primary', TARGET_REL='Music/Prometeo/';
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const isRemVol=n=>!!n && n!==PRIMARY_VOL && n!=='external' && n!=='internal';
+function volNames(){ return store.get('volNames',{})||{}; }
+function volLabel(n){ const v=vols.find(x=>x.name===n); if(v && v.label) return v.label; const m=volNames()[n]; if(m) return m; return isRemVol(n)? t('sdCard') : t('internalMem'); }
+function volMounted(n){ if(!isRemVol(n)) return true; const v=vols.find(x=>x.name===n); return !!(v && v.mounted); }
+function volOkMap(){ return store.get('volOk',{})||{}; }
+function volAllowed(n){ return !isRemVol(n) || !!volOkMap()[n]; }
+function dirKey(f){ return (f.vol||PRIMARY_VOL)+'|'+(f.folder||''); }
+function libScope(){ const s=store.get('libScope',null); return (s && typeof s==='object')? {all:s.all!==false, dirs:Array.isArray(s.dirs)? s.dirs : []} : {all:true,dirs:[]}; }
+function inScope(f){ if(!volAllowed(f.vol)) return false; const sc=libScope(); return sc.all || sc.dirs.includes(dirKey(f)); }
+function hidInfo(){ const h=store.get('hiddenInfo',{}); return (h && typeof h==='object')? h : {}; }
+function hidKey(s){ return s.mid!=null? String(s.mid) : 'u:'+s.uri; }
+function hashStr(x){ let h=5381; for(let i=0;i<x.length;i++) h=((h*33)^x.charCodeAt(i))>>>0; return h.toString(36); }
+function fmtSize(b){ b=+b||0; if(b>=1073741824) return (b/1073741824).toFixed(1).replace('.',t('dec'))+' GB'; return Math.max(1,Math.round(b/1048576))+' MB'; }
+async function readPhone(){
+  let list=(await PM.scan())||[];
+  list=list.filter(f=>{ const fn=f.name||f.title||''; return !(NO_PLAY_MIME.test(String(f.mime||'').toLowerCase()) || NO_PLAY_EXT.test(fn)); });
+  phoneList=list; return list;
+}
+async function refreshVols(){
+  if(!PM || !PM.volumes) return vols;
+  try{ vols=(await PM.volumes())||[]; const names=volNames(); let ch=false; vols.forEach(v=>{ if(v.label && names[v.name]!==v.label){ names[v.name]=v.label; ch=true; } }); if(ch) store.set('volNames',names); }catch(e){}
+  return vols;
+}
+/* Carpetas que Android vuelve a revisar antes de buscar (las de tu música) */
+function rescanDirs(){
+  const s=new Set(); songs.forEach(x=>{ if(x.folder!=null && x.mid!=null) s.add((x.vol||PRIMARY_VOL)+'|'+x.folder); }); libScope().dirs.forEach(k=>s.add(k));
+  return [...s].slice(0,60).map(k=>{ const i=k.indexOf('|'); return {vol:k.slice(0,i), rel:k.slice(i+1)}; });
+}
+/* Una canción quitada guarda su nombre y tamaño: si el archivo se mueve, se la reconoce igual */
+function hideSong(s){
+  const k=hidKey(s), h=store.get('hidden',[]);
+  if(!h.map(String).includes(k)){ h.push(s.mid!=null? s.mid : k); store.set('hidden',h); }
+  const I=hidInfo(); I[k]={n:s.name, f:s.fileName||'', z:s.size||0, d:Date.now(), fo:s.folder||'', v:s.vol||'', p:s.priv||''};
+  if(s.uri) I[k].r=songRecord(s);
+  store.set('hiddenInfo',I);
+}
+function unhide(k){
+  k=String(k); const h=store.get('hidden',[]).filter(x=>String(x)!==k); store.set('hidden',h);
+  const I=hidInfo(); if(I[k]){ delete I[k]; store.set('hiddenInfo',I); }
+}
+function moveHidden(oldK,newK){
+  const h=store.get('hidden',[]).map(x=>String(x)===String(oldK)? +newK : x); store.set('hidden',h);
+  const I=hidInfo(); if(I[oldK]){ I[newK]=I[oldK]; delete I[oldK]; store.set('hiddenInfo',I); }
+}
+/* ¿Cuántas canciones nuevas encontraría "Buscar en todo el teléfono"? (sin contar audios privados) */
+function countNew(list, all){
+  const hidden=new Set(store.get('hidden',[]).map(String)), I=hidInfo(), seen=new Set(list.map(f=>String(f.id)));
+  const have=new Set(songs.filter(s=>s.mid!=null && !s.temp).map(s=>String(s.mid)));
+  const lost=songs.filter(s=>s.mid!=null && !s.temp && !seen.has(String(s.mid)));
+  return list.filter(f=>{ const k=String(f.id), fn=f.name||f.title||'';
+    if(have.has(k) || hidden.has(k) || privKind(f.folder,fn,f.rec)) return false;
+    if(!volAllowed(f.vol) || (!all && !inScope(f))) return false;
+    if(lost.some(s=>s.fileName===fn && (s.size||0)===(f.size||0))) return false;
+    if(Object.keys(I).some(m=>!seen.has(m) && I[m] && I[m].f===fn && (I[m].z||0)===(f.size||0))) return false;
+    return true; }).length;
+}
+/* Busca la música del teléfono.
+   o.mode: 'auto' (carpetas elegidas) · 'all' (todo el teléfono) · 'vol' (solo la tarjeta o.vol) · 'only' (solo las de o.force)
+   o.force: números de canciones que el usuario eligió a mano (entran aunque estén quitadas)
+   Siempre: repara las canciones que se movieron de carpeta (mismo nombre y tamaño) */
+async function scanPhone(manual, o){
+  o=o||{}; const mode=o.mode||'auto', force=o.force||new Set();
+  if(!PM || !db) return null;
+  if(scanning || adding){ if(manual) toast(t('stillSaving')); return null; }
   let ok=false; try{ ok=await PM.hasPermission(); }catch(e){}
   if(!ok){
-    if(!manual) return;
+    if(!manual) return null;
     try{ ok=await PM.requestPermission(); }catch(e){}
-    if(!ok){ toast(t('permDenied')); return; }
+    if(!ok){ toast(t('permDenied')); return null; }
   }
-  scanning=true; if(manual) toast(t('scanning'));
+  scanning=true; if(manual && !o.quiet) toast(t('scanning'));
   let list=[];
-  try{ list=(await PM.scan())||[]; }catch(e){ scanning=false; toast(t('scanFail',(e && e.message)||e||'error')); return; }
-  const hidden=new Set(store.get('hidden',[]).map(String));
-  const have=new Map(); songs.forEach(s=>{ if(s.mid!=null) have.set(String(s.mid),s); });
-  const copies=songs.filter(s=>s.mid==null);
-  const seen=new Set(); let added=0, freedBytes=0, changed=false, newPriv=0;
+  try{
+    if(o.rescan && PM.rescan){ try{ await PM.rescan(rescanDirs()); }catch(e){} }
+    list=await readPhone();
+  }catch(e){ scanning=false; toast(t('scanFail',(e && e.message)||e||'error')); return null; }
+  const hidden=new Set(store.get('hidden',[]).map(String)), HI=hidInfo();
+  const have=new Map(); songs.forEach(s=>{ if(s.mid!=null && !s.temp) have.set(String(s.mid),s); });
+  const copies=songs.filter(s=>s.mid==null && !s.uri && !s.temp);
+  const seen=new Set(list.map(f=>String(f.id)));
+  const lost=songs.filter(s=>s.mid!=null && !s.temp && !seen.has(String(s.mid)));
+  let added=0, addedPriv=0, freedBytes=0, changed=false, newPriv=0, repaired=0;
   for(let i=0;i<list.length;i++){
-    const f=list[i], k=String(f.id); seen.add(k);
+    const f=list[i], k=String(f.id);
     const fn=f.name || f.title || t('songDefault',i+1);
     const mime=String(f.mime||'').toLowerCase();
-    if(NO_PLAY_MIME.test(mime) || NO_PLAY_EXT.test(fn)) continue;
     const artist=(f.artist && f.artist!=='<unknown>')? f.artist : '';
     const kind=privKind(f.folder,fn,f.rec);
     const old=have.get(k);
     if(old){
+      let upd=false;
       if(old.broken){ old.broken=false; changed=true; }
-      if(old.id==='p'+k && (old.priv||'')!==kind){ if(kind && !old.priv) newPriv++; if(kind) old.priv=kind; else delete old.priv; changed=true; try{ await dbPut('songs',songRecord(old)); }catch(e){} }
+      if(f.vol && old.vol!==f.vol){ old.vol=f.vol; upd=true; }
+      if((f.folder||'')!==(old.folder||'')){ old.folder=f.folder||''; upd=true; }
+      if(f.duration && !old.dur){ old.dur=f.duration; upd=true; }
+      if(old.id==='p'+k && (old.priv||'')!==kind){ if(kind && !old.priv) newPriv++; if(kind) old.priv=kind; else delete old.priv; upd=true; }
+      if(upd){ changed=true; try{ await dbPut('songs',songRecord(old)); }catch(e){} }
       continue;
+    }
+    /* ¿Se movió de carpeta? Android le da otro número: se reconoce por el nombre y el tamaño, y se repara sola */
+    const li=lost.findIndex(s=>s.fileName===fn && (s.size||0)===(f.size||0));
+    if(li>=0){
+      const s=lost.splice(li,1)[0]; s.mid=f.id; s.vol=f.vol||''; s.folder=f.folder||''; s.broken=false; if(f.duration) s.dur=f.duration;
+      have.set(k,s); try{ await dbPut('songs',songRecord(s)); }catch(e){} repaired++; changed=true; continue;
     }
     /* ¿esta canción ya estaba copiada desde la v40? -> usar el original y borrar la copia */
     const ci=copies.findIndex(c=>c.fileName===fn && (c.size || (c.blob && c.blob.size) || -1)===f.size);
     if(ci>=0){
       const c=copies.splice(ci,1)[0];
-      const meta=songRecord(c); meta.mid=f.id; meta.size=f.size; if(artist) meta.artist=artist; delete meta.priv; /* la agregó el usuario a mano en la v40: no se oculta */
+      const meta=songRecord(c); meta.mid=f.id; meta.size=f.size; meta.vol=f.vol||''; meta.folder=f.folder||''; if(artist) meta.artist=artist; delete meta.priv;
       if(!meta.mime) meta.mime=mime||guessType(fn);
       try{ await linkCopy(meta); delete c.blob; Object.assign(c,meta); delete c.priv; c.broken=false; freedBytes+=f.size; changed=true; }catch(e){}
       continue;
     }
-    if(hidden.has(k)) continue;
-    const meta={id:'p'+k, mid:f.id, name:cleanName(fn), fileName:fn, mime:mime||guessType(fn), size:f.size, added:Date.now()+i};
+    if(force.has(k)) unhide(k);
+    else {
+      if(hidden.has(k)) continue;
+      /* una canción quitada que se movió de carpeta sigue quitada (se ve en "Canciones quitadas") */
+      const hk=Object.keys(HI).find(m=>!seen.has(m) && HI[m] && HI[m].f===fn && (HI[m].z||0)===(f.size||0));
+      if(hk){ moveHidden(hk,k); continue; }
+      if(mode==='only') continue;
+      if(mode==='vol'){ if(f.vol!==o.vol) continue; }
+      else if(!volAllowed(f.vol)) continue;
+      else if(mode==='auto' && !kind && !inScope(f)) continue;
+    }
+    const meta={id:'p'+k, mid:f.id, name:cleanName(fn), fileName:fn, mime:mime||guessType(fn), size:f.size, added:Date.now()+i, vol:f.vol||'', folder:f.folder||''};
+    if(f.duration) meta.dur=f.duration;
     if(artist) meta.artist=artist;
     if(kind) meta.priv=kind;
-    try{ await dbPut('songs',meta); songs.push(meta); if(!kind) added++; changed=true; }catch(e){}
+    try{ await dbPut('songs',meta); songs.push(meta); if(kind) addedPriv++; else added++; changed=true; }catch(e){}
   }
-  /* las que ya no están en el teléfono se marcan (no se borran: puede ser una memoria SD que se sacó) */
-  if(list.length) songs.forEach(s=>{ if(s.mid!=null && !seen.has(String(s.mid)) && !s.broken){ s.broken=true; changed=true; } });
+  /* las que ya no están se marcan (no se borran: puede ser una tarjeta SD que se sacó) */
+  if(list.length) songs.forEach(s=>{ if(s.mid!=null && !s.temp && !seen.has(String(s.mid)) && !s.broken){ s.broken=true; changed=true; } });
   scanning=false;
   if(changed){
     sortSongs(); await cleanPriv(); if(queueSource.type==='lib') buildQueue(); qPos=queue.indexOf(currentId);
-    if(currentId && queueSource.type!=='priv'){ const cs=songById(currentId); if(cs && cs.priv){ stopAudio(); resetNow(); } }
+    if(currentId && queueSource.type!=='priv'){ const cs=songById(currentId); if(cs && cs.priv && !cs.temp){ stopAudio(); resetNow(); } }
     renderAll(); if(!currentId && queue.length && !radioId){ currentId=queue[0]; loadById(currentId,false); }
   }
   if(newPriv) setTimeout(()=>toast(t(newPriv===1?'privCleaned1':'privCleaned',newPriv)),2600);
-  if(freedBytes) toast(t('freed',Math.max(1,Math.round(freedBytes/1048576)))+(added? ' · '+t('scanNew',added) : ''));
-  else if(added) toast(t('scanNew',added));
-  else if(manual) toast(t('scanNone'));
+  if(!o.silent){
+    const parts=[]; if(freedBytes) parts.push(t('freed',Math.max(1,Math.round(freedBytes/1048576)))); if(added) parts.push(t('scanNew',added)); if(repaired) parts.push(t('repaired',repaired));
+    if(parts.length) toast(parts.join(' · ')); else if(manual && !o.quiet) toast(t('scanNone'));
+  }
+  return {added, addedPriv, repaired, list};
 }
-document.querySelectorAll('.btn-scan').forEach(b=>b.onclick=()=>scanPhone(true));
+
+/* ---- menú "＋ Agregar música" ---- */
+async function ensurePerm(){
+  let ok=false; try{ ok=await PM.hasPermission(); }catch(e){}
+  if(!ok){ try{ ok=await PM.requestPermission(); }catch(e){} }
+  if(!ok) toast(t('permDenied')); return ok;
+}
+function addOpt(b, ic, title, sub, onPick, main){
+  const r=el('button','add-opt'+(main?' main':'')); r.appendChild(el('span','ao-ic',ic));
+  const tx=el('div','ao-tx'); tx.appendChild(el('b',null,title)); tx.appendChild(el('small',null,sub)); r.appendChild(tx);
+  const bd=el('span','ao-bd'); r.appendChild(bd); r.onclick=onPick; b.appendChild(r); return bd;
+}
+async function openAddMenu(){
+  if(!PM){ toast(t('tapAdd')); return; }
+  if(!(await ensurePerm())) return;
+  const qn=removedList(false).length;
+  const pick=await modal(t('amT'),(b,close)=>{
+    b.appendChild(el('p','m-sub',t('amSub')));
+    const nb=addOpt(b,'🔍',t('amAll'),t('amAllSub'),()=>close('all'),true);
+    addOpt(b,'📂',t('amFold'),t('amFoldSub'),()=>close('folders'));
+    addOpt(b,'🎵',t('amLoose'),t('amLooseSub'),()=>close('loose'));
+    const qb=addOpt(b,'♻️',t('amRem'),t('amRemSub'),()=>close('removed')); if(qn){ qb.textContent=String(qn); qb.classList.add('red'); }
+    addOpt(b,'🗂️',t('amOrg'),t('amOrgSub'),()=>close('org'));
+    b.appendChild(el('p','privacy-small',t('amNote')));
+    readPhone().then(list=>{ const n=countNew(list,true); if(n){ nb.textContent=t('nNew',n); nb.classList.add('on'); } }).catch(()=>{});
+  },[[t('close'),()=>null,'btn-pill']]);
+  if(pick==='all') await scanPhone(true,{mode:'all',rescan:true});
+  else if(pick==='folders') await openFolders();
+  else if(pick==='loose') await pickLoose();
+  else if(pick==='removed') await openRemoved(false);
+  else if(pick==='org') await organizeMusic();
+}
+
+/* ---- 📂 Elegir carpetas ---- */
+function folderName(folder){ const p=String(folder||'').replace(/\/+$/,'').split('/').filter(Boolean); return p.length? p[p.length-1] : ''; }
+function folderIcon(folder){ const f=String(folder||'').toLowerCase(); if(/download/.test(f)) return '⬇️'; if(/bluetooth/.test(f)) return '🔵'; if(/telegram|signal|whatsapp/.test(f)) return '💬'; if(/^music\//.test(f)) return '🎵'; return '📁'; }
+async function openFolders(){
+  await refreshVols();
+  let list; try{ list=await readPhone(); }catch(e){ toast(t('scanFail',e)); return; }
+  const hidden=new Set(store.get('hidden',[]).map(String)), have=new Set(songs.filter(s=>s.mid!=null && !s.temp).map(s=>String(s.mid)));
+  const G=new Map(); let privN=0;
+  list.forEach(f=>{ const fn=f.name||f.title||''; if(privKind(f.folder,fn,f.rec)){ privN++; return; } if(!volMounted(f.vol)) return;
+    const k=dirKey(f); if(!G.has(k)) G.set(k,{k, vol:f.vol||PRIMARY_VOL, folder:f.folder||'', n:0, nNew:0});
+    const g=G.get(k); g.n++; if(!have.has(String(f.id)) && !hidden.has(String(f.id))) g.nNew++; });
+  const groups=[...G.values()].sort((a,b)=>(isRemVol(a.vol)-isRemVol(b.vol)) || b.n-a.n);
+  const sc=libScope(); let all=sc.all; const sel=new Set(all? groups.map(g=>g.k) : sc.dirs);
+  const res=await modal(t('foldT'),(b,close)=>{
+    const paint=()=>{
+      b.textContent='';
+      b.appendChild(el('p','m-sub',t('foldSub')));
+      b.appendChild(optRow(all, el('span','opt-ic','📱'), t('foldAll'), t('foldAllSub'), ()=>{ all=!all; if(all) groups.forEach(g=>sel.add(g.k)); paint(); }));
+      const box=el('div','fold-list'+(all?' all':''));
+      if(!groups.length) box.appendChild(el('div','empty',t('foldNone')));
+      groups.forEach(g=>{
+        const row=el('label','fold-row'); const cb=el('input'); cb.type='checkbox'; cb.checked=all || sel.has(g.k); cb.disabled=all;
+        cb.onchange=()=>{ if(cb.checked) sel.add(g.k); else sel.delete(g.k); upd(); };
+        row.appendChild(cb); row.appendChild(el('span','fi',isRemVol(g.vol)? '💾' : folderIcon(g.folder)));
+        const tx=el('div','ft'); tx.appendChild(el('b',null,folderName(g.folder)||volLabel(g.vol))); tx.appendChild(el('small',null,volLabel(g.vol)+'/'+g.folder.replace(/\/$/,''))); row.appendChild(tx);
+        row.appendChild(el('span','cnt'+(g.nNew?'':' all'),g.nNew? t('plusNew',g.nNew) : t('nAll',g.n)));
+        box.appendChild(row);
+      });
+      b.appendChild(box);
+      if(privN){ const pr=el('button','fold-row priv'); pr.appendChild(el('span','fi','🔒')); const tx=el('div','ft'); tx.appendChild(el('b',null,t('foldPriv'))); tx.appendChild(el('small',null,t('foldPrivSub'))); pr.appendChild(tx); pr.onclick=()=>close('priv'); b.appendChild(pr); }
+      b.appendChild(el('p','privacy-small',t('foldNote')));
+      const row=el('div','st-actions'); const bc=el('button','btn-pill',t('cancel')); bc.onclick=()=>close(null);
+      const bs=el('button','btn-ok'); bs.onclick=()=>close('save'); row.appendChild(bc); row.appendChild(bs); b.appendChild(row);
+      const upd=()=>{ const n=groups.filter(g=>all || sel.has(g.k)).reduce((a,g)=>a+g.nNew,0); bs.textContent=n? t('addN',n) : t('save'); };
+      upd();
+    };
+    paint();
+  },[]);
+  if(res==='priv'){ await openPrivSettings(); return; }
+  if(res!=='save') return;
+  const dirs=all? [] : groups.filter(g=>sel.has(g.k)).map(g=>g.k);
+  store.set('libScope',{all, dirs});
+  const ok=volOkMap(); groups.forEach(g=>{ if(isRemVol(g.vol) && (all || sel.has(g.k))) ok[g.vol]=true; }); store.set('volOk',ok);
+  await scanPhone(true,{mode:'auto',quiet:true});
+}
+
+/* ---- 🎵 Canciones sueltas (selector de archivos de Android) ---- */
+async function pickLoose(){
+  if(!PM.pickAudio){ toast(t('tapAdd')); return; }
+  let res; try{ res=await PM.pickAudio(); }catch(e){ if(String(e)!=='cancel') toast(t('pickFail')); return; }
+  if(!res || !res.length) return;
+  let list=[]; try{ list=await readPhone(); }catch(e){}
+  const byId=new Set(list.map(f=>String(f.id)));
+  let already=0, added=0, priv=0; const force=new Set(), uriAdds=[];
+  for(const r of res){
+    if(r.mid>=0){ const k=String(r.mid); const ex=songs.find(s=>!s.temp && String(s.mid)===k);
+      if(ex){ if(ex.broken){ force.add(k); } else already++; continue; }
+      if(byId.has(k)) force.add(k); else uriAdds.push(r); }
+    else uriAdds.push(r);
+  }
+  if(force.size){ const out=await scanPhone(true,{mode:'only',force,quiet:true,silent:true}); if(out){ added+=out.added; priv+=out.addedPriv; } }
+  for(const r of uriAdds){
+    if(songs.some(s=>s.uri===r.uri && !s.temp)){ already++; continue; }
+    const fn=r.name||'audio', kind=privKind('',fn,false);
+    const meta={id:'u'+hashStr(r.uri), uri:r.uri, name:cleanName(fn), fileName:fn, mime:(r.mime && r.mime.indexOf('audio/')===0)? r.mime : guessType(fn), size:r.size||0, added:Date.now()};
+    if(kind) meta.priv=kind;
+    unhide('u:'+r.uri);
+    try{ await dbPut('songs',meta); songs.push(meta); if(kind) priv++; else added++; }catch(e){}
+  }
+  sortSongs(); if(queueSource.type==='lib') buildQueue(); renderAll();
+  const parts=[]; if(added) parts.push(t('scanNew',added)); if(priv) parts.push(t('toPriv',priv)); if(already) parts.push(t('alreadyLib',already));
+  toast(parts.length? parts.join(' · ') : t('scanNone'));
+}
+
+/* ---- ♻️ Canciones quitadas ---- */
+function removedList(withPriv){
+  const I=hidInfo(), byId=new Map((phoneList||[]).map(f=>[String(f.id),f])), out=[];
+  store.get('hidden',[]).forEach(x=>{ const k=String(x), info=I[k], f=byId.get(k);
+    const p=info? info.p : (f? privKind(f.folder,f.name||'',f.rec) : '');
+    if(p && !withPriv) return;
+    if(!info && !f) return;
+    out.push({k, n: info? info.n : cleanName(f.name||f.title||''), fo: info? (info.v && isRemVol(info.v)? volLabel(info.v)+'/' : '')+(info.fo||'') : (f.folder||''), d: info? info.d : 0, p}); });
+  return out.sort((a,b)=>(b.d||0)-(a.d||0));
+}
+async function openRemoved(withPriv){
+  try{ await readPhone(); }catch(e){}
+  const L=removedList(withPriv), privN=withPriv? 0 : removedList(true).filter(x=>x.p).length;
+  const r=await modal(t('remT'),(b,close)=>{
+    b.appendChild(el('p','m-sub',t('remSub')));
+    if(!L.length) b.appendChild(el('div','empty',t('remNone')));
+    L.forEach(x=>{ const row=el('div','song-item'); const info=el('div','song-info'); info.appendChild(el('b',null,(x.p?'🔒 ':'')+x.n));
+      info.appendChild(el('small',null,[x.fo.replace(/\/$/,''), x.d? t('removedOn',new Date(x.d).toLocaleDateString(LANG)) : ''].filter(Boolean).join(' · '))); row.appendChild(info);
+      const bt=el('button','btn-pill back-btn',t('giveBack')); bt.onclick=()=>close({keys:[x.k]}); row.appendChild(bt); b.appendChild(row); });
+    if(L.length>1){ const all=el('button','btn-ghost',t('giveBackAll')); all.onclick=()=>close({keys:L.map(x=>x.k), all:true}); b.appendChild(all); }
+    if(privN){ const pr=el('button','m-item',t('remPriv')); pr.onclick=()=>close('priv'); b.appendChild(pr); }
+  },[[t('close'),()=>null,'btn-ok']]);
+  if(r==='priv'){ if(privUnlocked() || await requireAuth()) return openRemoved(true); return; }
+  if(!r || !r.keys) return;
+  if(r.all){ const yes=await modal(t('giveBackAll'),b=>b.appendChild(el('p','m-msg',t('giveBackAllQ',r.keys.length))),[[t('cancel'),()=>false,'btn-pill'],[t('giveBackAll'),()=>true,'btn-ok']]); if(!yes) return; }
+  await restoreHidden(r.keys);
+}
+async function restoreHidden(keys){
+  const I=hidInfo(); let list=[]; try{ list=await readPhone(); }catch(e){}
+  const byId=new Set(list.map(f=>String(f.id))); const force=new Set(); let gone=0, back=0;
+  for(const k of keys){
+    const info=I[k];
+    if(k.indexOf('u:')===0){ unhide(k); if(info && info.r && !songs.some(s=>s.uri===info.r.uri)){ try{ await dbPut('songs',info.r); songs.push(Object.assign({},info.r)); back++; }catch(e){} } else gone++; continue; }
+    if(byId.has(k)){ force.add(k); continue; }
+    const m=info && list.find(f=>(f.name||'')===info.f && (f.size||0)===(info.z||0));
+    if(m){ unhide(k); force.add(String(m.id)); } else { unhide(k); gone++; }
+  }
+  if(force.size){ const out=await scanPhone(true,{mode:'only',force,quiet:true,silent:true}); if(out) back+=out.added+out.addedPriv; }
+  sortSongs(); if(queueSource.type==='lib') buildQueue(); renderAll();
+  toast([back? t('gaveBack',back) : '', gone? t('goneN',gone) : ''].filter(Boolean).join(' · ') || t('scanNone'));
+}
+
+/* ---- deshacer (quitar canción, borrar lista) ---- */
+let undoT=null;
+function toastUndo(msg, fn){
+  let bar=$('undoBar'); if(!bar){ bar=el('div','undo-bar'); bar.id='undoBar'; document.body.appendChild(bar); }
+  bar.textContent=''; bar.appendChild(el('span',null,msg));
+  const b=el('button',null,t('undo')); b.onclick=()=>{ clearTimeout(undoT); bar.classList.remove('show'); fn(); }; bar.appendChild(b);
+  bar.classList.add('show'); clearTimeout(undoT); undoT=setTimeout(()=>bar.classList.remove('show'),6000);
+}
+
+/* ================= v42: TARJETAS SD Y MEMORIAS USB =================
+   Cada vez que se conecta una, Prometeo PREGUNTA: agregar, solo escuchar ahora, o no. Nunca agrega solo. */
+let volTimer=null, volBusy=false;
+function onVolEvent(){ clearTimeout(volTimer); volTimer=setTimeout(()=>checkVolumes(),1500); }
+function dropTemp(names){
+  const gone=new Set(names); const cur=currentId && songById(currentId);
+  const drop=songs.filter(s=>s.temp && gone.has(s.vol)); if(!drop.length) return;
+  songs=songs.filter(s=>!(s.temp && gone.has(s.vol)));
+  if(cur && cur.temp && gone.has(cur.vol)){ stopAudio(); queueSource={type:'lib'}; buildQueue(); resetNow(); }
+  if(String(libSeg).indexOf('tmp:')===0 && gone.has(libSeg.slice(4))) libSeg='music';
+}
+async function checkVolumes(){
+  if(!PM || !PM.volumes || volBusy) return; volBusy=true;
+  try{
+    let ok=false; try{ ok=await PM.hasPermission(); }catch(e){}
+    if(!ok) return;
+    await refreshVols();
+    const rem=vols.filter(v=>v.removable && v.mounted).map(v=>v.name);
+    const seen=Array.isArray(store.get('volSeen',null))? store.get('volSeen',[]) : [];
+    const gone=seen.filter(n=>!rem.includes(n)), fresh=rem.filter(n=>!seen.includes(n));
+    store.set('volSeen',rem);
+    if(gone.length){
+      const okM=volOkMap(), no=store.get('volNo',{})||{}; gone.forEach(n=>{ delete okM[n]; delete no[n]; }); store.set('volOk',okM); store.set('volNo',no);
+      dropTemp(gone); if(volPending && gone.includes(volPending.name)) volPending=null;
+      songs.forEach(s=>{ if(!s.temp && gone.includes(s.vol)) s.broken=true; });
+      renderAll(); toast(t('volGone',gone.map(volLabel).join(', ')));
+    }
+    for(const n of fresh) await askVolumeWhenReady(n);
+  } finally { volBusy=false; }
+}
+async function askVolumeWhenReady(n){
+  /* Android tarda unos segundos en revisar una tarjeta recién conectada */
+  let prev=-2;
+  for(let i=0;i<10;i++){
+    await sleep(i? 2000 : 1200); await refreshVols();
+    const v=vols.find(x=>x.name===n); if(!v || !v.mounted) return;
+    if(!v.indexed){ if(i>=2) break; continue; }
+    if(v.songs>=0 && v.songs===prev) break; prev=v.songs;
+  }
+  const v=vols.find(x=>x.name===n); if(!v || !v.mounted) return;
+  if(v.indexed) await askVolume(v); else await askUsb(v);
+}
+async function volDecide(v, items, inLibN, freshN){
+  return modal(t('volT'),(b,close)=>{
+    b.appendChild(el('p','m-msg',t('volHas',v.label||volLabel(v.name),nSongs(items))));
+    if(inLibN) b.appendChild(el('p','field-help',t('volInLib',inLibN,freshN)));
+    if(freshN || !inLibN) b.appendChild(optRow(false,el('span','opt-ic','✅'),inLibN? t('volAddNew',freshN) : t('volAdd'),t('volAddSub'),()=>close('add')));
+    b.appendChild(optRow(false,el('span','opt-ic','👀'),t('volListen'),t('volListenSub'),()=>close('listen')));
+    b.appendChild(optRow(false,el('span','opt-ic','🚫'),t('volNo'),t('volNoSub'),()=>close('no')));
+    if(inLibN) b.appendChild(optRow(false,el('span','opt-ic','🗑️'),t('volRemove'),t('volRemoveSub'),()=>close('remove')));
+  },[]);
+}
+async function askVolume(v){
+  /* primero se reconectan las canciones de la tarjeta que ya estaban (por si Android les cambió el número) */
+  const out=await scanPhone(false,{mode:'only',quiet:true,silent:true});
+  const list=(out && out.list) || phoneList || [];
+  const items=list.filter(f=>f.vol===v.name && !privKind(f.folder,f.name||'',f.rec));
+  if(!items.length) return;
+  const libMids=new Set(songs.filter(s=>s.mid!=null && !s.temp).map(s=>String(s.mid)));
+  const hidden=new Set(store.get('hidden',[]).map(String));
+  const inLib=items.filter(f=>libMids.has(String(f.id))).length;
+  const fresh=items.filter(f=>!libMids.has(String(f.id)) && !hidden.has(String(f.id)));
+  if(volPending && volPending.name===v.name) volPending=null;
+  const r=await volDecide(v, items.length, inLib, fresh.length);
+  await volAnswer(v, r, fresh.map(f=>({mid:f.id, name:f.name||f.title||'', size:f.size, mime:f.mime, folder:f.folder, dur:f.duration})), items.length);
+}
+async function volAnswer(v, r, fresh, total){
+  const okM=volOkMap(), no=store.get('volNo',{})||{};
+  if(!r){ volPending={name:v.name, label:v.label||volLabel(v.name), n:total}; renderLib(); toast(t('volLater')); return; }
+  volPending=null;
+  if(r==='add'){
+    okM[v.name]=true; delete no[v.name]; store.set('volOk',okM); store.set('volNo',no);
+    if(fresh.length && fresh[0].uri){ await addUriSongs(fresh, v.name, false); }
+    else await scanPhone(true,{mode:'vol',vol:v.name,quiet:true});
+  } else if(r==='listen'){
+    delete okM[v.name]; no[v.name]=true; store.set('volOk',okM); store.set('volNo',no);
+    if(fresh[0] && fresh[0].uri) await addUriSongs(fresh, v.name, true); else makeTemp(v.name, fresh);
+    libSeg='tmp:'+v.name; switchTab('biblioteca'); renderLib(); toast(t('volTmpOn',v.label||volLabel(v.name)));
+  } else if(r==='no'){
+    delete okM[v.name]; no[v.name]=true; store.set('volOk',okM); store.set('volNo',no);
+  } else if(r==='remove'){
+    delete okM[v.name]; no[v.name]=true; store.set('volOk',okM); store.set('volNo',no);
+    const rm=songs.filter(s=>!s.temp && !s.priv && s.vol===v.name);
+    for(const s of rm){ try{ await delSongWithAudio(s.id); }catch(e){} for(const p of playlists){ if(p.songIds.includes(s.id)){ p.songIds=p.songIds.filter(x=>x!==s.id); try{ await dbPut('playlists',p); }catch(e){} } } }
+    const ids=new Set(rm.map(s=>s.id)); if(currentId && ids.has(currentId)){ stopAudio(); resetNow(); }
+    songs=songs.filter(s=>!ids.has(s.id)); buildQueue(); renderAll(); toast(t('volRemoved',rm.length));
+  }
+}
+function makeTemp(vol, fresh){
+  songs=songs.filter(s=>!(s.temp && s.vol===vol));
+  fresh.forEach((f,i)=>{ const fn=f.name||'audio'; songs.push({id:'t'+(f.mid!=null? f.mid : hashStr(f.uri||fn)), mid:f.mid!=null? f.mid : undefined, uri:f.uri, temp:true, vol, name:cleanName(fn), fileName:fn, mime:String(f.mime||'').toLowerCase()||guessType(fn), size:f.size||0, folder:f.folder||'', added:Date.now()+i}); });
+  sortSongs();
+}
+async function addUriSongs(items, vol, temp){
+  if(temp){ makeTemp(vol, items); return; }
+  let n=0;
+  for(const f of items){
+    if(songs.some(s=>!s.temp && s.uri===f.uri)) continue;
+    const fn=f.name||'audio'; if(privKind(f.folder,fn,false)) continue;
+    const meta={id:'u'+hashStr(f.uri), uri:f.uri, vol, folder:f.folder||'', name:cleanName(fn), fileName:fn, mime:(f.mime && f.mime.indexOf('audio/')===0)? f.mime : guessType(fn), size:f.size||0, added:Date.now()+n};
+    try{ await dbPut('songs',meta); songs.push(meta); n++; }catch(e){}
+  }
+  sortSongs(); if(queueSource.type==='lib') buildQueue(); renderAll(); toast(n? t('scanNew',n) : t('scanNone'));
+}
+/* Memorias USB: muchos teléfonos no dejan que las apps vean su música directamente → se pide permiso con la ventana de Android */
+async function askUsb(v){
+  const trees=store.get('volTrees',{})||{};
+  let tree=trees[v.name]||'', items=null;
+  if(tree){ try{ items=await PM.listTree(tree); }catch(e){ items=null; } }
+  if(!items){
+    const go=await modal(t('volT'),b=>{ b.appendChild(el('p','m-msg',t('usbMsg',v.label||volLabel(v.name)))); b.appendChild(el('p','field-help',t('usbHelp'))); },
+      [[t('volNo'),()=>false,'btn-pill'],[t('usbAllow'),()=>true,'btn-ok']]);
+    if(!go) return;
+    try{ tree=await PM.pickTree(v.name); }catch(e){ return; }
+    trees[v.name]=tree; store.set('volTrees',trees);
+    toast(t('scanning'));
+    try{ items=await PM.listTree(tree); }catch(e){ toast(t('scanFail',e)); return; }
+  }
+  items=(items||[]).filter(f=>!privKind(f.folder,f.name||'',false));
+  if(!items.length){ toast(t('usbEmpty')); return; }
+  const inLib=items.filter(f=>songs.some(s=>!s.temp && s.uri===f.uri)).length;
+  const fresh=items.filter(f=>!songs.some(s=>!s.temp && s.uri===f.uri));
+  const r=await volDecide(v, items.length, inLib, fresh.length);
+  await volAnswer(v, r, fresh, items.length);
+}
+async function decidePending(){
+  if(!volPending) return; const p=volPending; await refreshVols();
+  const v=vols.find(x=>x.name===p.name && x.mounted); if(!v){ volPending=null; renderLib(); return; }
+  if(v.indexed) await askVolume(v); else await askUsb(v);
+}
+
+/* ================= v42: 🗂️ ORDENAR MI MÚSICA =================
+   Solo MUEVE (no copia): no ocupa espacio extra. Respeta la tarjeta SD: nunca pasa música de la SD al teléfono.
+   Explica antes; Android pide su propio permiso para mover archivos de otras apps. */
+function androidMajor(){ const m=navigator.userAgent.match(/Android (\d+)/); return m? +m[1] : 0; }
+function choiceRow(b, on, title, sub, fn){ const r=el('button','choice'+(on?' on':'')); r.appendChild(el('span','radio')); const tx=el('div','ct'); tx.appendChild(el('b',null,title)); if(sub){ const s=el('small'); s.innerHTML=sub; tx.appendChild(s); } r.appendChild(tx); r.onclick=fn; b.appendChild(r); return r; }
+function meter(v){ const w=el('div','meter'); const i=el('i'); const used=v.total>0? Math.max(0,Math.min(100,(1-v.free/v.total)*100)) : 0; i.style.width=used+'%'; w.appendChild(i); return w; }
+async function organizeMusic(){
+  if(!PM || !PM.organize){ toast(t('orgOld')); return; }
+  if(androidMajor() && androidMajor()<11){ toast(t('orgOld')); return; }
+  if(orgRun){ toast(t('orgBusy')); return; }
+  await refreshVols();
+  let list; try{ list=await readPhone(); }catch(e){ toast(t('scanFail',e)); return; }
+  const byId=new Map(list.map(f=>[String(f.id),f]));
+  const cand=songs.filter(s=>!s.temp && !s.priv && s.mid!=null && !s.broken && byId.has(String(s.mid))).map(s=>({s, f:byId.get(String(s.mid))}));
+  const inT=x=>(x.f.folder||'').toLowerCase()===TARGET_REL.toLowerCase();
+  /* repetidas: mismo archivo (nombre y tamaño) en dos carpetas → se deja una */
+  const groupsD=new Map(); cand.forEach(x=>{ const k=(x.f.name||'').toLowerCase()+'|'+(x.f.size||0); if(!groupsD.has(k)) groupsD.set(k,[]); groupsD.get(k).push(x); });
+  const dupOf=new Map(); groupsD.forEach(g=>{ if(g.length<2) return; g.sort((a,b)=>inT(b)-inT(a)); g.slice(1).forEach(x=>dupOf.set(x.s.id,g[0])); });
+  const todo=cand.filter(x=>!inT(x));
+  if(!todo.length && !dupOf.size){ toast(t('orgNothing')); return; }
+  const F=new Map(); todo.forEach(x=>{ const k=dirKey(x.f); if(!F.has(k)) F.set(k,{k, vol:x.f.vol||PRIMARY_VOL, folder:x.f.folder||'', n:0}); F.get(k).n++; });
+  const folders=[...F.values()].sort((a,b)=>b.n-a.n);
+  const sel=new Set(folders.map(g=>g.k));
+  const nInt=todo.filter(x=>!isRemVol(x.f.vol)).length, nSd=todo.length-nInt;
+  let mode='org';
+  const r1=await modal(t('orgT'),(b,close)=>{
+    const paint=()=>{
+      b.textContent='';
+      b.appendChild(el('p','m-msg',t('orgHas',todo.length,folders.length)));
+      if(nInt) b.appendChild(el('div','org-line',t('orgOnPhone',nInt)));
+      if(nSd) b.appendChild(el('div','org-line',t('orgOnSd',nSd)));
+      b.appendChild(el('div','field-label',t('orgWhat')));
+      choiceRow(b, mode==='leave', t('orgLeave'), t('orgLeaveSub'), ()=>{ mode='leave'; paint(); });
+      choiceRow(b, mode==='org', t('orgDo'), t('orgDoSub'), ()=>{ mode='org'; paint(); });
+      if(mode==='org'){
+        b.appendChild(el('div','field-label',t('orgFolders')));
+        folders.forEach(g=>{ const row=el('label','chk-row'); const cb=el('input'); cb.type='checkbox'; cb.checked=sel.has(g.k); cb.onchange=()=>{ if(cb.checked) sel.add(g.k); else sel.delete(g.k); };
+          row.appendChild(cb); row.appendChild(el('span',null,(isRemVol(g.vol)?'💾 ':'')+(folderName(g.folder)||volLabel(g.vol)))); row.appendChild(el('small',null,String(g.n))); b.appendChild(row); });
+        const info=el('div','org-info');
+        [['✅',t('orgKeep')],['🔒',t('orgPriv')]].concat(dupOf.size? [['♻️',t('orgDups',dupOf.size)]] : []).concat([['⚠️',t('orgAndroid')]]).forEach(([ic,tx])=>{ const d=el('div'); d.appendChild(el('span',null,ic)); d.appendChild(el('span',null,tx)); info.appendChild(d); });
+        b.appendChild(info);
+      }
+      const row=el('div','st-actions'); const bc=el('button','btn-pill',t('cancel')); bc.onclick=()=>close(null);
+      const bn=el('button','btn-ok',mode==='org'? t('orgNext') : t('done')); bn.onclick=()=>close(mode); row.appendChild(bc); row.appendChild(bn); b.appendChild(row);
+    };
+    paint();
+  },[]);
+  if(!r1) return;
+  if(r1==='leave'){ toast(t('orgLeft')); return; }
+  const chosen=todo.filter(x=>sel.has(dirKey(x.f)) && !dupOf.has(x.s.id));
+  const dels=[...dupOf.keys()].map(id=>songById(id)).filter(s=>s && sel.has(dirKey(byId.get(String(s.mid))||{})));
+  if(!chosen.length && !dels.length){ toast(t('orgNothing')); return; }
+  const sd=vols.filter(v=>v.removable && v.mounted && v.indexed).sort((a,b)=>b.free-a.free)[0];
+  const intV=vols.find(v=>v.primary) || {name:PRIMARY_VOL, free:-1, total:-1, label:t('internalMem')};
+  let dest='int';
+  if(sd){
+    dest='sd';
+    const intBytes=chosen.filter(x=>!isRemVol(x.f.vol)).reduce((a,x)=>a+(x.f.size||0),0);
+    const r2=await modal(t('orgWhereT'),(b,close)=>{
+      const paint=()=>{
+        b.textContent=''; b.appendChild(el('p','m-sub',t('orgWhereSub')));
+        const c1=choiceRow(b, dest==='sd', '💾 '+(sd.label||t('sdCard')), '', ()=>{ dest='sd'; paint(); });
+        c1.querySelector('.ct').appendChild(meter(sd)); c1.querySelector('.ct').appendChild(el('small',null,t('freeOf',fmtSize(sd.free),fmtSize(sd.total)))); c1.querySelector('.ct').appendChild(el('span','rec',t('orgRec')));
+        const c2=choiceRow(b, dest==='int', '📱 '+t('internalMem'), '', ()=>{ dest='int'; paint(); });
+        if(intV.total>0){ c2.querySelector('.ct').appendChild(meter(intV)); c2.querySelector('.ct').appendChild(el('small',null,t('freeOf',fmtSize(intV.free),fmtSize(intV.total)))); }
+        const box=el('div','org-sum'); box.appendChild(el('b',null,t('orgWillDo')));
+        const nI=chosen.filter(x=>!isRemVol(x.f.vol)).length, nS=chosen.length-nI;
+        if(dest==='sd'){ if(nI) box.appendChild(el('div',null,t('orgIntToSd',nI))); if(nS) box.appendChild(el('div',null,t('orgSdStay',nS)));
+          if(intBytes){ box.appendChild(el('div','big',t('orgFree',fmtSize(intBytes)))); } }
+        else { if(nI) box.appendChild(el('div',null,t('orgIntStay',nI))); if(nS) box.appendChild(el('div',null,t('orgSdStay',nS))); }
+        b.appendChild(box);
+        b.appendChild(el('p','privacy-small',t('orgSdRule')));
+        const row=el('div','st-actions'); const bc=el('button','btn-pill',t('back')); bc.onclick=()=>close(null);
+        const bn=el('button','btn-ok',t('orgNow')); bn.onclick=()=>close(dest); row.appendChild(bc); row.appendChild(bn); b.appendChild(row);
+      };
+      paint();
+    },[]);
+    if(!r2) return;
+    dest=r2;
+  }
+  const items=chosen.map(x=>({mid:x.f.id, vol: isRemVol(x.f.vol)? x.f.vol : (dest==='sd'? sd.name : (x.f.vol||PRIMARY_VOL)), rel:TARGET_REL, from:x.f.vol, size:x.f.size||0}));
+  const cross=items.filter(i=>i.vol!==(i.from||PRIMARY_VOL)), crossBytes=cross.reduce((a,i)=>a+i.size,0);
+  if(cross.length && sd && sd.free>=0 && crossBytes > sd.free-100*1048576){ toast(t('orgNoSpace',fmtSize(crossBytes),fmtSize(sd.free))); return; }
+  orgRun=true; orgShow(0,items.length+dels.length,'');
+  let res=null;
+  try{ res=await PM.organize({items:items.map(i=>({mid:i.mid, vol:i.vol, rel:i.rel})), dels:dels.map(s=>s.mid)}, ev=>orgShow(ev.done,ev.total,ev.name)); }
+  catch(e){ orgRun=false; orgShow(); toast(String(e)==='android11'? t('orgOld') : t('orgFail',e)); return; }
+  orgRun=false; orgShow();
+  if(!res || res.denied){ toast(t('orgDenied')); return; }
+  const ids=res.ids||{};
+  for(const s of songs){ if(s.mid!=null && ids[String(s.mid)]!=null){ s.mid=ids[String(s.mid)]; try{ await dbPut('songs',songRecord(s)); }catch(e){} } }
+  /* repetidas borradas: sus playlists pasan a la que quedó */
+  for(const s of dels){
+    const keep=dupOf.get(s.id); if(!keep) continue;
+    for(const p of playlists){ if(p.songIds.includes(s.id)){ p.songIds=p.songIds.map(x=>x===s.id? keep.s.id : x).filter((x,i,a)=>a.indexOf(x)===i); try{ await dbPut('playlists',p); }catch(e){} } }
+    try{ await delSongWithAudio(s.id); }catch(e){} songs=songs.filter(x=>x.id!==s.id); if(currentId===s.id){ currentId=keep.s.id; }
+  }
+  await scanPhone(false,{mode:'only',quiet:true,silent:true});
+  renderAll();
+  const where=(dest==='sd' && sd? (sd.label||t('sdCard')) : t('internalMem'))+'/Music/Prometeo';
+  await modal(t('orgDoneT'),b=>{
+    const w=el('div','org-done'); w.appendChild(el('div','big',String(res.moved||0))); w.appendChild(el('p','m-sub',t('orgDoneSub',where)));
+    if(dest==='sd' && cross.length && res.moved) w.appendChild(el('div','org-line',t('orgFreed',fmtSize(crossBytes))));
+    if(res.deleted) w.appendChild(el('div','org-line',t('orgDupsDone',res.deleted)));
+    w.appendChild(el('div','org-line',t('orgKeep')));
+    if(res.failed) w.appendChild(el('div','org-line bad',t('orgFailed',res.failed)));
+    b.appendChild(w);
+  },[[t('done'),()=>null,'btn-ok']]);
+}
+function orgShow(done,total,name){
+  const box=$('orgBox'); if(!box) return;
+  if(total==null){ box.classList.add('hidden'); return; }
+  box.classList.remove('hidden'); box.textContent='';
+  const h=el('div','org-h'); h.appendChild(el('b',null,t('orgRunning'))); h.appendChild(el('small',null,t('orgNofM',done,total))); box.appendChild(h);
+  const m=el('div','meter'); const i=el('i'); i.style.width=(total? Math.round(done/total*100) : 0)+'%'; m.appendChild(i); box.appendChild(m);
+  box.appendChild(el('small','org-name',name||'')); box.appendChild(el('p','privacy-small',t('orgKeepListening')));
+}
+document.querySelectorAll('.btn-scan').forEach(b=>b.onclick=()=>openAddMenu());
 
 /* ================= AUDIOS PRIVADOS (v41) =================
    Las notas de voz y audios de WhatsApp, Telegram, Signal y las grabaciones NO entran a tu música.
@@ -2528,6 +3494,8 @@ async function setLibSeg(k){
   libSeg=k; renderLib();
 }
 async function openPrivSettings(){
+  /* v42: los audios privados solo se ven desde aquí, y con la huella, el PIN o el patrón */
+  if(PM && !privUnlocked() && !(await requireAuth())) return;
   const counts={}; privSongs().forEach(s=>{ counts[s.priv]=(counts[s.priv]||0)+1; });
   const r=await modal(t('privSetT'),(b,close)=>{
     b.appendChild(el('p','m-msg',t('privSetIntro')));
@@ -2708,6 +3676,13 @@ async function openChSheet(ch){
   const L0=tvLists.find(L=>L.channels.includes(ch));
   const r=await modal(ch.n,(b,close)=>{
     if(L0) b.appendChild(el('p','m-msg',t('fromList',L0.name)+(ch.g? ' · '+ch.g : '')));
+    /* v42: 🔗 link del canal (se puede seleccionar, copiar, compartir y editar) */
+    const lb=el('div','link-blk'); lb.appendChild(el('div','field-label',t('chLink'))); lb.appendChild(el('div','link-txt',ch.u));
+    const lr=el('div','link-btns');
+    [['📋 '+t('copy'),()=>copyLink(ch.u)],['📤 '+t('share'),()=>shareLink(ch.u,ch.n)]].concat(L0? [['✏️ '+t('editLink'),()=>close('link')]] : []).forEach(([tx,fn])=>{ const bt=el('button','btn-pill',tx); bt.onclick=fn; lr.appendChild(bt); });
+    lb.appendChild(lr);
+    if(ch.o){ const rb=el('button','link-orig',t('backOrig')); rb.onclick=()=>close('orig'); lb.appendChild(rb); }
+    b.appendChild(lb);
     const fav=isFavCh(ch);
     b.appendChild(optRow(fav,el('span','opt-ic',fav?'★':'☆'),t(fav?'inFav':'notInFav'),t(fav?'tapToRemove':'tapToAdd'),()=>{ toggleFavCh(ch); close('again'); }));
     b.appendChild(el('div','field-label',t('addToMyLists')));
@@ -2723,6 +3698,8 @@ async function openChSheet(ch){
   if(r==='again') return openChSheet(ch);
   if(r==='del'){ await deleteChannel(ch); return; }
   if(r==='edit'){ await editChannel(ch); return; }
+  if(r==='link'){ if(L0 && L0.mine) await editChannel(ch); else if(L0) await editChLink(ch,L0); return; }
+  if(r==='orig'){ if(L0 && ch.o){ await setChLink(ch,L0,ch.o); toast(t('linkOrig')); } return; }
   if(r==='new'){ await newTvList(ch); return; }
   if(r==='play') playChannel(ch);
 }
@@ -3249,14 +4226,14 @@ $('castPrev').onclick=()=>castMove(-1); $('castNext').onclick=()=>castMove(1); $
 
 /* ================= COPIA DE SEGURIDAD (v41) =================
    Un archivo .json en Descargas/Prometeo. No sale del teléfono. La música no va dentro (se vuelve a encontrar). */
-const BK_KEYS=['radios','radioLists','tvFav','tvMyLists','tvAspect','tvQuality','skin','lang','vmode','repeat','shuffle','hidden','privOn','eq'];
+const BK_KEYS=['radios','radioLists','tvFav','tvMyLists','tvAspect','tvQuality','skin','lang','vmode','repeat','shuffle','hidden','privOn','eq','hiddenInfo','libScope','skipSil','boost'];
 async function buildBackup(){
   const prefs={}; BK_KEYS.forEach(k=>{ const v=store.get(k,undefined); if(v!==undefined) prefs[k]=v; });
   /* Las playlists guardan también cómo se llaman sus canciones, para encontrarlas en otro teléfono */
   const used=new Set(); playlists.forEach(p=>(p.songIds||[]).forEach(id=>used.add(id)));
   const songInfo={}; songs.forEach(x=>{ if(used.has(x.id)) songInfo[x.id]={n:x.name||'', t:x.title||'', a:x.artist||'', z:x.size||0}; });
   return {app:'Prometeo Player', kind:'backup', v:1, ver:VERSION, date:new Date().toISOString(),
-    prefs, tv:tvLists.map(L=>({id:L.id,name:L.name,url:L.url||'',mine:!!L.mine,channels:L.channels,hidden:L.hidden||[],added:L.added||0})),
+    prefs, tv:tvLists.map(L=>({id:L.id,name:L.name,url:L.url||'',mine:!!L.mine,channels:L.channels,hidden:L.hidden||[],over:L.over||{},added:L.added||0})),
     playlists:playlists.map(p=>({id:p.id,name:p.name,songIds:(p.songIds||[]).slice(),created:p.created||0})), songInfo};
 }
 async function saveBackup(){
@@ -3332,7 +4309,7 @@ async function restoreBackup(){
     try{ await dbPut('playlists',p); }catch(e){}
   }
   /* ---- ajustes (solo al reemplazar) ---- */
-  if(isRep){ ['tvAspect','tvQuality','skin','vmode','repeat','shuffle','hidden','privOn','eq'].forEach(k=>{ if(P[k]!==undefined) store.set(k,P[k]); });
+  if(isRep){ ['tvAspect','tvQuality','skin','vmode','repeat','shuffle','hidden','privOn','eq','hiddenInfo','libScope','skipSil','boost'].forEach(k=>{ if(P[k]!==undefined) store.set(k,P[k]); });
     if(P.eq && typeof P.eq==='object'){ eqS=Object.assign(eqDefault(),P.eq); eqSync(); }
     if(P.skin && SKINS[P.skin]){ skin=P.skin; applySkin(); }
     if(P.vmode) vMode=P.vmode; if(P.repeat!==undefined) repeatMode=P.repeat; if(P.shuffle!==undefined) shuffle=P.shuffle;
@@ -3342,6 +4319,37 @@ async function restoreBackup(){
   toast(t('bkDone'));
   if(isRep && P.lang && P.lang!==LANG && I18N[P.lang]) setTimeout(()=>location.reload(),900);
 }
+
+/* ================= v42: 🔁 REPETIR A-B, ⏩ SALTAR SILENCIOS Y 🔊 VOLUMEN EXTRA (música del teléfono) ================= */
+let abA=null, abB=null;
+function abLabel(){ const b=$('btnAB'); if(!b) return; b.classList.toggle('on',abA!=null); b.classList.toggle('set',abB!=null);
+  b.textContent= abA==null? 'A-B' : abB==null? 'A '+fmt(abA)+' → B' : '🔁 '+fmt(abA)+'–'+fmt(abB)+' ✕'; }
+function abClear(){ abA=null; abB=null; abLabel(); }
+function abTap(){
+  if(radioId) return;
+  if(castOn && castKind==='music'){ toast(t('abCast')); return; }
+  if(!currentId){ toast(t('pickFirst')); return; }
+  if(abA==null){ abA=audio.currentTime||0; toast(t('abA',fmt(abA))); }
+  else if(abB==null){ const x=audio.currentTime||0; if(x<=abA+1){ toast(t('abShort')); return; } abB=x; audio.currentTime=abA; toast(t('abOn',fmt(abA),fmt(abB))); }
+  else { abA=null; abB=null; toast(t('abOff')); }
+  abLabel();
+}
+audio.addEventListener('timeupdate',()=>{ if(abA!=null && abB!=null && audio.currentTime>=abB){ audio.currentTime=abA; } });
+$('btnAB').onclick=abTap;
+function boostPct(){ const v=+store.get('boost',100); return isFinite(v)? Math.max(100,Math.min(200,v)) : 100; }
+let silOn=!!store.get('skipSil',false), silSince=0, silFast=false, silIv=null;
+function fxNeeded(){ return eqActive() || boostPct()>100 || silOn; }
+function silSet(f){ if(silFast===f) return; silFast=f; try{ audio.playbackRate=f? 3 : 1; }catch(e){} }
+/* Si hay silencio por más de medio segundo, la canción avanza rápido hasta que vuelve el sonido */
+function silTick(){
+  if(!silOn || radioId || (castOn && castKind==='music') || audio.paused || !an || !wave){ silSince=0; silSet(false); return; }
+  an.getByteTimeDomainData(wave); let sum=0; for(let i=0;i<wave.length;i++){ const v=(wave[i]-128)/128; sum+=v*v; }
+  const rms=Math.sqrt(sum/wave.length), now=performance.now();
+  if(rms<0.006){ if(!silSince) silSince=now; if(now-silSince>550) silSet(true); } else { silSince=0; silSet(false); }
+}
+function silApply(){ clearInterval(silIv); silIv=null; if(silOn){ silIv=setInterval(silTick,80); if(!audio.paused) ensureGraph(); } else { silSince=0; silSet(false); } }
+audio.addEventListener('loadstart',()=>{ silFast=false; silSince=0; });
+silApply();
 
 /* ================= 🎚️ ECUALIZADOR (v42) =================
    Música del teléfono: se ecualiza dentro de la app (Web Audio). Radio y TV: el ecualizador de Android
@@ -3369,8 +4377,9 @@ function eqBuild(src){
     ll.connect(mg,0,0); rl.connect(mg,0,0); rr.connect(mg,0,1); lr.connect(mg,0,1);
     /* limitador: deja subir los bajos sin que suene roto */
     const lim=actx.createDynamicsCompressor(); lim.threshold.value=-2; lim.knee.value=0; lim.ratio.value=20; lim.attack.value=0.003; lim.release.value=0.15;
-    mg.connect(lim);
-    eqNodes={f,bass,pre,ll,rr,lr,rl}; eqApplyWeb(); return lim;
+    /* v42: 🔊 volumen extra (antes del limitador, que evita que suene roto) */
+    const boost=actx.createGain(); mg.connect(boost); boost.connect(lim);
+    eqNodes={f,bass,pre,ll,rr,lr,rl,boost}; eqApplyWeb(); return lim;
   }catch(e){ eqNodes=null; return src; }
 }
 function eqApplyWeb(){
@@ -3382,12 +4391,13 @@ function eqApplyWeb(){
   N.pre.gain.value=Math.pow(10,-head*0.3/20);
   const w= on? 1+eqS.virt/100*1.6 : 1, same=(1+w)/2, cross=(1-w)/2;
   N.ll.gain.value=same; N.rr.gain.value=same; N.lr.gain.value=cross; N.rl.gain.value=cross;
+  if(N.boost) N.boost.gain.value=boostPct()/100;
 }
 function eqSync(){
   store.set('eq',eqS); eqApplyWeb();
-  if(eqActive() && !audio.paused && !actx) ensureGraph();
-  if(PM && PM.audioFx) PM.audioFx({on:!!eqS.on, bands:eqS.bands.map(Number), bass:eqS.bass|0, virt:eqS.virt|0}).catch(()=>{});
-  const b=$('btnEq'); if(b){ b.classList.toggle('on',eqActive()); b.title=t('eqT'); b.setAttribute('aria-label',t('eqT')); }
+  if(fxNeeded() && !audio.paused && !actx) ensureGraph();
+  if(PM && PM.audioFx) PM.audioFx({on:!!eqS.on, bands:eqS.bands.map(Number), bass:eqS.bass|0, virt:eqS.virt|0, boost:boostPct()}).catch(()=>{});
+  const b=$('btnEq'); if(b){ b.classList.toggle('on',eqActive() || boostPct()>100 || silOn); b.title=t('eqT'); b.setAttribute('aria-label',t('eqT')); }
 }
 function openEq(){
   modal(t('eqT'),b=>{
@@ -3410,6 +4420,20 @@ function openEq(){
     wrap.appendChild(el('p','privacy-small',t('eqNote')));
     sw.onclick=()=>{ eqS.on=!eqS.on; paint(); eqSync(); };
     paint();
+    /* v42: 🔊 volumen extra y ⏩ saltar silencios (funcionan aunque el ecualizador esté apagado) */
+    const ex=el('div','eq-extra');
+    const bw=el('div','eq-sl'); const bl=el('label'); const bsp=el('span'); bl.appendChild(el('b',null,t('boostT'))); bl.appendChild(bsp);
+    const br=el('input'); br.type='range'; br.min=100; br.max=200; br.step=10; br.value=boostPct(); br.setAttribute('aria-label',t('boostT'));
+    const warn=el('p','boost-warn',t('boostWarn'));
+    const bpaint=()=>{ bsp.textContent=br.value+'%'; warn.classList.toggle('hidden',+br.value<=150); };
+    br.oninput=()=>{ store.set('boost',+br.value); bpaint(); eqSync(); };
+    bw.appendChild(bl); bw.appendChild(br); ex.appendChild(bw); ex.appendChild(warn); bpaint();
+    ex.appendChild(el('p','privacy-small',t('boostSub')));
+    const sr=el('div','eq-head sil-row'); const stx=el('div'); stx.appendChild(el('b',null,t('silT'))); stx.appendChild(el('small',null,t('silSub'))); sr.appendChild(stx);
+    const ssw=el('button','sw'+(silOn?' on':'')); ssw.setAttribute('role','switch'); ssw.setAttribute('aria-label',t('silT'));
+    ssw.onclick=()=>{ silOn=!silOn; store.set('skipSil',silOn); ssw.classList.toggle('on',silOn); silApply(); eqSync(); toast(t(silOn?'silOnT':'silOffT')); };
+    sr.appendChild(ssw); ex.appendChild(sr);
+    b.appendChild(ex);
   },[[t('close'),()=>null,'btn-ok']]);
 }
 $('btnEq').onclick=openEq;
@@ -3585,7 +4609,7 @@ $('btnPrivSet').onclick=openPrivSettings;
   await cleanPriv();
   loadTv();
   if(navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(()=>{});
-  queueSource=store.get('src',{type:'lib'}); if(queueSource && queueSource.type==='priv') queueSource={type:'lib'};
+  queueSource=store.get('src',{type:'lib'}); if(!queueSource || queueSource.type==='priv' || queueSource.type==='tmp') queueSource={type:'lib'};
   const last=store.get('last',null);
   const startId=(songById(last) && !songById(last).priv)? last : null;
   currentId=startId; buildQueue();

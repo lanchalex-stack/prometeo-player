@@ -2,26 +2,43 @@
 
 <img src="res/icon/android/legacy-xxxhdpi.png" alt="Ícono de Prometeo Player" width="128">
 
-# 🔥 Prometeo Player V41
+# 🔥 Prometeo Player V42
 
 **Reproductor de música, radio y TV para Android. Sin anuncios y sin recopilar datos.**
 
-![Versión](https://img.shields.io/badge/versión-V41-00e5ff?style=for-the-badge)
+![Versión](https://img.shields.io/badge/versión-V42-00e5ff?style=for-the-badge)
 ![Android](https://img.shields.io/badge/Android-7%2B-3ddc84?style=for-the-badge&logo=android&logoColor=white)
 ![Privacidad](https://img.shields.io/badge/sin-recopilar%20datos-0a0a0a?style=for-the-badge)
 
-[**⬇️ Descargar APK V41**](https://github.com/lanchalex-stack/prometeo-player/releases/tag/v41) · [**🌐 Probar la versión web**](https://lanchalex-stack.github.io/prometeo-player/)
+[**⬇️ Descargar APK V42**](https://github.com/lanchalex-stack/prometeo-player/releases/tag/v42) · [**🌐 Probar la versión web**](https://lanchalex-stack.github.io/prometeo-player/)
 
 </div>
 
 ---
+
+## ✨ Novedades de la V42
+
+- ➕ **Agregar música, a tu manera**. El botón **＋ Agregar música** abre un menú:
+  - 🔍 **Buscar en todo el teléfono**, aunque la música esté regada en cualquier carpeta (antes de buscar, Prometeo le pide a Android que revise las carpetas de nuevo).
+  - 📂 **Elegir carpetas**: solo salen las que tienen música, con cuántas canciones nuevas hay. Las carpetas marcadas se revisan solas al abrir Prometeo.
+  - 🎵 **Elegir canciones sueltas** con el selector de archivos de Android. Una canción elegida a mano entra siempre.
+  - ♻️ **Canciones quitadas**: las que sacaste de Prometeo, para devolverlas con un toque.
+  - 🗂️ **Ordenar mi música** (opcional): junta la música regada en **Música/Prometeo**. Solo **mueve** (no copia: no ocupa espacio extra), explica antes y Android pide su propio permiso. Respeta la **tarjeta SD**: nunca pasa música de la SD al teléfono, y puede pasar la del teléfono a la SD para liberar espacio.
+- 🔧 **Canciones movidas se reparan solas**: si mueves un archivo de carpeta, Prometeo lo reconoce (nombre y tamaño), no se duplica y sigue en tus playlists.
+- 🗑️ **Quitar una canción es al instante, con "Deshacer"**. El archivo del teléfono nunca se toca.
+- 💾 **Tarjetas SD y memorias USB**: cada vez que conectas una, Prometeo **pregunta**: agregar, **solo escuchar ahora** (temporal) o no. Nunca agrega nada solo. Si la sacas, sus canciones quedan esperando "💾 Tarjeta no conectada" y se saltan solas al reproducir.
+- 📺 **Listas M3U editables** (botón ⋮): cambiar nombre, cambiar el link (se prueba que cargue antes de guardarlo) o el archivo, actualizar y borrar con "Deshacer". Favoritos y "Seguir viendo" se conservan.
+- 🔗 **Link de cada canal y emisora**: se ve, se puede seleccionar, **copiar**, **compartir** y **✏️ editar**. Tu link corregido se mantiene al actualizar la lista, y puedes volver al original.
+- 🔁 **Repetir A-B**, ⏩ **saltar silencios** (podcasts, clases, notas de voz) y 🔊 **volumen extra** con tope seguro.
+- 🎨 **2 skins nuevos**: **Esmeralda** (verde brillante) y **Blanco y Negro** (el ícono de Prometeo conserva sus colores).
+- 🔒 La Biblioteca ya no muestra el aviso de audios privados: solo se ven desde ⚙️, con tu huella, PIN o patrón.
 
 ## ✨ Novedades de la V41
 
 - 🎨 **5 skins**: Neón (el de siempre) y 4 nuevos: Fuego, Pink, Amatista y Claro.
 - 🌍 **4 idiomas**: español, inglés, portugués y francés. Por defecto usa el idioma del teléfono.
 - ℹ️ **Acerca de**, con los créditos y las licencias de todo lo que usa la app.
-- 💾 **Sin copias de tus canciones**: Prometeo lee la música directamente del teléfono, con el botón **🔍 Buscar música en el teléfono**. Al actualizar desde la V40 se libera el espacio de las copias viejas.
+- 💾 **Sin copias de tus canciones**: Prometeo lee la música directamente del teléfono, con el botón **＋ Agregar música**. Al actualizar desde la V40 se libera el espacio de las copias viejas.
 - 🖼️ **Portada del álbum** al lado del visualizador, sacada del propio archivo (MP3, FLAC, OGG/Opus, M4A).
 - 🚗 **Pantalla del carro por Bluetooth**: canción, artista, álbum y portada, con los botones del volante.
   - Se pausa sola al apagar el carro o desconectar el Bluetooth.
@@ -79,13 +96,14 @@
   - Internet y estado de la red, solo para la radio, la TV y buscar emisoras.
   - Reproducción en segundo plano, para que la música y la radio sigan sonando.
   - Huella o bloqueo de pantalla, solo para abrir los audios privados.
+- **Archivos**: las canciones sueltas y las memorias USB se abren solo con el **selector de Android** (tú eliges qué). Para **🗂️ Ordenar**, Android muestra su propia ventana de permiso antes de mover archivos. Prometeo no pide acceso a "todos los archivos".
 - No pide ubicación, contactos, cámara ni micrófono.
 
 ## 📲 Instalación
 
-1. Descarga **`Prometeo-v41.apk`** desde [Releases](https://github.com/lanchalex-stack/prometeo-player/releases/tag/v41).
+1. Descarga **`Prometeo-v42.apk`** desde [Releases](https://github.com/lanchalex-stack/prometeo-player/releases/tag/v42).
 2. Ábrelo y permite **"Instalar apps desconocidas"** si Android lo pide.
-3. Si tienes la V40, toca **Actualizar**. **No la desinstales**, así conservas tus playlists y se libera el espacio de las copias.
+3. Si tienes una versión anterior, toca **Actualizar**. **No la desinstales**, así conservas tus playlists, emisoras y listas.
 4. Acepta el permiso de **Música y audio**. Prometeo encontrará tu música.
 
 ## 🛠️ Compilar desde el código (Termux + Cordova)

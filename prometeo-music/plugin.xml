@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
         xmlns:android="http://schemas.android.com/apk/res/android"
-        id="prometeo-music" version="1.9.0">
+        id="prometeo-music" version="1.10.0">
     <name>Prometeo Music</name>
     <description>Música del teléfono sin copiarla, sesión para el carro, radio y TV con ExoPlayer (AndroidX Media3). Sin recopilar datos.</description>
     <author>Lanchalex</author>
@@ -70,6 +70,7 @@
         <source-file src="src/android/AudioFx.java" target-dir="src/com/prometeo/music" />
         <source-file src="src/android/LiveHls.java" target-dir="src/com/prometeo/music" />
         <source-file src="src/android/Net.java" target-dir="src/com/prometeo/music" />
+        <source-file src="src/android/Library.java" target-dir="src/com/prometeo/music" />
         <!-- ExoPlayer (AndroidX Media3) — © The Android Open Source Project — Apache License 2.0 -->
         <!-- WebViewAssetLoader (para leer la música sin copiarla); Cordova la usa pero no la comparte con los plugins -->
         <framework src="androidx.webkit:webkit:1.14.0" />

@@ -457,7 +457,7 @@ public class VideoActivity extends Activity {
     /* ============================ REPRODUCTOR ============================ */
     private void buildPlayer() {
         DefaultHttpDataSource.Factory http = new DefaultHttpDataSource.Factory()
-                .setUserAgent("PrometeoPlayer/41")
+                .setUserAgent("PrometeoPlayer/42")
                 .setAllowCrossProtocolRedirects(true)
                 .setConnectTimeoutMs(15000)
                 .setReadTimeoutMs(20000);

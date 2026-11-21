@@ -11,7 +11,7 @@ module.exports = {
     hasPermission: function () { return call('hasPermission').then(function (r) { return r === 1; }); },
     /** muestra la ventana de permiso de Android; true si el usuario aceptó */
     requestPermission: function () { return call('requestPermission').then(function (r) { return r === 1; }); },
-    /** lista de canciones: [{id,name,title,artist,duration,size,mime,folder,rec}] */
+    /** lista de canciones: [{id,name,title,artist,duration,size,mime,folder,rec,vol,date}] */
     scan: function () { return call('scan'); },
     /** dirección para reproducir una canción sin copiarla */
     url: function (id) { return '/__prometeo_music__/' + id; },
@@ -84,6 +84,33 @@ module.exports = {
     },
     /** abre los ajustes de seguridad de Android para poner un bloqueo de pantalla */
     openLockSettings: function () { return call('openLockSettings'); },
+    /* ---- v42: Agregar música, memorias (SD / USB) y ordenar ---- */
+    /** memorias del teléfono: [{name, label, removable, primary, mounted, free, total, indexed, songs}] */
+    volumes: function () { return call('volumes'); },
+    /** aviso cuando se conecta o se saca una tarjeta / memoria USB: fn({type:'volumes'}) */
+    onVolumes: function (fn) { exec(function (ev) { if (ev && fn) fn(ev); }, function () {}, 'PrometeoMusic', 'volEvents', []); },
+    /** le pide a Android que vuelva a revisar carpetas: dirs = [{vol, rel}] */
+    rescan: function (dirs) { return new Promise(function (ok, fail) { exec(ok, fail, 'PrometeoMusic', 'rescan', [dirs || []]); }); },
+    /** selector de archivos de Android (varias canciones): [{uri, name, size, mime, mid}] */
+    pickAudio: function () { return call('pickAudio'); },
+    /** permitir una carpeta o memoria USB (vol = nombre de la memoria): devuelve el permiso (tree) */
+    pickTree: function (vol) { return new Promise(function (ok, fail) { exec(ok, fail, 'PrometeoMusic', 'pickTree', [vol || '']); }); },
+    /** canciones dentro de una carpeta permitida: [{uri, name, size, mime, folder}] */
+    listTree: function (tree) { return new Promise(function (ok, fail) { exec(ok, fail, 'PrometeoMusic', 'listTree', [tree]); }); },
+    releaseUri: function (uri) { return new Promise(function (ok, fail) { exec(ok, fail, 'PrometeoMusic', 'releaseUri', [uri]); }); },
+    /** dirección para reproducir una canción elegida con el selector */
+    uriUrl: function (uri) { var b = btoa(unescape(encodeURIComponent(uri))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); return '/__prometeo_uri__/' + b + '/a'; },
+    /** mover canciones a Música/Prometeo: job = {items:[{mid, vol, rel}], dels:[mid]}; onProgress({done,total,name}) */
+    organize: function (job, onProgress) {
+        return new Promise(function (ok, fail) {
+            exec(function (ev) { if (ev && ev.type === 'progress') { if (onProgress) onProgress(ev); } else ok(ev); }, fail, 'PrometeoMusic', 'organize', [job]);
+        });
+    },
+    /* ---- v42: links de canales y emisoras ---- */
+    copyText: function (text) { return new Promise(function (ok, fail) { exec(ok, fail, 'PrometeoMusic', 'copyText', [text]); }); },
+    shareText: function (text, subject) { return new Promise(function (ok, fail) { exec(ok, fail, 'PrometeoMusic', 'shareText', [text, subject || '']); }); },
+    /** prueba un link (solo se conecta y se cierra): {ok, code, ctype, why} */
+    probeUrl: function (url) { return new Promise(function (ok, fail) { exec(ok, fail, 'PrometeoMusic', 'probeUrl', [url]); }); },
     /** botones del volante / del carro: fn({action:'play'|'pause'|'next'|'prev'|'seek', pos}) */
     onControl: function (fn) {
         exec(function (ev) { if (ev && fn) fn(ev); }, function () {}, 'PrometeoMusic', 'controls', []);

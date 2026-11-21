@@ -67,6 +67,7 @@ import java.io.InputStream;
 public class PrometeoMusic extends CordovaPlugin {
     private static final int REQ_PERM = 4141;
     private static final String PREFIX = "__prometeo_music__/";
+    private static final String PREFIX_URI = "__prometeo_uri__/";
     private CallbackContext permCallback;
     private CordovaPluginPathHandler pathHandler;
 
@@ -140,6 +141,7 @@ public class PrometeoMusic extends CordovaPlugin {
         registerNoisy();
         registerBluetoothWatch();
         registerNetworkWatch();
+        registerVolumeWatch();
         /* Botones de la notificación de música (Android 12 o menos): igual que los del volante */
         RadioService.controls = new RadioService.Controls() {
             public void on(String what) { sendControl(what, -1); }
@@ -407,6 +409,135 @@ public class PrometeoMusic extends CordovaPlugin {
             cordova.getActivity().runOnUiThread(new Runnable() { public void run() { authenticate(title, sub, cb); } });
             return true;
         }
+        /* ---- v42: memorias (interna, tarjeta SD, USB) y "Agregar música" ---- */
+        if ("volumes".equals(action)) {
+            cordova.getThreadPool().execute(new Runnable() {
+                public void run() { try { cb.success(Library.volumes(cordova.getContext())); } catch (Exception e) { cb.error(String.valueOf(e.getMessage())); } }
+            });
+            return true;
+        }
+        if ("volEvents".equals(action)) {
+            volCallback = cb;
+            PluginResult r = new PluginResult(PluginResult.Status.NO_RESULT);
+            r.setKeepCallback(true);
+            cb.sendPluginResult(r);
+            return true;
+        }
+        if ("rescan".equals(action)) {
+            final JSONArray dirs = args.optJSONArray(0);
+            cordova.getThreadPool().execute(new Runnable() {
+                public void run() { Library.rescan(cordova.getContext(), dirs, 8000); cb.success(); }
+            });
+            return true;
+        }
+        if ("pickAudio".equals(action)) {
+            if (pickCallback != null) pickCallback.error("cancel");
+            pickCallback = cb;
+            Intent i = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+            i.addCategory(Intent.CATEGORY_OPENABLE);
+            i.setType("audio/*");
+            i.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+            try { cordova.startActivityForResult(this, i, REQ_PICK); }
+            catch (Exception e) { pickCallback = null; cb.error("nopicker"); }
+            return true;
+        }
+        if ("pickTree".equals(action)) {
+            if (pickCallback != null) pickCallback.error("cancel");
+            pickCallback = cb;
+            Intent i = null;
+            if (Build.VERSION.SDK_INT >= 29) {
+                android.os.storage.StorageVolume v = Library.findVol(cordova.getContext(), args.optString(0, ""));
+                if (v != null) { try { i = v.createOpenDocumentTreeIntent(); } catch (Exception ignored) { i = null; } }
+            }
+            if (i == null) i = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+            try { cordova.startActivityForResult(this, i, REQ_TREE); }
+            catch (Exception e) { pickCallback = null; cb.error("nopicker"); }
+            return true;
+        }
+        if ("listTree".equals(action)) {
+            final String tree = args.optString(0, "");
+            cordova.getThreadPool().execute(new Runnable() {
+                public void run() {
+                    try {
+                        Uri u = Uri.parse(tree);
+                        if (!Library.uriAllowed(cordova.getContext(), u)) { cb.error("notallowed"); return; }
+                        cb.success(Library.listTree(cordova.getContext(), u));
+                    } catch (Exception e) { cb.error(String.valueOf(e.getMessage())); }
+                }
+            });
+            return true;
+        }
+        if ("releaseUri".equals(action)) {
+            try { cordova.getContext().getContentResolver().releasePersistableUriPermission(Uri.parse(args.optString(0, "")), Intent.FLAG_GRANT_READ_URI_PERMISSION); } catch (Exception ignored) { }
+            cb.success();
+            return true;
+        }
+        if ("organize".equals(action)) {
+            final JSONObject job = args.optJSONObject(0);
+            if (Build.VERSION.SDK_INT < 30) { cb.error("android11"); return true; }
+            if (organizing) { cb.error("busy"); return true; }
+            organizing = true;
+            cordova.getThreadPool().execute(new Runnable() {
+                public void run() {
+                    try { JSONObject r = organize(job, cb); PluginResult pr = new PluginResult(PluginResult.Status.OK, r); cb.sendPluginResult(pr); }
+                    catch (Exception e) { cb.error(String.valueOf(e.getMessage())); }
+                    finally { organizing = false; }
+                }
+            });
+            return true;
+        }
+        /* ---- v42: copiar y compartir links (canales y emisoras) ---- */
+        if ("copyText".equals(action)) {
+            final String text = args.optString(0, "");
+            cordova.getActivity().runOnUiThread(new Runnable() {
+                public void run() {
+                    try {
+                        android.content.ClipboardManager cm = (android.content.ClipboardManager) cordova.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+                        cm.setPrimaryClip(android.content.ClipData.newPlainText("Prometeo", text));
+                        cb.success();
+                    } catch (Exception e) { cb.error(String.valueOf(e.getMessage())); }
+                }
+            });
+            return true;
+        }
+        if ("shareText".equals(action)) {
+            try {
+                Intent s = new Intent(Intent.ACTION_SEND);
+                s.setType("text/plain");
+                s.putExtra(Intent.EXTRA_TEXT, args.optString(0, ""));
+                String subject = args.optString(1, "");
+                if (!subject.isEmpty()) s.putExtra(Intent.EXTRA_SUBJECT, subject);
+                Intent ch = Intent.createChooser(s, subject.isEmpty() ? null : subject);
+                ch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                cordova.getActivity().startActivity(ch);
+                cb.success();
+            } catch (Exception e) { cb.error(String.valueOf(e.getMessage())); }
+            return true;
+        }
+        /* ---- v42: probar un link (lista M3U, canal o emisora) antes de guardarlo: solo se conecta y se cierra ---- */
+        if ("probeUrl".equals(action)) {
+            final String url = args.optString(0, "");
+            cordova.getThreadPool().execute(new Runnable() {
+                public void run() {
+                    JSONObject o = new JSONObject();
+                    Net.Resp r = null;
+                    try {
+                        if (!url.matches("(?i)^https?://.+")) { o.put("ok", false); o.put("why", "proto"); cb.success(o); return; }
+                        r = Net.open(url, null);
+                        int code = r.getResponseCode();
+                        o.put("ok", code < 400 || code == 0);
+                        o.put("code", code);
+                        String ct = r.getContentType();
+                        o.put("ctype", ct == null ? "" : ct);
+                        cb.success(o);
+                    } catch (Exception e) {
+                        try { o.put("ok", false); o.put("why", Net.why(e)); } catch (JSONException ignored) { }
+                        cb.success(o);
+                    } finally { if (r != null) r.disconnect(); }
+                }
+            });
+            return true;
+        }
         if ("scan".equals(action)) {
             if (!cordova.hasPermission(readPermission())) { cb.error("permission"); return true; }
             cordova.getThreadPool().execute(new Runnable() {
@@ -455,7 +586,10 @@ public class PrometeoMusic extends CordovaPlugin {
                 MediaStore.Audio.Media.SIZE,
                 MediaStore.Audio.Media.MIME_TYPE,
                 /* carpeta: para dejar fuera notas de voz de WhatsApp, Telegram y grabaciones (privacidad) */
-                Build.VERSION.SDK_INT >= 29 ? MediaStore.Audio.Media.RELATIVE_PATH : MediaStore.Audio.Media.DATA
+                Build.VERSION.SDK_INT >= 29 ? MediaStore.Audio.Media.RELATIVE_PATH : MediaStore.Audio.Media.DATA,
+                /* v42: en qué memoria está (interna o tarjeta SD) y cuándo llegó */
+                Build.VERSION.SDK_INT >= 29 ? MediaStore.MediaColumns.VOLUME_NAME : MediaStore.Audio.Media._ID,
+                MediaStore.Audio.Media.DATE_ADDED
         };
         String where = MediaStore.Audio.Media.IS_RINGTONE + "=0 AND "
                 + MediaStore.Audio.Media.IS_NOTIFICATION + "=0 AND "
@@ -473,6 +607,8 @@ public class PrometeoMusic extends CordovaPlugin {
             int iMime = c.getColumnIndexOrThrow(MediaStore.Audio.Media.MIME_TYPE);
             int iPath = c.getColumnIndex(Build.VERSION.SDK_INT >= 29 ? MediaStore.Audio.Media.RELATIVE_PATH : MediaStore.Audio.Media.DATA);
             int iRec = Build.VERSION.SDK_INT >= 31 ? c.getColumnIndex("is_recording") : -1;
+            int iVol = Build.VERSION.SDK_INT >= 29 ? c.getColumnIndex(MediaStore.MediaColumns.VOLUME_NAME) : -1;
+            int iDate = c.getColumnIndex(MediaStore.Audio.Media.DATE_ADDED);
             while (c.moveToNext()) {
                 JSONObject o = new JSONObject();
                 o.put("id", c.getLong(iId));
@@ -484,6 +620,8 @@ public class PrometeoMusic extends CordovaPlugin {
                 o.put("mime", c.isNull(iMime) ? "" : c.getString(iMime));
                 o.put("folder", folderOf(iPath < 0 || c.isNull(iPath) ? "" : c.getString(iPath)));
                 o.put("rec", iRec >= 0 && !c.isNull(iRec) && c.getInt(iRec) == 1);
+                o.put("vol", iVol >= 0 && !c.isNull(iVol) ? c.getString(iVol) : Library.PRIMARY);
+                o.put("date", iDate >= 0 && !c.isNull(iDate) ? c.getLong(iDate) * 1000 : 0);
                 out.put(o);
             }
         } finally {
@@ -536,11 +674,227 @@ public class PrometeoMusic extends CordovaPlugin {
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, final Intent data) {
+        if (requestCode == REQ_SYS) {
+            sysResult = resultCode;
+            java.util.concurrent.CountDownLatch l = sysLatch;
+            if (l != null) l.countDown();
+            return;
+        }
+        if (requestCode == REQ_PICK || requestCode == REQ_TREE) {
+            final CallbackContext c = pickCallback; pickCallback = null;
+            if (c == null) return;
+            if (resultCode != android.app.Activity.RESULT_OK || data == null) { c.error("cancel"); return; }
+            if (requestCode == REQ_TREE) {
+                Uri tree = data.getData();
+                if (tree == null) { c.error("cancel"); return; }
+                try { cordova.getContext().getContentResolver().takePersistableUriPermission(tree, Intent.FLAG_GRANT_READ_URI_PERMISSION); } catch (Exception ignored) { }
+                c.success(tree.toString());
+                return;
+            }
+            final java.util.ArrayList<Uri> uris = new java.util.ArrayList<Uri>();
+            if (data.getClipData() != null) {
+                for (int i = 0; i < data.getClipData().getItemCount(); i++) { Uri u = data.getClipData().getItemAt(i).getUri(); if (u != null) uris.add(u); }
+            } else if (data.getData() != null) uris.add(data.getData());
+            cordova.getThreadPool().execute(new Runnable() {
+                public void run() {
+                    JSONArray out = new JSONArray();
+                    ContentResolver cr = cordova.getContext().getContentResolver();
+                    for (Uri u : uris) {
+                        try {
+                            JSONObject o = Library.describeDoc(cordova.getContext(), u);
+                            /* Si es una canción que Android ya conoce, se usa esa (no hace falta guardar el permiso) */
+                            if (o.optLong("mid", -1) < 0) { try { cr.takePersistableUriPermission(u, Intent.FLAG_GRANT_READ_URI_PERMISSION); } catch (Exception ignored) { } }
+                            out.put(o);
+                        } catch (Exception ignored) { }
+                    }
+                    c.success(out);
+                }
+            });
+            return;
+        }
         if (requestCode != REQ_AUTH) return;
         CallbackContext c = authCallback; authCallback = null;
         if (c == null) return;
         if (resultCode == android.app.Activity.RESULT_OK) c.success(1); else c.error("cancel");
+    }
+
+    /* ================= v42: AGREGAR MÚSICA, MEMORIAS Y ORDENAR ================= */
+    private static final int REQ_PICK = 4244, REQ_TREE = 4245, REQ_SYS = 4246;
+    private CallbackContext pickCallback, volCallback;
+    private volatile java.util.concurrent.CountDownLatch sysLatch;
+    private volatile int sysResult = 0;
+    private volatile boolean organizing = false;
+
+    /** Muestra una ventana del propio Android (por ejemplo "¿Permitir que Prometeo modifique estos archivos?") y espera la respuesta */
+    private boolean askSystem(final android.app.PendingIntent pi) {
+        final java.util.concurrent.CountDownLatch l = new java.util.concurrent.CountDownLatch(1);
+        sysLatch = l; sysResult = 0;
+        cordova.getActivity().runOnUiThread(new Runnable() {
+            public void run() {
+                try {
+                    cordova.setActivityResultCallback(PrometeoMusic.this);
+                    cordova.getActivity().startIntentSenderForResult(pi.getIntentSender(), REQ_SYS, null, 0, 0, 0);
+                } catch (Exception e) { sysResult = 0; l.countDown(); }
+            }
+        });
+        try { l.await(); } catch (InterruptedException e) { return false; }
+        sysLatch = null;
+        return sysResult == android.app.Activity.RESULT_OK;
+    }
+
+    private void orgEvent(CallbackContext cb, JSONObject o) {
+        PluginResult r = new PluginResult(PluginResult.Status.OK, o);
+        r.setKeepCallback(true);
+        cb.sendPluginResult(r);
+    }
+
+    /**
+     * 🗂️ Ordenar mi música (Android 11+): job = {items:[{mid, vol, rel}], dels:[mid]}
+     * - misma memoria: se cambia de carpeta (el archivo no se copia, no ocupa más)
+     * - otra memoria (p. ej. del teléfono a la tarjeta SD): se copia y luego se borra el original;
+     *   si Android no deja borrar el original, se borra la copia (así nunca queda repetida)
+     * - dels: canciones repetidas que se quitan (el usuario lo eligió en la ventana de Prometeo)
+     * Android muestra su propia ventana para pedir permiso sobre los archivos de otras apps.
+     */
+    private JSONObject organize(JSONObject job, CallbackContext cb) throws Exception {
+        ContentResolver cr = cordova.getContext().getContentResolver();
+        JSONObject res = new JSONObject();
+        JSONObject ids = new JSONObject();
+        JSONArray items = job == null ? null : job.optJSONArray("items");
+        JSONArray dels = job == null ? null : job.optJSONArray("dels");
+        int total = (items == null ? 0 : items.length()) + (dels == null ? 0 : dels.length());
+        int moved = 0, failed = 0, skipped = 0, deleted = 0, done = 0;
+        java.util.ArrayList<Uri> all = new java.util.ArrayList<Uri>();
+        java.util.ArrayList<JSONObject> work = new java.util.ArrayList<JSONObject>();
+        String[] cols = { MediaStore.MediaColumns.VOLUME_NAME, MediaStore.MediaColumns.RELATIVE_PATH, MediaStore.MediaColumns.DISPLAY_NAME, MediaStore.MediaColumns.MIME_TYPE };
+        for (int i = 0; items != null && i < items.length(); i++) {
+            JSONObject it = items.optJSONObject(i); if (it == null) continue;
+            long mid = it.optLong("mid", -1); if (mid < 0) continue;
+            Uri u = ContentUris.withAppendedId(collection(), mid);
+            Cursor c = null;
+            try {
+                c = cr.query(u, cols, null, null, null);
+                if (c == null || !c.moveToFirst()) { failed++; continue; }
+                JSONObject w = new JSONObject();
+                w.put("mid", mid); w.put("uri", u.toString());
+                w.put("fromVol", c.getString(0)); w.put("fromRel", c.isNull(1) ? "" : c.getString(1));
+                w.put("name", c.isNull(2) ? "" : c.getString(2)); w.put("mime", c.isNull(3) ? "audio/mpeg" : c.getString(3));
+                String rel = it.optString("rel", "Music/Prometeo/"); if (!rel.endsWith("/")) rel += "/";
+                w.put("vol", it.optString("vol", w.getString("fromVol"))); w.put("rel", rel);
+                if (w.getString("vol").equals(w.getString("fromVol")) && rel.equalsIgnoreCase(w.getString("fromRel"))) { skipped++; continue; }
+                work.add(w); all.add(u);
+            } catch (Exception e) { failed++; }
+            finally { if (c != null) c.close(); }
+        }
+        java.util.ArrayList<Uri> delUris = new java.util.ArrayList<Uri>();
+        for (int i = 0; dels != null && i < dels.length(); i++) {
+            long mid = dels.optLong(i, -1); if (mid < 0) continue;
+            Uri u = ContentUris.withAppendedId(collection(), mid); delUris.add(u); all.add(u);
+        }
+        if (!all.isEmpty()) {
+            /* Una sola ventana de Android para todos los archivos */
+            if (!askSystem(MediaStore.createWriteRequest(cr, all))) { res.put("denied", true); res.put("skipped", skipped); return res; }
+        }
+        java.util.ArrayList<Uri[]> pending = new java.util.ArrayList<Uri[]>();   /* [original, copia] que falta borrar */
+        java.util.ArrayList<Long> pendingMid = new java.util.ArrayList<Long>();
+        byte[] buf = new byte[65536];
+        for (JSONObject w : work) {
+            done++;
+            JSONObject ev = new JSONObject(); ev.put("type", "progress"); ev.put("done", done); ev.put("total", total); ev.put("name", w.optString("name")); orgEvent(cb, ev);
+            Uri src = Uri.parse(w.getString("uri"));
+            try {
+                if (w.getString("vol").equals(w.getString("fromVol"))) {
+                    android.content.ContentValues v = new android.content.ContentValues();
+                    v.put(MediaStore.MediaColumns.RELATIVE_PATH, w.getString("rel"));
+                    if (cr.update(src, v, null, null) > 0) moved++; else failed++;
+                } else {
+                    android.content.ContentValues v = new android.content.ContentValues();
+                    v.put(MediaStore.MediaColumns.DISPLAY_NAME, w.getString("name"));
+                    v.put(MediaStore.MediaColumns.MIME_TYPE, w.getString("mime"));
+                    v.put(MediaStore.MediaColumns.RELATIVE_PATH, w.getString("rel"));
+                    v.put(MediaStore.MediaColumns.IS_PENDING, 1);
+                    Uri dst = cr.insert(MediaStore.Audio.Media.getContentUri(w.getString("vol")), v);
+                    if (dst == null) { failed++; continue; }
+                    boolean ok = false;
+                    InputStream in = null; java.io.OutputStream os = null;
+                    try {
+                        in = cr.openInputStream(src); os = cr.openOutputStream(dst);
+                        if (in != null && os != null) { int n; while ((n = in.read(buf)) > 0) os.write(buf, 0, n); ok = true; }
+                    } catch (Exception e) { ok = false; }
+                    finally { try { if (in != null) in.close(); } catch (Exception ignored) { } try { if (os != null) os.close(); } catch (Exception ignored) { ok = false; } }
+                    if (!ok) { try { cr.delete(dst, null, null); } catch (Exception ignored) { } failed++; continue; }
+                    android.content.ContentValues v2 = new android.content.ContentValues();
+                    v2.put(MediaStore.MediaColumns.IS_PENDING, 0);
+                    cr.update(dst, v2, null, null);
+                    boolean gone = false;
+                    try { gone = cr.delete(src, null, null) > 0; } catch (Exception e) { gone = false; }
+                    if (gone) { moved++; ids.put(String.valueOf(w.getLong("mid")), ContentUris.parseId(dst)); }
+                    else { pending.add(new Uri[]{ src, dst }); pendingMid.add(w.getLong("mid")); }
+                }
+            } catch (Exception e) { failed++; }
+        }
+        java.util.ArrayList<Uri> delLeft = new java.util.ArrayList<Uri>();
+        for (Uri u : delUris) {
+            done++;
+            boolean gone = false;
+            try { gone = cr.delete(u, null, null) > 0; } catch (Exception e) { gone = false; }
+            if (gone) deleted++; else delLeft.add(u);
+        }
+        if (!pending.isEmpty() || !delLeft.isEmpty()) {
+            java.util.ArrayList<Uri> ask = new java.util.ArrayList<Uri>(delLeft);
+            for (Uri[] p : pending) ask.add(p[0]);
+            boolean ok = askSystem(MediaStore.createDeleteRequest(cr, ask));
+            for (int i = 0; i < pending.size(); i++) {
+                Uri[] p = pending.get(i);
+                if (ok) { moved++; ids.put(String.valueOf(pendingMid.get(i)), ContentUris.parseId(p[1])); }
+                else { try { cr.delete(p[1], null, null); } catch (Exception ignored) { } failed++; }   /* sin repetidas: se quita la copia */
+            }
+            if (ok) deleted += delLeft.size();
+        }
+        res.put("type", "done");
+        res.put("moved", moved); res.put("failed", failed); res.put("skipped", skipped); res.put("deleted", deleted); res.put("ids", ids);
+        return res;
+    }
+
+    /* Aviso cuando se conecta o se saca una tarjeta SD o memoria USB */
+    private Object volWatch;
+    private BroadcastReceiver volReceiver;
+    private void volChanged() {
+        CallbackContext c = volCallback; if (c == null) return;
+        try {
+            JSONObject o = new JSONObject(); o.put("type", "volumes");
+            PluginResult r = new PluginResult(PluginResult.Status.OK, o); r.setKeepCallback(true); c.sendPluginResult(r);
+        } catch (JSONException ignored) { }
+    }
+    private void registerVolumeWatch() {
+        try {
+            if (Build.VERSION.SDK_INT >= 30) {
+                android.os.storage.StorageManager sm = (android.os.storage.StorageManager) cordova.getContext().getSystemService(Context.STORAGE_SERVICE);
+                android.os.storage.StorageManager.StorageVolumeCallback cbk = new android.os.storage.StorageManager.StorageVolumeCallback() {
+                    @Override public void onStateChanged(android.os.storage.StorageVolume v) { volChanged(); }
+                };
+                sm.registerStorageVolumeCallback(cordova.getContext().getMainExecutor(), cbk);
+                volWatch = cbk;
+            } else {
+                volReceiver = new BroadcastReceiver() { @Override public void onReceive(Context ctx, Intent intent) { volChanged(); } };
+                IntentFilter f = new IntentFilter();
+                f.addAction(Intent.ACTION_MEDIA_MOUNTED); f.addAction(Intent.ACTION_MEDIA_UNMOUNTED);
+                f.addAction(Intent.ACTION_MEDIA_REMOVED); f.addAction(Intent.ACTION_MEDIA_EJECT); f.addAction(Intent.ACTION_MEDIA_BAD_REMOVAL);
+                f.addDataScheme("file");
+                cordova.getContext().registerReceiver(volReceiver, f);
+            }
+        } catch (Exception ignored) { }
+    }
+    private void unregisterVolumeWatch() {
+        try {
+            if (volWatch != null && Build.VERSION.SDK_INT >= 30) {
+                android.os.storage.StorageManager sm = (android.os.storage.StorageManager) cordova.getContext().getSystemService(Context.STORAGE_SERVICE);
+                sm.unregisterStorageVolumeCallback((android.os.storage.StorageManager.StorageVolumeCallback) volWatch);
+            }
+            if (volReceiver != null) cordova.getContext().unregisterReceiver(volReceiver);
+        } catch (Exception ignored) { }
+        volWatch = null; volReceiver = null; volCallback = null;
     }
 
     /* ================= SESIÓN MULTIMEDIA ================= */
@@ -992,7 +1346,7 @@ public class PrometeoMusic extends CordovaPlugin {
     private void radioPlay(String url, String name) {
         if (radio == null) {
             DefaultHttpDataSource.Factory http = new DefaultHttpDataSource.Factory()
-                    .setUserAgent("PrometeoPlayer/41")
+                    .setUserAgent("PrometeoPlayer/42")
                     .setAllowCrossProtocolRedirects(true)
                     .setConnectTimeoutMs(15000)
                     .setReadTimeoutMs(20000);
@@ -1071,8 +1425,8 @@ public class PrometeoMusic extends CordovaPlugin {
             c.setConnectTimeout(12000);
             c.setReadTimeout(15000);
             c.setRequestProperty("User-Agent", browser
-                    ? "Mozilla/5.0 (Linux; Android " + Build.VERSION.RELEASE + ") AppleWebKit/537.36 (KHTML, like Gecko) Mobile Safari/537.36 PrometeoPlayer/41"
-                    : "PrometeoPlayer/41");
+                    ? "Mozilla/5.0 (Linux; Android " + Build.VERSION.RELEASE + ") AppleWebKit/537.36 (KHTML, like Gecko) Mobile Safari/537.36 PrometeoPlayer/42"
+                    : "PrometeoPlayer/42");
             c.setRequestProperty("Accept", browser ? "text/html,application/xhtml+xml,*/*;q=0.8" : "application/json,*/*");
             int code = c.getResponseCode();
             if (code >= 300 && code < 400 && c.getHeaderField("Location") != null) {
@@ -1114,7 +1468,7 @@ public class PrometeoMusic extends CordovaPlugin {
             c.setInstanceFollowRedirects(false);
             c.setConnectTimeout(15000);
             c.setReadTimeout(30000);
-            c.setRequestProperty("User-Agent", "PrometeoPlayer/41");
+            c.setRequestProperty("User-Agent", "PrometeoPlayer/42");
             int code = c.getResponseCode();
             if (code >= 300 && code < 400 && c.getHeaderField("Location") != null) {
                 url = new URL(url, c.getHeaderField("Location"));
@@ -1141,7 +1495,7 @@ public class PrometeoMusic extends CordovaPlugin {
     @Override
     public void onDestroy() {
         if (session != null) { session.setActive(false); session.release(); session = null; }
-        radioWanted = false; cancelRetry(); unregisterNetworkWatch();
+        radioWanted = false; cancelRetry(); unregisterNetworkWatch(); unregisterVolumeWatch();
         mainHandler.removeCallbacks(stopIfIdle);
         RadioService.controls = null; RadioService.music = false; RadioService.art = null;
         if (radio != null) { radio.release(); radio = null; }
@@ -1165,6 +1519,20 @@ public class PrometeoMusic extends CordovaPlugin {
     public CordovaPluginPathHandler getPathHandler() {
         if (pathHandler == null) {
             pathHandler = new CordovaPluginPathHandler(path -> {
+                if (path != null && path.startsWith(PREFIX_URI)) {
+                    /* v42: canción elegida con el selector de Android (o de una memoria USB permitida) */
+                    try {
+                        String b = path.substring(PREFIX_URI.length());
+                        int dot = b.indexOf('/'); if (dot >= 0) b = b.substring(0, dot);
+                        Uri u = Uri.parse(new String(Base64.decode(b, Base64.URL_SAFE | Base64.NO_WRAP | Base64.NO_PADDING), StandardCharsets.UTF_8));
+                        if (!"content".equals(u.getScheme()) || !Library.uriAllowed(cordova.getContext(), u)) return null;
+                        ContentResolver cr = cordova.getContext().getContentResolver();
+                        InputStream in = cr.openInputStream(u);
+                        if (in == null) return null;
+                        String mime = cr.getType(u);
+                        return new WebResourceResponse(mime != null && mime.startsWith("audio/") ? mime : "audio/mpeg", null, in);
+                    } catch (Exception e) { return null; }
+                }
                 if (path == null || !path.startsWith(PREFIX)) return null;
                 try {
                     long id = Long.parseLong(path.substring(PREFIX.length()).replaceAll("[^0-9]", ""));

@@ -72,7 +72,7 @@ final class CastServer {
         return "http://" + ip + ":" + ss.getLocalPort() + "/" + token + "/a/" + mediaId + "." + (ext == null || ext.isEmpty() ? "mp3" : ext);
     }
 
-    static final String UA = "PrometeoPlayer/41";
+    static final String UA = "PrometeoPlayer/42";
 
     /* ---------------- radio en pedacitos (HLS) ---------------- */
     private LiveHls live;

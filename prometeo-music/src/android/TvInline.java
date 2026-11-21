@@ -80,7 +80,7 @@ final class TvInline {
         content.addView(box, new FrameLayout.LayoutParams(1, 1, Gravity.TOP | Gravity.START));
 
         DefaultHttpDataSource.Factory http = new DefaultHttpDataSource.Factory()
-                .setUserAgent("PrometeoPlayer/41").setAllowCrossProtocolRedirects(true)
+                .setUserAgent("PrometeoPlayer/42").setAllowCrossProtocolRedirects(true)
                 .setConnectTimeoutMs(15000).setReadTimeoutMs(20000);
         player = new ExoPlayer.Builder(act)
                 .setMediaSourceFactory(new DefaultMediaSourceFactory(new DefaultDataSource.Factory(act, http)))

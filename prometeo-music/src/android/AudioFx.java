@@ -4,6 +4,7 @@ import android.content.Context;
 import android.media.AudioManager;
 import android.media.audiofx.BassBoost;
 import android.media.audiofx.Equalizer;
+import android.media.audiofx.LoudnessEnhancer;
 import android.media.audiofx.Virtualizer;
 
 import org.json.JSONArray;
@@ -25,9 +26,11 @@ final class AudioFx {
     private static boolean on = false;
     private static final double[] db = new double[5];
     private static int bass = 0, virt = 0;
+    /* v42: 🔊 volumen extra en milibeles (0 = normal). Tiene tope: como máximo unos +6 dB (200 %) */
+    private static int boostMb = 0;
     private static final double K = 1.8;
 
-    private static final class Fx { Equalizer eq; BassBoost bb; Virtualizer vz; }
+    private static final class Fx { Equalizer eq; BassBoost bb; Virtualizer vz; LoudnessEnhancer le; }
     private static final Map<Integer, Fx> live = new HashMap<>();
 
     /** Número de sesión de audio nuevo para un reproductor (para poder ecualizarlo) */
@@ -44,6 +47,7 @@ final class AudioFx {
         try { f.eq = new Equalizer(0, session); } catch (Throwable e) { f.eq = null; }
         try { f.bb = new BassBoost(0, session); } catch (Throwable e) { f.bb = null; }
         try { f.vz = new Virtualizer(0, session); } catch (Throwable e) { f.vz = null; }
+        try { f.le = new LoudnessEnhancer(session); } catch (Throwable e) { f.le = null; }
         live.put(session, f);
         apply(f);
     }
@@ -54,9 +58,10 @@ final class AudioFx {
         try { if (f.eq != null) f.eq.release(); } catch (Throwable ignored) { }
         try { if (f.bb != null) f.bb.release(); } catch (Throwable ignored) { }
         try { if (f.vz != null) f.vz.release(); } catch (Throwable ignored) { }
+        try { if (f.le != null) f.le.release(); } catch (Throwable ignored) { }
     }
 
-    /** {on, bands:[5 dB], bass:0..100, virt:0..100} */
+    /** {on, bands:[5 dB], bass:0..100, virt:0..100, boost:100..200} */
     static synchronized void set(JSONObject o) {
         if (o == null) return;
         on = o.optBoolean("on", false);
@@ -64,6 +69,9 @@ final class AudioFx {
         for (int i = 0; i < 5; i++) db[i] = b == null ? 0 : Math.max(-12, Math.min(12, b.optDouble(i, 0)));
         bass = Math.max(0, Math.min(100, o.optInt("bass", 0)));
         virt = Math.max(0, Math.min(100, o.optInt("virt", 0)));
+        /* boost: 100..200 (%) → hasta +6 dB. No depende del interruptor del ecualizador */
+        int pct = Math.max(100, Math.min(200, o.optInt("boost", 100)));
+        boostMb = (int) Math.round(2000 * Math.log10(pct / 100.0));
         for (Fx f : live.values()) apply(f);
     }
 
@@ -99,6 +107,9 @@ final class AudioFx {
                 if (f.bb.getStrengthSupported()) f.bb.setStrength((short) (bass * 10));
                 f.bb.setEnabled(on && bass > 0);
             }
+        } catch (Throwable ignored) { }
+        try {
+            if (f.le != null) { f.le.setTargetGain(boostMb); f.le.setEnabled(boostMb > 0); }
         } catch (Throwable ignored) { }
         try {
             if (f.vz != null) {
