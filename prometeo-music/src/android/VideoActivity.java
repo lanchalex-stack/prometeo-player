@@ -295,6 +295,10 @@ public class VideoActivity extends Activity {
         topBar.addView(bStar); margins(bStar, dp(4), 0, dp(4), 0);
         bAspect = pill("⛶ " + aspectName(aspect), DARK, Color.WHITE, 0, v -> cycleAspect());
         topBar.addView(bAspect); margins(bAspect, dp(4), 0, dp(4), 0);
+        /* v43: 📸 captura del canal */
+        TextView bShot = btn("📸", 40, DARK, Color.WHITE, s("shot", "Captura de pantalla"), v -> shot());
+        bShot.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15); bShot.setBackground(round(DARK, 20, CYAN));
+        topBar.addView(bShot); margins(bShot, dp(4), 0, dp(4), 0);
         TextView bSet = btn("⚙", 40, DARK, Color.WHITE, s("settings", "Ajustes"), v -> openSheet());
         topBar.addView(bSet); margins(bSet, dp(4), 0, dp(4), 0);
         TextView bLock = btn("🔒", 40, DARK, Color.WHITE, s("lock", "Bloquear pantalla"), v -> setLocked(true));
@@ -457,11 +461,12 @@ public class VideoActivity extends Activity {
     /* ============================ REPRODUCTOR ============================ */
     private void buildPlayer() {
         DefaultHttpDataSource.Factory http = new DefaultHttpDataSource.Factory()
-                .setUserAgent("PrometeoPlayer/42")
+                .setUserAgent("PrometeoPlayer/43")
                 .setAllowCrossProtocolRedirects(true)
                 .setConnectTimeoutMs(15000)
                 .setReadTimeoutMs(20000);
-        player = new ExoPlayer.Builder(this)
+        /* Listo para un decodificador extra (FFmpeg) cuando se agregue; sin él, usa los del teléfono */
+        player = new ExoPlayer.Builder(this, new androidx.media3.exoplayer.DefaultRenderersFactory(this).setExtensionRendererMode(androidx.media3.exoplayer.DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON))
                 .setMediaSourceFactory(new DefaultMediaSourceFactory(new DefaultDataSource.Factory(this, http)))
                 .setAudioAttributes(new AudioAttributes.Builder().setUsage(C.USAGE_MEDIA).setContentType(C.AUDIO_CONTENT_TYPE_MOVIE).build(), true)
                 .build();
@@ -581,6 +586,18 @@ public class VideoActivity extends Activity {
         emit(e);
         toast((c.f ? "★ " + s("favAdded", "Agregado a Favoritos") : "☆ " + s("favRemoved", "Quitado de Favoritos")));
         updateTexts();
+    }
+
+    private View flashView;
+    private void shot() {
+        Ch c = cur(); if (c == null || player == null) return;
+        VideoSize vs = player.getVideoSize();
+        Shots.capture(this, view.getVideoSurfaceView(), vs.width, vs.height, Shots.nameForChannel(c.n), (ok, black, where) -> {
+            if (!ok) { toast("⚠️ " + s("shotFail", "No se pudo guardar la captura")); return; }
+            if (flashView == null) { flashView = new View(this); flashView.setBackgroundColor(Color.WHITE); flashView.setAlpha(0f); root.addView(flashView, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)); }
+            flashView.setAlpha(0.85f); flashView.animate().alpha(0f).setDuration(320).start();
+            toast(black ? "📸 " + s("shotBlackTv", "Guardada, pero salió negra (este canal está protegido)") : "📸 " + s("shotSaved", "Guardada en Imágenes/Prometeo"));
+        });
     }
 
     private void emit(JSONObject e) { Events ev = events; if (ev != null) try { ev.send(e); } catch (Exception ignored) { } }

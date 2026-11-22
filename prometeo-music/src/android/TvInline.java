@@ -80,9 +80,9 @@ final class TvInline {
         content.addView(box, new FrameLayout.LayoutParams(1, 1, Gravity.TOP | Gravity.START));
 
         DefaultHttpDataSource.Factory http = new DefaultHttpDataSource.Factory()
-                .setUserAgent("PrometeoPlayer/42").setAllowCrossProtocolRedirects(true)
+                .setUserAgent("PrometeoPlayer/43").setAllowCrossProtocolRedirects(true)
                 .setConnectTimeoutMs(15000).setReadTimeoutMs(20000);
-        player = new ExoPlayer.Builder(act)
+        player = new ExoPlayer.Builder(act, new androidx.media3.exoplayer.DefaultRenderersFactory(act).setExtensionRendererMode(androidx.media3.exoplayer.DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON))
                 .setMediaSourceFactory(new DefaultMediaSourceFactory(new DefaultDataSource.Factory(act, http)))
                 .setAudioAttributes(new AudioAttributes.Builder().setUsage(C.USAGE_MEDIA).setContentType(C.AUDIO_CONTENT_TYPE_MOVIE).build(), true)
                 .build();
@@ -146,6 +146,13 @@ final class TvInline {
             if (player.isCurrentMediaItemLive()) player.seekToDefaultPosition();   /* en vivo: vuelve al presente */
             player.play();
         } else if ("toggle".equals(c)) player.pause();
+    }
+
+    /** v43: 📸 captura del canal que se ve en pantalla pequeña */
+    void shot(String name, Shots.Done cb) {
+        if (player == null || view == null) { cb.done(false, false, null); return; }
+        androidx.media3.common.VideoSize vs = player.getVideoSize();
+        Shots.capture(act, view.getVideoSurfaceView(), vs.width, vs.height, Shots.nameForChannel(name), cb);
     }
 
     /** La app pasó a segundo plano o se abrió la pantalla completa */

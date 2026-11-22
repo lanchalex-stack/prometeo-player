@@ -1,6 +1,6 @@
 {
   "name": "prometeo-music",
-  "version": "1.10.0",
+  "version": "1.11.1",
   "description": "Lee la música del teléfono sin copiarla (Prometeo Player)",
   "cordova": {
     "id": "prometeo-music",

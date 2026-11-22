@@ -15,6 +15,7 @@ import com.google.android.gms.cast.MediaLoadRequestData;
 import com.google.android.gms.cast.MediaMetadata;
 import com.google.android.gms.cast.MediaSeekOptions;
 import com.google.android.gms.cast.MediaStatus;
+import com.google.android.gms.cast.MediaTrack;
 import com.google.android.gms.cast.framework.CastContext;
 import com.google.android.gms.cast.framework.CastSession;
 import com.google.android.gms.cast.framework.SessionManager;
@@ -213,7 +214,8 @@ final class CastHelper {
         final int myGen = ++gen;
         String url = o.optString("url", "");
         String mime = o.optString("mime", "");
-        boolean music = "music".equals(kind);
+        boolean video = "video".equals(kind);
+        boolean music = "music".equals(kind) || video;
         boolean relay = !music && o.optBoolean("relay", false);
         if (server != null && !"radio".equals(kind)) server.stopLive();   /* ya no se necesita la radio en pedacitos */
         if (music || relay) {
@@ -224,6 +226,25 @@ final class CastHelper {
             if (CastServer.localIp() == null) return "noWifi";
             keepAwake(true);
         } else keepAwake(false);
+        if (video) {
+            /* v43: 🎬 video del teléfono (y sus subtítulos, si le cargaste unos) */
+            long mid = o.optLong("mid", -1);
+            String du = o.optString("uri", "");
+            String key = o.optString("key", String.valueOf(mid));
+            url = du.isEmpty() ? server.urlForVideo(mid, o.optString("ext", "mp4")) : server.urlForDoc(android.net.Uri.parse(du), o.optString("ext", "mp4"));
+            if (url == null) return "noWifi";
+            if (mime.isEmpty()) mime = "video/mp4";
+            String subUrl = null;
+            try {
+                android.content.SharedPreferences vp = Videos.prefs(act);
+                String su = vp.getString("s_" + key, null);
+                if (su != null) subUrl = server.setSubtitle(Subs.prepare(act, android.net.Uri.parse(su), "c" + key, vp.getLong("o_" + key, 0)).vtt);
+                else server.setSubtitle(null);
+            } catch (Exception ignored) { }
+            try { if (subUrl != null) o.put("subUrl", subUrl); } catch (Exception ignored) { }
+            send(o, url, mime);
+            return null;
+        }
         if (music) {
             url = server.urlFor(o.optLong("mid", -1), o.optString("ext", "mp3"));
             if (url == null) return "noWifi";
@@ -301,8 +322,9 @@ final class CastHelper {
         if (sentReq != o.optInt("req", 0)) prevReq = sentReq;
         sentReq = o.optInt("req", 0);
         sentUrl = url;
-        boolean music = "music".equals(kind);
-        MediaMetadata md = new MediaMetadata(music ? MediaMetadata.MEDIA_TYPE_MUSIC_TRACK : ("tv".equals(kind) ? MediaMetadata.MEDIA_TYPE_MOVIE : MediaMetadata.MEDIA_TYPE_MUSIC_TRACK));
+        boolean video = "video".equals(kind);
+        boolean music = "music".equals(kind) || video;
+        MediaMetadata md = new MediaMetadata(video ? MediaMetadata.MEDIA_TYPE_MOVIE : ("music".equals(kind) ? MediaMetadata.MEDIA_TYPE_MUSIC_TRACK : ("tv".equals(kind) ? MediaMetadata.MEDIA_TYPE_MOVIE : MediaMetadata.MEDIA_TYPE_MUSIC_TRACK)));
         md.putString(MediaMetadata.KEY_TITLE, o.optString("title", "Prometeo"));
         String artist = o.optString("artist", "");
         if (!artist.isEmpty()) md.putString(music ? MediaMetadata.KEY_ARTIST : MediaMetadata.KEY_SUBTITLE, artist);
@@ -311,17 +333,25 @@ final class CastHelper {
                 .setContentType(mime)
                 .setMetadata(md);
         if (music && o.optLong("dur", 0) > 0) mb.setStreamDuration(o.optLong("dur"));
+        String subUrl = o.optString("subUrl", "");
+        if (video && !subUrl.isEmpty()) {
+            MediaTrack tr = new MediaTrack.Builder(1, MediaTrack.TYPE_TEXT).setName("Subtítulos").setSubtype(MediaTrack.SUBTYPE_SUBTITLES)
+                    .setContentId(subUrl).setContentType("text/vtt").setLanguage("es").build();
+            java.util.List<MediaTrack> tl = new java.util.ArrayList<>(); tl.add(tr);
+            mb.setMediaTracks(tl);
+        }
         /* Listas HLS: decirle al televisor de qué son los pedacitos (sin esto, las de radio en AAC no suenan) */
         String seg = o.optString("seg", "");
         try {
             if (seg.equals("aac") || seg.equals("mp3")) mb.setHlsSegmentFormat(seg);
             else if (seg.equals("fmp4")) { mb.setHlsSegmentFormat("fmp4"); if ("tv".equals(kind)) mb.setHlsVideoSegmentFormat("fmp4"); }
         } catch (Throwable ignored) { }
-        MediaLoadRequestData req = new MediaLoadRequestData.Builder()
+        MediaLoadRequestData.Builder rb = new MediaLoadRequestData.Builder()
                 .setMediaInfo(mb.build())
                 .setAutoplay(true)
-                .setCurrentTime(music ? Math.max(0, o.optLong("pos", 0)) : 0)
-                .build();
+                .setCurrentTime(music ? Math.max(0, o.optLong("pos", 0)) : 0);
+        if (video && !subUrl.isEmpty()) rb.setActiveTrackIds(new long[]{ 1 });
+        MediaLoadRequestData req = rb.build();
         final String k = kind;
         try {
             rmc.load(req).setResultCallback(new ResultCallback<RemoteMediaClient.MediaChannelResult>() {

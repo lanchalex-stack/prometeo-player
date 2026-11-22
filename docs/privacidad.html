@@ -35,10 +35,13 @@ small{color:var(--mut)}
 
 <h2>Qué hace la app con tu información</h2>
 <ul>
-<li><b>Tu música y audios</b> se leen directamente desde tu teléfono para reproducirlos. No se copian ni se envían a ningún lado.</li>
+<li><b>Tu música, audios y videos</b> se leen directamente desde tu teléfono para reproducirlos. No se copian ni se envían a ningún lado.</li>
+<li><b>📸 Capturas de pantalla</b> de videos y canales: solo cuando tocas 📸, y se guardan en la carpeta Imágenes/Prometeo de tu teléfono.</li>
+<li><b>💬 Subtítulos</b>: el archivo que eliges con el selector de Android se lee solo para mostrarlo; la app guarda una copia arreglada en su propia caché del teléfono.</li>
+<li><b>Listas de videos con 🔒</b> se abren con el bloqueo de tu teléfono (huella, PIN o patrón). Solo esconden los videos dentro de Prometeo: la Galería del teléfono los sigue mostrando.</li>
 <li><b>Tus emisoras, canales, listas, favoritos, playlists y ajustes</b> se guardan solo dentro de la app, en tu teléfono.</li>
 <li><b>La copia de seguridad</b> es un archivo en la carpeta Descargas de tu teléfono (la copia automática se puede apagar en "Acerca de"). Nunca se sube a internet.</li>
-<li><b>Archivos que tú eliges</b>: las canciones sueltas y las memorias USB se abren con el selector de archivos de Android, solo lo que tú eliges. Prometeo no pide acceso a "todos los archivos".</li>
+<li><b>Archivos que tú eliges</b>: las canciones y videos sueltos y las memorias USB se abren con el selector de archivos de Android, solo lo que tú eliges. Prometeo no pide acceso a "todos los archivos".</li>
 <li><b>🗂️ Ordenar mi música</b> (opcional) mueve tus canciones a la carpeta Música/Prometeo solo si tú lo confirmas; antes, Android muestra su propia ventana de permiso. No se sube nada a internet.</li>
 <li><b>Los audios privados</b> (por ejemplo, notas de voz de WhatsApp o grabaciones) se protegen con el bloqueo de tu teléfono (huella, PIN o patrón). La app no ve ni guarda tu huella ni tu PIN: eso lo maneja Android.</li>
 </ul>
@@ -50,13 +53,14 @@ small{color:var(--mut)}
 <li>Al buscar emisoras por nombre: se consulta el directorio público <a href="https://www.radio-browser.info/">Radio Browser</a>. Solo se envía el texto que buscas.</li>
 <li>Al agregar o actualizar una lista M3U con una dirección de internet, o al cambiar su link (solo se revisa que cargue).</li>
 <li>Al editar el link de un canal: Prometeo se conecta a ese link una vez, solo para comprobar que responde.</li>
-<li>Al transmitir a un televisor con <b>Chromecast</b> (botón 📡): se usan los servicios de Google Play del teléfono para encontrar y controlar el televisor en tu Wi-Fi. Tu música pasa del teléfono al televisor solo dentro de tu red local. Las emisoras y canales que el televisor no puede abrir por su cuenta los recibe el teléfono y se los pasa al televisor, también solo dentro de tu red local; no se guarda nada.</li>
+<li>Al transmitir a un televisor con <b>Chromecast</b> (botón 📡): se usan los servicios de Google Play del teléfono para encontrar y controlar el televisor en tu Wi-Fi. Tu música y tus videos (con sus subtítulos) pasan del teléfono al televisor solo dentro de tu red local. Las emisoras y canales que el televisor no puede abrir por su cuenta los recibe el teléfono y se los pasa al televisor, también solo dentro de tu red local; no se guarda nada.</li>
 </ul>
 <p>Esos servicios son de terceros y tienen sus propias reglas. Prometeo no les envía datos tuyos aparte de lo necesario para la conexión (como tu dirección IP, que cualquier conexión a internet usa).</p>
 
 <h2>Permisos que pide</h2>
 <ul>
 <li><b>Música y audio</b>: para encontrar las canciones de tu teléfono.</li>
+<li><b>Videos</b>: para mostrar los videos de tu teléfono en la pestaña 🎬 Videos (solo si tú lo permites).</li>
 <li><b>Internet y estado de la red</b>: para la radio y la TV, y para reconectar cuando vuelve la señal.</li>
 <li><b>Reproducción en segundo plano y notificaciones</b>: para que la música y la radio sigan sonando con la pantalla apagada y tengas los controles a mano.</li>
 <li><b>Huella o bloqueo del teléfono</b>: solo para abrir los audios privados.</li>
@@ -84,10 +88,13 @@ small{color:var(--mut)}
 
 <h2>What the app does with your information</h2>
 <ul>
-<li><b>Your music and audio</b> are read directly from your phone to play them. They are not copied or sent anywhere.</li>
+<li><b>Your music, audio and videos</b> are read directly from your phone to play them. They are not copied or sent anywhere.</li>
+<li><b>📸 Screenshots</b> of videos and channels: only when you tap 📸, saved to your phone's Pictures/Prometeo folder.</li>
+<li><b>💬 Subtitles</b>: the file you choose with the Android picker is read only to show it; the app keeps a fixed copy in its own cache on the phone.</li>
+<li><b>🔒 Video lists</b> open with your phone's lock (fingerprint, PIN or pattern). They only hide videos inside Prometeo: the phone's Gallery still shows them.</li>
 <li><b>Your stations, channels, lists, favorites, playlists and settings</b> are stored only inside the app, on your phone.</li>
 <li><b>The backup</b> is a file in your phone's Downloads folder (the automatic backup can be turned off in "About"). It is never uploaded.</li>
-<li><b>Files you choose</b>: single songs and USB drives are opened with the Android file picker, only what you choose. Prometeo does not ask for access to "all files".</li>
+<li><b>Files you choose</b>: single songs and videos and USB drives are opened with the Android file picker, only what you choose. Prometeo does not ask for access to "all files".</li>
 <li><b>🗂️ Organize my music</b> (optional) moves your songs to the Music/Prometeo folder only if you confirm; before that, Android shows its own permission window. Nothing is uploaded.</li>
 <li><b>Private audio</b> (such as WhatsApp voice notes or recordings) is protected with your phone's lock (fingerprint, PIN or pattern). The app never sees or stores your fingerprint or PIN: Android handles that.</li>
 </ul>
@@ -99,13 +106,14 @@ small{color:var(--mut)}
 <li>When searching stations by name: the public <a href="https://www.radio-browser.info/">Radio Browser</a> directory is queried. Only your search text is sent.</li>
 <li>When adding or refreshing an M3U list from an internet address, or changing its link (it only checks that it loads).</li>
 <li>When editing a channel's link: Prometeo connects to that link once, only to check that it responds.</li>
-<li>When casting to a TV with <b>Chromecast</b> (📡 button): the phone's Google Play services are used to find and control the TV on your Wi-Fi. Your music goes from the phone to the TV only within your local network. Stations and channels the TV cannot open by itself are received by the phone and passed to the TV, also only within your local network; nothing is stored.</li>
+<li>When casting to a TV with <b>Chromecast</b> (📡 button): the phone's Google Play services are used to find and control the TV on your Wi-Fi. Your music and videos (with their subtitles) go from the phone to the TV only within your local network. Stations and channels the TV cannot open by itself are received by the phone and passed to the TV, also only within your local network; nothing is stored.</li>
 </ul>
 <p>Those are third-party services with their own rules. Prometeo sends them nothing about you beyond what the connection itself needs (such as your IP address, which any internet connection uses).</p>
 
 <h2>Permissions</h2>
 <ul>
 <li><b>Music and audio</b>: to find the songs on your phone.</li>
+<li><b>Videos</b>: to show your phone's videos in the 🎬 Videos tab (only if you allow it).</li>
 <li><b>Internet and network state</b>: for radio and TV, and to reconnect when the signal returns.</li>
 <li><b>Background playback and notifications</b>: so music and radio keep playing with the screen off and you have the controls at hand.</li>
 <li><b>Fingerprint or screen lock</b>: only to open private audio.</li>

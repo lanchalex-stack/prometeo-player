@@ -2,19 +2,38 @@
 
 <img src="res/icon/android/legacy-xxxhdpi.png" alt="Ícono de Prometeo Player" width="128">
 
-# 🔥 Prometeo Player V42
+# 🔥 Prometeo Player V43
 
-**Reproductor de música, radio y TV para Android. Sin anuncios y sin recopilar datos.**
+**Reproductor de música, videos, radio y TV para Android. Sin anuncios y sin recopilar datos.**
 
-![Versión](https://img.shields.io/badge/versión-V42-00e5ff?style=for-the-badge)
+![Versión](https://img.shields.io/badge/versión-V43-00e5ff?style=for-the-badge)
 ![Android](https://img.shields.io/badge/Android-7%2B-3ddc84?style=for-the-badge&logo=android&logoColor=white)
 ![Privacidad](https://img.shields.io/badge/sin-recopilar%20datos-0a0a0a?style=for-the-badge)
 
-[**⬇️ Descargar APK V42**](https://github.com/lanchalex-stack/prometeo-player/releases/tag/v42) · [**🌐 Probar la versión web**](https://lanchalex-stack.github.io/prometeo-player/)
+[**⬇️ Descargar APK V43**](https://github.com/lanchalex-stack/prometeo-player/releases/tag/v43) · [**🌐 Probar la versión web**](https://lanchalex-stack.github.io/prometeo-player/)
 
 </div>
 
 ---
+
+## ✨ Novedades de la V43
+
+- 🎬 **Videos del teléfono** (Biblioteca › 🎬 Videos), sin copiarlos:
+  - Separados por **Cámara, WhatsApp, Telegram, Signal y Descargas**. Los videos de las apps de mensajería se ven libres (los audios privados siguen con huella, PIN o patrón).
+  - **▶ Seguir viendo**, miniaturas, duración y una rayita de cuánto viste.
+  - Mantén presionado un video: agregar a una lista, elegir varios, cambiar nombre (solo en Prometeo), ver en el TV o quitar de Prometeo (con "Deshacer").
+- 🎞️ **Reproductor de video completo**: ±10 s con doble toque, velocidad, cuadro por cuadro, **repetir A-B** (marcas rosadas en la barra), brillo y volumen con gestos, bloqueo de pantalla, **ventanita (PiP)**, idioma del audio, pantalla ajustar/llenar/zoom y ecualizador.
+- 💬 **Subtítulos .srt, .vtt y .ass** que tú eliges: se recuerdan por video, se adelantan o atrasan de 0,5 en 0,5 s, cambian de tamaño y de fondo, y arreglan los acentos (ñ, á…). También salen en el **Chromecast**.
+- 📸 **Captura de pantalla** en videos y canales de TV (pantalla pequeña y completa): se guarda al instante en **Imágenes/Prometeo**. Si el canal no deja copiar su imagen, avisa.
+- 📋 **Listas de videos editables** (Playlists › 🎬 Videos): crear, renombrar, ordenar arrastrando ≡, quitar y borrar con "Deshacer", ver todo, 🔀 y 🔁. Los videos movidos de carpeta se reparan solos.
+  - 🔒 **Lista bloqueada** (opcional, con huella, PIN o patrón): sus videos no salen en la Biblioteca de Prometeo, sin miniatura ni cantidad. Se cierra a los 5 minutos o al salir de la app. *Solo esconde dentro de Prometeo: la Galería del teléfono los sigue mostrando.*
+- ➕ **＋ Agregar videos**: buscar en todo el teléfono, tarjeta SD / USB, elegir carpetas, elegir videos sueltos (selector de Android) y videos quitados.
+- 💾 **Videos de tarjetas SD y memorias USB-C** (lector), con todo: miniaturas, Seguir viendo, subtítulos, listas y Chromecast. Si una tarjeta ya agregada trae videos nuevos, sale un aviso y tú decides.
+- 🔓 **Acceso limitado** de Android 14+: si eliges solo algunos videos, Prometeo lo respeta y te deja sumar más con "＋ Elegir más".
+- 📡 **Videos al Chromecast**, con subtítulos, desde donde ibas.
+- 📺 **Canales DASH y RTSP**, además de HLS.
+- 💾 **Tarjeta SD**: la misma regla de la música vale para los videos: pregunta al conectarla, salta los que no están (sin cambiarles el título) y avisa "💾 Tarjeta no conectada".
+- 🔇 Si un video trae un audio que el teléfono no puede reproducir (por ejemplo DTS), Prometeo avisa en vez de quedarse callado.
 
 ## ✨ Novedades de la V42
 
@@ -93,15 +112,16 @@
 - **Tus audios privados no se muestran**: las notas de voz y grabaciones quedan fuera de tu música. Si decides verlas, Android pide tu huella, PIN o patrón. Prometeo no guarda ninguna clave.
 - **Permisos que pide**:
   - "Música y audio" (o "Almacenamiento" en Android 12 o menos), para encontrar tus canciones.
+  - "Videos" (solo si abres 🎬 Videos y lo permites), para mostrar los videos del teléfono.
   - Internet y estado de la red, solo para la radio, la TV y buscar emisoras.
   - Reproducción en segundo plano, para que la música y la radio sigan sonando.
-  - Huella o bloqueo de pantalla, solo para abrir los audios privados.
-- **Archivos**: las canciones sueltas y las memorias USB se abren solo con el **selector de Android** (tú eliges qué). Para **🗂️ Ordenar**, Android muestra su propia ventana de permiso antes de mover archivos. Prometeo no pide acceso a "todos los archivos".
+  - Huella o bloqueo de pantalla, solo para abrir los audios privados y las listas de videos 🔒.
+- **Archivos**: las canciones sueltas y las memorias USB se abren solo con el **selector de Android** (tú eliges qué). Para **🗂️ Ordenar**, Android muestra su propia ventana de permiso antes de mover archivos. Prometeo no pide acceso a "todos los archivos". Los subtítulos también se eligen con el selector de Android, y las capturas 📸 se guardan en Imágenes/Prometeo solo cuando tocas el botón.
 - No pide ubicación, contactos, cámara ni micrófono.
 
 ## 📲 Instalación
 
-1. Descarga **`Prometeo-v42.apk`** desde [Releases](https://github.com/lanchalex-stack/prometeo-player/releases/tag/v42).
+1. Descarga **`Prometeo-v43.apk`** desde [Releases](https://github.com/lanchalex-stack/prometeo-player/releases/tag/v43).
 2. Ábrelo y permite **"Instalar apps desconocidas"** si Android lo pide.
 3. Si tienes una versión anterior, toca **Actualizar**. **No la desinstales**, así conservas tus playlists, emisoras y listas.
 4. Acepta el permiso de **Música y audio**. Prometeo encontrará tu música.

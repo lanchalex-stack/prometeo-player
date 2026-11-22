@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
         xmlns:android="http://schemas.android.com/apk/res/android"
-        id="prometeo-music" version="1.10.0">
+        id="prometeo-music" version="1.11.1">
     <name>Prometeo Music</name>
     <description>Música del teléfono sin copiarla, sesión para el carro, radio y TV con ExoPlayer (AndroidX Media3). Sin recopilar datos.</description>
     <author>Lanchalex</author>
@@ -23,6 +23,10 @@
         </config-file>
         <config-file target="AndroidManifest.xml" parent="/manifest">
             <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+            <!-- v43: 🎬 videos del teléfono (solo leerlos; no se copian ni salen del teléfono) -->
+            <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+            <!-- v43b: Android 14+: "Permitir el acceso limitado" (solo los videos que el usuario elige) -->
+            <uses-permission android:name="android.permission.READ_MEDIA_VISUAL_USER_SELECTED" />
             <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
             <!-- Radio en segundo plano: servicio de reproducción multimedia y mantener el wifi despierto -->
             <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
@@ -56,6 +60,16 @@
                       android:supportsPictureInPicture="true"
                       android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboardHidden|keyboard|navigation|uiMode"
                       android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" />
+            <!-- v43: reproductor de los videos del teléfono -->
+            <activity android:name="com.prometeo.music.LocalVideoActivity"
+                      android:exported="false"
+                      android:launchMode="singleTask"
+                      android:taskAffinity="com.prometeo.video"
+                      android:excludeFromRecents="true"
+                      android:resizeableActivity="true"
+                      android:supportsPictureInPicture="true"
+                      android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboardHidden|keyboard|navigation|uiMode"
+                      android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" />
             <service android:name="com.prometeo.music.RadioService"
                      android:exported="false"
                      android:foregroundServiceType="mediaPlayback" />
@@ -71,12 +85,19 @@
         <source-file src="src/android/LiveHls.java" target-dir="src/com/prometeo/music" />
         <source-file src="src/android/Net.java" target-dir="src/com/prometeo/music" />
         <source-file src="src/android/Library.java" target-dir="src/com/prometeo/music" />
+        <source-file src="src/android/LocalVideoActivity.java" target-dir="src/com/prometeo/music" />
+        <source-file src="src/android/Videos.java" target-dir="src/com/prometeo/music" />
+        <source-file src="src/android/Shots.java" target-dir="src/com/prometeo/music" />
+        <source-file src="src/android/Subs.java" target-dir="src/com/prometeo/music" />
         <!-- ExoPlayer (AndroidX Media3) — © The Android Open Source Project — Apache License 2.0 -->
         <!-- WebViewAssetLoader (para leer la música sin copiarla); Cordova la usa pero no la comparte con los plugins -->
         <framework src="androidx.webkit:webkit:1.14.0" />
         <framework src="androidx.media3:media3-exoplayer:1.9.4" />
         <framework src="androidx.media3:media3-exoplayer-hls:1.9.4" />
         <framework src="androidx.media3:media3-ui:1.9.4" />
+        <!-- v43: canales DASH y RTSP (Apache 2.0). FFmpeg queda para después (se armará uno propio con licencia compatible) -->
+        <framework src="androidx.media3:media3-exoplayer-dash:1.9.4" />
+        <framework src="androidx.media3:media3-exoplayer-rtsp:1.9.4" />
         <!-- Chromecast: SDK de Google Cast (servicios de Google Play) y el buscador de aparatos de AndroidX -->
         <framework src="com.google.android.gms:play-services-cast-framework:22.1.0" />
         <framework src="androidx.mediarouter:mediarouter:1.7.0" />

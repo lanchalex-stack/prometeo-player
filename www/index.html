@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#141414">
-<title>Prometeo Player v42</title>
+<title>Prometeo Player v43b</title>
 <style>
 /* ===== Skins: cada skin solo cambia estas variables ===== */
 :root,[data-skin="neon"]{--bg:#0a0a0a;--card:#141414;--card2:#1c1c1c;--line:#232323;--line2:#2c2c2c;--acc:#00e5ff;--accrgb:0,229,255;--onacc:#000;--txt:#fff;--txt2:#ddd;--soft:#aaa;--mut:#8a8a8a;--dim:#666;--viz:#070b0c;--sheet:#161616;--input:#202020;--mini:#1a1f20;--miniline:#2a3a3c;--thumb:#fff;--overlay:rgba(0,0,0,.7);--red:#ff4d5e}
@@ -365,6 +365,54 @@ html,body{overflow-x:clip;max-width:100%}
 .bk-auto div{flex:1;min-width:0}.bk-auto b{display:block;font-size:13px}.bk-auto small{display:block;font-size:11px;color:var(--mut)}
 .bk-last{font-size:12px;color:var(--soft);margin:0 2px 10px}
 .bk-item{display:flex;align-items:center;gap:10px;width:100%;text-align:left}
+/* ===== v43: videos ===== */
+#view-biblioteca.vmode #libSeg,#view-biblioteca.vmode label.picker,#view-biblioteca.vmode .btn-scan,#view-biblioteca.vmode #btnPlayAll,#view-biblioteca.vmode #orgBox{display:none!important}
+.v-chips{margin:0 0 8px}
+.v-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+@media (min-width:560px){ .v-grid{grid-template-columns:repeat(3,minmax(0,1fr))} }
+.v-card{position:relative;background:var(--card2);border:1px solid var(--line2);border-radius:14px;overflow:hidden;min-width:0}
+.v-card.sel{border-color:var(--acc);box-shadow:0 0 0 2px var(--acc) inset}
+.v-th,.v-rth,.v-cth,.v-ith{position:relative;background:#000;aspect-ratio:16/9;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.v-th img,.v-rth img,.v-cth img,.v-ith img{width:100%;height:100%;object-fit:cover;display:block}
+.v-d{position:absolute;right:5px;bottom:5px;background:rgba(0,0,0,.75);color:#fff;font-size:10px;font-weight:800;padding:2px 5px;border-radius:6px}
+.v-pr{position:absolute;left:0;bottom:0;height:3px;background:var(--acc)}
+.v-tx{padding:7px 9px 9px;min-width:0}
+.v-tx b{display:block;font-size:12.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.v-tx small{display:block;font-size:10.5px;color:var(--mut);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.v-ck{position:absolute;top:6px;left:6px;width:24px;height:24px;border-radius:50%;border:2px solid #fff;background:rgba(0,0,0,.4);color:var(--onacc);font-weight:900;display:flex;align-items:center;justify-content:center;font-size:13px}
+.v-card.sel .v-ck{background:var(--acc);border-color:var(--acc)}
+.v-resume{display:flex;gap:10px;align-items:center;width:100%;text-align:left;background:var(--card2);border:1px solid var(--acc);border-radius:14px;padding:8px;margin-bottom:10px;color:var(--txt)}
+.v-rth{width:120px;flex:none;border-radius:10px}
+.v-resume .tx{min-width:0;flex:1}
+.v-resume .tx small:first-child{color:var(--acc);font-weight:900;font-size:10.5px;letter-spacing:.5px}
+.v-resume .tx b{display:block;font-size:13.5px;margin:2px 0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.v-resume .tx small{display:block;font-size:11px;color:var(--mut)}
+.v-selbar{position:sticky;top:6px;z-index:3;display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--acc);border-radius:14px;padding:8px 10px;margin-bottom:10px}
+.v-selbar b{flex:1;font-size:13px}
+.v-pl .song-info b::before{content:none}
+.v-cov{width:72px;flex:none;aspect-ratio:16/9;border-radius:9px;overflow:hidden;background:#000;display:flex;align-items:center;justify-content:center;font-size:20px}
+.v-cov.lock{background:var(--card);border:1px dashed var(--line2)}
+.v-cth{width:100%;height:100%}
+.v-cov .v-d,.v-cov .v-pr{display:none}
+#libList > .btn-add{margin:0 0 10px}
+.v-ban{margin-bottom:10px}
+.v-ban.lim{border-color:rgba(255,170,60,.5);background:rgba(255,170,60,.07)}
+.v-plbar{display:flex;gap:8px;margin:12px 0;flex-wrap:wrap}
+.v-plbar .btn-add{flex:2;margin:0}
+.btn-pill.on{background:var(--acc);color:var(--onacc);border-color:var(--acc)}
+.v-items{margin-top:4px}
+.v-item{display:flex;align-items:center;gap:8px;background:var(--card2);border:1px solid var(--line2);border-radius:14px;padding:6px 6px 6px 4px;margin-bottom:8px}
+.v-item.off{opacity:.55}
+.v-item.dragging{opacity:.6;border-color:var(--acc)}
+.v-item.drop-at{box-shadow:0 -3px 0 var(--acc)}
+.v-drag{width:26px;flex:none;text-align:center;color:var(--mut);font-size:20px;cursor:grab;padding:8px 0}
+.v-ith{width:78px;flex:none;border-radius:8px}
+.v-item .song-info{flex:1;min-width:0}
+.swr{display:flex;align-items:center;gap:12px;background:var(--card2);border:1px solid var(--line2);border-radius:14px;padding:12px;margin-top:12px}
+.swr .t{flex:1;min-width:0}.swr .t b{display:block;font-size:14px}.swr .t small{display:block;font-size:11.5px;color:var(--mut);margin-top:2px;line-height:1.4}
+.warn-note{font-size:11.5px;color:var(--mut);line-height:1.45;margin:8px 2px 12px}
+.tvi-video.flash{animation:vflash .35s}
+@keyframes vflash{0%{filter:brightness(2.2)}100%{filter:none}}
 </style>
 </head>
 <body>
@@ -372,7 +420,7 @@ html,body{overflow-x:clip;max-width:100%}
 <header class="topbar">
  <div class="tb-main">
  <div class="tb-left">
-  <div class="tb-title"><h1>🔥 Prometeo <span>Player</span></h1><button class="ver" id="btnVer" data-i18n-aria="diagBtn" aria-label="Diagnóstico">v42</button></div>
+  <div class="tb-title"><h1>🔥 Prometeo <span>Player</span></h1><button class="ver" id="btnVer" data-i18n-aria="diagBtn" aria-label="Diagnóstico">v43b</button></div>
   <div class="top-actions">
     <button class="top-btn hidden" id="btnCast" aria-label="Transmitir">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 18v.01"/><path d="M3 14a4 4 0 0 1 4 4"/><path d="M3 10a8 8 0 0 1 8 8"/><path d="M3 6.5V6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4.5"/></svg>
@@ -448,6 +496,7 @@ html,body{overflow-x:clip;max-width:100%}
 <section id="view-biblioteca" class="view">
   <div class="card">
     <div class="card-title"><span data-i18n="library">Biblioteca</span><span class="title-right"><small id="libCount">0 canciones</small><button class="icon-btn hidden" id="btnPrivSet" data-i18n-aria="privSetA" aria-label="Qué busca Prometeo">⚙️</button></span></div>
+    <div id="libMedia" class="seg lib-seg hidden" role="tablist"></div>
     <div id="libSeg" class="seg lib-seg hidden" role="tablist"></div>
     <label class="btn-add picker"><span data-i18n="addSongs">＋ Agregar canciones</span><input type="file" class="songPicker" multiple></label>
     <button class="btn-add btn-scan" data-i18n="addMusicBtn">＋ Agregar música</button>
@@ -461,6 +510,7 @@ html,body{overflow-x:clip;max-width:100%}
 <section id="view-playlists" class="view">
   <div class="card" id="plIndex">
     <div class="card-title"><span>Playlists</span><button class="btn-pill" id="btnNewPl" data-i18n="newBtn">＋ Nueva</button></div>
+    <div id="plMedia" class="seg lib-seg hidden" role="tablist"></div>
     <div id="plList"></div>
   </div>
   <div class="card hidden" id="plDetail">
@@ -472,6 +522,7 @@ html,body{overflow-x:clip;max-width:100%}
     </div>
     <div id="plSongs" class="list"></div>
   </div>
+  <div class="card hidden" id="vplDetail"></div>
 </section>
 
 <!-- ============ RADIO ============ -->
@@ -518,6 +569,7 @@ html,body{overflow-x:clip;max-width:100%}
     <button class="icon-btn" id="tviPrev" aria-label="▲">▲</button>
     <button class="icon-btn tvi-play" id="tviPlay" aria-label="⏸">⏸</button>
     <button class="icon-btn" id="tviNext" aria-label="▼">▼</button>
+    <button class="icon-btn" id="tviShot" aria-label="📸">📸</button>
     <button class="icon-btn star" id="tviFav">☆</button>
     <button class="icon-btn" id="tviFull">⛶</button>
     <button class="icon-btn" id="tviClose">✕</button>
@@ -754,8 +806,444 @@ let castOn=false, castDevName='', castKind='', castPlaying=false, castPos=0, cas
 const castModeFor={};   /* Chromecast */
 let tvSel='';
 
+/* ================= v43: 🎬 VIDEOS =================
+   Los videos del teléfono se ven sin copiarlos. Los de WhatsApp, Telegram y Signal salen libres (sin PIN).
+   Una lista 🔒 esconde sus videos DENTRO de Prometeo (la Galería del teléfono los sigue mostrando). */
+let videos=[], vAll=[], vPerm=false, vLoaded=false, vState={}, libMedia=store.get('libMedia','music'), vChip='all', vSel=null, plMedia='music', openVpl=null;
+const volTmpV=new Set();
+let vQueue=null;   /* {items,idx} para el TV */
+const VKINDS=[['camera','📷'],['whatsapp','💬'],['telegram','✈️'],['signal','🔵'],['download','⬇️'],['card','💾'],['other','📁']];
+function vKind(f){ if(isRemVol(f.vol)) return 'card'; const p=String(f.folder||'').toLowerCase(); if(/whatsapp/.test(p)) return 'whatsapp'; if(/telegram/.test(p)) return 'telegram'; if(/signal/.test(p)) return 'signal'; if(/dcim|camera|c[aá]mara/.test(p)) return 'camera'; if(/download/.test(p)) return 'download'; return 'other'; }
+function vlists(){ const l=store.get('vlists',[]); return Array.isArray(l)? l : []; }
+function saveVlists(l){ store.set('vlists',l); }
+function vNames(){ return store.get('vNames',{})||{}; }
+function vTitle(v){ const a=vNames()[v.id]; return a || cleanName(v.name||v.title||'video'); }
+function vHidden(){ const h=store.get('vHidden',[]); return Array.isArray(h)? h : []; }
+function lockedMids(){ const s=new Set(); vlists().forEach(L=>{ if(L.locked) L.items.forEach(it=>s.add(String(it.mid))); }); return s; }
+function vById(id){ return vAll.find(v=>String(v.id)===String(id)); }
+function vVisible(v){ return !!v.tmp || volAllowed(v.vol) || volTmpV.has(v.vol); }
+function fmtDur(ms){ return fmt((+ms||0)/1000); }
+function vDate(v){ if(!v.date) return ''; try{ return new Date(v.date).toLocaleDateString(LANG,{day:'numeric',month:'short'}); }catch(e){ return ''; } }
+async function loadVideos(force){
+  if(!PM || !PM.scanVideos) return;
+  try{ vAccess=+(await PM.hasVideoPermission())||0; }catch(e){ vAccess=0; }
+  vPerm=vAccess>0;
+  let list=[]; if(vPerm){ try{ list=(await PM.scanVideos())||[]; }catch(e){ list=[]; } }
+  try{ vState=(await PM.videoState())||{}; }catch(e){}
+  /* v43b: + los de memorias USB y los elegidos a mano (si no están ya en la lista de Android) */
+  const ms=new Set(list.map(v=>(v.name||'')+'|'+(v.size||0)));
+  const extra=vUris().filter(x=>volMounted(x.vol)).map(x=>uriVideo(x));
+  Object.keys(vTmpU).filter(volMounted).forEach(n=>vTmpU[n].forEach(x=>extra.push(uriVideo(x,true))));
+  vAll=list.concat(extra.filter(v=>!ms.has(v.name+'|'+v.size)));
+  /* videos que se movieron de carpeta: siguen en sus listas y en "Seguir viendo" */
+  const seen=new Set(vAll.map(v=>String(v.id))); const L=vlists(); let ch=false;
+  L.forEach(P=>P.items.forEach(it=>{ if(seen.has(String(it.mid))) return;
+    const m=vAll.find(v=>(v.name||'')===it.f && (v.size||0)===(it.z||0) && !P.items.some(x=>String(x.mid)===String(v.id)));
+    if(m){ if(PM.videoMovePos) PM.videoMovePos(String(it.mid),String(m.id)).catch(()=>{}); it.mid=m.id; it.v=m.vol||''; ch=true; } }));
+  if(ch) saveVlists(L);
+  const hid=new Set(vHidden().map(x=>String(x.mid))), locked=lockedMids();
+  videos=vAll.filter(v=>!hid.has(String(v.id)) && !locked.has(String(v.id)) && vVisible(v) && vInScope(v));
+  if(!store.get('vKnown',null)) markKnown();
+  vLoaded=true;
+}
+async function askVideoPerm(){
+  let ok=false; try{ ok=(+(await PM.requestVideoPermission())||0)>0; }catch(e){}
+  if(!ok){ toast(t('vPermNo')); return; }
+  await loadVideos(true); renderLib();
+}
+function setLibMedia(m){ libMedia=m; store.set('libMedia',m); vSel=null; renderLib(); if(m==='video' && !vLoaded) loadVideos().then(renderLib); }
+
+function vThumb(v, cls){
+  const th=el('div',cls||'v-th'); const img=el('img'); img.loading='lazy'; img.alt=''; img.src=v.u? '/__prometeo_vthumb__/u/'+b64u(v.u) : '/__prometeo_vthumb__/'+v.id; img.onerror=()=>img.remove(); th.appendChild(img);
+  if(v.duration) th.appendChild(el('span','v-d',fmtDur(v.duration)));
+  const st=vState[String(v.id)]; if(st && st.p>3000 && st.d>0 && st.p<st.d-10000){ const pr=el('i','v-pr'); pr.style.width=Math.min(100,st.p/st.d*100)+'%'; th.appendChild(pr); }
+  return th;
+}
+function vKindLabel(k){ return t('vk_'+k); }
+function renderVideos(c){
+  if(!PM || !PM.scanVideos){ c.appendChild(el('div','empty',t('vNative'))); return; }
+  if(!vLoaded){ c.appendChild(el('div','empty',t('vLoading'))); loadVideos().then(()=>{ if(libMedia==='video') renderLib(); }); return; }
+  if(!vPerm){
+    const box=el('div','priv-info'); box.appendChild(el('span',null,'🎬')); box.appendChild(el('span',null,t('vPermMsg'))); c.appendChild(box);
+    const b=el('button','btn-add',t('vPermBtn')); b.onclick=askVideoPerm; c.appendChild(b); return;
+  }
+  $('libCount').textContent=t(videos.length===1?'v1':'vN',videos.length);
+  /* v43b: ＋ Agregar videos, aviso de memoria con videos nuevos y acceso limitado */
+  if(!vSel){ const ab=el('button','btn-add',t('vAddBtn')); ab.onclick=openVidAddMenu; c.appendChild(ab); }
+  const bn=vBannerEl(); if(bn && !vSel) c.appendChild(bn);
+  if(vAccess===2 && !vSel){ const lb=el('button','priv-note vol-note v-ban lim'); lb.appendChild(el('span',null,'🔓'));
+    const tx=el('div','tx'); tx.appendChild(el('b',null,t('vLimT'))); tx.appendChild(el('span',null,t('vLimSub'))); lb.appendChild(tx);
+    lb.appendChild(el('span','go',t('vLimBtn'))); lb.onclick=vMoreAccess; c.appendChild(lb); }
+  /* Seguir viendo */
+  let last=null; videos.forEach(v=>{ const s=vState[String(v.id)]; if(s && s.p>3000 && s.d>0 && s.p<s.d-10000 && (!last || s.t>last.s.t)) last={v,s}; });
+  if(last && !vSel){ const r=el('button','v-resume'); r.appendChild(vThumb(last.v,'v-rth')); const tx=el('div','tx'); tx.appendChild(el('small',null,t('vResume')));
+    const b=el('b',null,vTitle(last.v)); tx.appendChild(b); tx.appendChild(el('small',null,t('vAtOf',fmtDur(last.s.p),fmtDur(last.s.d)))); r.appendChild(tx);
+    r.onclick=()=>playVideos([last.v],0); c.appendChild(r); }
+  /* chips por carpeta */
+  const counts={}; videos.forEach(v=>{ const k=vKind(v); counts[k]=(counts[k]||0)+1; });
+  if(vChip!=='all' && !counts[vChip]) vChip='all';
+  const chips=el('div','chips v-chips');
+  const mk=(k,txt)=>{ const b=el('button','chip'+(vChip===k?' on':''),txt); b.onclick=()=>{ vChip=k; renderLib(); }; chips.appendChild(b); };
+  mk('all',t('vAll',videos.length)); VKINDS.forEach(([k,ic])=>{ if(counts[k]) mk(k,ic+' '+vKindLabel(k)+' · '+counts[k]); });
+  c.appendChild(chips);
+  const shown=videos.filter(v=>vChip==='all' || vKind(v)===vChip);
+  if(vSel){ const bar=el('div','v-selbar'); bar.appendChild(el('b',null,t('vSelN',vSel.size)));
+    const add=el('button','btn-pill',t('vAddToList')); add.onclick=()=>{ if(vSel.size) addToVList([...vSel]); }; bar.appendChild(add);
+    const x=el('button','icon-btn','✕'); x.onclick=()=>{ vSel=null; renderLib(); }; bar.appendChild(x); c.appendChild(bar); }
+  if(!shown.length){ c.appendChild(el('div','empty',t('vEmpty'))); return; }
+  const g=el('div','v-grid');
+  shown.slice(0,400).forEach((v,i)=>{
+    const card=el('div','v-card'+(vSel && vSel.has(String(v.id))?' sel':'')); card.appendChild(vThumb(v));
+    if(vSel){ card.appendChild(el('span','v-ck',vSel.has(String(v.id))?'✓':'')); }
+    const tx=el('div','v-tx'); tx.appendChild(el('b',null,vTitle(v))); tx.appendChild(el('small',null,[VKINDS.find(k=>k[0]===vKind(v))[1]+' '+vKindLabel(vKind(v)), isRemVol(v.vol) && vKind(v)!=='card'? '💾' : '', vDate(v)].filter(Boolean).join(' · '))); card.appendChild(tx);
+    card.onclick=()=>{ if(vSel){ const k=String(v.id); if(vSel.has(k)) vSel.delete(k); else vSel.add(k); renderLib(); return; } playVideos(shown, i); };
+    onLongPress(card,()=>{ if(vSel){ return; } openVideoMenu(v); });
+    g.appendChild(card);
+  });
+  c.appendChild(g);
+  if(shown.length>400) c.appendChild(el('div','empty',t('andMore',shown.length-400)));
+}
+async function openVideoMenu(v){
+  const r=await modal('🎬 '+vTitle(v),(b,close)=>{
+    b.appendChild(el('p','m-sub',[vKindLabel(vKind(v)), v.duration? fmtDur(v.duration) : '', v.size? fmtSize(v.size) : ''].filter(Boolean).join(' · ')));
+    [['',t('vAddToList'),'list'],['☑️',t('vSelect'),'sel'],['✏️',t('vRename'),'rename'],['📡',t('vCast'),'cast'],['🗑️',t('vRemove'),'remove']].forEach(([ic,tx,k])=>{
+      const bt=el('button','m-item'+(k==='remove'?' del-ch':''),(ic? ic+' ' : '')+tx); bt.onclick=()=>close(k); b.appendChild(bt); });
+  },[[t('close'),()=>null,'btn-pill']]);
+  if(r==='list') addToVList([String(v.id)]);
+  else if(r==='sel'){ vSel=new Set([String(v.id)]); renderLib(); }
+  else if(r==='rename'){ const n=await askText(t('vRename'),vTitle(v)); if(n){ const N=vNames(); N[v.id]=n; store.set('vNames',N); renderLib(); } }
+  else if(r==='cast'){ if(!castOn){ toast(t('vCastFirst')); openCastPicker(); return; } castVideo(v,0,[v]); }
+  else if(r==='remove') removeVideo(v);
+}
+function removeVideo(v){
+  const h=vHidden(); h.push({mid:v.id, f:v.name||'', z:v.size||0, d:Date.now()}); store.set('vHidden',h);
+  videos=videos.filter(x=>x!==v); renderLib();
+  toastUndo(t('vRemoved',vTitle(v)),()=>{ store.set('vHidden',vHidden().filter(x=>String(x.mid)!==String(v.id))); loadVideos().then(renderLib); toast(t('undone')); });
+}
+/* ▶ ver: si estás conectado a un TV, va al TV; si no, al reproductor del teléfono */
+function playVideos(list, i, o){
+  o=o||{};
+  const ok=list.filter(v=>v && vById(v.id));
+  const want=list[i];
+  if(!ok.length){ toast(t('vNone')); return; }
+  if(!want || !vById(want.id)) toast(t('vMissing'));
+  const idx=Math.max(0, want? ok.findIndex(v=>String(v.id)===String(want.id)) : 0);
+  if(castOn){ castVideo(ok[idx], null, ok, o.repeat); return; }
+  if(radioId) stopRadio(true);
+  if(!audio.paused) audio.pause();
+  PM.playLocal({items:ok.map(v=>(v.u? {id:-1, u:v.u, k:v.k, n:vTitle(v)} : {id:v.id, n:vTitle(v)})), i:idx, repeat:!!o.repeat, s:lvStrings()}).catch(()=>toast(t('vOpenFail')));
+}
+const LV_KEYS=['back','cast','shot','settings','prevV','nextV','frameB','frameF','pause','play','subs','audio','window','unlock','lockedHint','unlocked','resumeAt','nOfM','skipped','cantOpen','noAudio','lastV',
+  'abA','abShort','abOn','abOff','shotFail','shotBlack','shotSaved','fill','zoom','fit','noPicker','subType','loadSubs','subsOff','subTime','subSize','normal','subBg','bgNone','bgShadow','bgBlack','audioTrack','speed','screenFit','noPip'];
+function lvStrings(){ const o={}; LV_KEYS.forEach(k=>o[k]=t('lv_'+k)); return o; }
+function onVideoEvent(ev){
+  if(!ev || !ev.type) return;
+  if(ev.type==='cast'){ const v=vById(ev.u? ev.k : ev.id); if(v) castVideo(v, (ev.pos||0)/1000, [v]); return; }
+  if(ev.type==='closed' || ev.type==='watch'){ PM.videoState().then(s=>{ vState=s||{}; if(libMedia==='video' && currentTab==='biblioteca') renderLib(); if(openVpl) renderVplDetail(); }).catch(()=>{}); }
+}
+/* 📡 video al TV */
+function castVideo(v, posSec, list, repeat){
+  if(!castOn){ toast(t('vCastFirst')); return; }
+  const fn=v.name||''; const ext=((fn.match(/\.([a-z0-9]{2,5})$/i)||[])[1]||'mp4').toLowerCase();
+  if(posSec==null){ const s=vState[String(v.id)]; posSec=(s && s.p>3000 && s.p<s.d-10000)? s.p/1000 : 0; }
+  vQueue={items:(list&&list.length? list : [v]), idx:0, repeat:!!repeat}; vQueue.idx=Math.max(0,vQueue.items.findIndex(x=>String(x.id)===String(v.id)));
+  if(radioId) stopRadio(true); if(!audio.paused) audio.pause();
+  castKind='video'; castTitle=vTitle(v); castPlaying=true; castPos=posSec*1000; castDur=v.duration||0; castRender();
+  toast(t('opening',castTitle));
+  PM.castLoad({kind:'video', mid:v.u? -1 : v.id, uri:v.u||'', key:v.u? v.k : String(v.id), ext, mime:v.mime||'video/mp4', title:castTitle, artist:'Prometeo', pos:Math.round(posSec*1000), dur:v.duration||0}).catch(castErr);
+}
+function castVideoMove(dir){
+  if(!vQueue || !vQueue.items.length) return;
+  const n=vQueue.items.length;
+  for(let k=1;k<=n;k++){ const j=vQueue.idx+dir*k; if(!vQueue.repeat && (j<0 || j>=n)) break; const x=vQueue.items[((j%n)+n)%n]; if(x && vById(x.id)){ castVideo(x,0,vQueue.items,vQueue.repeat); return; } }
+  toast(t('lastV2'));
+}
+
+
+/* ================= v43b: ＋ AGREGAR VIDEOS, MEMORIAS USB Y ACCESO LIMITADO =================
+   Los videos de una memoria USB (o elegidos a mano) se ven por su dirección (uri), sin copiarlos. */
+let vAccess=0, vTmpU={}, vBanner={}, vUsbCache={}, volFirst=true;
+function vUris(){ const l=store.get('vUris',[]); return Array.isArray(l)? l : []; }
+function vNoU(){ const l=store.get('vNoU',[]); return Array.isArray(l)? l : []; }
+function uidOf(u){ return 'u'+hashStr(String(u)); }
+function b64u(u){ return btoa(unescape(encodeURIComponent(u))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,''); }
+function uriVideo(x,tmp){ const id=uidOf(x.u); return {id, k:id, u:x.u, name:x.name||'video', title:x.name||'video', duration:x.dur||0, size:x.size||0, mime:x.mime||'', folder:x.folder||'', vol:x.vol||'', date:x.date||0, w:0, h:0, tmp:!!tmp}; }
+function vScope(){ const s=store.get('vScope',null); return (s && typeof s==='object')? {all:s.all!==false, dirs:Array.isArray(s.dirs)? s.dirs : []} : {all:true,dirs:[]}; }
+function vDirKey(v){ return (v.vol||'')+'|'+(v.folder||''); }
+function vInScope(v){ const s=vScope(); return s.all || s.dirs.includes(vDirKey(v)) || !!v.u; }
+function vKnownSet(){ return new Set((store.get('vKnown',[])||[]).map(String)); }
+function markKnown(){ store.set('vKnown',vAll.map(v=>String(v.id)).slice(0,20000)); }
+/* duración de los videos de memoria USB (se calcula una vez y se guarda) */
+async function fillUriDurations(){
+  if(!PM.videoDurations) return;
+  const L=vUris(), need=L.filter(x=>!x.dur && volMounted(x.vol)).map(x=>x.u).slice(0,120); if(!need.length) return;
+  let d={}; try{ d=(await PM.videoDurations(need))||{}; }catch(e){ return; }
+  const L2=vUris(); let ch=false; L2.forEach(x=>{ if(d[x.u]>0){ x.dur=d[x.u]; ch=true; } }); if(ch){ store.set('vUris',L2); await loadVideos(); if(libMedia==='video') renderLib(); }
+}
+/* ---- ＋ Agregar videos ---- */
+async function openVidAddMenu(){
+  if(!PM) return;
+  await refreshVols().catch(()=>{});
+  const cards=vols.filter(v=>v.removable && v.mounted);
+  const known=vKnownSet(); const nNew=vAll.filter(v=>!known.has(String(v.id)) && !v.u).length;
+  const hidN=vHidden().length;
+  const cardSub=()=>{ if(!cards.length) return t('vaCardNone'); const v=cards[0]; const c=vUsbCache[v.name];
+    return (v.label||volLabel(v.name))+(c? ' · '+t(c.v===1?'v1':'vN',c.v)+' · '+nSongs(c.s) : ''); };
+  const pick=await modal(t('vaT'),(b,close)=>{
+    b.appendChild(el('p','m-sub',t('vaSub')));
+    const nb=addOpt(b,'🔍',t('vaAll'),t('vaAllSub'),()=>close('all'),true); if(nNew){ nb.textContent=t('vNew',nNew); nb.classList.add('on'); }
+    const cb=addOpt(b,'💾',t('vaCard'),cardSub(),()=>close('card')); const bn=cards.reduce((a,v)=>a+((vBanner[v.name]||{}).nv||0),0); if(bn){ cb.textContent=t('vNew',bn); cb.classList.add('on'); }
+    addOpt(b,'📂',t('vaFold'),t('vaFoldSub'),()=>close('folders'));
+    addOpt(b,'🎬',t('vaLoose'),t('vaLooseSub'),()=>close('loose'));
+    const qb=addOpt(b,'♻️',t('vaRem'),t('vaRemSub'),()=>close('removed')); if(hidN){ qb.textContent=String(hidN); qb.classList.add('red'); }
+    b.appendChild(el('p','privacy-small',t('vaNote')));
+  },[[t('close'),()=>null,'btn-pill']]);
+  if(pick==='all') await vSearchAll();
+  else if(pick==='card') await vPickCard(cards);
+  else if(pick==='folders') await vOpenFolders();
+  else if(pick==='loose') await vPickLoose();
+  else if(pick==='removed') await vOpenRemoved();
+}
+async function vSearchAll(){
+  toast(t('vScanning'));
+  if(PM.rescan) await PM.rescan([]).catch(()=>{});
+  const known=vKnownSet(); await loadVideos(true);
+  const n=videos.filter(v=>!known.has(String(v.id))).length; markKnown();
+  await vCheckCards(true);
+  renderLib(); toast(n? t('vFoundN',n) : t('vFoundNone'));
+}
+async function vPickCard(cards){
+  if(!cards.length){ toast(t('vaCardNone')); return; }
+  let v=cards[0];
+  if(cards.length>1){
+    const r=await modal(t('vaCard'),(b,close)=>{ cards.forEach(c=>b.appendChild(optRow(false,el('span','opt-ic','💾'),c.label||volLabel(c.name),c.indexed? '' : 'USB',()=>close(c.name)))); },[[t('cancel'),()=>null,'btn-pill']]);
+    if(!r) return; v=cards.find(c=>c.name===r);
+  }
+  if(v.indexed) await askVolume(v, true); else await askUsb(v);
+}
+/* 📂 carpetas con videos: eliges cuáles se ven en 🎬 Videos */
+async function vOpenFolders(){
+  await loadVideos(true);
+  const G=new Map(); vAll.filter(v=>!v.u).forEach(v=>{ if(!vVisible(v)) return; const k=vDirKey(v); if(!G.has(k)) G.set(k,{k, vol:v.vol, folder:v.folder||'', n:0}); G.get(k).n++; });
+  const groups=[...G.values()].sort((a,b)=>b.n-a.n);
+  const sc=vScope(); let all=sc.all; const sel=new Set(all? groups.map(g=>g.k) : sc.dirs);
+  const res=await modal(t('vfT'),(b,close)=>{
+    const paint=()=>{
+      b.textContent='';
+      b.appendChild(el('p','m-sub',t('vfSub')));
+      b.appendChild(optRow(all, el('span','opt-ic','📱'), t('vfAll'), t('vfAllSub'), ()=>{ all=!all; if(all) groups.forEach(g=>sel.add(g.k)); paint(); }));
+      const box=el('div','fold-list'+(all?' all':''));
+      if(!groups.length) box.appendChild(el('div','empty',t('vEmpty')));
+      groups.forEach(g=>{
+        const row=el('label','fold-row'); const cb=el('input'); cb.type='checkbox'; cb.checked=all || sel.has(g.k); cb.disabled=all;
+        cb.onchange=()=>{ if(cb.checked) sel.add(g.k); else sel.delete(g.k); };
+        row.appendChild(cb); row.appendChild(el('span','fi',isRemVol(g.vol)? '💾' : (VKINDS.find(k=>k[0]===vKind({folder:g.folder,vol:g.vol}))||['','📁'])[1]));
+        const tx=el('div','ft'); tx.appendChild(el('b',null,folderName(g.folder)||volLabel(g.vol))); tx.appendChild(el('small',null,volLabel(g.vol)+'/'+g.folder.replace(/\/$/,''))); row.appendChild(tx);
+        row.appendChild(el('span','cnt all',t(g.n===1?'v1':'vN',g.n))); box.appendChild(row);
+      });
+      b.appendChild(box);
+      const row=el('div','st-actions'); const bc=el('button','btn-pill',t('cancel')); bc.onclick=()=>close(null);
+      const bs=el('button','btn-ok',t('save')); bs.onclick=()=>close('save'); row.appendChild(bc); row.appendChild(bs); b.appendChild(row);
+    };
+    paint();
+  },[]);
+  if(res!=='save') return;
+  store.set('vScope',{all, dirs:all? [] : [...sel]});
+  await loadVideos(); renderLib(); toast(t('vfSaved'));
+}
+/* 🎬 videos sueltos con el selector de Android */
+async function vPickLoose(){
+  if(!PM.pickVideo) return;
+  let res; try{ res=(await PM.pickVideo())||[]; }catch(e){ if(String(e)!=='cancel') toast(t('pickFail')); return; }
+  const L=vUris(); let n=0;
+  res.forEach(f=>{ if(!f || !f.uri) return;
+    const h=vHidden().find(x=>String(x.mid)===uidOf(f.uri)); if(h) store.set('vHidden',vHidden().filter(x=>x!==h));
+    if(L.some(x=>x.u===f.uri)) return;
+    L.push({u:f.uri, name:f.name||'video', size:f.size||0, mime:f.mime||'', folder:'', vol:'', date:Date.now()}); n++; });
+  store.set('vUris',L); await loadVideos(); markKnown(); libMedia='video'; store.set('libMedia','video'); switchTab('biblioteca'); renderLib();
+  toast(n? t('vAddedN',n) : t('vFoundNone')); fillUriDurations();
+}
+/* ♻️ videos quitados */
+async function vOpenRemoved(){
+  await loadVideos(true);
+  const H=vHidden();
+  const name=x=>{ const v=vById(x.mid); return v? vTitle(v) : cleanName(x.f||'video'); };
+  const r=await modal(t('vrT'),(b,close)=>{
+    b.appendChild(el('p','m-sub',t('vrSub')));
+    if(!H.length) b.appendChild(el('div','empty',t('vrNone')));
+    H.forEach(x=>{ const row=el('div','song-item'); const info=el('div','song-info'); info.appendChild(el('b',null,name(x)));
+      info.appendChild(el('small',null,x.d? t('removedOn',new Date(x.d).toLocaleDateString(LANG)) : '')); row.appendChild(info);
+      const bt=el('button','btn-pill back-btn',t('giveBack')); bt.onclick=()=>close([String(x.mid)]); row.appendChild(bt); b.appendChild(row); });
+    if(H.length>1){ const all=el('button','btn-ghost',t('vGiveAll')); all.onclick=()=>close(H.map(x=>String(x.mid))); b.appendChild(all); }
+  },[[t('close'),()=>null,'btn-ok']]);
+  if(!r || !r.length) return;
+  const back=new Set(r); store.set('vHidden',vHidden().filter(x=>!back.has(String(x.mid))));
+  await loadVideos(); renderLib(); toast(t('vBack',r.length));
+}
+/* 🔓 acceso limitado: sumar más videos */
+async function vMoreAccess(){
+  try{ await PM.requestVideoPermission(); }catch(e){}
+  await loadVideos(true); renderLib();
+}
+/* 💾 memorias USB ya agregadas: ¿trae videos (o canciones) nuevos? → aviso en la Biblioteca, sin ventana */
+async function vCheckCards(quiet){
+  if(!PM || !PM.listTree) return;
+  const trees=store.get('volTrees',{})||{}, okM=volOkMap(), have=new Set(vUris().map(x=>x.u)), no=new Set(vNoU());
+  for(const v of vols.filter(x=>x.removable && x.mounted && !x.indexed)){
+    if(!okM[v.name] || !trees[v.name]){ delete vBanner[v.name]; continue; }
+    let items=null; try{ items=await PM.listTree(trees[v.name]); }catch(e){ items=null; }
+    if(!items) continue;
+    const vids=items.filter(f=>f.video), aud=items.filter(f=>!f.video && !privKind(f.folder,f.name||'',false));
+    const nv=vids.filter(f=>!have.has(f.uri) && !no.has(f.uri)).length, ns=aud.filter(f=>!songs.some(s=>!s.temp && s.uri===f.uri)).length;
+    vUsbCache[v.name]={v:vids.length, s:aud.length};
+    if(nv) vBanner[v.name]={nv, ns, label:v.label||volLabel(v.name)}; else delete vBanner[v.name];
+  }
+  if(!quiet && libMedia==='video' && currentTab==='biblioteca') renderLib();
+}
+/* respuesta para los videos de una memoria USB (agregar / solo ver ahora / no / quitar) */
+function vUsbAnswer(v, r, vids){
+  if(!r) return;
+  const L=vUris(), no=new Set(vNoU());
+  if(r==='add'){ vids.forEach(f=>{ no.delete(f.uri); if(!L.some(x=>x.u===f.uri)) L.push({u:f.uri, name:f.name||'video', size:f.size||0, mime:f.mime||'', folder:f.folder||'', vol:v.name, date:Date.now()}); }); delete vTmpU[v.name]; }
+  else if(r==='listen'){ vTmpU[v.name]=vids.filter(f=>!L.some(x=>x.u===f.uri)).map(f=>({u:f.uri, name:f.name, size:f.size, mime:f.mime, folder:f.folder, vol:v.name})); }
+  else if(r==='no'){ vids.forEach(f=>{ if(!L.some(x=>x.u===f.uri)) no.add(f.uri); }); delete vTmpU[v.name]; }
+  else if(r==='remove'){ store.set('vUris',L.filter(x=>x.vol!==v.name)); vids.forEach(f=>no.add(f.uri)); store.set('vNoU',[...no].slice(-20000)); delete vTmpU[v.name]; delete vBanner[v.name]; return; }
+  store.set('vUris',L); store.set('vNoU',[...no].slice(-20000)); delete vBanner[v.name];
+}
+function vBannerEl(){
+  const ks=Object.keys(vBanner).filter(n=>volMounted(n)); if(!ks.length) return null;
+  const n=ks[0], B=vBanner[n];
+  const bn=el('button','priv-note vol-note v-ban'); bn.appendChild(el('span',null,'💾'));
+  const tx=el('div','tx'); tx.appendChild(el('b',null,t('vBanT',B.label,B.nv))); tx.appendChild(el('span',null,B.ns? t('vBanSongs',B.ns) : t('vBanSub'))); bn.appendChild(tx);
+  bn.appendChild(el('span','go',t('vBanGo'))); bn.onclick=()=>{ const v=vols.find(x=>x.name===n); if(v) askUsb(v); };
+  return bn;
+}
+
+/* ================= v43: 📋 LISTAS DE VIDEOS (con 🔒 opcional) ================= */
+function vItemOf(v){ return {mid:v.id, f:v.name||'', z:v.size||0, v:v.vol||''}; }
+function vlistById(id){ return vlists().find(L=>L.id===id); }
+function vlistOpen(L){ return !L.locked || privUnlocked(); }
+async function addToVList(mids){
+  const L=vlists();
+  const r=await modal(t('vAddN',mids.length),(b,close)=>{
+    L.forEach(P=>{ const bt=el('button','m-item list-act'); bt.appendChild(el('b',null,(P.locked?'🔒 ':'🎬 ')+P.name)); bt.appendChild(el('small',null,P.locked && !privUnlocked()? t('vAsksAuth') : t(P.items.length===1?'v1':'vN',P.items.length))); bt.onclick=()=>close(P.id); b.appendChild(bt); });
+    const nb=el('button','m-item list-act new-pl',t('vNewList')); nb.onclick=()=>close('new'); b.appendChild(nb);
+    b.appendChild(el('p','privacy-small',t('vLockNote')));
+  },[[t('cancel'),()=>null,'btn-pill']]);
+  if(!r) return;
+  let id=r;
+  if(r==='new'){ const n=await askText(t('vNewList'),''); if(!n) return; const P={id:'vl'+Date.now(), name:n, locked:false, items:[], created:Date.now()}; const all=vlists(); all.push(P); saveVlists(all); id=P.id; }
+  const all=vlists(), P=all.find(x=>x.id===id); if(!P) return;
+  if(P.locked && !privUnlocked() && !(await requireAuth())) return;
+  let n=0; mids.forEach(m=>{ const v=vById(m); if(v && !P.items.some(it=>String(it.mid)===String(m))){ P.items.push(vItemOf(v)); n++; } });
+  saveVlists(all); vSel=null;
+  await loadVideos(); renderLib(); if(plMedia==='video') renderPlaylists();
+  toast(P.locked? t('vAddedLocked',n,P.name) : t('vAdded',n,P.name));
+}
+function vlistItems(P){ return P.items.map(it=>{ const v=vById(it.mid); return {it, v}; }); }
+function vlistDur(P){ return vlistItems(P).reduce((a,x)=>a+(x.v? x.v.duration||0 : 0),0); }
+function fmtLong(ms){ const m=Math.round(ms/60000); return m>=60? Math.floor(m/60)+' h '+(m%60)+' min' : m+' min'; }
+function renderVPlaylists(c){
+  const L=vlists();
+  if(!L.length){ c.appendChild(el('div','empty',t('vlEmpty'))); return; }
+  L.forEach(P=>{
+    const r=el('div','pl-row v-pl'); const open=vlistOpen(P);
+    const cov=el('div','v-cov'+(P.locked && !open?' lock':''));
+    if(P.locked && !open) cov.textContent='🔒'; else { const first=vlistItems(P).find(x=>x.v); if(first) cov.appendChild(vThumb(first.v,'v-cth')); else cov.textContent=P.locked?'🔒':'🎬'; }
+    r.appendChild(cov);
+    const info=el('div','song-info'); info.appendChild(el('b',null,P.name));
+    const off=vlistItems(P).filter(x=>!x.v).length;
+    info.appendChild(el('small',null, P.locked && !open? t('vLockedSub') : [t(P.items.length===1?'v1':'vN',P.items.length), fmtLong(vlistDur(P)), off? t('vOffN',off) : ''].filter(Boolean).join(' · ')));
+    info.onclick=()=>openVplDetail(P.id); r.appendChild(info);
+    if(P.locked && !open){ const b=el('button','icon-btn','🔒'); b.onclick=e=>{ e.stopPropagation(); openVplDetail(P.id); }; r.appendChild(b); }
+    else { const b=el('button','icon-btn','▶'); b.title=t('play'); b.onclick=e=>{ e.stopPropagation(); playVlist(P); }; r.appendChild(b); }
+    c.appendChild(r);
+  });
+}
+function playVlist(P, startMid){
+  if(P.locked && !privUnlocked()){ requireAuth().then(ok=>{ if(ok) playVlist(P,startMid); }); return; }
+  let list=vlistItems(P).filter(x=>x.v).map(x=>x.v);
+  if(!list.length){ toast(P.items.length? t('vNone') : t('vlDetailEmpty')); return; }
+  if(P.shuf && startMid==null) list=shuffleArr(list.slice());
+  const i=startMid!=null? Math.max(0,list.findIndex(v=>String(v.id)===String(startMid))) : 0;
+  playVideos(list, i, {repeat:!!P.rep});
+}
+async function openVplDetail(id){
+  const P=vlistById(id); if(!P) return;
+  if(P.locked && !privUnlocked() && !(await requireAuth())) return;
+  openVpl=id; $('plIndex').classList.add('hidden'); $('plDetail').classList.add('hidden'); $('vplDetail').classList.remove('hidden'); renderVplDetail(); window.scrollTo(0,0);
+}
+function closeVplDetail(){ openVpl=null; $('vplDetail').classList.add('hidden'); $('plIndex').classList.remove('hidden'); renderPlaylists(); }
+function updVlist(P){ const all=vlists(); const i=all.findIndex(x=>x.id===P.id); if(i>=0) all[i]=P; else all.push(P); saveVlists(all); }
+function renderVplDetail(){
+  const P=vlistById(openVpl); const c=$('vplDetail'); if(!P){ closeVplDetail(); return; }
+  if(P.locked && !privUnlocked()){ closeVplDetail(); return; }
+  c.textContent='';
+  const head=el('div','card-title'); const bk=el('button','btn-pill',t('back')); bk.onclick=closeVplDetail; head.appendChild(bk);
+  head.appendChild(el('small',null,P.locked? '🔓 '+t('vOpen') : t(P.items.length===1?'v1':'vN',P.items.length))); c.appendChild(head);
+  c.appendChild(el('div','song-title',P.name));
+  const bar=el('div','v-plbar');
+  const pa=el('button','btn-add',t('vPlayAll')); pa.onclick=()=>playVlist(P); bar.appendChild(pa);
+  const sh=el('button','btn-pill'+(P.shuf?' on':''),'🔀'); sh.title=t('vShuffle'); sh.onclick=()=>{ P.shuf=!P.shuf; updVlist(P); renderVplDetail(); toast(P.shuf?'🔀 ON':'🔀 OFF'); }; bar.appendChild(sh);
+  const rp=el('button','btn-pill'+(P.rep?' on':''),'🔁'); rp.onclick=()=>{ P.rep=!P.rep; updVlist(P); renderVplDetail(); toast(P.rep? t('vRepOn') : t('vRepOff')); }; bar.appendChild(rp);
+  const rn=el('button','btn-pill','✏️ '+t('vName')); rn.onclick=async()=>{ const n=await askText(t('vName'),P.name); if(n){ P.name=n; updVlist(P); renderVplDetail(); } }; bar.appendChild(rn);
+  c.appendChild(bar);
+  const list=el('div','v-items');
+  if(!P.items.length) list.appendChild(el('div','empty',t('vlDetailEmpty')));
+  vlistItems(P).forEach(({it,v},i)=>{
+    const row=el('div','v-item'+(v?'':' off')); row.dataset.i=i;
+    const hd=el('span','v-drag','≡'); row.appendChild(hd);
+    if(v) row.appendChild(vThumb(v,'v-ith')); else { const ph=el('div','v-ith'); ph.appendChild(el('span','v-d','—')); row.appendChild(ph); }
+    const tx=el('div','song-info'); tx.appendChild(el('b',null,v? vTitle(v) : cleanName(it.f||'video')));
+    let sub=''; if(!v) sub= (isRemVol(it.v) && !volMounted(it.v))? t('sdOffRow') : t('vMissingRow');
+    else { const st=vState[String(v.id)]; sub=[VKINDS.find(k=>k[0]===vKind(v))[1]+' '+vKindLabel(vKind(v)), st && st.p>3000 && st.p<st.d-10000? t('vSeenTo',fmtDur(st.p)) : ''].filter(Boolean).join(' · '); }
+    tx.appendChild(el('small',null,sub)); tx.onclick=()=>{ if(v) playVlist(P, v.id); else toast(t('vMissing')); }; row.appendChild(tx);
+    const x=el('button','icon-btn del','✕'); x.title=t('removeFromPl'); x.onclick=()=>{ const keep=P.items.slice(); P.items.splice(i,1); updVlist(P); loadVideos().then(()=>{ renderVplDetail(); });
+      toastUndo(t('vOut',v? vTitle(v) : it.f),()=>{ P.items=keep; updVlist(P); loadVideos().then(renderVplDetail); toast(t('undone')); }); };
+    row.appendChild(x);
+    dragReorder(hd,row,list,(from,to)=>{ const [m]=P.items.splice(from,1); P.items.splice(to,0,m); updVlist(P); renderVplDetail(); });
+    list.appendChild(row);
+  });
+  c.appendChild(list);
+  const lk=el('div','swr'); const lt=el('div','t'); lt.appendChild(el('b',null,t('vLockT'))); lt.appendChild(el('small',null,t('vLockSub'))); lk.appendChild(lt);
+  const sw=el('button','sw'+(P.locked?' on':'')); sw.setAttribute('role','switch'); sw.setAttribute('aria-label',t('vLockT'));
+  sw.onclick=async()=>{ if(!P.locked){ if(!(await requireAuth())) return; P.locked=true; updVlist(P); await loadVideos(); renderVplDetail(); toast(t('vLockedOn')); }
+    else { P.locked=false; updVlist(P); await loadVideos(); renderVplDetail(); toast(t('vLockedOff')); } };
+  lk.appendChild(sw); c.appendChild(lk);
+  c.appendChild(el('p','warn-note',t('vGalleryNote')));
+  const del=el('button','btn-ghost del-ch',t('vDelList')); del.onclick=()=>{ const all=vlists(); const i=all.findIndex(x=>x.id===P.id); if(i<0) return; const [gone]=all.splice(i,1); saveVlists(all); closeVplDetail(); loadVideos().then(()=>{ if(libMedia==='video') renderLib(); });
+    toastUndo(t('listDelU',gone.name),()=>{ const a=vlists(); a.splice(Math.min(i,a.length),0,gone); saveVlists(a); loadVideos().then(()=>{ renderPlaylists(); if(libMedia==='video') renderLib(); }); toast(t('undone')); }); };
+  c.appendChild(del);
+}
+/* ≡ arrastrar para reordenar */
+function dragReorder(handle,row,list,done){
+  handle.style.touchAction='none';
+  handle.addEventListener('pointerdown',e=>{
+    e.preventDefault(); const rows=[...list.querySelectorAll('.v-item')]; const from=rows.indexOf(row); let to=from;
+    row.classList.add('dragging'); try{ handle.setPointerCapture(e.pointerId); }catch(x){}
+    const move=ev=>{ const y=ev.clientY; let k=rows.length-1; for(let j=0;j<rows.length;j++){ const r=rows[j].getBoundingClientRect(); if(y<r.top+r.height/2){ k=j; break; } }
+      to=k; rows.forEach((r,j)=>r.classList.toggle('drop-at',j===to && to!==from)); };
+    const up=()=>{ handle.removeEventListener('pointermove',move); handle.removeEventListener('pointerup',up); handle.removeEventListener('pointercancel',up);
+      row.classList.remove('dragging'); rows.forEach(r=>r.classList.remove('drop-at')); if(to!==from) done(from,to); };
+    handle.addEventListener('pointermove',move); handle.addEventListener('pointerup',up); handle.addEventListener('pointercancel',up);
+  });
+}
+async function newVList(){
+  const n=await askText(t('vNewList'),''); if(!n) return;
+  const all=vlists(); all.push({id:'vl'+Date.now(), name:n, locked:false, items:[], created:Date.now()}); saveVlists(all); renderPlaylists(); toast(t('vListMade',n));
+}
+function setPlMedia(m){ plMedia=m; if(openPl) closePlDetail(); if(openVpl) closeVplDetail(); renderPlaylists(); }
+
+/* 📸 captura del canal en pantalla pequeña */
+async function tvInlineShot(){
+  if(!tvInlineCh || !PM.tvShot) return;
+  try{ const r=await PM.tvShot(tvInlineCh.n||'TV'); if(r && r.ok){ const f=$('tvInlineVideo'); f.classList.add('flash'); setTimeout(()=>f.classList.remove('flash'),350); toast(r.black? '📸 '+t('tv_shotBlackTv') : '📸 '+t('tv_shotSaved')); } else toast('⚠️ '+t('tv_shotFail')); }
+  catch(e){ toast('⚠️ '+t('tv_shotFail')); }
+}
+
+
 /* ================= IDIOMAS (v41) ================= */
-const VERSION='42';
+const VERSION='43b';
 const LANGS={es:'Español',en:'English',pt:'Português',fr:'Français'};
 const I18N={
 es:{
@@ -781,7 +1269,7 @@ es:{
  addChannelT:'Agregar canal',chName:'Nombre del canal',chUrl:'Dirección del canal (URL)',chSaved:'Canal guardado ✓',tvFail:'No se pudo abrir el canal',opening:'Abriendo "{0}"…',
  poweredBy:'Powered by',licenses:'📄 Licencias',licT:'Licencias de código abierto',licIntro:'Prometeo Player usa estos componentes de código abierto. Gracias a sus autores.',
  notAffiliated:'Prometeo Player es un proyecto independiente. No está afiliado ni respaldado por Google, The Apache Software Foundation, JetBrains, Meta ni Anthropic. Los nombres mencionados son marcas de sus dueños.',sourceCode:'Código fuente:',fullLicense:'Texto completo de la licencia Apache 2.0:',usedFor:'Uso en Prometeo:',
- useMedia3:'reproducir radio y canales de TV/IPTV',useCordova:'convertir Prometeo en app de Android',useAndroidx:'componentes de Android que usan Cordova y Media3',useGuava:'herramientas internas de ExoPlayer (Media3)',useKotlin:'lenguaje interno de las librerías de AndroidX',useAnnot:'anotaciones de código usadas por las librerías',moreLibs:'…y {0} librerías más: toca Licencias para verlas todas.',aiCredit:'Ícono generado con Meta AI. Desarrollado por Lanchalex con asistencia de Meta AI y Claude (Anthropic).',rights:'Todos los derechos reservados. Cada librería conserva su propia licencia.',
+ useMedia3:'reproducir radio, canales de TV/IPTV y videos',useCordova:'convertir Prometeo en app de Android',useAndroidx:'componentes de Android que usan Cordova y Media3',useGuava:'herramientas internas de ExoPlayer (Media3)',useKotlin:'lenguaje interno de las librerías de AndroidX',useAnnot:'anotaciones de código usadas por las librerías',moreLibs:'…y {0} librerías más: toca Licencias para verlas todas.',aiCredit:'Ícono generado con Meta AI. Desarrollado por Lanchalex con asistencia de Meta AI y Claude (Anthropic).',rights:'Todos los derechos reservados. Cada librería conserva su propia licencia.',
  radioTitle:'📻 Radio',radioNote:'La radio usa internet solo mientras escuchas una emisora. Tu música sigue funcionando sin conexión.',addStation:'＋ Agregar emisora',
  st1:'{0} emisora',stN:'{0} emisoras',radioEmpty:'Todavía no tienes emisoras.\nToca "＋ Agregar emisora" y pega la dirección de una radio por internet.',
  stName:'Nombre',stUrl:'Dirección de la transmisión (URL)',urlHelp:'Suele terminar en .mp3, .aac, .m3u8 o /stream. Búscala en la página de la emisora, en "Escuchar en vivo".',
@@ -847,7 +1335,7 @@ en:{
  addChannelT:'Add channel',chName:'Channel name',chUrl:'Channel address (URL)',chSaved:'Channel saved ✓',tvFail:'Could not open the channel',opening:'Opening "{0}"…',
  poweredBy:'Powered by',licenses:'📄 Licenses',licT:'Open source licenses',licIntro:'Prometeo Player uses these open source components. Thanks to their authors.',
  notAffiliated:'Prometeo Player is an independent project. It is not affiliated with or endorsed by Google, The Apache Software Foundation, JetBrains, Meta or Anthropic. Names mentioned are trademarks of their owners.',sourceCode:'Source code:',fullLicense:'Full text of the Apache 2.0 license:',usedFor:'Used in Prometeo for:',
- useMedia3:'playing radio and TV/IPTV channels',useCordova:'turning Prometeo into an Android app',useAndroidx:'Android components used by Cordova and Media3',useGuava:'internal tools used by ExoPlayer (Media3)',useKotlin:'internal language of the AndroidX libraries',useAnnot:'code annotations used by the libraries',moreLibs:'…and {0} more libraries: tap Licenses to see them all.',aiCredit:'Icon generated with Meta AI. Developed by Lanchalex with assistance from Meta AI and Claude (Anthropic).',rights:'All rights reserved. Each library keeps its own license.',
+ useMedia3:'playing radio, TV/IPTV channels and videos',useCordova:'turning Prometeo into an Android app',useAndroidx:'Android components used by Cordova and Media3',useGuava:'internal tools used by ExoPlayer (Media3)',useKotlin:'internal language of the AndroidX libraries',useAnnot:'code annotations used by the libraries',moreLibs:'…and {0} more libraries: tap Licenses to see them all.',aiCredit:'Icon generated with Meta AI. Developed by Lanchalex with assistance from Meta AI and Claude (Anthropic).',rights:'All rights reserved. Each library keeps its own license.',
  radioTitle:'📻 Radio',radioNote:'Radio uses the internet only while you listen to a station. Your music still works offline.',addStation:'＋ Add station',
  st1:'{0} station',stN:'{0} stations',radioEmpty:'No stations yet.\nTap "＋ Add station" and paste the address of an internet radio.',
  stName:'Name',stUrl:'Stream address (URL)',urlHelp:'It usually ends in .mp3, .aac, .m3u8 or /stream. Look for it on the station\'s site, under "Listen live".',
@@ -913,7 +1401,7 @@ pt:{
  addChannelT:'Adicionar canal',chName:'Nome do canal',chUrl:'Endereço do canal (URL)',chSaved:'Canal salvo ✓',tvFail:'Não foi possível abrir o canal',opening:'Abrindo "{0}"…',
  poweredBy:'Powered by',licenses:'📄 Licenças',licT:'Licenças de código aberto',licIntro:'O Prometeo Player usa estes componentes de código aberto. Obrigado aos autores.',
  notAffiliated:'O Prometeo Player é um projeto independente. Não é afiliado nem endossado pelo Google, The Apache Software Foundation, JetBrains, Meta ou Anthropic. Os nomes citados são marcas de seus donos.',sourceCode:'Código-fonte:',fullLicense:'Texto completo da licença Apache 2.0:',usedFor:'Uso no Prometeo:',
- useMedia3:'tocar rádio e canais de TV/IPTV',useCordova:'transformar o Prometeo em app Android',useAndroidx:'componentes Android usados pelo Cordova e Media3',useGuava:'ferramentas internas do ExoPlayer (Media3)',useKotlin:'linguagem interna das bibliotecas AndroidX',useAnnot:'anotações de código usadas pelas bibliotecas',moreLibs:'…e mais {0} bibliotecas: toque em Licenças para ver todas.',aiCredit:'Ícone gerado com Meta AI. Desenvolvido por Lanchalex com assistência de Meta AI e Claude (Anthropic).',rights:'Todos os direitos reservados. Cada biblioteca mantém sua própria licença.',
+ useMedia3:'tocar rádio, canais de TV/IPTV e vídeos',useCordova:'transformar o Prometeo em app Android',useAndroidx:'componentes Android usados pelo Cordova e Media3',useGuava:'ferramentas internas do ExoPlayer (Media3)',useKotlin:'linguagem interna das bibliotecas AndroidX',useAnnot:'anotações de código usadas pelas bibliotecas',moreLibs:'…e mais {0} bibliotecas: toque em Licenças para ver todas.',aiCredit:'Ícone gerado com Meta AI. Desenvolvido por Lanchalex com assistência de Meta AI e Claude (Anthropic).',rights:'Todos os direitos reservados. Cada biblioteca mantém sua própria licença.',
  radioTitle:'📻 Rádio',radioNote:'O rádio usa internet só enquanto você ouve uma emissora. Sua música continua funcionando sem conexão.',addStation:'＋ Adicionar emissora',
  st1:'{0} emissora',stN:'{0} emissoras',radioEmpty:'Você ainda não tem emissoras.\nToque em "＋ Adicionar emissora" e cole o endereço de uma rádio pela internet.',
  stName:'Nome',stUrl:'Endereço da transmissão (URL)',urlHelp:'Costuma terminar em .mp3, .aac, .m3u8 ou /stream. Procure no site da emissora, em "Ouvir ao vivo".',
@@ -979,7 +1467,7 @@ fr:{
  addChannelT:'Ajouter une chaîne',chName:'Nom de la chaîne',chUrl:'Adresse de la chaîne (URL)',chSaved:'Chaîne enregistrée ✓',tvFail:'Impossible d\'ouvrir la chaîne',opening:'Ouverture de « {0} »…',
  poweredBy:'Powered by',licenses:'📄 Licences',licT:'Licences open source',licIntro:'Prometeo Player utilise ces composants open source. Merci à leurs auteurs.',
  notAffiliated:'Prometeo Player est un projet indépendant. Il n\'est ni affilié ni approuvé par Google, The Apache Software Foundation, JetBrains, Meta ou Anthropic. Les noms cités sont des marques de leurs propriétaires.',sourceCode:'Code source :',fullLicense:'Texte complet de la licence Apache 2.0 :',usedFor:'Utilisé dans Prometeo pour :',
- useMedia3:'lire la radio et les chaînes TV/IPTV',useCordova:'faire de Prometeo une app Android',useAndroidx:'composants Android utilisés par Cordova et Media3',useGuava:'outils internes d’ExoPlayer (Media3)',useKotlin:'langage interne des bibliothèques AndroidX',useAnnot:'annotations de code utilisées par les bibliothèques',moreLibs:'…et {0} autres bibliothèques : touchez Licences pour les voir toutes.',aiCredit:'Icône générée avec Meta AI. Développé par Lanchalex avec l’aide de Meta AI et Claude (Anthropic).',rights:'Tous droits réservés. Chaque bibliothèque conserve sa propre licence.',
+ useMedia3:'lire la radio, les chaînes TV/IPTV et les vidéos',useCordova:'faire de Prometeo une app Android',useAndroidx:'composants Android utilisés par Cordova et Media3',useGuava:'outils internes d’ExoPlayer (Media3)',useKotlin:'langage interne des bibliothèques AndroidX',useAnnot:'annotations de code utilisées par les bibliothèques',moreLibs:'…et {0} autres bibliothèques : touchez Licences pour les voir toutes.',aiCredit:'Icône générée avec Meta AI. Développé par Lanchalex avec l’aide de Meta AI et Claude (Anthropic).',rights:'Tous droits réservés. Chaque bibliothèque conserve sa propre licence.',
  radioTitle:'📻 Radio',radioNote:'La radio utilise internet seulement pendant que vous écoutez une station. Votre musique fonctionne toujours hors ligne.',addStation:'＋ Ajouter une station',
  st1:'{0} station',stN:'{0} stations',radioEmpty:'Pas encore de stations.\nTouchez « ＋ Ajouter une station » et collez l\'adresse d\'une radio internet.',
  stName:'Nom',stUrl:'Adresse du flux (URL)',urlHelp:'Elle finit souvent par .mp3, .aac, .m3u8 ou /stream. Cherchez-la sur le site de la station, dans « Écouter en direct ».',
@@ -1245,6 +1733,16 @@ function phoneLang(){
 }
 let langPref=store.get('lang','auto'); if(langPref!=='auto' && !I18N[langPref]) langPref='auto';
 let LANG=langPref==='auto'? phoneLang() : langPref;
+/* v43: videos, listas de videos, capturas */
+Object.assign(I18N.es,{"mMusic": "🎵 Música", "mVideo": "🎬 Videos", "v1": "1 video", "vN": "{0} videos", "vLoading": "Buscando videos…", "vNative": "Los videos se ven en la app instalada en el teléfono.", "vPermMsg": "Para mostrar los videos del teléfono, Prometeo necesita permiso para verlos. No se copian ni se envían a ningún lado.", "vPermBtn": "🎬 Permitir ver videos", "vPermNo": "Sin permiso no se pueden mostrar los videos", "vResume": "▶ SEGUIR VIENDO", "vAtOf": "Vas en {0} de {1}", "vAll": "Todos · {0}", "vk_camera": "Cámara", "vk_whatsapp": "WhatsApp", "vk_telegram": "Telegram", "vk_signal": "Signal", "vk_download": "Descargas", "vk_other": "Otros", "vSelN": "{0} elegidos", "vAddToList": "📋 Agregar a lista", "vEmpty": "No hay videos aquí.", "vSelect": "Elegir varios", "vRename": "Cambiar nombre (solo en Prometeo)", "vCast": "Ver en el TV", "vRemove": "Quitar de Prometeo", "vCastFirst": "Primero conéctate a un TV con 📡", "vRemoved": "Quitado de Prometeo: {0} (sigue en tu Galería)", "vMissing": "Ese video ya no está en el teléfono", "vNone": "No hay videos disponibles para ver", "vOpenFail": "No se pudo abrir el reproductor de video", "lastV2": "No hay más videos en la lista", "castVideo": "🎬 Video", "vAddN": "📋 Agregar {0} a…", "vAsksAuth": "🔒 Pide huella, PIN o patrón", "vNewList": "＋ Nueva lista de videos", "vLockNote": "En una lista 🔒 los videos se esconden solo dentro de Prometeo. La Galería del teléfono los sigue mostrando.", "vAdded": "✓ {0} agregados a \"{1}\"", "vAddedLocked": "🔒 {0} agregados a \"{1}\" (ya no salen en Videos)", "vlEmpty": "No tienes listas de videos.\nToca \"＋ Nueva\" o mantén presionado un video.", "vLockedSub": "🔒 Bloqueada", "vOffN": "💾 {0} no disponibles", "vOpen": "Abierta (se cierra en 5 min o al salir)", "vPlayAll": "▶ Ver todo", "vShuffle": "Orden al azar", "vRepOn": "🔁 Repetir lista: sí", "vRepOff": "🔁 Repetir lista: no", "vName": "Nombre", "vlDetailEmpty": "La lista está vacía. Mantén presionado un video en Biblioteca › 🎬 Videos para agregarlo.", "sdOffRow": "💾 Tarjeta no conectada", "vMissingRow": "Ya no está en el teléfono", "vSeenTo": "Visto hasta {0}", "vOut": "Quitado de la lista: {0}", "vLockT": "🔒 Bloquear lista", "vLockSub": "Pide huella, PIN o patrón. Sus videos no salen en la Biblioteca de Prometeo.", "vLockedOn": "🔒 Lista bloqueada", "vLockedOff": "🔓 Lista desbloqueada", "vGalleryNote": "ⓘ Esto solo los esconde dentro de Prometeo: la Galería y otras apps los siguen mostrando.", "vDelList": "🗑️ Borrar lista (los videos no se borran)", "vListMade": "✓ Lista creada: {0}", "vHasVids": "{0} videos", "tv_shot": "Captura", "tv_shotSaved": "Guardada en Imágenes/Prometeo", "tv_shotFail": "No se pudo tomar la captura", "tv_shotBlackTv": "Guardada, pero salió negra: este canal no deja copiar su imagen", "lv_back": "Volver", "lv_cast": "Ver en el TV", "lv_shot": "Captura", "lv_settings": "Ajustes", "lv_prevV": "Video anterior", "lv_nextV": "Video siguiente", "lv_frameB": "Cuadro atrás", "lv_frameF": "Cuadro adelante", "lv_pause": "Pausa", "lv_play": "Reproducir", "lv_subs": "Subtítulos", "lv_audio": "Audio", "lv_window": "Ventanita", "lv_unlock": "Desbloquear", "lv_lockedHint": "Pantalla bloqueada · mantén el candado para desbloquear", "lv_unlocked": "Pantalla desbloqueada", "lv_resumeAt": "Siguiendo desde {0}", "lv_nOfM": "{0} de {1}", "lv_skipped": "No se pudo abrir \"{0}\": se saltó", "lv_cantOpen": "No se pudo abrir ningún video", "lv_noAudio": "Este audio ({0}) no es compatible", "lv_lastV": "Es el último video", "lv_abA": "A marcado en {0} · toca otra vez para marcar B", "lv_abShort": "B tiene que ir después de A", "lv_abOn": "Repitiendo de {0} a {1}", "lv_abOff": "Repetición A-B apagada", "lv_shotFail": "No se pudo tomar la captura", "lv_shotBlack": "Guardada, pero salió negra (este video no deja copiar su imagen)", "lv_shotSaved": "Guardada en Imágenes/Prometeo", "lv_fill": "Llenar", "lv_zoom": "Zoom", "lv_fit": "Ajustar", "lv_noPicker": "No se encontró el selector de archivos", "lv_subType": "Ese archivo no es de subtítulos (.srt, .vtt, .ass)", "lv_loadSubs": "📂 Cargar subtítulos…", "lv_subsOff": "Sin subtítulos", "lv_subTime": "Tiempo de subtítulos", "lv_subSize": "Tamaño de letra", "lv_normal": "Normal", "lv_subBg": "Fondo", "lv_bgNone": "Sin fondo", "lv_bgShadow": "Sombra", "lv_bgBlack": "Negro", "lv_audioTrack": "Idioma del audio", "lv_speed": "Velocidad", "lv_screenFit": "Pantalla", "lv_noPip": "Tu teléfono no permite la ventanita"});
+Object.assign(I18N.en,{"mMusic": "🎵 Music", "mVideo": "🎬 Videos", "v1": "1 video", "vN": "{0} videos", "vLoading": "Looking for videos…", "vNative": "Videos play in the app installed on the phone.", "vPermMsg": "To show your phone’s videos, Prometeo needs permission to see them. They are not copied or sent anywhere.", "vPermBtn": "🎬 Allow videos", "vPermNo": "Without permission videos can’t be shown", "vResume": "▶ CONTINUE WATCHING", "vAtOf": "At {0} of {1}", "vAll": "All · {0}", "vk_camera": "Camera", "vk_whatsapp": "WhatsApp", "vk_telegram": "Telegram", "vk_signal": "Signal", "vk_download": "Downloads", "vk_other": "Other", "vSelN": "{0} selected", "vAddToList": "📋 Add to list", "vEmpty": "No videos here.", "vSelect": "Select several", "vRename": "Rename (only in Prometeo)", "vCast": "Watch on TV", "vRemove": "Remove from Prometeo", "vCastFirst": "Connect to a TV with 📡 first", "vRemoved": "Removed from Prometeo: {0} (still in your Gallery)", "vMissing": "That video is no longer on the phone", "vNone": "No videos available to watch", "vOpenFail": "Couldn’t open the video player", "lastV2": "No more videos in the list", "castVideo": "🎬 Video", "vAddN": "📋 Add {0} to…", "vAsksAuth": "🔒 Asks for fingerprint, PIN or pattern", "vNewList": "＋ New video list", "vLockNote": "In a 🔒 list, videos are hidden only inside Prometeo. The phone’s Gallery still shows them.", "vAdded": "✓ {0} added to \"{1}\"", "vAddedLocked": "🔒 {0} added to \"{1}\" (no longer shown in Videos)", "vlEmpty": "No video lists yet.\nTap \"＋ New\" or long-press a video.", "vLockedSub": "🔒 Locked", "vOffN": "💾 {0} unavailable", "vOpen": "Open (closes in 5 min or when you leave)", "vPlayAll": "▶ Play all", "vShuffle": "Shuffle", "vRepOn": "🔁 Repeat list: on", "vRepOff": "🔁 Repeat list: off", "vName": "Name", "vlDetailEmpty": "The list is empty. Long-press a video in Library › 🎬 Videos to add it.", "sdOffRow": "💾 Card not connected", "vMissingRow": "No longer on the phone", "vSeenTo": "Watched to {0}", "vOut": "Removed from list: {0}", "vLockT": "🔒 Lock list", "vLockSub": "Asks for fingerprint, PIN or pattern. Its videos don’t show in Prometeo’s Library.", "vLockedOn": "🔒 List locked", "vLockedOff": "🔓 List unlocked", "vGalleryNote": "ⓘ This only hides them inside Prometeo: the Gallery and other apps still show them.", "vDelList": "🗑️ Delete list (videos are kept)", "vListMade": "✓ List created: {0}", "vHasVids": "{0} videos", "tv_shot": "Screenshot", "tv_shotSaved": "Saved to Pictures/Prometeo", "tv_shotFail": "Couldn’t take the screenshot", "tv_shotBlackTv": "Saved, but it came out black: this channel blocks copying its picture", "lv_back": "Back", "lv_cast": "Watch on TV", "lv_shot": "Screenshot", "lv_settings": "Settings", "lv_prevV": "Previous video", "lv_nextV": "Next video", "lv_frameB": "Frame back", "lv_frameF": "Frame forward", "lv_pause": "Pause", "lv_play": "Play", "lv_subs": "Subtitles", "lv_audio": "Audio", "lv_window": "Mini window", "lv_unlock": "Unlock", "lv_lockedHint": "Screen locked · hold the padlock to unlock", "lv_unlocked": "Screen unlocked", "lv_resumeAt": "Resuming from {0}", "lv_nOfM": "{0} of {1}", "lv_skipped": "Couldn’t open \"{0}\": skipped", "lv_cantOpen": "Couldn’t open any video", "lv_noAudio": "This audio ({0}) isn’t supported", "lv_lastV": "This is the last video", "lv_abA": "A set at {0} · tap again to set B", "lv_abShort": "B must come after A", "lv_abOn": "Repeating {0} to {1}", "lv_abOff": "A-B repeat off", "lv_shotFail": "Couldn’t take the screenshot", "lv_shotBlack": "Saved, but it came out black (this video blocks copying)", "lv_shotSaved": "Saved to Pictures/Prometeo", "lv_fill": "Fill", "lv_zoom": "Zoom", "lv_fit": "Fit", "lv_noPicker": "File picker not found", "lv_subType": "That file isn’t a subtitle (.srt, .vtt, .ass)", "lv_loadSubs": "📂 Load subtitles…", "lv_subsOff": "No subtitles", "lv_subTime": "Subtitle timing", "lv_subSize": "Text size", "lv_normal": "Normal", "lv_subBg": "Background", "lv_bgNone": "None", "lv_bgShadow": "Shadow", "lv_bgBlack": "Black", "lv_audioTrack": "Audio language", "lv_speed": "Speed", "lv_screenFit": "Screen", "lv_noPip": "Your phone doesn’t allow the mini window"});
+Object.assign(I18N.pt,{"mMusic": "🎵 Música", "mVideo": "🎬 Vídeos", "v1": "1 vídeo", "vN": "{0} vídeos", "vLoading": "Procurando vídeos…", "vNative": "Os vídeos são vistos no app instalado no celular.", "vPermMsg": "Para mostrar os vídeos do celular, o Prometeo precisa de permissão para vê-los. Eles não são copiados nem enviados para lugar nenhum.", "vPermBtn": "🎬 Permitir ver vídeos", "vPermNo": "Sem permissão não dá para mostrar os vídeos", "vResume": "▶ CONTINUAR ASSISTINDO", "vAtOf": "Em {0} de {1}", "vAll": "Todos · {0}", "vk_camera": "Câmera", "vk_whatsapp": "WhatsApp", "vk_telegram": "Telegram", "vk_signal": "Signal", "vk_download": "Downloads", "vk_other": "Outros", "vSelN": "{0} escolhidos", "vAddToList": "📋 Adicionar à lista", "vEmpty": "Não há vídeos aqui.", "vSelect": "Escolher vários", "vRename": "Renomear (só no Prometeo)", "vCast": "Ver na TV", "vRemove": "Tirar do Prometeo", "vCastFirst": "Primeiro conecte a uma TV com 📡", "vRemoved": "Tirado do Prometeo: {0} (continua na Galeria)", "vMissing": "Esse vídeo não está mais no celular", "vNone": "Não há vídeos disponíveis", "vOpenFail": "Não foi possível abrir o player de vídeo", "lastV2": "Não há mais vídeos na lista", "castVideo": "🎬 Vídeo", "vAddN": "📋 Adicionar {0} a…", "vAsksAuth": "🔒 Pede digital, PIN ou padrão", "vNewList": "＋ Nova lista de vídeos", "vLockNote": "Numa lista 🔒 os vídeos ficam escondidos só dentro do Prometeo. A Galeria do celular continua mostrando.", "vAdded": "✓ {0} adicionados a \"{1}\"", "vAddedLocked": "🔒 {0} adicionados a \"{1}\" (não aparecem mais em Vídeos)", "vlEmpty": "Você não tem listas de vídeos.\nToque em \"＋ Nova\" ou segure um vídeo.", "vLockedSub": "🔒 Bloqueada", "vOffN": "💾 {0} indisponíveis", "vOpen": "Aberta (fecha em 5 min ou ao sair)", "vPlayAll": "▶ Ver tudo", "vShuffle": "Ordem aleatória", "vRepOn": "🔁 Repetir lista: sim", "vRepOff": "🔁 Repetir lista: não", "vName": "Nome", "vlDetailEmpty": "A lista está vazia. Segure um vídeo em Biblioteca › 🎬 Vídeos para adicionar.", "sdOffRow": "💾 Cartão não conectado", "vMissingRow": "Não está mais no celular", "vSeenTo": "Visto até {0}", "vOut": "Tirado da lista: {0}", "vLockT": "🔒 Bloquear lista", "vLockSub": "Pede digital, PIN ou padrão. Os vídeos não aparecem na Biblioteca do Prometeo.", "vLockedOn": "🔒 Lista bloqueada", "vLockedOff": "🔓 Lista desbloqueada", "vGalleryNote": "ⓘ Isso só esconde dentro do Prometeo: a Galeria e outros apps continuam mostrando.", "vDelList": "🗑️ Apagar lista (os vídeos ficam)", "vListMade": "✓ Lista criada: {0}", "vHasVids": "{0} vídeos", "tv_shot": "Captura", "tv_shotSaved": "Salva em Imagens/Prometeo", "tv_shotFail": "Não foi possível capturar", "tv_shotBlackTv": "Salva, mas saiu preta: este canal não deixa copiar a imagem", "lv_back": "Voltar", "lv_cast": "Ver na TV", "lv_shot": "Captura", "lv_settings": "Ajustes", "lv_prevV": "Vídeo anterior", "lv_nextV": "Próximo vídeo", "lv_frameB": "Quadro para trás", "lv_frameF": "Quadro para frente", "lv_pause": "Pausa", "lv_play": "Reproduzir", "lv_subs": "Legendas", "lv_audio": "Áudio", "lv_window": "Janelinha", "lv_unlock": "Desbloquear", "lv_lockedHint": "Tela bloqueada · segure o cadeado para desbloquear", "lv_unlocked": "Tela desbloqueada", "lv_resumeAt": "Continuando de {0}", "lv_nOfM": "{0} de {1}", "lv_skipped": "Não deu para abrir \"{0}\": pulado", "lv_cantOpen": "Não foi possível abrir nenhum vídeo", "lv_noAudio": "Este áudio ({0}) não é compatível", "lv_lastV": "É o último vídeo", "lv_abA": "A marcado em {0} · toque de novo para marcar B", "lv_abShort": "B tem que vir depois de A", "lv_abOn": "Repetindo de {0} a {1}", "lv_abOff": "Repetição A-B desligada", "lv_shotFail": "Não foi possível capturar", "lv_shotBlack": "Salva, mas saiu preta (este vídeo não deixa copiar)", "lv_shotSaved": "Salva em Imagens/Prometeo", "lv_fill": "Preencher", "lv_zoom": "Zoom", "lv_fit": "Ajustar", "lv_noPicker": "Seletor de arquivos não encontrado", "lv_subType": "Esse arquivo não é de legendas (.srt, .vtt, .ass)", "lv_loadSubs": "📂 Carregar legendas…", "lv_subsOff": "Sem legendas", "lv_subTime": "Tempo das legendas", "lv_subSize": "Tamanho da letra", "lv_normal": "Normal", "lv_subBg": "Fundo", "lv_bgNone": "Sem fundo", "lv_bgShadow": "Sombra", "lv_bgBlack": "Preto", "lv_audioTrack": "Idioma do áudio", "lv_speed": "Velocidade", "lv_screenFit": "Tela", "lv_noPip": "Seu celular não permite a janelinha"});
+Object.assign(I18N.fr,{"mMusic": "🎵 Musique", "mVideo": "🎬 Vidéos", "v1": "1 vidéo", "vN": "{0} vidéos", "vLoading": "Recherche des vidéos…", "vNative": "Les vidéos se regardent dans l’app installée sur le téléphone.", "vPermMsg": "Pour afficher les vidéos du téléphone, Prometeo a besoin de l’autorisation de les voir. Elles ne sont ni copiées ni envoyées nulle part.", "vPermBtn": "🎬 Autoriser les vidéos", "vPermNo": "Sans autorisation, impossible d’afficher les vidéos", "vResume": "▶ REPRENDRE", "vAtOf": "À {0} sur {1}", "vAll": "Tous · {0}", "vk_camera": "Appareil photo", "vk_whatsapp": "WhatsApp", "vk_telegram": "Telegram", "vk_signal": "Signal", "vk_download": "Téléchargements", "vk_other": "Autres", "vSelN": "{0} choisies", "vAddToList": "📋 Ajouter à une liste", "vEmpty": "Aucune vidéo ici.", "vSelect": "En choisir plusieurs", "vRename": "Renommer (dans Prometeo seulement)", "vCast": "Regarder sur la TV", "vRemove": "Retirer de Prometeo", "vCastFirst": "Connectez d’abord une TV avec 📡", "vRemoved": "Retiré de Prometeo : {0} (toujours dans la Galerie)", "vMissing": "Cette vidéo n’est plus sur le téléphone", "vNone": "Aucune vidéo disponible", "vOpenFail": "Impossible d’ouvrir le lecteur vidéo", "lastV2": "Plus de vidéos dans la liste", "castVideo": "🎬 Vidéo", "vAddN": "📋 Ajouter {0} à…", "vAsksAuth": "🔒 Demande empreinte, PIN ou schéma", "vNewList": "＋ Nouvelle liste de vidéos", "vLockNote": "Dans une liste 🔒, les vidéos sont cachées seulement dans Prometeo. La Galerie du téléphone les montre toujours.", "vAdded": "✓ {0} ajoutées à « {1} »", "vAddedLocked": "🔒 {0} ajoutées à « {1} » (plus affichées dans Vidéos)", "vlEmpty": "Aucune liste de vidéos.\nTouchez « ＋ Nouvelle » ou appuyez longuement sur une vidéo.", "vLockedSub": "🔒 Verrouillée", "vOffN": "💾 {0} indisponibles", "vOpen": "Ouverte (se ferme dans 5 min ou en quittant)", "vPlayAll": "▶ Tout lire", "vShuffle": "Lecture aléatoire", "vRepOn": "🔁 Répéter la liste : oui", "vRepOff": "🔁 Répéter la liste : non", "vName": "Nom", "vlDetailEmpty": "La liste est vide. Appuyez longuement sur une vidéo dans Bibliothèque › 🎬 Vidéos.", "sdOffRow": "💾 Carte non connectée", "vMissingRow": "N’est plus sur le téléphone", "vSeenTo": "Vu jusqu’à {0}", "vOut": "Retiré de la liste : {0}", "vLockT": "🔒 Verrouiller la liste", "vLockSub": "Demande empreinte, PIN ou schéma. Ses vidéos n’apparaissent pas dans la Bibliothèque.", "vLockedOn": "🔒 Liste verrouillée", "vLockedOff": "🔓 Liste déverrouillée", "vGalleryNote": "ⓘ Cela les cache seulement dans Prometeo : la Galerie et les autres apps les montrent toujours.", "vDelList": "🗑️ Supprimer la liste (les vidéos restent)", "vListMade": "✓ Liste créée : {0}", "vHasVids": "{0} vidéos", "tv_shot": "Capture", "tv_shotSaved": "Enregistrée dans Images/Prometeo", "tv_shotFail": "Capture impossible", "tv_shotBlackTv": "Enregistrée, mais noire : cette chaîne bloque la copie de l’image", "lv_back": "Retour", "lv_cast": "Regarder sur la TV", "lv_shot": "Capture", "lv_settings": "Réglages", "lv_prevV": "Vidéo précédente", "lv_nextV": "Vidéo suivante", "lv_frameB": "Image précédente", "lv_frameF": "Image suivante", "lv_pause": "Pause", "lv_play": "Lire", "lv_subs": "Sous-titres", "lv_audio": "Audio", "lv_window": "Mini-fenêtre", "lv_unlock": "Déverrouiller", "lv_lockedHint": "Écran verrouillé · maintenez le cadenas pour déverrouiller", "lv_unlocked": "Écran déverrouillé", "lv_resumeAt": "Reprise à {0}", "lv_nOfM": "{0} sur {1}", "lv_skipped": "Impossible d’ouvrir « {0} » : sautée", "lv_cantOpen": "Aucune vidéo n’a pu être ouverte", "lv_noAudio": "Cet audio ({0}) n’est pas compatible", "lv_lastV": "C’est la dernière vidéo", "lv_abA": "A marqué à {0} · touchez encore pour B", "lv_abShort": "B doit venir après A", "lv_abOn": "Répétition de {0} à {1}", "lv_abOff": "Répétition A-B désactivée", "lv_shotFail": "Capture impossible", "lv_shotBlack": "Enregistrée, mais noire (cette vidéo bloque la copie)", "lv_shotSaved": "Enregistrée dans Images/Prometeo", "lv_fill": "Remplir", "lv_zoom": "Zoom", "lv_fit": "Ajuster", "lv_noPicker": "Sélecteur de fichiers introuvable", "lv_subType": "Ce fichier n’est pas un sous-titre (.srt, .vtt, .ass)", "lv_loadSubs": "📂 Charger des sous-titres…", "lv_subsOff": "Sans sous-titres", "lv_subTime": "Décalage des sous-titres", "lv_subSize": "Taille du texte", "lv_normal": "Normal", "lv_subBg": "Fond", "lv_bgNone": "Aucun", "lv_bgShadow": "Ombre", "lv_bgBlack": "Noir", "lv_audioTrack": "Langue audio", "lv_speed": "Vitesse", "lv_screenFit": "Écran", "lv_noPip": "Votre téléphone ne permet pas la mini-fenêtre"});
+/* v43b */
+Object.assign(I18N.es,{"vk_card": "Tarjeta", "vAddBtn": "＋ Agregar videos", "vaT": "＋ Agregar videos", "vaSub": "Los videos se quedan donde están: no se copian.", "vaAll": "Buscar en todo el teléfono", "vaAllSub": "Revisa otra vez todas las carpetas", "vaCard": "Tarjeta SD / USB", "vaCardNone": "No hay ninguna tarjeta ni memoria USB conectada", "vaFold": "Elegir carpetas", "vaFoldSub": "Solo salen las carpetas que tienen videos", "vaLoose": "Elegir videos sueltos", "vaLooseSub": "Con el selector de archivos de Android", "vaRem": "Videos quitados", "vaRemSub": "Los que sacaste de Prometeo, para devolverlos", "vaNote": "Nada se sube a internet.", "vNew": "{0} nuevos", "vScanning": "Buscando videos…", "vFoundN": "✓ {0} videos nuevos", "vFoundNone": "No hay videos nuevos", "vfT": "📂 Carpetas con videos", "vfSub": "Elige qué carpetas se ven en 🎬 Videos.", "vfAll": "Todas las carpetas", "vfAllSub": "Las de ahora y las que aparezcan después", "vfSaved": "✓ Carpetas guardadas", "vAddedN": "✓ {0} videos agregados", "vrT": "♻️ Videos quitados", "vrSub": "Siguen en tu teléfono: solo los sacaste de Prometeo.", "vrNone": "No has quitado ningún video.", "vGiveAll": "↩ Devolver todos", "vBack": "↩ {0} videos de vuelta", "vBanT": "{0}: {1} videos nuevos", "vBanSongs": "y {0} canciones nuevas · tú decides", "vBanSub": "Tú decides si se agregan", "vBanGo": "Ver", "vLimT": "Acceso limitado", "vLimSub": "Prometeo solo ve los videos que permitiste", "vLimBtn": "＋ Elegir más"});
+Object.assign(I18N.en,{"vk_card": "Card", "vAddBtn": "＋ Add videos", "vaT": "＋ Add videos", "vaSub": "Videos stay where they are: nothing is copied.", "vaAll": "Search the whole phone", "vaAllSub": "Checks all folders again", "vaCard": "SD card / USB", "vaCardNone": "No SD card or USB drive connected", "vaFold": "Choose folders", "vaFoldSub": "Only folders with videos are shown", "vaLoose": "Pick single videos", "vaLooseSub": "With the Android file picker", "vaRem": "Removed videos", "vaRemSub": "The ones you removed from Prometeo, to bring back", "vaNote": "Nothing is uploaded.", "vNew": "{0} new", "vScanning": "Looking for videos…", "vFoundN": "✓ {0} new videos", "vFoundNone": "No new videos", "vfT": "📂 Folders with videos", "vfSub": "Choose which folders show in 🎬 Videos.", "vfAll": "All folders", "vfAllSub": "Current ones and any new ones", "vfSaved": "✓ Folders saved", "vAddedN": "✓ {0} videos added", "vrT": "♻️ Removed videos", "vrSub": "They are still on your phone: you only removed them from Prometeo.", "vrNone": "You haven’t removed any videos.", "vGiveAll": "↩ Bring all back", "vBack": "↩ {0} videos back", "vBanT": "{0}: {1} new videos", "vBanSongs": "and {0} new songs · you decide", "vBanSub": "You decide whether to add them", "vBanGo": "View", "vLimT": "Limited access", "vLimSub": "Prometeo only sees the videos you allowed", "vLimBtn": "＋ Pick more"});
+Object.assign(I18N.pt,{"vk_card": "Cartão", "vAddBtn": "＋ Adicionar vídeos", "vaT": "＋ Adicionar vídeos", "vaSub": "Os vídeos ficam onde estão: nada é copiado.", "vaAll": "Procurar no celular todo", "vaAllSub": "Verifica todas as pastas de novo", "vaCard": "Cartão SD / USB", "vaCardNone": "Nenhum cartão ou memória USB conectado", "vaFold": "Escolher pastas", "vaFoldSub": "Só aparecem as pastas com vídeos", "vaLoose": "Escolher vídeos avulsos", "vaLooseSub": "Com o seletor de arquivos do Android", "vaRem": "Vídeos tirados", "vaRemSub": "Os que você tirou do Prometeo, para devolver", "vaNote": "Nada é enviado para a internet.", "vNew": "{0} novos", "vScanning": "Procurando vídeos…", "vFoundN": "✓ {0} vídeos novos", "vFoundNone": "Não há vídeos novos", "vfT": "📂 Pastas com vídeos", "vfSub": "Escolha quais pastas aparecem em 🎬 Vídeos.", "vfAll": "Todas as pastas", "vfAllSub": "As de agora e as que aparecerem depois", "vfSaved": "✓ Pastas salvas", "vAddedN": "✓ {0} vídeos adicionados", "vrT": "♻️ Vídeos tirados", "vrSub": "Continuam no celular: você só tirou do Prometeo.", "vrNone": "Você não tirou nenhum vídeo.", "vGiveAll": "↩ Devolver todos", "vBack": "↩ {0} vídeos de volta", "vBanT": "{0}: {1} vídeos novos", "vBanSongs": "e {0} músicas novas · você decide", "vBanSub": "Você decide se adiciona", "vBanGo": "Ver", "vLimT": "Acesso limitado", "vLimSub": "O Prometeo só vê os vídeos que você permitiu", "vLimBtn": "＋ Escolher mais"});
+Object.assign(I18N.fr,{"vk_card": "Carte", "vAddBtn": "＋ Ajouter des vidéos", "vaT": "＋ Ajouter des vidéos", "vaSub": "Les vidéos restent où elles sont : rien n’est copié.", "vaAll": "Chercher dans tout le téléphone", "vaAllSub": "Revérifie tous les dossiers", "vaCard": "Carte SD / USB", "vaCardNone": "Aucune carte ni clé USB connectée", "vaFold": "Choisir des dossiers", "vaFoldSub": "Seuls les dossiers avec des vidéos", "vaLoose": "Choisir des vidéos", "vaLooseSub": "Avec le sélecteur de fichiers Android", "vaRem": "Vidéos retirées", "vaRemSub": "Celles retirées de Prometeo, pour les remettre", "vaNote": "Rien n’est envoyé sur internet.", "vNew": "{0} nouvelles", "vScanning": "Recherche des vidéos…", "vFoundN": "✓ {0} nouvelles vidéos", "vFoundNone": "Pas de nouvelles vidéos", "vfT": "📂 Dossiers avec vidéos", "vfSub": "Choisissez les dossiers affichés dans 🎬 Vidéos.", "vfAll": "Tous les dossiers", "vfAllSub": "Actuels et futurs", "vfSaved": "✓ Dossiers enregistrés", "vAddedN": "✓ {0} vidéos ajoutées", "vrT": "♻️ Vidéos retirées", "vrSub": "Elles sont toujours sur le téléphone : seulement retirées de Prometeo.", "vrNone": "Aucune vidéo retirée.", "vGiveAll": "↩ Tout remettre", "vBack": "↩ {0} vidéos remises", "vBanT": "{0} : {1} nouvelles vidéos", "vBanSongs": "et {0} nouvelles chansons · à vous de choisir", "vBanSub": "À vous de choisir", "vBanGo": "Voir", "vLimT": "Accès limité", "vLimSub": "Prometeo ne voit que les vidéos autorisées", "vLimBtn": "＋ En choisir plus"});
 function t(k){ let s=(I18N[LANG]&&I18N[LANG][k]); if(s==null) s=I18N.es[k]; if(s==null) s=k;
   for(let i=1;i<arguments.length;i++) s=s.split('{'+(i-1)+'}').join(String(arguments[i])); return s; }
 function nSongs(n){ return t(n===1?'song1':'songN',n); }
@@ -1733,6 +2231,11 @@ function renderLib(){
   const c=$('libList'); c.textContent='';
   const mus=musicSongs(), prv=privSongs(), native=!!PM;
   $('libCount').textContent=nSongs(mus.length)+' • '+t('offline');
+  /* v43: 🎵 Música | 🎬 Videos */
+  const ms=$('libMedia'); ms.textContent=''; ms.classList.toggle('hidden',!native);
+  if(native) [['music',t('mMusic')],['video',t('mVideo')]].forEach(([k,tx])=>{ const b=el('button',libMedia===k?'on':'',tx); b.onclick=()=>setLibMedia(k); ms.appendChild(b); });
+  const vm=native && libMedia==='video'; $('view-biblioteca').classList.toggle('vmode',vm);
+  if(vm){ renderVideos(c); return; }
   $('btnPrivSet').classList.toggle('hidden',!native);
   const seg=$('libSeg'); seg.textContent='';
   const tmpVols=[...new Set(songs.filter(s=>s.temp).map(s=>s.vol))];
@@ -1790,6 +2293,14 @@ function renderSearch(){
 }
 function renderPlaylists(){
   const c=$('plList'); c.textContent='';
+  const pm=$('plMedia'); pm.textContent=''; pm.classList.toggle('hidden',!PM);
+  if(PM) [['music',t('mMusic')],['video',t('mVideo')]].forEach(([k,tx])=>{ const b=el('button',plMedia===k?'on':'',tx); b.onclick=()=>setPlMedia(k); pm.appendChild(b); });
+  if(PM && plMedia==='video'){
+    if(!vLoaded){ c.appendChild(el('div','empty',t('vLoading'))); loadVideos().then(renderPlaylists); return; }
+    if(!vPerm){ const box=el('div','priv-info'); box.appendChild(el('span',null,'🎬')); box.appendChild(el('span',null,t('vPermMsg'))); c.appendChild(box);
+      const b=el('button','btn-add',t('vPermBtn')); b.onclick=()=>askVideoPerm().then(renderPlaylists); c.appendChild(b); return; }
+    renderVPlaylists(c); return;
+  }
   if(!playlists.length){ c.appendChild(el('div','empty',t('plEmpty'))); return; }
   playlists.forEach(p=>{
     const n=p.songIds.filter(id=>songById(id)).length;
@@ -2470,7 +2981,7 @@ function renderTv(){
 /* ================= REPRODUCTOR DE TV (v41) =================
    Se le pasa la lista que estás viendo (grupo, favoritos, mi lista o búsqueda) para cambiar de canal dentro de ella. */
 let tvShown=[];
-const TV_KEYS=['live','nOfM','next','sleep','window','audioOnly','channels','searchCh','all','favs','close','back','screenFit','fit','fill','zoom','quality','qAuto','qHigh','qMed','qLow','audioLang','audio','subs','subsOff',
+const TV_KEYS=['shot','shotFail','shotSaved','shotBlackTv','live','nOfM','next','sleep','window','audioOnly','channels','searchCh','all','favs','close','back','screenFit','fit','fill','zoom','quality','qAuto','qHigh','qMed','qLow','audioLang','audio','subs','subsOff',
   'sleepT','sleepOff','sleepIn','onlyOpts','lock','unlock','lockedHint','unlocked','reconnecting','attempt','tryOther','release','keepSliding','chNofM','favAdd','favDel','favAdded','favRemoved','settings','prevCh','nextCh','pause','play','watching','oneCh','noPip'];
 function tvStrings(){ const o={fail:t('tvFail')}; TV_KEYS.forEach(k=>o[k]=t('tv_'+k)); return o; }
 function tvPoolFor(ch){ const p=tvShown.includes(ch)? tvShown : (tvShown.find(c=>c.u===ch.u)? tvShown : [ch]); return p; }
@@ -2502,7 +3013,7 @@ function tviRender(){
   $('tviPlay').textContent= st==='playing'||st==='buffering'||st===''? '⏸' : '▶';
   const fav=isFavCh(ch); const fb=$('tviFav'); fb.textContent=fav?'★':'☆'; fb.classList.toggle('off',!fav); fb.title=t(fav?'chFavDel':'chFavAdd');
   $('tviPrev').classList.toggle('hidden',tviPool.length<2); $('tviNext').classList.toggle('hidden',tviPool.length<2);
-  $('tviFull').title=t('tviFull'); $('tviClose').title=t('tviClose');
+  $('tviFull').title=t('tviFull'); $('tviClose').title=t('tviClose'); $('tviShot').title=t('tv_shot'); $('tviShot').classList.toggle('hidden',!(PM && PM.tvShot));
   const box=$('tvInline'); if(!box.classList.contains('hidden')) document.body.style.setProperty('--tvih',(box.offsetHeight+6)+'px');
 }
 function openTvInline(ch, pool){
@@ -2531,7 +3042,7 @@ function tviFull(){
 $('tviPrev').onclick=()=>tviMove(-1); $('tviNext').onclick=()=>tviMove(1);
 $('tviPlay').onclick=()=>{ if(!tvInlineCh) return; if(tviState==='error'){ openTvInline(tvInlineCh,tviPool); return; } PM.tvInlineCmd('toggle').catch(()=>{}); };
 $('tviFav').onclick=()=>{ if(tvInlineCh){ toggleFavCh(tvInlineCh); tviRender(); } };
-$('tviFull').onclick=tviFull; $('tviClose').onclick=closeTvInline;
+$('tviFull').onclick=tviFull; $('tviClose').onclick=closeTvInline; $('tviShot').onclick=tvInlineShot;
 window.addEventListener('resize',()=>tviSync());
 /* ---- TV a pantalla completa ---- */
 function openTvFull(ch, pool){
@@ -2850,7 +3361,7 @@ function carState(){ if(radioId){ if(PM && PM.playState) PM.playState(!radioPaus
 function carControl(ev){
   const a=ev && ev.action;
   if(radioId){ if(a==='play'){ if(radioPaused()) toggleRadio(); } else if(a==='pause') radioPauseAny(); else if(a==='next') switchStation(1); else if(a==='prev') switchStation(-1); return; }
-  if(castOn && castKind==='tv'){ if(a==='play'||a==='pause') PM.castCmd(a).catch(()=>{}); else if(a==='next') castMove(1); else if(a==='prev') castMove(-1); return; }
+  if(castOn && (castKind==='tv' || castKind==='video')){ if(a==='play'||a==='pause') PM.castCmd(a).catch(()=>{}); else if(a==='next') castMove(1); else if(a==='prev') castMove(-1); return; }
   if(castOn && castKind==='music'){ if(a==='play'||a==='pause') PM.castCmd(a).catch(()=>{}); else if(a==='next') nextSong(false); else if(a==='prev') prevSong(); else if(a==='seek' && isFinite(ev.pos)) PM.castCmd('seek',ev.pos).catch(()=>{}); return; }
   if(a==='play'){ if(audio.paused){ if(currentId) play(); else togglePlay(); } }
   else if(a==='pause') audio.pause();
@@ -2880,6 +3391,7 @@ function nativeStart(){
   renderLib();
   if(PM.onControl){ PM.onControl(carControl); const s=currentId && songById(currentId); if(s){ sendCar(s); carState(); } }
   if(PM.onVolumes) PM.onVolumes(onVolEvent);
+  if(PM.onVideoEvents) PM.onVideoEvents(onVideoEvent);
   document.addEventListener('resume',()=>{ setTimeout(()=>{ checkVolumes(); if(!scanning && !orgRun) scanPhone(false,{silent:true}); },800); },false);
   refreshVols().catch(()=>{});
   PM.hasPermission().then(ok=>{
@@ -3221,15 +3733,20 @@ async function checkVolumes(){
     await refreshVols();
     const rem=vols.filter(v=>v.removable && v.mounted).map(v=>v.name);
     const seen=Array.isArray(store.get('volSeen',null))? store.get('volSeen',[]) : [];
-    const gone=seen.filter(n=>!rem.includes(n)), fresh=rem.filter(n=>!seen.includes(n));
+    /* v43b: al abrir Prometeo, una memoria que no está agregada (ni rechazada) se pregunta otra vez:
+       pudo haberse sacado y conectado con la app cerrada */
+    const okM0=volOkMap(), noM0=store.get('volNo',{})||{}, first=volFirst; volFirst=false;
+    const gone=seen.filter(n=>!rem.includes(n)), fresh=rem.filter(n=>!seen.includes(n) || (first && !okM0[n] && !noM0[n]));
     store.set('volSeen',rem);
     if(gone.length){
       const okM=volOkMap(), no=store.get('volNo',{})||{}; gone.forEach(n=>{ delete okM[n]; delete no[n]; }); store.set('volOk',okM); store.set('volNo',no);
       dropTemp(gone); if(volPending && gone.includes(volPending.name)) volPending=null;
+      gone.forEach(n=>{ volTmpV.delete(n); delete vTmpU[n]; delete vBanner[n]; }); if(vLoaded && vPerm) loadVideos().then(()=>{ if(libMedia==='video') renderLib(); });
       songs.forEach(s=>{ if(!s.temp && gone.includes(s.vol)) s.broken=true; });
       renderAll(); toast(t('volGone',gone.map(volLabel).join(', ')));
     }
     for(const n of fresh) await askVolumeWhenReady(n);
+    await vCheckCards();
   } finally { volBusy=false; }
 }
 async function askVolumeWhenReady(n){
@@ -3244,9 +3761,9 @@ async function askVolumeWhenReady(n){
   const v=vols.find(x=>x.name===n); if(!v || !v.mounted) return;
   if(v.indexed) await askVolume(v); else await askUsb(v);
 }
-async function volDecide(v, items, inLibN, freshN){
+async function volDecide(v, items, inLibN, freshN, vidN){
   return modal(t('volT'),(b,close)=>{
-    b.appendChild(el('p','m-msg',t('volHas',v.label||volLabel(v.name),nSongs(items))));
+    b.appendChild(el('p','m-msg',t('volHas',v.label||volLabel(v.name),[items||!vidN? nSongs(items) : '', vidN? t(vidN===1?'v1':'vN',vidN) : ''].filter(Boolean).join(' + '))));
     if(inLibN) b.appendChild(el('p','field-help',t('volInLib',inLibN,freshN)));
     if(freshN || !inLibN) b.appendChild(optRow(false,el('span','opt-ic','✅'),inLibN? t('volAddNew',freshN) : t('volAdd'),t('volAddSub'),()=>close('add')));
     b.appendChild(optRow(false,el('span','opt-ic','👀'),t('volListen'),t('volListenSub'),()=>close('listen')));
@@ -3259,13 +3776,17 @@ async function askVolume(v){
   const out=await scanPhone(false,{mode:'only',quiet:true,silent:true});
   const list=(out && out.list) || phoneList || [];
   const items=list.filter(f=>f.vol===v.name && !privKind(f.folder,f.name||'',f.rec));
-  if(!items.length) return;
+  /* v43: también cuenta los videos de la tarjeta */
+  let vidN=0; if(PM.scanVideos){ try{ if(await PM.hasVideoPermission()){ await loadVideos(); vidN=vAll.filter(x=>x.vol===v.name).length; } }catch(e){} }
+  if(!items.length && !vidN) return;
   const libMids=new Set(songs.filter(s=>s.mid!=null && !s.temp).map(s=>String(s.mid)));
   const hidden=new Set(store.get('hidden',[]).map(String));
   const inLib=items.filter(f=>libMids.has(String(f.id))).length;
   const fresh=items.filter(f=>!libMids.has(String(f.id)) && !hidden.has(String(f.id)));
   if(volPending && volPending.name===v.name) volPending=null;
-  const r=await volDecide(v, items.length, inLib, fresh.length);
+  const r=await volDecide(v, items.length, inLib, fresh.length, vidN);
+  if(r==='listen') volTmpV.add(v.name); else if(r) volTmpV.delete(v.name);
+  if(vidN && r) setTimeout(()=>loadVideos().then(()=>{ if(libMedia==='video') renderLib(); }),300);
   await volAnswer(v, r, fresh.map(f=>({mid:f.id, name:f.name||f.title||'', size:f.size, mime:f.mime, folder:f.folder, dur:f.duration})), items.length);
 }
 async function volAnswer(v, r, fresh, total){
@@ -3320,12 +3841,18 @@ async function askUsb(v){
     toast(t('scanning'));
     try{ items=await PM.listTree(tree); }catch(e){ toast(t('scanFail',e)); return; }
   }
-  items=(items||[]).filter(f=>!privKind(f.folder,f.name||'',false));
-  if(!items.length){ toast(t('usbEmpty')); return; }
+  /* v43b: también los videos de la memoria */
+  const vidItems=(items||[]).filter(f=>f.video);
+  items=(items||[]).filter(f=>!f.video && !privKind(f.folder,f.name||'',false));
+  vUsbCache[v.name]={v:vidItems.length, s:items.length};
+  if(!items.length && !vidItems.length){ toast(t('usbEmpty')); return; }
   const inLib=items.filter(f=>songs.some(s=>!s.temp && s.uri===f.uri)).length;
   const fresh=items.filter(f=>!songs.some(s=>!s.temp && s.uri===f.uri));
-  const r=await volDecide(v, items.length, inLib, fresh.length);
+  const r=await volDecide(v, items.length, inLib, fresh.length, vidItems.length);
+  if(r==='listen') volTmpV.add(v.name); else if(r) volTmpV.delete(v.name);
+  vUsbAnswer(v, r, vidItems);
   await volAnswer(v, r, fresh, items.length);
+  if(vidItems.length && r){ await loadVideos(); if(r==='listen' && !items.length){ libMedia='video'; store.set('libMedia','video'); } renderLib(); fillUriDurations(); }
 }
 async function decidePending(){
   if(!volPending) return; const p=volPending; await refreshVols();
@@ -3468,7 +3995,7 @@ function privKind(folder,file,rec){
   return '';
 }
 function privUnlocked(){ return privUnlockedAt>0 && Date.now()-privUnlockedAt<PRIV_UNLOCK_MS; }
-function lockPriv(){ if(authBusy) return; privUnlockedAt=0; if(libSeg==='priv'){ libSeg='music'; renderLib(); } }
+function lockPriv(){ if(authBusy) return; privUnlockedAt=0; if(openVpl){ const P=vlistById(openVpl); if(P && P.locked) closeVplDetail(); } else if(plMedia==='video' && $('plList')) renderPlaylists(); if(libSeg==='priv'){ libSeg='music'; renderLib(); } }
 /* Quita los audios privados de las playlists y de la cola (los archivos no se tocan) */
 async function cleanPriv(){
   const pr=new Set(privSongs().map(s=>s.id)); if(!pr.size) return;
@@ -3998,7 +4525,7 @@ const PROMETEO_LOGO='data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYE
 { const lg=$('tbLogo'); if(lg) lg.src=PROMETEO_LOGO; }   /* v42: ícono de Prometeo en la cabecera */
 /* Componentes de código abierto que usa Prometeo (créditos y licencias) */
 const CREDITS=[
-  {name:'AndroidX Media3 (ExoPlayer) 1.9.4', copy:'© The Android Open Source Project', lic:'Apache License 2.0', use:'useMedia3', src:'https://github.com/androidx/media'},
+  {name:'AndroidX Media3 (ExoPlayer, UI, HLS, DASH, RTSP) 1.9.4', copy:'© The Android Open Source Project', lic:'Apache License 2.0', use:'useMedia3', src:'https://github.com/androidx/media'},
   {name:'Apache Cordova (cordova-android 15)', copy:'© The Apache Software Foundation', lic:'Apache License 2.0', use:'useCordova', src:'https://github.com/apache/cordova-android',
    notice:'Apache Cordova\nCopyright 2015-2020 The Apache Software Foundation\n\nThis product includes software developed at\nThe Apache Software Foundation (http://www.apache.org/).'},
   {name:'AndroidX (AppCompat, Core, WebKit, Activity, Fragment, Lifecycle, Emoji2, RecyclerView, MediaRouter…)', copy:'© The Android Open Source Project', lic:'Apache License 2.0', use:'useAndroidx', src:'https://android.googlesource.com/platform/frameworks/support'},
@@ -4091,7 +4618,7 @@ function castRender(){
   const bar=$('castBar'); bar.classList.toggle('hidden',!castOn);
   if(!castOn) return;
   $('castDev').textContent=t('castOn',castDevName||'TV');
-  $('castWhat').textContent= castKind? (t(castKind==='music'?'castMusic':castKind==='radio'?'castRadio':'castTv')+' · '+castTitle) : t('castNothing');
+  $('castWhat').textContent= castKind? (t(castKind==='music'?'castMusic':castKind==='radio'?'castRadio':castKind==='video'?'castVideo':'castTv')+' · '+castTitle) : t('castNothing');
   $('castPlay').textContent=(castKind==='radio' && radioId? !radioPaused() : (castPlaying || (castKind==='tv' && castBuf)))? '⏸' : '▶';
   $('castPrev').classList.toggle('hidden',!castKind); $('castNext').classList.toggle('hidden',!castKind); $('castPlay').classList.toggle('hidden',!castKind);
 }
@@ -4137,12 +4664,13 @@ function castTvLoad(ch, relay){
 function castMove(dir){
   if(castKind==='music') { if(dir>0) nextSong(false); else prevSong(); }
   else if(castKind==='radio') switchStation(dir);
+  else if(castKind==='video') castVideoMove(dir);
   else if(castKind==='tv' && castTvPool.length>1){ castTvIdx=(castTvIdx+dir+castTvPool.length)%castTvPool.length; castTv(castTvPool[castTvIdx], castTvPool); }
 }
 function castToggle(){
   if(castKind==='music') togglePlay();
   else if(castKind==='radio') toggleRadio();
-  else if(castKind==='tv') PM.castCmd('toggle').catch(()=>{});
+  else if(castKind==='tv' || castKind==='video') PM.castCmd('toggle').catch(()=>{});
 }
 /* al conectarse, lo que estaba sonando pasa al televisor */
 function castTakeOver(){
@@ -4190,6 +4718,10 @@ function onCastEvent(ev){
           else if(repeatMode===2 && currentId) loadById(currentId,true); else nextSong(true); }
         else if(ev.state==='idle' && ev.idle==='error'){ castPlaying=false; toast(t('castFail')); }
         setPlayIcon();
+      } else if(castKind==='video'){
+        if(ev.pos>=0) castPos=ev.pos; if(ev.dur>0) castDur=ev.dur;
+        if(ev.state==='idle' && ev.idle==='finished'){ castPlaying=false; castVideoMove(1); }
+        else if(ev.state==='idle' && ev.idle==='error'){ castPlaying=false; toast(t('castFail')); }
       } else if(castKind==='radio' && radioId){
         const v= ev.state==='playing'? 'online' : ev.state==='buffering'? 'connecting' : 'paused';
         if(ev.state==='idle' && ev.idle==='error') onRadioNative({type:'error',value:'cast'}); else onRadioNative({type:'state',value:v});
@@ -4226,7 +4758,7 @@ $('castPrev').onclick=()=>castMove(-1); $('castNext').onclick=()=>castMove(1); $
 
 /* ================= COPIA DE SEGURIDAD (v41) =================
    Un archivo .json en Descargas/Prometeo. No sale del teléfono. La música no va dentro (se vuelve a encontrar). */
-const BK_KEYS=['radios','radioLists','tvFav','tvMyLists','tvAspect','tvQuality','skin','lang','vmode','repeat','shuffle','hidden','privOn','eq','hiddenInfo','libScope','skipSil','boost'];
+const BK_KEYS=['vlists','vHidden','vNames','vUris','vScope','libMedia','radios','radioLists','tvFav','tvMyLists','tvAspect','tvQuality','skin','lang','vmode','repeat','shuffle','hidden','privOn','eq','hiddenInfo','libScope','skipSil','boost'];
 async function buildBackup(){
   const prefs={}; BK_KEYS.forEach(k=>{ const v=store.get(k,undefined); if(v!==undefined) prefs[k]=v; });
   /* Las playlists guardan también cómo se llaman sus canciones, para encontrarlas en otro teléfono */
@@ -4521,7 +5053,7 @@ $('btnAddStation').onclick=()=>addStationEasy(); $('btnBackMusic').onclick=()=>s
 $('btnRepeat').onclick=cycleRepeat; $('btnShuffle').onclick=toggleShuffle;
 $('btnCurToPl').onclick=()=>addToPlaylist(currentId); $('btnSleep').onclick=openSleep; slpLabel();
 $('btnPlayAll').onclick=()=>{ const mus=musicSongs(); if(!mus.length){ toast(t('noSongs')); return; } playFrom({type:'lib'}, shuffle? shuffleArr(mus.map(s=>s.id))[0] : mus[0].id); switchTab('ahora'); };
-$('btnNewPl').onclick=()=>newPlaylist();
+$('btnNewPl').onclick=()=>{ if(PM && plMedia==='video') newVList(); else newPlaylist(); };
 $('btnPlBack').onclick=closePlDetail;
 $('btnPlPlay').onclick=()=>{ const p=plById(openPl); if(p) playPl(p); };
 $('btnPlRename').onclick=()=>{ const p=plById(openPl); if(p) renamePl(p); };

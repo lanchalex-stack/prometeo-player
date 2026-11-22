@@ -182,6 +182,11 @@ final class Library {
         return o;
     }
 
+    static boolean isVideoName(String n) {
+        String l = n.toLowerCase(Locale.ROOT);
+        return l.endsWith(".mp4") || l.endsWith(".mkv") || l.endsWith(".mov") || l.endsWith(".avi") || l.endsWith(".m4v")
+                || l.endsWith(".3gp") || l.endsWith(".ts") || l.endsWith(".wmv") || l.endsWith(".flv") || l.endsWith(".mpg") || l.endsWith(".mpeg");
+    }
     private static boolean isAudioName(String n) {
         String l = n.toLowerCase(Locale.ROOT);
         return l.endsWith(".mp3") || l.endsWith(".m4a") || l.endsWith(".aac") || l.endsWith(".flac") || l.endsWith(".ogg")
@@ -197,7 +202,7 @@ final class Library {
         int dirs = 0;
         String[] cols = { DocumentsContract.Document.COLUMN_DOCUMENT_ID, DocumentsContract.Document.COLUMN_DISPLAY_NAME,
                 DocumentsContract.Document.COLUMN_MIME_TYPE, DocumentsContract.Document.COLUMN_SIZE };
-        while (!q.isEmpty() && dirs < 2000 && out.length() < 5000) {
+        while (!q.isEmpty() && dirs < 2000 && out.length() < 8000) {
             String[] cur = q.poll();
             dirs++;
             Cursor c = null;
@@ -208,6 +213,16 @@ final class Library {
                     if (name == null || name.startsWith(".")) continue;
                     if (DocumentsContract.Document.MIME_TYPE_DIR.equals(mime)) {
                         if (cur[1].split("/").length < 10) q.add(new String[]{ id, cur[1] + name + "/" });
+                    } else if ((mime != null && mime.startsWith("video/")) || (isVideoName(name) && (mime == null || !mime.startsWith("audio/")))) {
+                        /* v43b: los videos de la memoria también se cuentan (para la pestaña 🎬 Videos) */
+                        JSONObject o = new JSONObject();
+                        o.put("uri", DocumentsContract.buildDocumentUriUsingTree(tree, id).toString());
+                        o.put("name", name);
+                        o.put("size", c.isNull(3) ? 0 : c.getLong(3));
+                        o.put("mime", mime == null ? "" : mime);
+                        o.put("folder", cur[1]);
+                        o.put("video", true);
+                        out.put(o);
                     } else if ((mime != null && mime.startsWith("audio/")) || isAudioName(name)) {
                         JSONObject o = new JSONObject();
                         o.put("uri", DocumentsContract.buildDocumentUriUsingTree(tree, id).toString());

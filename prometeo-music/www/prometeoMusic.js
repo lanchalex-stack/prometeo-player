@@ -111,6 +111,25 @@ module.exports = {
     shareText: function (text, subject) { return new Promise(function (ok, fail) { exec(ok, fail, 'PrometeoMusic', 'shareText', [text, subject || '']); }); },
     /** prueba un link (solo se conecta y se cierra): {ok, code, ctype, why} */
     probeUrl: function (url) { return new Promise(function (ok, fail) { exec(ok, fail, 'PrometeoMusic', 'probeUrl', [url]); }); },
+    /* ---- v43: 🎬 videos del teléfono ---- */
+    /** 1 = todos los videos, 2 = acceso limitado (solo los elegidos), 0 = sin permiso */
+    hasVideoPermission: function () { return call('hasVideoPermission').then(function (r) { return +r || 0; }); },
+    requestVideoPermission: function () { return call('requestVideoPermission').then(function (r) { return +r || 0; }); },
+    /** v43b: elegir videos sueltos con el selector de Android: [{uri, name, size, mime, mid}] */
+    pickVideo: function () { return call('pickVideo'); },
+    /** v43b: duración (ms) de videos de memoria USB: {uri: ms} */
+    videoDurations: function (uris) { return new Promise(function (ok, fail) { exec(ok, fail, 'PrometeoMusic', 'videoDurations', [uris || []]); }); },
+    /** [{id, name, title, duration, size, mime, folder, vol, date, w, h}] */
+    scanVideos: function () { return call('scanVideos'); },
+    /** "Seguir viendo": {id:{p, d, t}} */
+    videoState: function () { return call('videoState'); },
+    videoMovePos: function (from, to) { return new Promise(function (ok, fail) { exec(ok, fail, 'PrometeoMusic', 'videoMovePos', [from, to]); }); },
+    /** avisos del reproductor de video: fn({type:'watch'|'closed'|'cast'|'error', id, pos}) */
+    onVideoEvents: function (fn) { exec(function (ev) { if (ev && fn) fn(ev); }, function () {}, 'PrometeoMusic', 'videoEvents', []); },
+    /** abre el reproductor: job = {items:[{id, n}], i, repeat, s:{textos}} */
+    playLocal: function (job) { return new Promise(function (ok, fail) { exec(ok, fail, 'PrometeoMusic', 'playLocal', [job]); }); },
+    /** 📸 captura del canal en pantalla pequeña: {ok, black} */
+    tvShot: function (name) { return new Promise(function (ok, fail) { exec(ok, fail, 'PrometeoMusic', 'tvShot', [name || 'TV']); }); },
     /** botones del volante / del carro: fn({action:'play'|'pause'|'next'|'prev'|'seek', pos}) */
     onControl: function (fn) {
         exec(function (ev) { if (ev && fn) fn(ev); }, function () {}, 'PrometeoMusic', 'controls', []);

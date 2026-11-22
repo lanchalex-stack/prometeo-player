@@ -72,7 +72,32 @@ final class CastServer {
         return "http://" + ip + ":" + ss.getLocalPort() + "/" + token + "/a/" + mediaId + "." + (ext == null || ext.isEmpty() ? "mp3" : ext);
     }
 
-    static final String UA = "PrometeoPlayer/42";
+    /** v43: dirección de un video del teléfono para el Chromecast */
+    String urlForVideo(long mediaId, String ext) {
+        String ip = localIp();
+        if (ip == null || ss == null) return null;
+        return "http://" + ip + ":" + ss.getLocalPort() + "/" + token + "/v/" + mediaId + "." + (ext == null || ext.isEmpty() ? "mp4" : ext);
+    }
+    /** v43b: video de memoria USB o elegido a mano (solo el que se está mandando al TV) */
+    private volatile android.net.Uri docUri = null;
+    private int docN = 0;
+    synchronized String urlForDoc(android.net.Uri u, String ext) {
+        String ip = localIp();
+        if (ip == null || ss == null || u == null) return null;
+        docUri = u;
+        return "http://" + ip + ":" + ss.getLocalPort() + "/" + token + "/d/" + (++docN) + "." + (ext == null || ext.isEmpty() ? "mp4" : ext);
+    }
+    /** v43: subtítulos del video (WebVTT) para el Chromecast */
+    private volatile byte[] subVtt = null;
+    private int subN = 0;
+    synchronized String setSubtitle(String vtt) {
+        String ip = localIp();
+        if (vtt == null || vtt.isEmpty() || ip == null || ss == null) { subVtt = null; return null; }
+        subVtt = vtt.getBytes(java.nio.charset.StandardCharsets.UTF_8);
+        return "http://" + ip + ":" + ss.getLocalPort() + "/" + token + "/s/" + (++subN) + ".vtt";
+    }
+
+    static final String UA = "PrometeoPlayer/43";
 
     /* ---------------- radio en pedacitos (HLS) ---------------- */
     private LiveHls live;
@@ -318,14 +343,29 @@ final class CastServer {
             if ("OPTIONS".equals(method)) { send(out, "204 No Content", null, 0, null, null); s.close(); return; }
             if (("GET".equals(method) || head) && path.startsWith("/" + token + "/h/")) { serveLive(path.substring(token.length() + 4), head, out); s.close(); return; }
             if (("GET".equals(method) || head) && path.startsWith("/" + token + "/p/")) { relay(path.substring(token.length() + 4), range, head, out); s.close(); return; }
-            String pre = "/" + token + "/a/";
-            if (!("GET".equals(method) || head) || !path.startsWith(pre)) { send(out, "404 Not Found", null, 0, null, null); s.close(); return; }
-            String idPart = path.substring(pre.length());
-            int dot = idPart.indexOf('.'); if (dot >= 0) idPart = idPart.substring(0, dot);
-            long id = Long.parseLong(idPart.replaceAll("[^0-9]", ""));
-            android.net.Uri uri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id);
+            if (("GET".equals(method) || head) && path.startsWith("/" + token + "/s/")) {
+                byte[] v = subVtt;
+                if (v == null) { send(out, "404 Not Found", null, 0, null, null); s.close(); return; }
+                send(out, "200 OK", "text/vtt; charset=utf-8", v.length, null, null);
+                if (!head) out.write(v);
+                out.flush(); s.close(); return;
+            }
+            String pre = "/" + token + "/a/", preV = "/" + token + "/v/", preD = "/" + token + "/d/";
+            boolean isDoc = path.startsWith(preD);
+            boolean isVideo = path.startsWith(preV) || isDoc;
+            if (!("GET".equals(method) || head) || !(path.startsWith(pre) || isVideo)) { send(out, "404 Not Found", null, 0, null, null); s.close(); return; }
+            android.net.Uri uri;
+            if (isDoc) {
+                uri = docUri;
+                if (uri == null || !Library.uriAllowed(ctx, uri)) { send(out, "404 Not Found", null, 0, null, null); s.close(); return; }
+            } else {
+                String idPart = path.substring(pre.length());
+                int dot = idPart.indexOf('.'); if (dot >= 0) idPart = idPart.substring(0, dot);
+                long id = Long.parseLong(idPart.replaceAll("[^0-9]", ""));
+                uri = isVideo ? Videos.uriOf(id) : ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id);
+            }
             String mime = ctx.getContentResolver().getType(uri);
-            if (mime == null) mime = "audio/mpeg";
+            if (mime == null) mime = isVideo ? "video/mp4" : "audio/mpeg";
             afd = ctx.getContentResolver().openAssetFileDescriptor(uri, "r");
             if (afd == null) { send(out, "404 Not Found", null, 0, null, null); s.close(); return; }
             FileInputStream fis = afd.createInputStream();

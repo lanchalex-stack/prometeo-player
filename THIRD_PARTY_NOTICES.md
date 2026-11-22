@@ -1,12 +1,12 @@
 # Avisos de terceros · Third-party notices
 
-**Prometeo Player V41** © 2026 Lanchalex. Todos los derechos reservados ([LICENSE](LICENSE)).
+**Prometeo Player V43** © 2026 Lanchalex. Todos los derechos reservados ([LICENSE](LICENSE)).
 
 Prometeo Player incluye el software de código abierto que se lista abajo. Cada componente conserva su propia licencia. **Todos usan la Apache License, Version 2.0**, cuyo texto completo está en [LICENSES/Apache-2.0.txt](LICENSES/Apache-2.0.txt) y en https://www.apache.org/licenses/LICENSE-2.0.
 
 *Prometeo Player includes the open source software listed below. Each component keeps its own license. All of them use the Apache License, Version 2.0 (full text in [LICENSES/Apache-2.0.txt](LICENSES/Apache-2.0.txt)).*
 
-La lista sale del reporte de Gradle `:app:dependencies` (`releaseRuntimeClasspath`) de la compilación de la V41: son exactamente las librerías que van dentro del APK.
+La lista sale del reporte de Gradle `:app:dependencies` (`releaseRuntimeClasspath`) de la compilación (V41, más los módulos de Media3 que se agregaron en la V43): son exactamente las librerías que van dentro del APK.
 
 ---
 
@@ -40,7 +40,9 @@ The Apache Software Foundation (http://www.apache.org/).
 | `androidx.media3:media3-database` | 1.9.4 |
 | `androidx.media3:media3-datasource` | 1.9.4 |
 | `androidx.media3:media3-decoder` | 1.9.4 |
+| `androidx.media3:media3-exoplayer-dash` | 1.9.4 |
 | `androidx.media3:media3-exoplayer-hls` | 1.9.4 |
+| `androidx.media3:media3-exoplayer-rtsp` | 1.9.4 |
 | `androidx.media3:media3-exoplayer` | 1.9.4 |
 | `androidx.media3:media3-extractor` | 1.9.4 |
 | `androidx.media3:media3-ui` | 1.9.4 |
