@@ -111,6 +111,17 @@ module.exports = {
     shareText: function (text, subject) { return new Promise(function (ok, fail) { exec(ok, fail, 'PrometeoMusic', 'shareText', [text, subject || '']); }); },
     /** prueba un link (solo se conecta y se cierra): {ok, code, ctype, why} */
     probeUrl: function (url) { return new Promise(function (ok, fail) { exec(ok, fail, 'PrometeoMusic', 'probeUrl', [url]); }); },
+    /* ---- v44: ✂️ cortar video / 🎵 extraer audio ---- */
+    /** fn({type:'progress', p} | {type:'done', uri, name, kind, mid} | {type:'error', msg}) */
+    onEditEvents: function (fn) { exec(function (ev) { if (ev && fn) fn(ev); }, function () {}, 'PrometeoMusic', 'editEvents', []); },
+    /** "Nombre_001" libre (video = true busca en Películas) */
+    editNextName: function (base, video) { return new Promise(function (ok, fail) { exec(ok, fail, 'PrometeoMusic', 'editNextName', [base || 'Prometeo', !!video]); }); },
+    /** job = {kind:'cut'|'mp3'|'m4a', mid | uri, a(ms), b(ms), name} */
+    editStart: function (job) { return new Promise(function (ok, fail) { exec(ok, fail, 'PrometeoMusic', 'editStart', [job]); }); },
+    editCancel: function () { return call('editCancel'); },
+    editDelete: function (uri) { return new Promise(function (ok, fail) { exec(ok, fail, 'PrometeoMusic', 'editDelete', [uri]); }); },
+    /* ---- v44: 🚗 Android Auto ---- */
+    autoCatalog: function (json) { return new Promise(function (ok, fail) { exec(ok, fail, 'PrometeoMusic', 'autoCatalog', [json]); }); },
     /* ---- v43: 🎬 videos del teléfono ---- */
     /** 1 = todos los videos, 2 = acceso limitado (solo los elegidos), 0 = sin permiso */
     hasVideoPermission: function () { return call('hasVideoPermission').then(function (r) { return +r || 0; }); },

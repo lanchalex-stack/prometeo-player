@@ -110,6 +110,23 @@ final class Videos {
         return bo.toByteArray();
     }
 
+    /** v44: un cuadro del video en "ms" (para elegir el tramo al cortar). exact = cuadro exacto (más lento) */
+    private static android.media.MediaMetadataRetriever fr; private static String frUri;
+    static synchronized byte[] frame(Context ctx, Uri u, long ms, boolean exact) {
+        try {
+            if (fr == null || !u.toString().equals(frUri)) {
+                if (fr != null) try { fr.release(); } catch (Exception ignored) { }
+                fr = new android.media.MediaMetadataRetriever(); fr.setDataSource(ctx, u); frUri = u.toString();
+            }
+            int opt = exact ? android.media.MediaMetadataRetriever.OPTION_CLOSEST : android.media.MediaMetadataRetriever.OPTION_CLOSEST_SYNC;
+            Bitmap f = Build.VERSION.SDK_INT >= 27 ? fr.getScaledFrameAtTime(ms * 1000, opt, exact ? 640 : 240, exact ? 640 : 240) : fr.getFrameAtTime(ms * 1000, opt);
+            if (f == null) return null;
+            ByteArrayOutputStream bo = new ByteArrayOutputStream();
+            f.compress(Bitmap.CompressFormat.JPEG, 78, bo); f.recycle();
+            return bo.toByteArray();
+        } catch (Exception e) { try { if (fr != null) fr.release(); } catch (Exception ignored) { } fr = null; frUri = null; return null; }
+    }
+
     /** v43b: duración de un video de memoria USB (ms, o 0) */
     static long durationDoc(Context ctx, Uri u) {
         android.media.MediaMetadataRetriever r = new android.media.MediaMetadataRetriever();

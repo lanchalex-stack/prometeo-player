@@ -44,6 +44,7 @@ final class CastHelper {
     private boolean scanning = false;
     private CastServer server;
     private RemoteMediaClient rmc;
+    private volatile boolean sentSubs = false;
     private String kind = "";       /* music | radio | tv */
     private PowerManager.WakeLock wake;
     private WifiManager.WifiLock wifi;
@@ -195,6 +196,8 @@ final class CastHelper {
             }
             o.put("pos", pos >= 0 ? pos : rmc.getApproximateStreamPosition());
             o.put("dur", dur >= 0 ? dur : rmc.getStreamDuration());
+            try { CastSession cs = cc == null ? null : cc.getSessionManager().getCurrentCastSession(); if (cs != null) o.put("vol", Math.round(cs.getVolume() * 100)); } catch (Exception ignored) { }
+            o.put("subs", sentSubs);
         } catch (Exception ignored) { }
         emit(o);
     }
@@ -334,6 +337,7 @@ final class CastHelper {
                 .setMetadata(md);
         if (music && o.optLong("dur", 0) > 0) mb.setStreamDuration(o.optLong("dur"));
         String subUrl = o.optString("subUrl", "");
+        sentSubs = video && !subUrl.isEmpty();
         if (video && !subUrl.isEmpty()) {
             MediaTrack tr = new MediaTrack.Builder(1, MediaTrack.TYPE_TEXT).setName("Subtítulos").setSubtype(MediaTrack.SUBTYPE_SUBTITLES)
                     .setContentId(subUrl).setContentType("text/vtt").setLanguage("es").build();
@@ -385,6 +389,9 @@ final class CastHelper {
                 case "toggle": if (rmc.isPlaying()) rmc.pause(); else rmc.play(); break;
                 case "stop": rmc.stop(); keepAwake(false); if (server != null) server.stopLive(); break;
                 case "seek": rmc.seek(new MediaSeekOptions.Builder().setPosition(Math.max(0, ms)).build()); break;
+                /* v44: control del video en el TV */
+                case "volume": { CastSession s = cc == null ? null : cc.getSessionManager().getCurrentCastSession(); if (s != null) s.setVolume(Math.max(0, Math.min(100, ms)) / 100.0); break; }
+                case "subs": rmc.setActiveMediaTracks(ms > 0 ? new long[]{ 1 } : new long[0]); break;
                 default: break;
             }
         } catch (Exception ignored) { }

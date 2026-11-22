@@ -82,7 +82,7 @@ public class LocalVideoActivity extends Activity {
     static volatile JSONObject pending;
 
     /** id = número del video en Android (o -1); u = dirección de un video de memoria USB o elegido a mano; k = clave para recordar posición y subtítulos */
-    private static final class It { long id; String n, u, k; }
+    private static final class It { long id; String n, u, k; long cs = -1, ce = -1, at = -1; }
     private final List<It> items = new ArrayList<>();
     private int idx = 0;
     private boolean repeat = false;
@@ -179,6 +179,8 @@ public class LocalVideoActivity extends Activity {
             It it = new It(); it.id = x.optLong("id", -1); it.n = x.optString("n", ""); it.u = x.optString("u", "");
             if (it.u.isEmpty()) it.u = null;
             it.k = it.u != null ? x.optString("k", "u" + Math.abs(it.u.hashCode())) : String.valueOf(it.id);
+            /* v44: cs/ce = solo un tramo (vista previa de cortar); at = empezar en este punto (al volver del TV) */
+            it.cs = x.optLong("cs", -1); it.ce = x.optLong("ce", -1); it.at = x.optLong("at", -1);
             if (it.id >= 0 || it.u != null) items.add(it);
         }
         idx = Math.max(0, Math.min(o.optInt("i", 0), Math.max(0, items.size() - 1)));
@@ -420,12 +422,19 @@ public class LocalVideoActivity extends Activity {
     /** Pone el video actual. at = posición (-1 = donde lo dejaste) */
     private void startCurrent(long at) {
         It it = cur(); if (it == null || player == null) return;
+        if (at < 0 && it.at >= 0) { at = it.at; it.at = -1; }
+        if (it.cs >= 0) at = 0;
         if (at < 0) {
             long p = prefs.getLong("p_" + it.k, 0), d = prefs.getLong("d_" + it.k, 0);
             at = (p > 3000 && (d <= 0 || p < d - 10000)) ? p : 0;
             if (at > 0) toast("▶ " + fmt(s("resumeAt", "Sigues desde {0}"), mmss(at)));
         }
         MediaItem.Builder b = new MediaItem.Builder().setUri(it.u != null ? Uri.parse(it.u) : Videos.uriOf(it.id));
+        if (it.cs >= 0) {
+            MediaItem.ClippingConfiguration.Builder cb = new MediaItem.ClippingConfiguration.Builder().setStartPositionMs(it.cs);
+            if (it.ce > it.cs) cb.setEndPositionMs(it.ce);
+            b.setClippingConfiguration(cb.build());
+        }
         extSub = null; extName = "";
         String su = prefs.getString("s_" + it.k, null);
         if (su != null) {
@@ -590,14 +599,21 @@ public class LocalVideoActivity extends Activity {
         finish();
     }
 
+    private void editReq(String what) {
+        It it = cur(); if (it == null) return;
+        JSONObject e = new JSONObject();
+        try { e.put("type", "edit"); e.put("what", what); e.put("id", it.id); e.put("k", it.k); if (it.u != null) e.put("u", it.u); if (player != null) e.put("pos", player.getCurrentPosition()); } catch (Exception ignored) { }
+        savePos(); emit(e); finish();
+    }
     private void emit(JSONObject e) { Events ev = events; if (ev != null) try { ev.send(e); } catch (Exception ignored) { } }
 
     private void savePos() {
         It it = cur(); if (it == null || player == null) return;
         long d = player.getDuration(), p = player.getCurrentPosition();
+        if (it.cs >= 0) return; /* la vista previa de un tramo no cambia "Seguir viendo" */
         if (d > 0 && player.getPlaybackState() != Player.STATE_IDLE) Videos.savePos(this, it.k, p, d);
     }
-    private void clearPos() { It it = cur(); if (it != null && player != null) Videos.savePos(this, it.k, 0, Math.max(0, player.getDuration())); }
+    private void clearPos() { It it = cur(); if (it != null && it.cs < 0 && player != null) Videos.savePos(this, it.k, 0, Math.max(0, player.getDuration())); }
 
     /* ============================ CONTROLES ============================ */
     private void setControls(boolean show) {
@@ -815,6 +831,13 @@ public class LocalVideoActivity extends Activity {
         if (player != null) for (Tracks.Group g : player.getCurrentTracks().getGroups()) {
             if (g.getType() == C.TRACK_TYPE_AUDIO) audio.add(g);
             else if (g.getType() == C.TRACK_TYPE_TEXT && g.isSupported()) subs.add(g);
+        }
+        /* v44: ✂️ cortar / 🎵 extraer audio (se hace en la app; el reproductor se cierra) */
+        final It ci = cur();
+        if (ci != null && ci.cs < 0) {
+            LinearLayout re = chipRow("🛠 " + s("tools", "Herramientas"));
+            chip(re, "✂️ " + s("cut", "Cortar video"), false, v -> editReq("cut"));
+            chip(re, "🎵 " + s("extract", "Extraer audio"), false, v -> editReq("audio"));
         }
         LinearLayout r1 = chipRow("💬 " + s("subs", "Subtítulos"));
         final boolean off = player == null || player.getTrackSelectionParameters().disabledTrackTypes.contains(C.TRACK_TYPE_TEXT);

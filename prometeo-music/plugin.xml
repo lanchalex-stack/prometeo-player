@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
         xmlns:android="http://schemas.android.com/apk/res/android"
-        id="prometeo-music" version="1.11.1">
+        id="prometeo-music" version="1.12.1">
     <name>Prometeo Music</name>
     <description>Música del teléfono sin copiarla, sesión para el carro, radio y TV con ExoPlayer (AndroidX Media3). Sin recopilar datos.</description>
     <author>Lanchalex</author>
@@ -70,6 +70,11 @@
                       android:supportsPictureInPicture="true"
                       android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboardHidden|keyboard|navigation|uiMode"
                       android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" />
+            <!-- v44: 🚗 Android Auto -->
+            <service android:name="com.prometeo.music.AutoService" android:exported="true">
+                <intent-filter><action android:name="android.media.browse.MediaBrowserService" /></intent-filter>
+            </service>
+            <meta-data android:name="com.google.android.gms.car.application" android:resource="@xml/automotive_app_desc" />
             <service android:name="com.prometeo.music.RadioService"
                      android:exported="false"
                      android:foregroundServiceType="mediaPlayback" />
@@ -89,6 +94,82 @@
         <source-file src="src/android/Videos.java" target-dir="src/com/prometeo/music" />
         <source-file src="src/android/Shots.java" target-dir="src/com/prometeo/music" />
         <source-file src="src/android/Subs.java" target-dir="src/com/prometeo/music" />
+        <source-file src="src/android/Edit.java" target-dir="src/com/prometeo/music" />
+        <source-file src="src/android/AutoService.java" target-dir="src/com/prometeo/music" />
+        <!-- v44: jump3r (LAME en Java, LGPL 2.1+) para guardar MP3 -->
+        <source-file src="src/android/lame/Mp3Enc.java" target-dir="src/com/prometeo/lame" />
+        <source-file src="src/android/lame/mp3/ABRIterationLoop.java" target-dir="src/com/prometeo/lame/mp3" />
+        <source-file src="src/android/lame/mp3/ABRPresets.java" target-dir="src/com/prometeo/lame/mp3" />
+        <source-file src="src/android/lame/mp3/ATH.java" target-dir="src/com/prometeo/lame/mp3" />
+        <source-file src="src/android/lame/mp3/BRHist.java" target-dir="src/com/prometeo/lame/mp3" />
+        <source-file src="src/android/lame/mp3/BitStream.java" target-dir="src/com/prometeo/lame/mp3" />
+        <source-file src="src/android/lame/mp3/CBRNewIterationLoop.java" target-dir="src/com/prometeo/lame/mp3" />
+        <source-file src="src/android/lame/mp3/CalcNoiseData.java" target-dir="src/com/prometeo/lame/mp3" />
+        <source-file src="src/android/lame/mp3/CalcNoiseResult.java" target-dir="src/com/prometeo/lame/mp3" />
+        <source-file src="src/android/lame/mp3/Enc.java" target-dir="src/com/prometeo/lame/mp3" />
+        <source-file src="src/android/lame/mp3/Encoder.java" target-dir="src/com/prometeo/lame/mp3" />
+        <source-file src="src/android/lame/mp3/FFT.java" target-dir="src/com/prometeo/lame/mp3" />
+        <source-file src="src/android/lame/mp3/FrameDataNode.java" target-dir="src/com/prometeo/lame/mp3" />
+        <source-file src="src/android/lame/mp3/GainAnalysis.java" target-dir="src/com/prometeo/lame/mp3" />
+        <source-file src="src/android/lame/mp3/GenreListHandler.java" target-dir="src/com/prometeo/lame/mp3" />
+        <source-file src="src/android/lame/mp3/GetAudio.java" target-dir="src/com/prometeo/lame/mp3" />
+        <source-file src="src/android/lame/mp3/GrInfo.java" target-dir="src/com/prometeo/lame/mp3" />
+        <source-file src="src/android/lame/mp3/HuffCodeTab.java" target-dir="src/com/prometeo/lame/mp3" />
+        <source-file src="src/android/lame/mp3/ID3Tag.java" target-dir="src/com/prometeo/lame/mp3" />
+        <source-file src="src/android/lame/mp3/ID3TagSpec.java" target-dir="src/com/prometeo/lame/mp3" />
+        <source-file src="src/android/lame/mp3/IIISideInfo.java" target-dir="src/com/prometeo/lame/mp3" />
+        <source-file src="src/android/lame/mp3/III_psy_ratio.java" target-dir="src/com/prometeo/lame/mp3" />
+        <source-file src="src/android/lame/mp3/III_psy_xmin.java" target-dir="src/com/prometeo/lame/mp3" />
+        <source-file src="src/android/lame/mp3/IIterationLoop.java" target-dir="src/com/prometeo/lame/mp3" />
+        <source-file src="src/android/lame/mp3/Inf.java" target-dir="src/com/prometeo/lame/mp3" />
+        <source-file src="src/android/lame/mp3/L3Side.java" target-dir="src/com/prometeo/lame/mp3" />
+        <source-file src="src/android/lame/mp3/Lame.java" target-dir="src/com/prometeo/lame/mp3" />
+        <source-file src="src/android/lame/mp3/LameGlobalFlags.java" target-dir="src/com/prometeo/lame/mp3" />
+        <source-file src="src/android/lame/mp3/LameInternalFlags.java" target-dir="src/com/prometeo/lame/mp3" />
+        <source-file src="src/android/lame/mp3/LongBlockConstrain.java" target-dir="src/com/prometeo/lame/mp3" />
+        <source-file src="src/android/lame/mp3/MP3Data.java" target-dir="src/com/prometeo/lame/mp3" />
+        <source-file src="src/android/lame/mp3/MPEGMode.java" target-dir="src/com/prometeo/lame/mp3" />
+        <source-file src="src/android/lame/mp3/MeanBits.java" target-dir="src/com/prometeo/lame/mp3" />
+        <source-file src="src/android/lame/mp3/NewMDCT.java" target-dir="src/com/prometeo/lame/mp3" />
+        <source-file src="src/android/lame/mp3/NsPsy.java" target-dir="src/com/prometeo/lame/mp3" />
+        <source-file src="src/android/lame/mp3/PSY.java" target-dir="src/com/prometeo/lame/mp3" />
+        <source-file src="src/android/lame/mp3/Parse.java" target-dir="src/com/prometeo/lame/mp3" />
+        <source-file src="src/android/lame/mp3/PlottingData.java" target-dir="src/com/prometeo/lame/mp3" />
+        <source-file src="src/android/lame/mp3/Presets.java" target-dir="src/com/prometeo/lame/mp3" />
+        <source-file src="src/android/lame/mp3/PsyModel.java" target-dir="src/com/prometeo/lame/mp3" />
+        <source-file src="src/android/lame/mp3/Quantize.java" target-dir="src/com/prometeo/lame/mp3" />
+        <source-file src="src/android/lame/mp3/QuantizePVT.java" target-dir="src/com/prometeo/lame/mp3" />
+        <source-file src="src/android/lame/mp3/ReplayGain.java" target-dir="src/com/prometeo/lame/mp3" />
+        <source-file src="src/android/lame/mp3/Reservoir.java" target-dir="src/com/prometeo/lame/mp3" />
+        <source-file src="src/android/lame/mp3/ScaleFac.java" target-dir="src/com/prometeo/lame/mp3" />
+        <source-file src="src/android/lame/mp3/ShortBlock.java" target-dir="src/com/prometeo/lame/mp3" />
+        <source-file src="src/android/lame/mp3/ShortBlockConstrain.java" target-dir="src/com/prometeo/lame/mp3" />
+        <source-file src="src/android/lame/mp3/Tables.java" target-dir="src/com/prometeo/lame/mp3" />
+        <source-file src="src/android/lame/mp3/Takehiro.java" target-dir="src/com/prometeo/lame/mp3" />
+        <source-file src="src/android/lame/mp3/Util.java" target-dir="src/com/prometeo/lame/mp3" />
+        <source-file src="src/android/lame/mp3/VBRNewIterationLoop.java" target-dir="src/com/prometeo/lame/mp3" />
+        <source-file src="src/android/lame/mp3/VBROldIterationLoop.java" target-dir="src/com/prometeo/lame/mp3" />
+        <source-file src="src/android/lame/mp3/VBRPresets.java" target-dir="src/com/prometeo/lame/mp3" />
+        <source-file src="src/android/lame/mp3/VBRQuantize.java" target-dir="src/com/prometeo/lame/mp3" />
+        <source-file src="src/android/lame/mp3/VBRSeekInfo.java" target-dir="src/com/prometeo/lame/mp3" />
+        <source-file src="src/android/lame/mp3/VBRTag.java" target-dir="src/com/prometeo/lame/mp3" />
+        <source-file src="src/android/lame/mp3/VBRTagData.java" target-dir="src/com/prometeo/lame/mp3" />
+        <source-file src="src/android/lame/mp3/VbrMode.java" target-dir="src/com/prometeo/lame/mp3" />
+        <source-file src="src/android/lame/mp3/Version.java" target-dir="src/com/prometeo/lame/mp3" />
+        <source-file src="src/android/lame/mpg/Common.java" target-dir="src/com/prometeo/lame/mpg" />
+        <source-file src="src/android/lame/mpg/DCT64.java" target-dir="src/com/prometeo/lame/mpg" />
+        <source-file src="src/android/lame/mpg/Decode.java" target-dir="src/com/prometeo/lame/mpg" />
+        <source-file src="src/android/lame/mpg/Frame.java" target-dir="src/com/prometeo/lame/mpg" />
+        <source-file src="src/android/lame/mpg/Huffman.java" target-dir="src/com/prometeo/lame/mpg" />
+        <source-file src="src/android/lame/mpg/Interface.java" target-dir="src/com/prometeo/lame/mpg" />
+        <source-file src="src/android/lame/mpg/L2Tables.java" target-dir="src/com/prometeo/lame/mpg" />
+        <source-file src="src/android/lame/mpg/Layer1.java" target-dir="src/com/prometeo/lame/mpg" />
+        <source-file src="src/android/lame/mpg/Layer2.java" target-dir="src/com/prometeo/lame/mpg" />
+        <source-file src="src/android/lame/mpg/Layer3.java" target-dir="src/com/prometeo/lame/mpg" />
+        <source-file src="src/android/lame/mpg/MPG123.java" target-dir="src/com/prometeo/lame/mpg" />
+        <source-file src="src/android/lame/mpg/MPGLib.java" target-dir="src/com/prometeo/lame/mpg" />
+        <source-file src="src/android/lame/mpg/TabInit.java" target-dir="src/com/prometeo/lame/mpg" />
+        <resource-file src="src/android/res/automotive_app_desc.xml" target="res/xml/automotive_app_desc.xml" />
         <!-- ExoPlayer (AndroidX Media3) — © The Android Open Source Project — Apache License 2.0 -->
         <!-- WebViewAssetLoader (para leer la música sin copiarla); Cordova la usa pero no la comparte con los plugins -->
         <framework src="androidx.webkit:webkit:1.14.0" />
@@ -98,6 +179,8 @@
         <!-- v43: canales DASH y RTSP (Apache 2.0). FFmpeg queda para después (se armará uno propio con licencia compatible) -->
         <framework src="androidx.media3:media3-exoplayer-dash:1.9.4" />
         <framework src="androidx.media3:media3-exoplayer-rtsp:1.9.4" />
+        <!-- v44: ✂️ cortar video y 🎵 extraer audio (M4A) -->
+        <framework src="androidx.media3:media3-transformer:1.9.4" />
         <!-- Chromecast: SDK de Google Cast (servicios de Google Play) y el buscador de aparatos de AndroidX -->
         <framework src="com.google.android.gms:play-services-cast-framework:22.1.0" />
         <framework src="androidx.mediarouter:mediarouter:1.7.0" />

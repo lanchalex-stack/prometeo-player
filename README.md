@@ -2,19 +2,27 @@
 
 <img src="res/icon/android/legacy-xxxhdpi.png" alt="Ícono de Prometeo Player" width="128">
 
-# 🔥 Prometeo Player V43
+# 🔥 Prometeo Player V44
 
 **Reproductor de música, videos, radio y TV para Android. Sin anuncios y sin recopilar datos.**
 
-![Versión](https://img.shields.io/badge/versión-V43-00e5ff?style=for-the-badge)
+![Versión](https://img.shields.io/badge/versión-V44-00e5ff?style=for-the-badge)
 ![Android](https://img.shields.io/badge/Android-7%2B-3ddc84?style=for-the-badge&logo=android&logoColor=white)
 ![Privacidad](https://img.shields.io/badge/sin-recopilar%20datos-0a0a0a?style=for-the-badge)
 
-[**⬇️ Descargar APK V43**](https://github.com/lanchalex-stack/prometeo-player/releases/tag/v43) · [**🌐 Probar la versión web**](https://lanchalex-stack.github.io/prometeo-player/)
+[**⬇️ Descargar APK V44**](https://github.com/lanchalex-stack/prometeo-player/releases/tag/v44) · [**🌐 Probar la versión web**](https://lanchalex-stack.github.io/prometeo-player/)
 
 </div>
 
 ---
+
+## ✨ Novedades de la V44
+
+- ✂️ **Cortar video**: eliges el tramo arrastrando los bordes o con "Inicio aquí / Fin aquí", lo ves antes de guardar y se guarda como **video nuevo** en Películas/Prometeo. El original no se toca.
+- 🎵 **Extraer audio** de un video, completo o solo un tramo, en **MP3** (se oye en todo) o **M4A** (más rápido). El nombre se sugiere solo (`Video_001`, `Video_002`…) y lo puedes cambiar. Se guarda en Música/Prometeo y aparece en 🎵 Música. Con **Deshacer**.
+- 📡 **Control del video en el TV**: toca la barra del Chromecast para adelantar o atrasar, ±10 s, pausa, anterior/siguiente, subtítulos, volumen del TV, **seguir en el teléfono desde el mismo segundo** y detener.
+- 🚗 **Android Auto**: tu música, listas, radio y favoritos en la pantalla del carro (Prometeo tiene que estar abierto en el teléfono). Mientras Prometeo no esté en Google Play, hay que activar "Fuentes desconocidas" en los ajustes de desarrollador de Android Auto.
+- 🌐 **Versión web**: si eliges un video, ya no entra como canción: puedes verlo en el momento (sin guardarlo) o descargar la app.
 
 ## ✨ Novedades de la V43
 
@@ -121,7 +129,7 @@
 
 ## 📲 Instalación
 
-1. Descarga **`Prometeo-v43.apk`** desde [Releases](https://github.com/lanchalex-stack/prometeo-player/releases/tag/v43).
+1. Descarga **`Prometeo-v44.apk`** desde [Releases](https://github.com/lanchalex-stack/prometeo-player/releases/tag/v44).
 2. Ábrelo y permite **"Instalar apps desconocidas"** si Android lo pide.
 3. Si tienes una versión anterior, toca **Actualizar**. **No la desinstales**, así conservas tus playlists, emisoras y listas.
 4. Acepta el permiso de **Música y audio**. Prometeo encontrará tu música.

@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#141414">
-<title>Prometeo Player v43b</title>
+<title>Prometeo Player v44b</title>
 <style>
 /* ===== Skins: cada skin solo cambia estas variables ===== */
 :root,[data-skin="neon"]{--bg:#0a0a0a;--card:#141414;--card2:#1c1c1c;--line:#232323;--line2:#2c2c2c;--acc:#00e5ff;--accrgb:0,229,255;--onacc:#000;--txt:#fff;--txt2:#ddd;--soft:#aaa;--mut:#8a8a8a;--dim:#666;--viz:#070b0c;--sheet:#161616;--input:#202020;--mini:#1a1f20;--miniline:#2a3a3c;--thumb:#fff;--overlay:rgba(0,0,0,.7);--red:#ff4d5e}
@@ -413,6 +413,39 @@ html,body{overflow-x:clip;max-width:100%}
 .warn-note{font-size:11.5px;color:var(--mut);line-height:1.45;margin:8px 2px 12px}
 .tvi-video.flash{animation:vflash .35s}
 @keyframes vflash{0%{filter:brightness(2.2)}100%{filter:none}}
+
+/* ===== v44 ===== */
+.ed-ov{position:fixed;inset:0;z-index:60;background:var(--bg,#0a0a0a);overflow-y:auto;padding:max(12px,env(safe-area-inset-top)) 16px 24px;display:flex;flex-direction:column;gap:10px}
+.ed-top{display:flex;align-items:center;gap:10px}.ed-top .tx{min-width:0;flex:1}.ed-top b{display:block;font-size:16px}.ed-top small{display:block;font-size:12px;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ed-prev{position:relative;background:#000;border-radius:14px;aspect-ratio:16/9;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.ed-prev img{width:100%;height:100%;object-fit:contain}.ed-prev i{position:absolute;left:8px;bottom:6px;font-style:normal;font-size:11px;font-weight:800;background:rgba(0,0,0,.65);color:#fff;padding:2px 6px;border-radius:6px}
+.ed-strip{position:relative;display:flex;height:56px;border-radius:10px;margin:4px 0 0;background:#111;user-select:none}
+.ed-strip img{flex:1;min-width:0;height:100%;object-fit:cover;pointer-events:none}
+.ed-sel{position:absolute;top:0;bottom:0;border-top:3px solid var(--acc);border-bottom:3px solid var(--acc);box-shadow:0 0 0 999px rgba(0,0,0,.6);pointer-events:none}
+.ed-strip{overflow:hidden}
+.ed-h{position:absolute;top:0;bottom:0;width:18px;background:var(--acc);pointer-events:auto;touch-action:none}
+.ed-h.a{left:-3px;border-radius:6px 0 0 6px}.ed-h.b{right:-3px;border-radius:0 6px 6px 0}
+.ed-h::after{content:'';position:absolute;left:50%;top:30%;bottom:30%;width:2px;margin-left:-1px;background:rgba(0,0,0,.5)}.ed-h.on{box-shadow:0 0 0 3px #fff}
+.ed-head{position:absolute;top:-6px;bottom:-6px;width:2px;margin-left:-1px;background:#fff;pointer-events:none}
+.ed-scrub{width:100%;accent-color:var(--acc)}
+.ed-times{display:flex;justify-content:space-between;font-size:12px;color:var(--mut)}.ed-times b{color:var(--acc)}
+.ed-row{display:flex;gap:8px}.ed-b{flex:1;padding:10px 6px;border-radius:12px;background:var(--card2);border:1px solid var(--line2);color:var(--txt);font-weight:800;font-size:12.5px}
+.ed-name{display:block}.ed-name small{display:block;font-size:11px;color:var(--mut);margin-bottom:4px}.ed-name input{width:100%;box-sizing:border-box;padding:10px 12px;border-radius:12px;border:1px solid var(--line2);background:var(--card2);color:var(--txt);font-size:15px}
+.ed-save{margin:4px 0 0}
+.ed-seg{margin:10px 0 4px}
+.edit-bar{position:fixed;left:12px;right:12px;bottom:calc(150px + env(safe-area-inset-bottom));z-index:55;display:none;align-items:center;gap:10px;background:var(--card);border:1px solid var(--acc);border-radius:14px;padding:10px 12px;box-shadow:0 6px 24px rgba(0,0,0,.5)}
+.edit-bar.show{display:flex}.edit-bar .tx{flex:1;min-width:0}.edit-bar b{display:block;font-size:13px}.edit-bar small{display:block;font-size:11px;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.edit-bar .prog{height:5px;border-radius:4px;background:var(--line2);margin-top:6px;overflow:hidden}.edit-bar .prog i{display:block;height:100%;background:var(--acc)}
+.undo-bar button+button{margin-left:6px}
+.cast-bar.tap .cb-info{cursor:pointer}.cast-bar.tap .cb-info small::after{content:' ⌃'}
+.cr-title{font-size:16px;font-weight:800;margin:2px 0 10px}
+.cr-seek{width:100%;accent-color:var(--acc)}.cr-times{display:flex;justify-content:space-between;font-size:12px;color:var(--mut)}
+.cr-btns{display:flex;justify-content:space-between;align-items:center;margin:14px 0}
+.cr-b{min-width:48px;height:48px;border-radius:24px;background:var(--card2);border:1px solid var(--line2);color:var(--txt);font-size:16px;font-weight:800}
+.cr-b.pp{width:64px;height:64px;border-radius:50%;background:var(--acc);color:var(--onacc);border-color:var(--acc);font-size:24px}
+.cr-vol{display:flex;align-items:center;gap:10px;margin-bottom:10px}.cr-vol input{flex:1;accent-color:var(--acc)}
+.cr-chips{flex-wrap:wrap}.cr-chips button.on{background:var(--acc);color:var(--onacc);border-color:var(--acc)}
+.web-v video{width:100%;max-height:75vh;background:#000;border-radius:14px}
 </style>
 </head>
 <body>
@@ -420,7 +453,7 @@ html,body{overflow-x:clip;max-width:100%}
 <header class="topbar">
  <div class="tb-main">
  <div class="tb-left">
-  <div class="tb-title"><h1>🔥 Prometeo <span>Player</span></h1><button class="ver" id="btnVer" data-i18n-aria="diagBtn" aria-label="Diagnóstico">v43b</button></div>
+  <div class="tb-title"><h1>🔥 Prometeo <span>Player</span></h1><button class="ver" id="btnVer" data-i18n-aria="diagBtn" aria-label="Diagnóstico">v44b</button></div>
   <div class="top-actions">
     <button class="top-btn hidden" id="btnCast" aria-label="Transmitir">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 18v.01"/><path d="M3 14a4 4 0 0 1 4 4"/><path d="M3 10a8 8 0 0 1 8 8"/><path d="M3 6.5V6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4.5"/></svg>
@@ -806,6 +839,240 @@ let castOn=false, castDevName='', castKind='', castPlaying=false, castPos=0, cas
 const castModeFor={};   /* Chromecast */
 let tvSel='';
 
+/* ================= v44: ✂️ CORTAR VIDEO Y 🎵 EXTRAER AUDIO =================
+   El original no se toca: el resultado se guarda aparte (Películas/Prometeo o Música/Prometeo). */
+let editJob=null;
+function vSrcArgs(v){ return v.u? {uri:v.u} : {mid:v.id}; }
+function vFrameUrl(v, ms, exact){ return '/__prometeo_vframe__/'+(v.u? 'u/'+b64u(v.u) : v.id)+'/'+Math.max(0,Math.round(ms))+(exact?'x':'')+'.jpg'; }
+function fmtMs(ms){ const s=Math.max(0,ms)/1000; const m=Math.floor(s/60), r=s-m*60; return m+':'+(r<10?'0':'')+r.toFixed(1); }
+async function vDurOf(v){
+  if(v.duration>0) return v.duration;
+  if(v.u && PM.videoDurations){ try{ const d=await PM.videoDurations([v.u]); if(d && d[v.u]>0){ v.duration=d[v.u]; return v.duration; } }catch(e){} }
+  return 0;
+}
+/* elegir un tramo: devuelve {a,b,name?} o null */
+function openRange(v, mode, init){
+  return new Promise(async res=>{
+    const dur=await vDurOf(v); if(!dur){ toast(t('edNoDur')); res(null); return; }
+    let a=Math.max(0,Math.min(dur-1000,(init&&init.a!=null)? init.a : 0)), b=Math.min(dur,(init&&init.b!=null&&init.b>a)? init.b : (mode==='cut' && init && init.a!=null? a+30000 : dur)), p=a, focus='a';
+    let name=(init&&init.name)||'';
+    if(mode==='cut' && !name){ try{ name=await PM.editNextName(vTitle(v),true); }catch(e){ name=vTitle(v)+'_001'; } }
+    const ov=el('div','ed-ov'); ov.setAttribute('role','dialog');
+    const top=el('div','ed-top'); const x=el('button','icon-btn','✕'); x.setAttribute('aria-label',t('close')); top.appendChild(x);
+    const tt=el('div','tx'); tt.appendChild(el('b',null,mode==='cut'? '✂️ '+t('edCutT') : '🔁 '+t('edRangeT'))); tt.appendChild(el('small',null,vTitle(v))); top.appendChild(tt); ov.appendChild(top);
+    const pv=el('div','ed-prev'); const img=el('img'); img.alt=''; img.onerror=()=>{ img.style.visibility='hidden'; }; img.onload=()=>{ img.style.visibility=''; }; pv.appendChild(img); const ptag=el('i',null,''); pv.appendChild(ptag); ov.appendChild(pv);
+    const strip=el('div','ed-strip'); for(let i=0;i<10;i++){ const fi=el('img'); fi.alt=''; fi.loading='lazy'; fi.src=vFrameUrl(v,dur*(i+0.5)/10,false); fi.onerror=()=>{ fi.style.visibility='hidden'; }; strip.appendChild(fi); }
+    const sel=el('div','ed-sel'), hA=el('span','ed-h a'), hB=el('span','ed-h b'), head=el('div','ed-head'); sel.appendChild(hA); sel.appendChild(hB); strip.appendChild(sel); strip.appendChild(head); ov.appendChild(strip);
+    const scrub=el('input','ed-scrub'); scrub.type='range'; scrub.min=0; scrub.max=dur; scrub.step=100; scrub.setAttribute('aria-label',t('edScrub')); ov.appendChild(scrub);
+    const times=el('div','ed-times'); ov.appendChild(times);
+    const row1=el('div','ed-row'), mb=el('button','ed-b','⏪ −1 s'), vb=el('button','ed-b','▶ '+t('edSee')), pb=el('button','ed-b','+1 s ⏩'); row1.append(mb,vb,pb); ov.appendChild(row1);
+    const row2=el('div','ed-row'), ia=el('button','ed-b','📍 '+t('edStartHere')), ib=el('button','ed-b','📍 '+t('edEndHere')); row2.append(ia,ib); ov.appendChild(row2);
+    let nameIn=null;
+    if(mode==='cut'){ const nl=el('label','ed-name'); nl.appendChild(el('small',null,t('edName'))); nameIn=el('input'); nameIn.value=name; nameIn.maxLength=80; nl.appendChild(nameIn); ov.appendChild(nl); }
+    const save=el('button','btn-add ed-save', mode==='cut'? '💾 '+t('edSaveCut') : '✓ '+t('edUseRange')); ov.appendChild(save);
+    if(mode==='cut') ov.appendChild(el('p','warn-note',t('edCutNote')));
+    let fT=null;
+    const paint=()=>{
+      sel.style.left=(a/dur*100)+'%'; sel.style.right=(100-b/dur*100)+'%'; head.style.left=(p/dur*100)+'%';
+      hA.classList.toggle('on',focus==='a'); hB.classList.toggle('on',focus==='b');
+      times.innerHTML=''; [[t('edStart'),a],[t('edLen'),b-a],[t('edEnd'),b]].forEach(([k,ms])=>{ const s=el('span'); s.appendChild(document.createTextNode(k+' ')); s.appendChild(el('b',null,fmtMs(ms))); times.appendChild(s); });
+      scrub.value=p; ptag.textContent=fmtMs(p);
+      clearTimeout(fT); fT=setTimeout(()=>{ img.src=vFrameUrl(v,p,true); },120);
+    };
+    const setP=ms=>{ p=Math.max(0,Math.min(dur,ms)); paint(); };
+    const setA=ms=>{ a=Math.max(0,Math.min(b-500,ms)); focus='a'; setP(a); };
+    const setB=ms=>{ b=Math.min(dur,Math.max(a+500,ms)); focus='b'; setP(b); };
+    const drag=(h,which)=>{ h.style.touchAction='none'; h.addEventListener('pointerdown',e=>{ e.preventDefault(); e.stopPropagation(); try{ h.setPointerCapture(e.pointerId); }catch(x){}
+      const r=strip.getBoundingClientRect(); const mv=ev=>{ const ms=(ev.clientX-r.left)/r.width*dur; which==='a'? setA(ms) : setB(ms); };
+      const up=()=>{ h.removeEventListener('pointermove',mv); h.removeEventListener('pointerup',up); h.removeEventListener('pointercancel',up); };
+      h.addEventListener('pointermove',mv); h.addEventListener('pointerup',up); h.addEventListener('pointercancel',up); }); };
+    drag(hA,'a'); drag(hB,'b');
+    strip.addEventListener('click',e=>{ if(e.target===hA || e.target===hB) return; const r=strip.getBoundingClientRect(); setP((e.clientX-r.left)/r.width*dur); });
+    scrub.oninput=()=>setP(+scrub.value);
+    mb.onclick=()=>focus==='a'? setA(a-1000) : setB(b-1000);
+    pb.onclick=()=>focus==='a'? setA(a+1000) : setB(b+1000);
+    ia.onclick=()=>setA(p); ib.onclick=()=>setB(p);
+    vb.onclick=()=>{ PM.playLocal({items:[Object.assign(v.u? {id:-1,u:v.u,k:v.k} : {id:v.id},{n:vTitle(v)+' · '+fmtMs(a)+'–'+fmtMs(b), cs:Math.round(a), ce:Math.round(b)})], i:0, s:lvStrings()}).catch(()=>toast(t('vOpenFail'))); };
+    const close=r=>{ ov.remove(); document.removeEventListener('backbutton',onBack); res(r); };
+    const onBack=e=>{ e && e.preventDefault && e.preventDefault(); close(null); };
+    document.addEventListener('backbutton',onBack);
+    x.onclick=()=>close(null);
+    save.onclick=()=>close({a:Math.round(a), b:Math.round(b), name:nameIn? (nameIn.value.trim()||name) : ''});
+    document.body.appendChild(ov); paint();
+  });
+}
+async function openCut(v, pos){
+  if(editJob){ toast(t('edBusy')); return; }
+  const r=await openRange(v,'cut',pos>0? {a:Math.max(0,pos-1000)} : null); if(!r) return;
+  startEdit({kind:'cut', ...vSrcArgs(v), a:r.a, b:r.b, name:r.name}, v);
+}
+async function openExtract(v, st){
+  if(editJob){ toast(t('edBusy')); return; }
+  st=st||{};
+  if(!st.name){ try{ st.name=await PM.editNextName(vTitle(v),false); }catch(e){ st.name=vTitle(v)+'_001'; } }
+  if(!st.fmt) st.fmt=store.get('edFmt','mp3');
+  const dur=await vDurOf(v);
+  const r=await modal('🎵 '+t('edExtT'),(b,close)=>{
+    b.appendChild(el('p','m-sub',t('edFrom',vTitle(v),dur? fmtDur(dur) : '—')));
+    const nl=el('label','ed-name'); nl.appendChild(el('small',null,t('edName'))); const ni=el('input'); ni.value=st.name; ni.maxLength=80; ni.oninput=()=>{ st.name=ni.value; }; nl.appendChild(ni); b.appendChild(nl);
+    const seg=(opts,cur,fn)=>{ const s=el('div','seg ed-seg'); opts.forEach(([k,tx])=>{ const bt=el('button',cur===k?'on':'',tx); bt.onclick=()=>fn(k); s.appendChild(bt); }); b.appendChild(s); };
+    const paint=()=>{
+      [...b.querySelectorAll('.ed-seg,.ed-fmt-note')].forEach(n=>n.remove());
+      seg([['mp3','🎵 MP3'],['m4a','⚡ M4A']],st.fmt,k=>{ st.fmt=k; paint(); });
+      b.appendChild(el('p','privacy-small ed-fmt-note',t(st.fmt==='mp3'?'edMp3Note':'edM4aNote')));
+      seg([['all','🎬 '+t('edWhole')],['range','🔁 '+(st.rng? fmtMs(st.rng.a)+'–'+fmtMs(st.rng.b) : t('edPart'))]],st.rng?'range':'all',k=>{ if(k==='all'){ st.rng=null; paint(); } else close('range'); });
+      const sv=el('button','btn-add ed-fmt-note','💾 '+t('edSave')); sv.onclick=()=>close('save'); b.appendChild(sv);
+      b.appendChild(el('p','privacy-small ed-fmt-note',t('edWhere',(st.name||'')+'.'+st.fmt)));
+    };
+    paint();
+  },[[t('cancel'),()=>null,'btn-pill']]);
+  if(r==='range'){ const rr=await openRange(v,'audio',st.rng); if(rr) st.rng={a:rr.a,b:rr.b}; return openExtract(v,st); }
+  if(r!=='save') return;
+  store.set('edFmt',st.fmt);
+  startEdit({kind:st.fmt, ...vSrcArgs(v), a:st.rng? st.rng.a : -1, b:st.rng? st.rng.b : -1, name:(st.name||'').trim()||vTitle(v)}, v);
+}
+function editBar(){ let b=$('editBar'); if(!b){ b=el('div','edit-bar'); b.id='editBar'; document.body.appendChild(b); } return b; }
+function showEditBar(){
+  const b=editBar(); b.textContent=''; if(!editJob){ b.classList.remove('show'); return; }
+  const tx=el('div','tx'); tx.appendChild(el('b',null,(editJob.kind==='cut'?'✂️ '+t('edCutting'):'🎵 '+t('edExtracting'))+' '+(editJob.p||0)+'%')); tx.appendChild(el('small',null,editJob.name)); b.appendChild(tx);
+  const pr=el('div','prog'); const i=el('i'); i.style.width=(editJob.p||0)+'%'; pr.appendChild(i); tx.appendChild(pr);
+  const c=el('button','btn-pill',t('cancel')); c.onclick=()=>{ PM.editCancel().catch(()=>{}); }; b.appendChild(c);
+  b.classList.add('show');
+}
+function startEdit(job, v){
+  editJob={kind:job.kind, name:job.name, p:0, v};
+  PM.editStart(job).then(()=>{ showEditBar(); }).catch(e=>{ editJob=null; toast(t(String(e)==='busy'?'edBusy':'edFail')); });
+}
+async function onEditEvent(ev){
+  if(!ev || !ev.type || !editJob) return;
+  if(ev.type==='progress'){ editJob.p=ev.p; showEditBar(); return; }
+  const job=editJob; editJob=null; showEditBar();
+  if(ev.type==='error'){ toast(ev.msg==='cancel'? t('edCancelled') : ev.msg==='noaudio'? t('edNoAudio') : t('edFail')); return; }
+  if(ev.type!=='done') return;
+  let play=null, song=null;
+  if(ev.kind==='audio'){
+    try{ await scanPhone(false,{mode:'auto',quiet:true}); }catch(e){}
+    song=songs.find(s=>String(s.mid)===String(ev.mid) && !s.temp);
+    if(song) play=()=>{ playFrom({type:'lib'},song.id); switchTab('ahora'); };
+  } else {
+    await loadVideos(true); const nv=vById(ev.mid); if(nv) play=()=>playVideos([nv],0);
+    if(libMedia==='video') renderLib();
+  }
+  doneBar(t('edSaved',ev.name), play, ev.kind==='audio'? '▶ '+t('edListen') : '▶ '+t('edWatch'), async()=>{
+    let ok=0; try{ ok=await PM.editDelete(ev.uri); }catch(e){}
+    if(song){ songs=songs.filter(s=>s!==song); try{ await dbDel('songs',song.id); }catch(e){} renderAll(); }
+    if(ev.kind==='video'){ await loadVideos(true); if(libMedia==='video') renderLib(); }
+    toast(ok? t('edUndone') : t('edUndoFail'));
+  });
+}
+/* aviso con dos botones: ▶ y Deshacer */
+function doneBar(msg, play, playTx, undo){
+  let bar=$('undoBar'); if(!bar){ bar=el('div','undo-bar'); bar.id='undoBar'; document.body.appendChild(bar); }
+  bar.textContent=''; bar.appendChild(el('span',null,msg));
+  if(play){ const p=el('button',null,playTx); p.onclick=()=>{ clearTimeout(undoT); bar.classList.remove('show'); play(); }; bar.appendChild(p); }
+  const b=el('button',null,t('undo')); b.onclick=()=>{ clearTimeout(undoT); bar.classList.remove('show'); undo(); }; bar.appendChild(b);
+  bar.classList.add('show'); clearTimeout(undoT); undoT=setTimeout(()=>bar.classList.remove('show'),9000);
+}
+
+/* ================= v44: 📡 CONTROL DEL VIDEO EN EL TV ================= */
+let castVol=null, castSubsOk=false, castSubsOn=true, crEls=null, crTick=null;
+function openCastRemote(){
+  if(!castOn || castKind!=='video') return;
+  modal('📡 '+t('crT'),(b,close)=>{
+    const dev=el('p','m-sub',t('castOn',castDevName||'TV')); b.appendChild(dev);
+    const ti=el('div','cr-title',castTitle); b.appendChild(ti);
+    const bar=el('input','cr-seek'); bar.type='range'; bar.min=0; bar.step=1000; bar.setAttribute('aria-label',t('edScrub')); b.appendChild(bar);
+    const tm=el('div','cr-times'); const t1=el('span'), t2=el('span'); tm.append(t1,t2); b.appendChild(tm);
+    let seeking=false; bar.oninput=()=>{ seeking=true; t1.textContent=fmtDur(+bar.value); };
+    bar.onchange=()=>{ castPos=+bar.value; PM.castCmd('seek',castPos).catch(()=>{}); seeking=false; };
+    const btns=el('div','cr-btns');
+    const mk=(tx,fn,cls,lbl)=>{ const x=el('button','cr-b'+(cls?' '+cls:''),tx); x.setAttribute('aria-label',lbl||tx); x.onclick=fn; btns.appendChild(x); return x; };
+    mk('⏮',()=>castVideoMove(-1),'',t('lv_prevV'));
+    mk('⏪10',()=>{ castPos=Math.max(0,castPos-10000); PM.castCmd('seek',castPos).catch(()=>{}); upd(); });
+    const pp=mk('⏸',()=>{ castToggle(); castPlaying=!castPlaying; upd(); },'pp',t('lv_pause'));
+    mk('10⏩',()=>{ castPos=Math.min(castDur||castPos+10000,castPos+10000); PM.castCmd('seek',castPos).catch(()=>{}); upd(); });
+    mk('⏭',()=>castVideoMove(1),'',t('lv_nextV'));
+    b.appendChild(btns);
+    const vr=el('label','cr-vol'); vr.appendChild(el('span',null,'🔊')); const vs=el('input'); vs.type='range'; vs.min=0; vs.max=100; vs.step=5; vs.value=castVol==null? 50 : castVol; vs.setAttribute('aria-label',t('crVol'));
+    vs.onchange=()=>{ castVol=+vs.value; PM.castCmd('volume',castVol).catch(()=>{}); }; vr.appendChild(vs); b.appendChild(vr);
+    const chips=el('div','chips cr-chips');
+    const sb=el('button',null,''); sb.onclick=()=>{ castSubsOn=!castSubsOn; PM.castCmd('subs',castSubsOn?1:0).catch(()=>{}); upd(); }; chips.appendChild(sb);
+    const ph=el('button',null,'📱 '+t('crPhone')); ph.onclick=()=>{ close(null); castToPhone(); }; chips.appendChild(ph);
+    const st=el('button',null,'⏹ '+t('crStop')); st.onclick=()=>{ close(null); PM.castCmd('stop').catch(()=>{}); castKind=''; castPlaying=false; vQueue=null; castRender(); }; chips.appendChild(st);
+    b.appendChild(chips);
+    const upd=()=>{
+      if(!castOn || castKind!=='video'){ close(null); return; }
+      ti.textContent=castTitle; bar.max=Math.max(1,castDur||1); if(!seeking){ bar.value=castPos; t1.textContent=fmtDur(castPos); } t2.textContent=castDur? fmtDur(castDur) : '—';
+      pp.textContent=castPlaying?'⏸':'▶'; sb.classList.toggle('hidden',!castSubsOk); sb.textContent='💬 '+t(castSubsOn?'crSubsOn':'crSubsOff'); sb.classList.toggle('on',castSubsOn);
+      if(castVol!=null && document.activeElement!==vs) vs.value=castVol;
+    };
+    crEls={upd}; upd();
+    clearInterval(crTick); crTick=setInterval(()=>{ if(castPlaying && castDur) castPos=Math.min(castDur,castPos+1000); upd(); },1000);
+  },[[t('close'),()=>null,'btn-pill']]).then(()=>{ crEls=null; clearInterval(crTick); });
+}
+/* 📱 seguir en el teléfono desde el mismo segundo */
+function castToPhone(){
+  const v=vQueue && vQueue.items[vQueue.idx]; const pos=Math.round(castPos||0);
+  PM.castCmd('stop').catch(()=>{}); castKind=''; castPlaying=false; castRender();
+  if(!v){ return; }
+  const list=vQueue.items, idx=vQueue.idx; vQueue=null;
+  PM.playLocal({items:list.map((x,i)=>{ const it=x.u? {id:-1,u:x.u,k:x.k,n:vTitle(x)} : {id:x.id,n:vTitle(x)}; if(i===idx) it.at=pos; return it; }), i:idx, s:lvStrings()}).catch(()=>toast(t('vOpenFail')));
+}
+
+/* ================= v44: 🚗 ANDROID AUTO =================
+   La pantalla del carro muestra lo que Prometeo le manda (catálogo); la música sigue sonando en la app. */
+let autoT=null;
+function autoCatalogSoon(){ if(!PM || !PM.autoCatalog) return; clearTimeout(autoT); autoT=setTimeout(sendAutoCatalog,1500); }
+function sendAutoCatalog(){
+  if(!PM || !PM.autoCatalog) return;
+  const one=s=>{ const m=carMeta(s); return {id:s.id, t:m.title||'', a:m.artist||''}; };
+  const mus=musicSongs().filter(s=>!s.broken).slice(0,1500).map(one);
+  const lists=playlists.map(p=>{ const it=p.songIds.map(songById).filter(s=>s && !s.priv && !s.temp); return {id:p.id, n:p.name, sub:nSongs(it.length), items:it.slice(0,1500).map(one)}; });
+  const radio=radios.map(st=>({id:st.id, n:st.name, sub:st.genre||st.country||''}));
+  const favs=radios.filter(s=>s.fav).map(st=>({id:'r:'+st.id, t:st.name, a:'📻'}));
+  const cat={labels:{music:t('auMusic'),lists:t('auLists'),radio:t('auRadio'),favs:t('auFavs'),mix:t('auMix')}, openApp:t('auOpen'), music:mus, lists, radio, favs};
+  PM.autoCatalog(JSON.stringify(cat)).catch(()=>{});
+}
+function autoPlay(id){
+  id=String(id||'');
+  if(id==='mix'){ const L=musicSongs().filter(s=>!s.broken); if(!L.length) return; playFrom({type:'lib'}, L[Math.floor(Math.random()*L.length)].id); return; }
+  if(id.startsWith('s:')){ const s=songs.find(x=>String(x.id)===id.slice(2)); if(s) playFrom({type:'lib'}, s.id); return; }
+  if(id.startsWith('pls:')){ const r=id.slice(4), k=r.indexOf(':'); const P=playlists.find(p=>String(p.id)===r.slice(0,k)), s=songById(r.slice(k+1)); if(P && s) playFrom({type:'pl',id:P.id}, s.id); return; }
+  if(id.startsWith('r:')){ const st=radios.find(x=>String(x.id)===id.slice(2)); if(st) playRadio(st.id); return; }
+}
+function autoSearch(q){
+  const n=x=>String(x||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+  const w=n(q).trim(); if(!w){ autoPlay('mix'); return; }
+  const s=musicSongs().find(s=>{ const m=carMeta(s); return n(m.title+' '+(m.artist||'')).includes(w); });
+  if(s){ playFrom({type:'lib'}, s.id); return; }
+  const st=radios.find(r=>n(r.name).includes(w)); if(st){ playRadio(st.id); return; }
+  const p=playlists.find(p=>n(p.name).includes(w)); if(p){ playPl(p); return; }
+}
+
+/* ================= v44: 🌐 VERSIÓN WEB: los videos se ven en la app ================= */
+const APP_URL='https://github.com/lanchalex-stack/prometeo-player/releases/latest';
+function isVideoFile(f){ return /^video\//.test(f.type||'') || /\.(mp4|mkv|mov|avi|m4v|3gp|webm|wmv|flv|mpe?g)$/i.test(f.name||''); }
+async function webVideoNotice(vids){
+  const f=vids[0];
+  const r=await modal('🎬 '+t('wvT'),(b,close)=>{
+    b.appendChild(el('p','m-msg',t(vids.length>1?'wvMsgN':'wvMsg',f.name,vids.length)));
+    addOpt(b,'▶',t('wvWatch'),t('wvWatchSub'),()=>close('watch'),true);
+    addOpt(b,'⬇️',t('wvGet'),t('wvGetSub'),()=>close('get'));
+  },[[t('close'),()=>null,'btn-pill']]);
+  if(r==='watch') webWatch(f);
+  else if(r==='get') window.open(APP_URL,'_blank','noopener');
+}
+function webWatch(f){
+  const url=URL.createObjectURL(f);
+  const ov=el('div','ed-ov web-v'); const top=el('div','ed-top'); const x=el('button','icon-btn','✕'); x.setAttribute('aria-label',t('close')); top.appendChild(x);
+  const tt=el('div','tx'); tt.appendChild(el('b',null,f.name)); tt.appendChild(el('small',null,t('wvNotSaved'))); top.appendChild(tt); ov.appendChild(top);
+  const vd=el('video'); vd.src=url; vd.controls=true; vd.autoplay=true; vd.playsInline=true; ov.appendChild(vd);
+  if(!audio.paused) audio.pause();
+  x.onclick=()=>{ vd.pause(); vd.removeAttribute('src'); vd.load(); URL.revokeObjectURL(url); ov.remove(); };
+  document.body.appendChild(ov);
+}
+
+
 /* ================= v43: 🎬 VIDEOS =================
    Los videos del teléfono se ven sin copiarlos. Los de WhatsApp, Telegram y Signal salen libres (sin PIN).
    Una lista 🔒 esconde sus videos DENTRO de Prometeo (la Galería del teléfono los sigue mostrando). */
@@ -906,7 +1173,7 @@ function renderVideos(c){
 async function openVideoMenu(v){
   const r=await modal('🎬 '+vTitle(v),(b,close)=>{
     b.appendChild(el('p','m-sub',[vKindLabel(vKind(v)), v.duration? fmtDur(v.duration) : '', v.size? fmtSize(v.size) : ''].filter(Boolean).join(' · ')));
-    [['',t('vAddToList'),'list'],['☑️',t('vSelect'),'sel'],['✏️',t('vRename'),'rename'],['📡',t('vCast'),'cast'],['🗑️',t('vRemove'),'remove']].forEach(([ic,tx,k])=>{
+    [['',t('vAddToList'),'list'],['☑️',t('vSelect'),'sel'],['✏️',t('vRename'),'rename'],['✂️',t('vCut'),'cut'],['🎵',t('vExtract'),'extract'],['📡',t('vCast'),'cast'],['🗑️',t('vRemove'),'remove']].forEach(([ic,tx,k])=>{
       const bt=el('button','m-item'+(k==='remove'?' del-ch':''),(ic? ic+' ' : '')+tx); bt.onclick=()=>close(k); b.appendChild(bt); });
   },[[t('close'),()=>null,'btn-pill']]);
   if(r==='list') addToVList([String(v.id)]);
@@ -914,6 +1181,8 @@ async function openVideoMenu(v){
   else if(r==='rename'){ const n=await askText(t('vRename'),vTitle(v)); if(n){ const N=vNames(); N[v.id]=n; store.set('vNames',N); renderLib(); } }
   else if(r==='cast'){ if(!castOn){ toast(t('vCastFirst')); openCastPicker(); return; } castVideo(v,0,[v]); }
   else if(r==='remove') removeVideo(v);
+  else if(r==='cut') openCut(v,0);
+  else if(r==='extract') openExtract(v);
 }
 function removeVideo(v){
   const h=vHidden(); h.push({mid:v.id, f:v.name||'', z:v.size||0, d:Date.now()}); store.set('vHidden',h);
@@ -934,10 +1203,11 @@ function playVideos(list, i, o){
   PM.playLocal({items:ok.map(v=>(v.u? {id:-1, u:v.u, k:v.k, n:vTitle(v)} : {id:v.id, n:vTitle(v)})), i:idx, repeat:!!o.repeat, s:lvStrings()}).catch(()=>toast(t('vOpenFail')));
 }
 const LV_KEYS=['back','cast','shot','settings','prevV','nextV','frameB','frameF','pause','play','subs','audio','window','unlock','lockedHint','unlocked','resumeAt','nOfM','skipped','cantOpen','noAudio','lastV',
-  'abA','abShort','abOn','abOff','shotFail','shotBlack','shotSaved','fill','zoom','fit','noPicker','subType','loadSubs','subsOff','subTime','subSize','normal','subBg','bgNone','bgShadow','bgBlack','audioTrack','speed','screenFit','noPip'];
+  'abA','abShort','abOn','abOff','shotFail','shotBlack','shotSaved','fill','zoom','fit','noPicker','subType','loadSubs','subsOff','subTime','subSize','normal','subBg','bgNone','bgShadow','bgBlack','audioTrack','speed','screenFit','noPip','tools','cut','extract'];
 function lvStrings(){ const o={}; LV_KEYS.forEach(k=>o[k]=t('lv_'+k)); return o; }
 function onVideoEvent(ev){
   if(!ev || !ev.type) return;
+  if(ev.type==='edit'){ const v=vById(ev.u? ev.k : ev.id); if(v) setTimeout(()=>{ if(ev.what==='cut') openCut(v,ev.pos||0); else openExtract(v); },350); return; }
   if(ev.type==='cast'){ const v=vById(ev.u? ev.k : ev.id); if(v) castVideo(v, (ev.pos||0)/1000, [v]); return; }
   if(ev.type==='closed' || ev.type==='watch'){ PM.videoState().then(s=>{ vState=s||{}; if(libMedia==='video' && currentTab==='biblioteca') renderLib(); if(openVpl) renderVplDetail(); }).catch(()=>{}); }
 }
@@ -1243,7 +1513,7 @@ async function tvInlineShot(){
 
 
 /* ================= IDIOMAS (v41) ================= */
-const VERSION='43b';
+const VERSION='44b';
 const LANGS={es:'Español',en:'English',pt:'Português',fr:'Français'};
 const I18N={
 es:{
@@ -1269,7 +1539,7 @@ es:{
  addChannelT:'Agregar canal',chName:'Nombre del canal',chUrl:'Dirección del canal (URL)',chSaved:'Canal guardado ✓',tvFail:'No se pudo abrir el canal',opening:'Abriendo "{0}"…',
  poweredBy:'Powered by',licenses:'📄 Licencias',licT:'Licencias de código abierto',licIntro:'Prometeo Player usa estos componentes de código abierto. Gracias a sus autores.',
  notAffiliated:'Prometeo Player es un proyecto independiente. No está afiliado ni respaldado por Google, The Apache Software Foundation, JetBrains, Meta ni Anthropic. Los nombres mencionados son marcas de sus dueños.',sourceCode:'Código fuente:',fullLicense:'Texto completo de la licencia Apache 2.0:',usedFor:'Uso en Prometeo:',
- useMedia3:'reproducir radio, canales de TV/IPTV y videos',useCordova:'convertir Prometeo en app de Android',useAndroidx:'componentes de Android que usan Cordova y Media3',useGuava:'herramientas internas de ExoPlayer (Media3)',useKotlin:'lenguaje interno de las librerías de AndroidX',useAnnot:'anotaciones de código usadas por las librerías',moreLibs:'…y {0} librerías más: toca Licencias para verlas todas.',aiCredit:'Ícono generado con Meta AI. Desarrollado por Lanchalex con asistencia de Meta AI y Claude (Anthropic).',rights:'Todos los derechos reservados. Cada librería conserva su propia licencia.',
+ useMedia3:'reproducir radio, canales de TV/IPTV y videos, y cortar video o extraer audio (M4A)',useLame:'guardar en MP3 el audio extraído de un video',useCordova:'convertir Prometeo en app de Android',useAndroidx:'componentes de Android que usan Cordova y Media3',useGuava:'herramientas internas de ExoPlayer (Media3)',useKotlin:'lenguaje interno de las librerías de AndroidX',useAnnot:'anotaciones de código usadas por las librerías',moreLibs:'…y {0} librerías más: toca Licencias para verlas todas.',aiCredit:'Ícono generado con Meta AI. Desarrollado por Lanchalex con asistencia de Meta AI y Claude (Anthropic).',rights:'Todos los derechos reservados. Cada librería conserva su propia licencia.',
  radioTitle:'📻 Radio',radioNote:'La radio usa internet solo mientras escuchas una emisora. Tu música sigue funcionando sin conexión.',addStation:'＋ Agregar emisora',
  st1:'{0} emisora',stN:'{0} emisoras',radioEmpty:'Todavía no tienes emisoras.\nToca "＋ Agregar emisora" y pega la dirección de una radio por internet.',
  stName:'Nombre',stUrl:'Dirección de la transmisión (URL)',urlHelp:'Suele terminar en .mp3, .aac, .m3u8 o /stream. Búscala en la página de la emisora, en "Escuchar en vivo".',
@@ -1335,7 +1605,7 @@ en:{
  addChannelT:'Add channel',chName:'Channel name',chUrl:'Channel address (URL)',chSaved:'Channel saved ✓',tvFail:'Could not open the channel',opening:'Opening "{0}"…',
  poweredBy:'Powered by',licenses:'📄 Licenses',licT:'Open source licenses',licIntro:'Prometeo Player uses these open source components. Thanks to their authors.',
  notAffiliated:'Prometeo Player is an independent project. It is not affiliated with or endorsed by Google, The Apache Software Foundation, JetBrains, Meta or Anthropic. Names mentioned are trademarks of their owners.',sourceCode:'Source code:',fullLicense:'Full text of the Apache 2.0 license:',usedFor:'Used in Prometeo for:',
- useMedia3:'playing radio, TV/IPTV channels and videos',useCordova:'turning Prometeo into an Android app',useAndroidx:'Android components used by Cordova and Media3',useGuava:'internal tools used by ExoPlayer (Media3)',useKotlin:'internal language of the AndroidX libraries',useAnnot:'code annotations used by the libraries',moreLibs:'…and {0} more libraries: tap Licenses to see them all.',aiCredit:'Icon generated with Meta AI. Developed by Lanchalex with assistance from Meta AI and Claude (Anthropic).',rights:'All rights reserved. Each library keeps its own license.',
+ useMedia3:'playing radio, TV/IPTV channels and videos',useLame:'saving audio extracted from a video as MP3',useCordova:'turning Prometeo into an Android app',useAndroidx:'Android components used by Cordova and Media3',useGuava:'internal tools used by ExoPlayer (Media3)',useKotlin:'internal language of the AndroidX libraries',useAnnot:'code annotations used by the libraries',moreLibs:'…and {0} more libraries: tap Licenses to see them all.',aiCredit:'Icon generated with Meta AI. Developed by Lanchalex with assistance from Meta AI and Claude (Anthropic).',rights:'All rights reserved. Each library keeps its own license.',
  radioTitle:'📻 Radio',radioNote:'Radio uses the internet only while you listen to a station. Your music still works offline.',addStation:'＋ Add station',
  st1:'{0} station',stN:'{0} stations',radioEmpty:'No stations yet.\nTap "＋ Add station" and paste the address of an internet radio.',
  stName:'Name',stUrl:'Stream address (URL)',urlHelp:'It usually ends in .mp3, .aac, .m3u8 or /stream. Look for it on the station\'s site, under "Listen live".',
@@ -1401,7 +1671,7 @@ pt:{
  addChannelT:'Adicionar canal',chName:'Nome do canal',chUrl:'Endereço do canal (URL)',chSaved:'Canal salvo ✓',tvFail:'Não foi possível abrir o canal',opening:'Abrindo "{0}"…',
  poweredBy:'Powered by',licenses:'📄 Licenças',licT:'Licenças de código aberto',licIntro:'O Prometeo Player usa estes componentes de código aberto. Obrigado aos autores.',
  notAffiliated:'O Prometeo Player é um projeto independente. Não é afiliado nem endossado pelo Google, The Apache Software Foundation, JetBrains, Meta ou Anthropic. Os nomes citados são marcas de seus donos.',sourceCode:'Código-fonte:',fullLicense:'Texto completo da licença Apache 2.0:',usedFor:'Uso no Prometeo:',
- useMedia3:'tocar rádio, canais de TV/IPTV e vídeos',useCordova:'transformar o Prometeo em app Android',useAndroidx:'componentes Android usados pelo Cordova e Media3',useGuava:'ferramentas internas do ExoPlayer (Media3)',useKotlin:'linguagem interna das bibliotecas AndroidX',useAnnot:'anotações de código usadas pelas bibliotecas',moreLibs:'…e mais {0} bibliotecas: toque em Licenças para ver todas.',aiCredit:'Ícone gerado com Meta AI. Desenvolvido por Lanchalex com assistência de Meta AI e Claude (Anthropic).',rights:'Todos os direitos reservados. Cada biblioteca mantém sua própria licença.',
+ useMedia3:'tocar rádio, canais de TV/IPTV e vídeos',useLame:'salvar em MP3 o áudio extraído de um vídeo',useCordova:'transformar o Prometeo em app Android',useAndroidx:'componentes Android usados pelo Cordova e Media3',useGuava:'ferramentas internas do ExoPlayer (Media3)',useKotlin:'linguagem interna das bibliotecas AndroidX',useAnnot:'anotações de código usadas pelas bibliotecas',moreLibs:'…e mais {0} bibliotecas: toque em Licenças para ver todas.',aiCredit:'Ícone gerado com Meta AI. Desenvolvido por Lanchalex com assistência de Meta AI e Claude (Anthropic).',rights:'Todos os direitos reservados. Cada biblioteca mantém sua própria licença.',
  radioTitle:'📻 Rádio',radioNote:'O rádio usa internet só enquanto você ouve uma emissora. Sua música continua funcionando sem conexão.',addStation:'＋ Adicionar emissora',
  st1:'{0} emissora',stN:'{0} emissoras',radioEmpty:'Você ainda não tem emissoras.\nToque em "＋ Adicionar emissora" e cole o endereço de uma rádio pela internet.',
  stName:'Nome',stUrl:'Endereço da transmissão (URL)',urlHelp:'Costuma terminar em .mp3, .aac, .m3u8 ou /stream. Procure no site da emissora, em "Ouvir ao vivo".',
@@ -1467,7 +1737,7 @@ fr:{
  addChannelT:'Ajouter une chaîne',chName:'Nom de la chaîne',chUrl:'Adresse de la chaîne (URL)',chSaved:'Chaîne enregistrée ✓',tvFail:'Impossible d\'ouvrir la chaîne',opening:'Ouverture de « {0} »…',
  poweredBy:'Powered by',licenses:'📄 Licences',licT:'Licences open source',licIntro:'Prometeo Player utilise ces composants open source. Merci à leurs auteurs.',
  notAffiliated:'Prometeo Player est un projet indépendant. Il n\'est ni affilié ni approuvé par Google, The Apache Software Foundation, JetBrains, Meta ou Anthropic. Les noms cités sont des marques de leurs propriétaires.',sourceCode:'Code source :',fullLicense:'Texte complet de la licence Apache 2.0 :',usedFor:'Utilisé dans Prometeo pour :',
- useMedia3:'lire la radio, les chaînes TV/IPTV et les vidéos',useCordova:'faire de Prometeo une app Android',useAndroidx:'composants Android utilisés par Cordova et Media3',useGuava:'outils internes d’ExoPlayer (Media3)',useKotlin:'langage interne des bibliothèques AndroidX',useAnnot:'annotations de code utilisées par les bibliothèques',moreLibs:'…et {0} autres bibliothèques : touchez Licences pour les voir toutes.',aiCredit:'Icône générée avec Meta AI. Développé par Lanchalex avec l’aide de Meta AI et Claude (Anthropic).',rights:'Tous droits réservés. Chaque bibliothèque conserve sa propre licence.',
+ useMedia3:'lire la radio, les chaînes TV/IPTV et les vidéos',useLame:'enregistrer en MP3 l\'audio extrait d\'une vidéo',useCordova:'faire de Prometeo une app Android',useAndroidx:'composants Android utilisés par Cordova et Media3',useGuava:'outils internes d’ExoPlayer (Media3)',useKotlin:'langage interne des bibliothèques AndroidX',useAnnot:'annotations de code utilisées par les bibliothèques',moreLibs:'…et {0} autres bibliothèques : touchez Licences pour les voir toutes.',aiCredit:'Icône générée avec Meta AI. Développé par Lanchalex avec l’aide de Meta AI et Claude (Anthropic).',rights:'Tous droits réservés. Chaque bibliothèque conserve sa propre licence.',
  radioTitle:'📻 Radio',radioNote:'La radio utilise internet seulement pendant que vous écoutez une station. Votre musique fonctionne toujours hors ligne.',addStation:'＋ Ajouter une station',
  st1:'{0} station',stN:'{0} stations',radioEmpty:'Pas encore de stations.\nTouchez « ＋ Ajouter une station » et collez l\'adresse d\'une radio internet.',
  stName:'Nom',stUrl:'Adresse du flux (URL)',urlHelp:'Elle finit souvent par .mp3, .aac, .m3u8 ou /stream. Cherchez-la sur le site de la station, dans « Écouter en direct ».',
@@ -1743,6 +2013,11 @@ Object.assign(I18N.es,{"vk_card": "Tarjeta", "vAddBtn": "＋ Agregar videos", "v
 Object.assign(I18N.en,{"vk_card": "Card", "vAddBtn": "＋ Add videos", "vaT": "＋ Add videos", "vaSub": "Videos stay where they are: nothing is copied.", "vaAll": "Search the whole phone", "vaAllSub": "Checks all folders again", "vaCard": "SD card / USB", "vaCardNone": "No SD card or USB drive connected", "vaFold": "Choose folders", "vaFoldSub": "Only folders with videos are shown", "vaLoose": "Pick single videos", "vaLooseSub": "With the Android file picker", "vaRem": "Removed videos", "vaRemSub": "The ones you removed from Prometeo, to bring back", "vaNote": "Nothing is uploaded.", "vNew": "{0} new", "vScanning": "Looking for videos…", "vFoundN": "✓ {0} new videos", "vFoundNone": "No new videos", "vfT": "📂 Folders with videos", "vfSub": "Choose which folders show in 🎬 Videos.", "vfAll": "All folders", "vfAllSub": "Current ones and any new ones", "vfSaved": "✓ Folders saved", "vAddedN": "✓ {0} videos added", "vrT": "♻️ Removed videos", "vrSub": "They are still on your phone: you only removed them from Prometeo.", "vrNone": "You haven’t removed any videos.", "vGiveAll": "↩ Bring all back", "vBack": "↩ {0} videos back", "vBanT": "{0}: {1} new videos", "vBanSongs": "and {0} new songs · you decide", "vBanSub": "You decide whether to add them", "vBanGo": "View", "vLimT": "Limited access", "vLimSub": "Prometeo only sees the videos you allowed", "vLimBtn": "＋ Pick more"});
 Object.assign(I18N.pt,{"vk_card": "Cartão", "vAddBtn": "＋ Adicionar vídeos", "vaT": "＋ Adicionar vídeos", "vaSub": "Os vídeos ficam onde estão: nada é copiado.", "vaAll": "Procurar no celular todo", "vaAllSub": "Verifica todas as pastas de novo", "vaCard": "Cartão SD / USB", "vaCardNone": "Nenhum cartão ou memória USB conectado", "vaFold": "Escolher pastas", "vaFoldSub": "Só aparecem as pastas com vídeos", "vaLoose": "Escolher vídeos avulsos", "vaLooseSub": "Com o seletor de arquivos do Android", "vaRem": "Vídeos tirados", "vaRemSub": "Os que você tirou do Prometeo, para devolver", "vaNote": "Nada é enviado para a internet.", "vNew": "{0} novos", "vScanning": "Procurando vídeos…", "vFoundN": "✓ {0} vídeos novos", "vFoundNone": "Não há vídeos novos", "vfT": "📂 Pastas com vídeos", "vfSub": "Escolha quais pastas aparecem em 🎬 Vídeos.", "vfAll": "Todas as pastas", "vfAllSub": "As de agora e as que aparecerem depois", "vfSaved": "✓ Pastas salvas", "vAddedN": "✓ {0} vídeos adicionados", "vrT": "♻️ Vídeos tirados", "vrSub": "Continuam no celular: você só tirou do Prometeo.", "vrNone": "Você não tirou nenhum vídeo.", "vGiveAll": "↩ Devolver todos", "vBack": "↩ {0} vídeos de volta", "vBanT": "{0}: {1} vídeos novos", "vBanSongs": "e {0} músicas novas · você decide", "vBanSub": "Você decide se adiciona", "vBanGo": "Ver", "vLimT": "Acesso limitado", "vLimSub": "O Prometeo só vê os vídeos que você permitiu", "vLimBtn": "＋ Escolher mais"});
 Object.assign(I18N.fr,{"vk_card": "Carte", "vAddBtn": "＋ Ajouter des vidéos", "vaT": "＋ Ajouter des vidéos", "vaSub": "Les vidéos restent où elles sont : rien n’est copié.", "vaAll": "Chercher dans tout le téléphone", "vaAllSub": "Revérifie tous les dossiers", "vaCard": "Carte SD / USB", "vaCardNone": "Aucune carte ni clé USB connectée", "vaFold": "Choisir des dossiers", "vaFoldSub": "Seuls les dossiers avec des vidéos", "vaLoose": "Choisir des vidéos", "vaLooseSub": "Avec le sélecteur de fichiers Android", "vaRem": "Vidéos retirées", "vaRemSub": "Celles retirées de Prometeo, pour les remettre", "vaNote": "Rien n’est envoyé sur internet.", "vNew": "{0} nouvelles", "vScanning": "Recherche des vidéos…", "vFoundN": "✓ {0} nouvelles vidéos", "vFoundNone": "Pas de nouvelles vidéos", "vfT": "📂 Dossiers avec vidéos", "vfSub": "Choisissez les dossiers affichés dans 🎬 Vidéos.", "vfAll": "Tous les dossiers", "vfAllSub": "Actuels et futurs", "vfSaved": "✓ Dossiers enregistrés", "vAddedN": "✓ {0} vidéos ajoutées", "vrT": "♻️ Vidéos retirées", "vrSub": "Elles sont toujours sur le téléphone : seulement retirées de Prometeo.", "vrNone": "Aucune vidéo retirée.", "vGiveAll": "↩ Tout remettre", "vBack": "↩ {0} vidéos remises", "vBanT": "{0} : {1} nouvelles vidéos", "vBanSongs": "et {0} nouvelles chansons · à vous de choisir", "vBanSub": "À vous de choisir", "vBanGo": "Voir", "vLimT": "Accès limité", "vLimSub": "Prometeo ne voit que les vidéos autorisées", "vLimBtn": "＋ En choisir plus"});
+/* v44 */
+Object.assign(I18N.es,{"vCut": "Cortar video", "vExtract": "Extraer audio", "lv_tools": "Herramientas", "lv_cut": "Cortar video", "lv_extract": "Extraer audio", "edCutT": "Cortar video", "edRangeT": "Elegir el tramo", "edScrub": "Mover por el video", "edSee": "Ver el tramo", "edStartHere": "Inicio aquí", "edEndHere": "Fin aquí", "edStart": "Inicio", "edLen": "Dura", "edEnd": "Fin", "edName": "Nombre del archivo nuevo", "edSaveCut": "Guardar tramo como video nuevo", "edUseRange": "Usar este tramo", "edCutNote": "Se guarda en Películas/Prometeo y sale en 🎬 Videos. El original no se toca.", "edNoDur": "No se pudo leer la duración de este video", "edBusy": "Espera a que termine lo que se está guardando", "edExtT": "Extraer audio", "edFrom": "De {0} ({1})", "edMp3Note": "MP3: se oye en todo, incluido cualquier radio de carro.", "edM4aNote": "M4A: más rápido y suena un poco mejor con el mismo tamaño.", "edWhole": "Todo el video", "edPart": "Solo un tramo", "edSave": "Guardar", "edWhere": "Se guarda en Música/Prometeo como \"{0}\" y aparece en 🎵 Música.", "edCutting": "Cortando…", "edExtracting": "Extrayendo audio…", "edFail": "No se pudo guardar (este formato no es compatible con el teléfono)", "edCancelled": "Cancelado: no se guardó nada", "edNoAudio": "Este video no tiene audio", "edSaved": "✓ Guardado: {0}", "edListen": "Escuchar", "edWatch": "Ver", "edUndone": "↩ Listo: el archivo nuevo se borró", "edUndoFail": "No se pudo borrar el archivo", "crT": "Control del TV", "crVol": "Volumen del TV", "crPhone": "Seguir en el teléfono", "crStop": "Detener", "crSubsOn": "Subtítulos: sí", "crSubsOff": "Subtítulos: no", "crHint": "Toca para controlar el video", "auMusic": "🎵 Música", "auLists": "📋 Listas", "auRadio": "📻 Radio", "auFavs": "⭐ Favoritos", "auMix": "🔀 Mezclar todo", "auOpen": "Abre Prometeo en el teléfono", "wvT": "Esto es un video", "wvMsg": "\"{0}\" no se agregó a la biblioteca. Los videos se ven completos en la app de Android.", "wvMsgN": "{1} videos no se agregaron a la biblioteca. Los videos se ven completos en la app de Android.", "wvWatch": "Verlo ahora", "wvWatchSub": "Se reproduce aquí y no se guarda (no ocupa espacio)", "wvGet": "Descargar la app", "wvGetSub": "GitHub › Releases", "wvNotSaved": "No se guarda: al cerrar no queda nada"});
+Object.assign(I18N.en,{"vCut": "Cut video", "vExtract": "Extract audio", "lv_tools": "Tools", "lv_cut": "Cut video", "lv_extract": "Extract audio", "edCutT": "Cut video", "edRangeT": "Choose the section", "edScrub": "Move through the video", "edSee": "Watch section", "edStartHere": "Start here", "edEndHere": "End here", "edStart": "Start", "edLen": "Length", "edEnd": "End", "edName": "New file name", "edSaveCut": "Save section as a new video", "edUseRange": "Use this section", "edCutNote": "Saved to Movies/Prometeo and shown in 🎬 Videos. The original is not touched.", "edNoDur": "Could not read this video’s length", "edBusy": "Wait until the current job finishes", "edExtT": "Extract audio", "edFrom": "From {0} ({1})", "edMp3Note": "MP3: plays everywhere, including any car stereo.", "edM4aNote": "M4A: faster and sounds a bit better at the same size.", "edWhole": "Whole video", "edPart": "Only a section", "edSave": "Save", "edWhere": "Saved to Music/Prometeo as \"{0}\" and shown in 🎵 Music.", "edCutting": "Cutting…", "edExtracting": "Extracting audio…", "edFail": "Could not save (this format isn’t supported by the phone)", "edCancelled": "Cancelled: nothing was saved", "edNoAudio": "This video has no audio", "edSaved": "✓ Saved: {0}", "edListen": "Listen", "edWatch": "Watch", "edUndone": "↩ Done: the new file was deleted", "edUndoFail": "Could not delete the file", "crT": "TV remote", "crVol": "TV volume", "crPhone": "Continue on the phone", "crStop": "Stop", "crSubsOn": "Subtitles: on", "crSubsOff": "Subtitles: off", "crHint": "Tap to control the video", "auMusic": "🎵 Music", "auLists": "📋 Playlists", "auRadio": "📻 Radio", "auFavs": "⭐ Favorites", "auMix": "🔀 Shuffle all", "auOpen": "Open Prometeo on the phone", "wvT": "This is a video", "wvMsg": "\"{0}\" was not added to the library. Videos are fully supported in the Android app.", "wvMsgN": "{1} videos were not added to the library. Videos are fully supported in the Android app.", "wvWatch": "Watch it now", "wvWatchSub": "Plays here and is not saved (takes no space)", "wvGet": "Get the app", "wvGetSub": "GitHub › Releases", "wvNotSaved": "Not saved: nothing stays when you close it"});
+Object.assign(I18N.pt,{"vCut": "Cortar vídeo", "vExtract": "Extrair áudio", "lv_tools": "Ferramentas", "lv_cut": "Cortar vídeo", "lv_extract": "Extrair áudio", "edCutT": "Cortar vídeo", "edRangeT": "Escolher o trecho", "edScrub": "Percorrer o vídeo", "edSee": "Ver o trecho", "edStartHere": "Início aqui", "edEndHere": "Fim aqui", "edStart": "Início", "edLen": "Dura", "edEnd": "Fim", "edName": "Nome do arquivo novo", "edSaveCut": "Salvar trecho como vídeo novo", "edUseRange": "Usar este trecho", "edCutNote": "É salvo em Filmes/Prometeo e aparece em 🎬 Vídeos. O original não é alterado.", "edNoDur": "Não foi possível ler a duração deste vídeo", "edBusy": "Espere terminar o que está sendo salvo", "edExtT": "Extrair áudio", "edFrom": "De {0} ({1})", "edMp3Note": "MP3: toca em tudo, inclusive qualquer rádio de carro.", "edM4aNote": "M4A: mais rápido e soa um pouco melhor com o mesmo tamanho.", "edWhole": "Vídeo inteiro", "edPart": "Só um trecho", "edSave": "Salvar", "edWhere": "É salvo em Música/Prometeo como \"{0}\" e aparece em 🎵 Música.", "edCutting": "Cortando…", "edExtracting": "Extraindo áudio…", "edFail": "Não foi possível salvar (formato não compatível com o celular)", "edCancelled": "Cancelado: nada foi salvo", "edNoAudio": "Este vídeo não tem áudio", "edSaved": "✓ Salvo: {0}", "edListen": "Ouvir", "edWatch": "Ver", "edUndone": "↩ Pronto: o arquivo novo foi apagado", "edUndoFail": "Não foi possível apagar o arquivo", "crT": "Controle da TV", "crVol": "Volume da TV", "crPhone": "Continuar no celular", "crStop": "Parar", "crSubsOn": "Legendas: sim", "crSubsOff": "Legendas: não", "crHint": "Toque para controlar o vídeo", "auMusic": "🎵 Música", "auLists": "📋 Listas", "auRadio": "📻 Rádio", "auFavs": "⭐ Favoritos", "auMix": "🔀 Misturar tudo", "auOpen": "Abra o Prometeo no celular", "wvT": "Isto é um vídeo", "wvMsg": "\"{0}\" não foi adicionado à biblioteca. Os vídeos funcionam completos no app de Android.", "wvMsgN": "{1} vídeos não foram adicionados à biblioteca. Os vídeos funcionam completos no app de Android.", "wvWatch": "Ver agora", "wvWatchSub": "Toca aqui e não é salvo (não ocupa espaço)", "wvGet": "Baixar o app", "wvGetSub": "GitHub › Releases", "wvNotSaved": "Não é salvo: ao fechar não fica nada"});
+Object.assign(I18N.fr,{"vCut": "Couper la vidéo", "vExtract": "Extraire l’audio", "lv_tools": "Outils", "lv_cut": "Couper la vidéo", "lv_extract": "Extraire l’audio", "edCutT": "Couper la vidéo", "edRangeT": "Choisir le passage", "edScrub": "Parcourir la vidéo", "edSee": "Voir le passage", "edStartHere": "Début ici", "edEndHere": "Fin ici", "edStart": "Début", "edLen": "Durée", "edEnd": "Fin", "edName": "Nom du nouveau fichier", "edSaveCut": "Enregistrer le passage comme nouvelle vidéo", "edUseRange": "Utiliser ce passage", "edCutNote": "Enregistrée dans Films/Prometeo et visible dans 🎬 Vidéos. L’original n’est pas modifié.", "edNoDur": "Impossible de lire la durée de cette vidéo", "edBusy": "Attendez la fin de l’enregistrement en cours", "edExtT": "Extraire l’audio", "edFrom": "De {0} ({1})", "edMp3Note": "MP3 : se lit partout, y compris tout autoradio.", "edM4aNote": "M4A : plus rapide et un peu meilleur à taille égale.", "edWhole": "Toute la vidéo", "edPart": "Seulement un passage", "edSave": "Enregistrer", "edWhere": "Enregistré dans Musique/Prometeo sous « {0} » et visible dans 🎵 Musique.", "edCutting": "Découpage…", "edExtracting": "Extraction de l’audio…", "edFail": "Enregistrement impossible (format non pris en charge par le téléphone)", "edCancelled": "Annulé : rien n’a été enregistré", "edNoAudio": "Cette vidéo n’a pas de son", "edSaved": "✓ Enregistré : {0}", "edListen": "Écouter", "edWatch": "Voir", "edUndone": "↩ C’est fait : le nouveau fichier a été supprimé", "edUndoFail": "Impossible de supprimer le fichier", "crT": "Télécommande TV", "crVol": "Volume de la TV", "crPhone": "Continuer sur le téléphone", "crStop": "Arrêter", "crSubsOn": "Sous-titres : oui", "crSubsOff": "Sous-titres : non", "crHint": "Touchez pour contrôler la vidéo", "auMusic": "🎵 Musique", "auLists": "📋 Listes", "auRadio": "📻 Radio", "auFavs": "⭐ Favoris", "auMix": "🔀 Tout mélanger", "auOpen": "Ouvrez Prometeo sur le téléphone", "wvT": "C’est une vidéo", "wvMsg": "« {0} » n’a pas été ajoutée à la bibliothèque. Les vidéos sont complètes dans l’app Android.", "wvMsgN": "{1} vidéos n’ont pas été ajoutées. Les vidéos sont complètes dans l’app Android.", "wvWatch": "La regarder maintenant", "wvWatchSub": "Lue ici sans être enregistrée (aucun espace utilisé)", "wvGet": "Télécharger l’app", "wvGetSub": "GitHub › Releases", "wvNotSaved": "Non enregistrée : rien ne reste à la fermeture"});
 function t(k){ let s=(I18N[LANG]&&I18N[LANG][k]); if(s==null) s=I18N.es[k]; if(s==null) s=k;
   for(let i=1;i<arguments.length;i++) s=s.split('{'+(i-1)+'}').join(String(arguments[i])); return s; }
 function nSongs(n){ return t(n===1?'song1':'songN',n); }
@@ -2337,7 +2612,7 @@ function renderQueue(){
   if(queue.length>300) frag.appendChild(el('div','empty',t('andMore',queue.length-300)));
   c.appendChild(frag);
 }
-function renderAll(){ renderRadio(); renderLib(); renderSearch(); renderPlaylists(); if(openPl) renderPlDetail(); renderQueue(); updateNowText(); updateMini(); }
+function renderAll(){ autoCatalogSoon(); renderRadio(); renderLib(); renderSearch(); renderPlaylists(); if(openPl) renderPlDetail(); renderQueue(); updateNowText(); updateMini(); }
 function markCurrent(){ document.querySelectorAll('.song-item').forEach(r=>r.classList.toggle('current',r.dataset.id===currentId)); }
 function updateNowText(){
   if(radioId){ updateRadioText(); return; }
@@ -3360,6 +3635,9 @@ function carState(){ if(radioId){ if(PM && PM.playState) PM.playState(!radioPaus
   if(PM && PM.playState && currentId) PM.playState(!audio.paused,(audio.currentTime||0)*1000,'music').catch(()=>{}); }
 function carControl(ev){
   const a=ev && ev.action;
+  /* v44: 🚗 Android Auto */
+  if(a==='playId'){ autoPlay(ev.id); return; }
+  if(a==='search'){ autoSearch(ev.q); return; }
   if(radioId){ if(a==='play'){ if(radioPaused()) toggleRadio(); } else if(a==='pause') radioPauseAny(); else if(a==='next') switchStation(1); else if(a==='prev') switchStation(-1); return; }
   if(castOn && (castKind==='tv' || castKind==='video')){ if(a==='play'||a==='pause') PM.castCmd(a).catch(()=>{}); else if(a==='next') castMove(1); else if(a==='prev') castMove(-1); return; }
   if(castOn && castKind==='music'){ if(a==='play'||a==='pause') PM.castCmd(a).catch(()=>{}); else if(a==='next') nextSong(false); else if(a==='prev') prevSong(); else if(a==='seek' && isFinite(ev.pos)) PM.castCmd('seek',ev.pos).catch(()=>{}); return; }
@@ -3392,6 +3670,7 @@ function nativeStart(){
   if(PM.onControl){ PM.onControl(carControl); const s=currentId && songById(currentId); if(s){ sendCar(s); carState(); } }
   if(PM.onVolumes) PM.onVolumes(onVolEvent);
   if(PM.onVideoEvents) PM.onVideoEvents(onVideoEvent);
+  if(PM.onEditEvents) PM.onEditEvents(onEditEvent);
   document.addEventListener('resume',()=>{ setTimeout(()=>{ checkVolumes(); if(!scanning && !orgRun) scanPhone(false,{silent:true}); },800); },false);
   refreshVols().catch(()=>{});
   PM.hasPermission().then(ok=>{
@@ -4525,7 +4804,9 @@ const PROMETEO_LOGO='data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYE
 { const lg=$('tbLogo'); if(lg) lg.src=PROMETEO_LOGO; }   /* v42: ícono de Prometeo en la cabecera */
 /* Componentes de código abierto que usa Prometeo (créditos y licencias) */
 const CREDITS=[
-  {name:'AndroidX Media3 (ExoPlayer, UI, HLS, DASH, RTSP) 1.9.4', copy:'© The Android Open Source Project', lic:'Apache License 2.0', use:'useMedia3', src:'https://github.com/androidx/media'},
+  {name:'AndroidX Media3 (ExoPlayer, UI, HLS, DASH, RTSP, Transformer) 1.9.4', copy:'© The Android Open Source Project', lic:'Apache License 2.0', use:'useMedia3', src:'https://github.com/androidx/media'},
+  {name:'jump3r (Java port of LAME 3.98.4)', copy:'© Ken Händel and the LAME authors (lame.sourceforge.net)', lic:'GNU LGPL 2.1 or later', use:'useLame', src:'https://sourceforge.net/projects/jump3r/',
+   notice:'Prometeo includes jump3r (a Java version of the LAME MP3 encoder) to save extracted audio as MP3.\nIt is used unchanged, only moved to the package com.prometeo.lame (folders mp3/ and mpg/).\nIts full source code is published with Prometeo\'s code on GitHub (prometeo-music/src/android/lame), together with the license (COPYING_jump3r.txt).\nSource taken from the lamejs project (github.com/zhuker/lamejs, src/main/java).\nYou may replace or modify this library under the terms of the LGPL.'},
   {name:'Apache Cordova (cordova-android 15)', copy:'© The Apache Software Foundation', lic:'Apache License 2.0', use:'useCordova', src:'https://github.com/apache/cordova-android',
    notice:'Apache Cordova\nCopyright 2015-2020 The Apache Software Foundation\n\nThis product includes software developed at\nThe Apache Software Foundation (http://www.apache.org/).'},
   {name:'AndroidX (AppCompat, Core, WebKit, Activity, Fragment, Lifecycle, Emoji2, RecyclerView, MediaRouter…)', copy:'© The Android Open Source Project', lic:'Apache License 2.0', use:'useAndroidx', src:'https://android.googlesource.com/platform/frameworks/support'},
@@ -4615,7 +4896,7 @@ setInterval(()=>{
 function castWatchDone(){ if(castTry && castTry.timer) clearTimeout(castTry.timer); castTry=null; }
 function castRender(){
   const b=$('btnCast'); if(b){ b.classList.toggle('on',castOn); b.title=t('castBtn'); b.setAttribute('aria-label',t('castBtn')); }
-  const bar=$('castBar'); bar.classList.toggle('hidden',!castOn);
+  const bar=$('castBar'); bar.classList.toggle('hidden',!castOn); bar.classList.toggle('tap',castOn && castKind==='video');
   if(!castOn) return;
   $('castDev').textContent=t('castOn',castDevName||'TV');
   $('castWhat').textContent= castKind? (t(castKind==='music'?'castMusic':castKind==='radio'?'castRadio':castKind==='video'?'castVideo':'castTv')+' · '+castTitle) : t('castNothing');
@@ -4720,6 +5001,8 @@ function onCastEvent(ev){
         setPlayIcon();
       } else if(castKind==='video'){
         if(ev.pos>=0) castPos=ev.pos; if(ev.dur>0) castDur=ev.dur;
+        if(ev.vol!=null) castVol=ev.vol; if(ev.subs!=null) castSubsOk=!!ev.subs;
+        if(crEls) setTimeout(()=>crEls && crEls.upd(),0);
         if(ev.state==='idle' && ev.idle==='finished'){ castPlaying=false; castVideoMove(1); }
         else if(ev.state==='idle' && ev.idle==='error'){ castPlaying=false; toast(t('castFail')); }
       } else if(castKind==='radio' && radioId){
@@ -5061,9 +5344,13 @@ $('miniInfo').onclick=()=>switchTab('ahora');
 $('searchInput').addEventListener('input',renderSearch);
 document.querySelectorAll('.songPicker').forEach(inp=>{
   inp.addEventListener('click',()=>{ inp.value=''; });
-  inp.addEventListener('change',()=>{ const f=Array.prototype.slice.call(inp.files||[]); if(f.length) addFiles(f); else toast(t('noFile')); });
+  inp.addEventListener('change',()=>{ let f=Array.prototype.slice.call(inp.files||[]);
+    /* v44: en la versión web los videos no entran a la biblioteca (se ven en la app) */
+    if(!PM){ const vids=f.filter(isVideoFile); f=f.filter(x=>!isVideoFile(x)); if(vids.length){ if(f.length) addFiles(f); webVideoNotice(vids); return; } }
+    if(f.length) addFiles(f); else toast(t('noFile')); });
 });
 document.querySelectorAll('#nav button').forEach(b=>b.onclick=()=>switchTab(b.dataset.tab));
+document.querySelector('#castBar .cb-info').addEventListener('click',()=>{ if(castOn && castKind==='video') openCastRemote(); });
 document.querySelectorAll('#modes button').forEach(b=>b.onclick=()=>setVisual(b.dataset.mode));
 
 /* ================= ARRANQUE ================= */

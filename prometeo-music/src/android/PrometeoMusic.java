@@ -75,6 +75,12 @@ public class PrometeoMusic extends CordovaPlugin {
     private static final int REQ_VPERM = 4143;
     private CallbackContext vpermCallback, videoCallback;
     private static final String PREFIX_VTHUMB = "__prometeo_vthumb__/";
+    private static final String PREFIX_VFRAME = "__prometeo_vframe__/";
+    private CallbackContext editCallback;
+    private void sendEdit(JSONObject o) {
+        CallbackContext c = editCallback; if (c == null) return;
+        PluginResult r = new PluginResult(PluginResult.Status.OK, o); r.setKeepCallback(true); c.sendPluginResult(r);
+    }
     private boolean pickVideoMode = false;
     private static final String PERM_USER_SELECTED = "android.permission.READ_MEDIA_VISUAL_USER_SELECTED";
     /** 1 = todos los videos, 2 = acceso limitado (solo los que el usuario eligió), 0 = sin permiso */
@@ -236,6 +242,46 @@ public class PrometeoMusic extends CordovaPlugin {
         if ("videoMovePos".equals(action)) {
             Videos.movePos(cordova.getContext(), args.optString(0, ""), args.optString(1, ""));
             cb.success();
+            return true;
+        }
+        /* ---- v44: 🚗 catálogo para Android Auto ---- */
+        if ("autoCatalog".equals(action)) {
+            final String json = args.optString(0, "{}");
+            cordova.getThreadPool().execute(new Runnable() { public void run() { AutoService.setCatalog(cordova.getContext(), json); cb.success(); } });
+            return true;
+        }
+        /* ---- v44: ✂️ cortar / 🎵 extraer audio ---- */
+        if ("editEvents".equals(action)) {
+            editCallback = cb;
+            PluginResult r = new PluginResult(PluginResult.Status.NO_RESULT); r.setKeepCallback(true); cb.sendPluginResult(r);
+            return true;
+        }
+        if ("editNextName".equals(action)) {
+            final String base = args.optString(0, "Prometeo"); final boolean video = args.optBoolean(1, false);
+            cordova.getThreadPool().execute(new Runnable() { public void run() { cb.success(Edit.nextName(cordova.getContext(), base, video)); } });
+            return true;
+        }
+        if ("editStart".equals(action)) {
+            JSONObject j = args.optJSONObject(0);
+            if (j == null) { cb.error("args"); return true; }
+            if (Edit.busy()) { cb.error("busy"); return true; }
+            Uri src;
+            String u = j.optString("uri", "");
+            if (!u.isEmpty()) { src = Uri.parse(u); if (!Library.uriAllowed(cordova.getContext(), src)) { cb.error("perm"); return true; } }
+            else src = Videos.uriOf(j.optLong("mid", -1));
+            String kind = j.optString("kind", "mp3"), name = Edit.clean(j.optString("name", "Prometeo"));
+            long a = j.optLong("a", -1), b = j.optLong("b", -1);
+            Edit.Ev ev = new Edit.Ev() { public void ev(JSONObject o) { sendEdit(o); } };
+            if ("cut".equals(kind)) Edit.transform(cordova.getContext(), src, a, b, name, false, ev);
+            else if ("m4a".equals(kind)) Edit.transform(cordova.getContext(), src, a, b, name, true, ev);
+            else Edit.mp3(cordova.getContext(), src, a, b, name, ev);
+            cb.success();
+            return true;
+        }
+        if ("editCancel".equals(action)) { Edit.cancel(); cb.success(); return true; }
+        if ("editDelete".equals(action)) {
+            final String u = args.optString(0, "");
+            cordova.getThreadPool().execute(new Runnable() { public void run() { cb.success(Edit.delete(cordova.getContext(), u) ? 1 : 0); } });
             return true;
         }
         if ("videoEvents".equals(action)) {
@@ -1017,7 +1063,9 @@ public class PrometeoMusic extends CordovaPlugin {
 
     private synchronized MediaSession session() {
         if (session != null) return session;
-        session = new MediaSession(cordova.getContext(), "PrometeoPlayer");
+        /* v44: la misma sesión la usa Android Auto (AutoService) */
+        session = AutoService.shared(cordova.getContext());
+        AutoService.appAlive = true;
         setLegacyFlags(session);
         session.setCallback(new MediaSession.Callback() {
             @Override public void onPlay() {
@@ -1031,6 +1079,9 @@ public class PrometeoMusic extends CordovaPlugin {
             @Override public void onSkipToNext() { sendControl("next", -1); }
             @Override public void onSkipToPrevious() { sendControl("prev", -1); }
             @Override public void onSeekTo(long pos) { sendControl("seek", pos); }
+            /* v44: 🚗 Android Auto: tocar una canción, lista o radio en la pantalla del carro, o buscar por voz */
+            @Override public void onPlayFromMediaId(String id, android.os.Bundle extras) { sendControlStr("playId", "id", id); }
+            @Override public void onPlayFromSearch(String q, android.os.Bundle extras) { sendControlStr("search", "q", q == null ? "" : q); }
         }, new Handler(Looper.getMainLooper()));
         return session;
     }
@@ -1039,6 +1090,15 @@ public class PrometeoMusic extends CordovaPlugin {
     private static void setLegacyFlags(MediaSession s) {
         /* En Android 8+ ya no hace falta; en versiones viejas activa los botones del volante */
         s.setFlags(MediaSession.FLAG_HANDLES_MEDIA_BUTTONS | MediaSession.FLAG_HANDLES_TRANSPORT_CONTROLS);
+    }
+
+    private void sendControlStr(String what, String key, String val) {
+        CallbackContext cb = controlsCallback;
+        if (cb == null) return;
+        try {
+            JSONObject o = new JSONObject(); o.put("action", what); o.put(key, val);
+            PluginResult r = new PluginResult(PluginResult.Status.OK, o); r.setKeepCallback(true); cb.sendPluginResult(r);
+        } catch (JSONException ignored) { }
     }
 
     private void sendControl(String what, long pos) {
@@ -1127,7 +1187,8 @@ public class PrometeoMusic extends CordovaPlugin {
         sessionPlaying = playing;
         long actions = PlaybackState.ACTION_PLAY | PlaybackState.ACTION_PAUSE | PlaybackState.ACTION_PLAY_PAUSE
                 | PlaybackState.ACTION_SKIP_TO_NEXT | PlaybackState.ACTION_SKIP_TO_PREVIOUS
-                | PlaybackState.ACTION_SEEK_TO | PlaybackState.ACTION_STOP;
+                | PlaybackState.ACTION_SEEK_TO | PlaybackState.ACTION_STOP
+                | PlaybackState.ACTION_PLAY_FROM_MEDIA_ID | PlaybackState.ACTION_PLAY_FROM_SEARCH;
         PlaybackState st = new PlaybackState.Builder()
                 .setActions(actions)
                 .setState(playing ? PlaybackState.STATE_PLAYING : PlaybackState.STATE_PAUSED,
@@ -1607,7 +1668,8 @@ public class PrometeoMusic extends CordovaPlugin {
 
     @Override
     public void onDestroy() {
-        if (session != null) { session.setActive(false); session.release(); session = null; }
+        /* v44: la sesión no se destruye (la comparte Android Auto); queda avisando "Abre Prometeo" */
+        if (session != null) { session.setActive(false); AutoService.appAlive = false; AutoService.idle(cordova.getContext()); session = null; }
         radioWanted = false; cancelRetry(); unregisterNetworkWatch(); unregisterVolumeWatch();
         mainHandler.removeCallbacks(stopIfIdle);
         RadioService.controls = null; RadioService.music = false; RadioService.art = null;
@@ -1632,6 +1694,22 @@ public class PrometeoMusic extends CordovaPlugin {
     public CordovaPluginPathHandler getPathHandler() {
         if (pathHandler == null) {
             pathHandler = new CordovaPluginPathHandler(path -> {
+                if (path != null && path.startsWith(PREFIX_VFRAME)) {
+                    /* v44: un cuadro del video en un momento dado (para elegir el tramo al cortar): <id | u/b64>/<ms>.jpg */
+                    try {
+                        String rest = path.substring(PREFIX_VFRAME.length());
+                        int sl = rest.lastIndexOf('/'); if (sl < 0) return null;
+                        String who = rest.substring(0, sl), msS = rest.substring(sl + 1).replaceAll("[^0-9]", "");
+                        long ms = msS.isEmpty() ? 0 : Long.parseLong(msS);
+                        Uri u;
+                        if (who.startsWith("u/")) {
+                            u = Uri.parse(new String(Base64.decode(who.substring(2), Base64.URL_SAFE | Base64.NO_WRAP | Base64.NO_PADDING), StandardCharsets.UTF_8));
+                            if (!"content".equals(u.getScheme()) || !Library.uriAllowed(cordova.getContext(), u)) return null;
+                        } else { if (videoAccess() == 0) return null; u = Videos.uriOf(Long.parseLong(who.replaceAll("[^0-9]", ""))); }
+                        byte[] jpg = Videos.frame(cordova.getContext(), u, ms, rest.contains("?exact") || path.endsWith("x.jpg"));
+                        return jpg == null ? null : new WebResourceResponse("image/jpeg", null, new java.io.ByteArrayInputStream(jpg));
+                    } catch (Exception e) { return null; }
+                }
                 if (path != null && path.startsWith(PREFIX_VTHUMB)) {
                     /* v43: miniatura de un video */
                     try {

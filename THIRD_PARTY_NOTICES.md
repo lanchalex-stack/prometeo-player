@@ -1,6 +1,6 @@
 # Avisos de terceros · Third-party notices
 
-**Prometeo Player V43** © 2026 Lanchalex. Todos los derechos reservados ([LICENSE](LICENSE)).
+**Prometeo Player V44** © 2026 Lanchalex. Todos los derechos reservados ([LICENSE](LICENSE)).
 
 Prometeo Player incluye el software de código abierto que se lista abajo. Cada componente conserva su propia licencia. **Todos usan la Apache License, Version 2.0**, cuyo texto completo está en [LICENSES/Apache-2.0.txt](LICENSES/Apache-2.0.txt) y en https://www.apache.org/licenses/LICENSE-2.0.
 
@@ -43,6 +43,7 @@ The Apache Software Foundation (http://www.apache.org/).
 | `androidx.media3:media3-exoplayer-dash` | 1.9.4 |
 | `androidx.media3:media3-exoplayer-hls` | 1.9.4 |
 | `androidx.media3:media3-exoplayer-rtsp` | 1.9.4 |
+| `androidx.media3:media3-transformer` | 1.9.4 |
 | `androidx.media3:media3-exoplayer` | 1.9.4 |
 | `androidx.media3:media3-extractor` | 1.9.4 |
 | `androidx.media3:media3-ui` | 1.9.4 |
@@ -197,3 +198,18 @@ Las emisoras, los canales de TV y las listas M3U los agrega cada usuario. Promet
 ## Marcas · Trademarks
 
 Prometeo Player es un proyecto independiente. No está afiliado ni respaldado por Google, The Apache Software Foundation, JetBrains, Meta, Anthropic ni Radio Browser. Android es una marca de Google LLC. "Apache", "Apache Cordova" y el logo de la pluma son marcas de The Apache Software Foundation. Kotlin es una marca de JetBrains s.r.o. Los demás nombres son marcas de sus respectivos dueños.
+
+
+## jump3r (versión en Java de LAME 3.98.4) — GNU LGPL 2.1 o posterior
+
+Prometeo usa jump3r para guardar como **MP3** el audio que se extrae de un video (V44).
+
+- Autores: Ken Händel (port a Java) y los autores de LAME (http://lame.sourceforge.net).
+- Licencia: GNU Lesser General Public License, versión 2.1 o posterior. El texto completo está en
+  `prometeo-music/src/android/lame/COPYING_jump3r.txt`.
+- El código se usa **sin cambios**, solo se movió al paquete `com.prometeo.lame` (carpetas `mp3/` y `mpg/`).
+  Se quitó la clase `lowlevel/LameEncoder` (usa `javax.sound`, que no existe en Android) y en su lugar
+  Prometeo usa su propia envoltura `Mp3Enc.java`.
+- Código fuente tomado del proyecto lamejs (https://github.com/zhuker/lamejs, carpeta `src/main/java`).
+- El código fuente completo de jump3r va publicado junto con el de Prometeo en este repositorio, para que
+  cualquiera pueda modificarlo o reemplazarlo como permite la LGPL.
