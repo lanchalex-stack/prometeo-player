@@ -2,15 +2,15 @@
 
 <img src="res/icon/android/legacy-xxxhdpi.png" alt="Ícono de Prometeo Player" width="128">
 
-# 🔥 Prometeo Player V44
+# 🔥 Prometeo Player
 
 **Reproductor de música, videos, radio y TV para Android. Sin anuncios y sin recopilar datos.**
 
-![Versión](https://img.shields.io/badge/versión-V44-00e5ff?style=for-the-badge)
+![Versión](https://img.shields.io/github/v/release/lanchalex-stack/prometeo-player?label=versi%C3%B3n&color=00e5ff&style=for-the-badge)
 ![Android](https://img.shields.io/badge/Android-7%2B-3ddc84?style=for-the-badge&logo=android&logoColor=white)
 ![Privacidad](https://img.shields.io/badge/sin-recopilar%20datos-0a0a0a?style=for-the-badge)
 
-[**⬇️ Descargar APK V44**](https://github.com/lanchalex-stack/prometeo-player/releases/tag/v44) · [**🌐 Probar la versión web**](https://lanchalex-stack.github.io/prometeo-player/)
+[**⬇️ Descargar la última versión (APK)**](https://github.com/lanchalex-stack/prometeo-player/releases/latest) · [**🌐 Probar la versión web**](https://lanchalex-stack.github.io/prometeo-player/)
 
 </div>
 
@@ -140,7 +140,7 @@
 
 ## 📲 Instalación
 
-1. Descarga **`Prometeo-v44.apk`** desde [Releases](https://github.com/lanchalex-stack/prometeo-player/releases/tag/v44).
+1. Descarga el archivo **`.apk`** de la [última versión](https://github.com/lanchalex-stack/prometeo-player/releases/latest).
 2. Ábrelo y permite **"Instalar apps desconocidas"** si Android lo pide.
 3. Si tienes una versión anterior, toca **Actualizar**. **No la desinstales**, así conservas tus playlists, emisoras y listas.
 4. Acepta el permiso de **Música y audio**. Prometeo encontrará tu música.
