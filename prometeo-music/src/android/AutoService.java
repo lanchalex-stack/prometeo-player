@@ -73,7 +73,7 @@ public class AutoService extends MediaBrowserService {
         }
     }
 
-    private static synchronized JSONObject catalog(Context ctx) {
+    static synchronized JSONObject catalog(Context ctx) {
         if (catalog != null) return catalog;
         try {
             File f = file(ctx);

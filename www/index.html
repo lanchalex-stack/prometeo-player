@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#141414">
-<title>Prometeo Player v44b</title>
+<title>Prometeo Player v44e</title>
 <style>
 /* ===== Skins: cada skin solo cambia estas variables ===== */
 :root,[data-skin="neon"]{--bg:#0a0a0a;--card:#141414;--card2:#1c1c1c;--line:#232323;--line2:#2c2c2c;--acc:#00e5ff;--accrgb:0,229,255;--onacc:#000;--txt:#fff;--txt2:#ddd;--soft:#aaa;--mut:#8a8a8a;--dim:#666;--viz:#070b0c;--sheet:#161616;--input:#202020;--mini:#1a1f20;--miniline:#2a3a3c;--thumb:#fff;--overlay:rgba(0,0,0,.7);--red:#ff4d5e}
@@ -16,8 +16,8 @@
 [data-skin="bn"]{--bg:#000;--card:#0f0f0f;--card2:#1a1a1a;--line:#262626;--line2:#333;--acc:#fff;--accrgb:255,255,255;--onacc:#000;--txt:#fff;--txt2:#e6e6e6;--soft:#b5b5b5;--mut:#9a9a9a;--dim:#707070;--viz:#050505;--sheet:#121212;--input:#1a1a1a;--mini:#141414;--miniline:#3a3a3a}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{background:var(--bg);color:var(--txt);font-family:system-ui,-apple-system,Roboto,sans-serif}
-body{padding-bottom:calc(76px + env(safe-area-inset-bottom));overflow-x:hidden;user-select:none;-webkit-user-select:none;transition:background .25s}
-body.has-mini{padding-bottom:calc(142px + env(safe-area-inset-bottom))}
+body{padding-bottom:calc(76px + var(--sab));overflow-x:hidden;user-select:none;-webkit-user-select:none;transition:background .25s}
+body.has-mini{padding-bottom:calc(142px + var(--sab))}
 button{font-family:inherit;cursor:pointer;color:inherit}
 .hidden{display:none!important}
 
@@ -52,10 +52,11 @@ button{font-family:inherit;cursor:pointer;color:inherit}
 .chips button.on{background:var(--acc);color:var(--onacc);border-color:var(--acc)}
 .two-btn{display:flex;gap:8px;margin-top:12px}
 .tv-inline{position:fixed;left:0;right:0;z-index:9;background:var(--bg);padding:8px 12px 10px;border-bottom:1px solid var(--line);box-shadow:0 8px 20px rgba(0,0,0,.35)}
-.tvi-video{width:100%;aspect-ratio:16/9;max-height:40vh;background:#000;border-radius:14px;display:flex;align-items:center;justify-content:center;color:#9aa;font-size:12px;text-align:center;padding:0 12px}
+.tvi-video{position:relative;width:80%;margin:0 auto;aspect-ratio:16/9;max-height:32vh;background:#000;border-radius:14px;display:flex;align-items:center;justify-content:center;color:#9aa;font-size:12px;text-align:center;padding:0 12px}
 .tvi-bar{display:flex;align-items:center;gap:6px;margin-top:8px}
 .tvi-btns{display:flex;align-items:center;gap:4px;flex:none}
-@media (max-width:440px){.tvi-bar{flex-wrap:wrap}.tvi-info{flex:1 1 100%}.tvi-btns{flex:1 1 100%;justify-content:space-between}}
+.tvi-bar .icon-btn{width:40px;height:40px;font-size:16px}
+@media (max-width:380px){.tvi-bar .icon-btn{width:36px;height:36px;font-size:15px}.tvi-btns{gap:3px}}
 .tvi-bar .icon-btn{flex:none}
 .tvi-bar .tvi-play{background:var(--acc);color:var(--onacc);border-color:var(--acc)}
 .tvi-info{flex:1;min-width:0}
@@ -231,19 +232,19 @@ body.native .btn-add.picker{display:none}
 input.search{width:100%;background:var(--input);border:1px solid var(--line2);color:var(--txt);padding:13px 16px;border-radius:25px;font-size:15px;outline:none;user-select:text;-webkit-user-select:text}
 input.search:focus{border-color:var(--acc)}
 
-.mini{position:fixed;left:10px;right:10px;bottom:calc(68px + env(safe-area-inset-bottom));background:var(--mini);border:1px solid var(--miniline);border-radius:16px;display:flex;align-items:center;gap:10px;padding:8px 8px 8px 14px;z-index:9;box-shadow:0 6px 20px rgba(0,0,0,.35)}
+.mini{position:fixed;left:10px;right:10px;bottom:calc(68px + var(--sab));background:var(--mini);border:1px solid var(--miniline);border-radius:16px;display:flex;align-items:center;gap:10px;padding:8px 8px 8px 14px;z-index:9;box-shadow:0 6px 20px rgba(0,0,0,.35)}
 .mini-info{flex:1;min-width:0}
 .mini-info b{display:block;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .mini-info small{font-size:11px;color:var(--acc)}
 .mini-play{width:42px;height:42px;border-radius:50%;background:var(--acc);border:none;color:var(--onacc);font-size:17px}
 
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:8px 0 calc(8px + env(safe-area-inset-bottom));z-index:10}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:8px 0 calc(8px + var(--sab));z-index:10}
 .bottom-nav button{background:none;border:none;color:var(--dim);font-size:11px;font-weight:700;display:flex;flex-direction:column;align-items:center;gap:3px;padding:4px 10px}
 .bottom-nav button .ic{font-size:19px}
 .bottom-nav button.active{color:var(--acc)}
 
 .modal{position:fixed;inset:0;background:var(--overlay);z-index:50;display:flex;align-items:flex-end;justify-content:center}
-.sheet{background:var(--sheet);border:1px solid var(--line2);border-radius:22px 22px 0 0;width:100%;max-width:520px;padding:20px 16px calc(18px + env(safe-area-inset-bottom));max-height:80vh;overflow:auto;animation:up .2s}
+.sheet{background:var(--sheet);border:1px solid var(--line2);border-radius:22px 22px 0 0;width:100%;max-width:520px;padding:20px 16px calc(18px + var(--sab));max-height:80vh;overflow:auto;animation:up .2s}
 @keyframes up{from{transform:translateY(30px);opacity:0}to{transform:none;opacity:1}}
 .sheet h3{font-size:17px;margin-bottom:14px}
 .m-msg{color:var(--soft);font-size:14px;line-height:1.45}
@@ -308,7 +309,7 @@ input.search:focus{border-color:var(--acc)}
 .org-done{text-align:center}.org-done .big{font-size:40px;font-weight:900;color:var(--acc)}.org-done .org-line{text-align:left}
 .org-box{background:var(--card2);border:1px solid var(--line2);border-radius:14px;padding:12px;margin-top:12px}
 .org-h{display:flex;justify-content:space-between;align-items:center}.org-h small{color:var(--mut)}.org-name{display:block;color:var(--mut);font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.undo-bar{position:fixed;left:50%;bottom:calc(150px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(10px);display:flex;align-items:center;gap:12px;background:#242424;border:1px solid #333;color:#fff;padding:8px 8px 8px 16px;border-radius:22px;font-size:13px;opacity:0;pointer-events:none;transition:.25s;z-index:61;max-width:92vw}
+.undo-bar{position:fixed;left:50%;bottom:calc(150px + var(--sab));transform:translateX(-50%) translateY(10px);display:flex;align-items:center;gap:12px;background:#242424;border:1px solid #333;color:#fff;padding:8px 8px 8px 16px;border-radius:22px;font-size:13px;opacity:0;pointer-events:none;transition:.25s;z-index:61;max-width:92vw}
 .undo-bar.show{opacity:1;pointer-events:auto;transform:translateX(-50%)}
 .undo-bar span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .undo-bar button{flex:none;background:var(--acc);color:var(--onacc);border:0;border-radius:16px;padding:7px 12px;font-weight:900;font-size:13px}
@@ -328,7 +329,7 @@ body.radio-on #btnAB{display:none}
 .back-btn{flex:none;white-space:nowrap}
 .m-item.list-act{display:flex;flex-direction:column;align-items:flex-start;gap:2px}.m-item.list-act small{color:var(--mut);font-weight:600;font-size:11px}
 [data-skin="bn"] .tb-logo{box-shadow:0 0 0 2px rgba(255,255,255,.75),0 0 16px rgba(255,255,255,.28)}
-.toast{position:fixed;left:50%;bottom:calc(150px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(10px);background:#242424;border:1px solid #333;color:#fff;padding:10px 16px;border-radius:20px;font-size:13px;opacity:0;pointer-events:none;transition:.25s;z-index:60;max-width:88vw;text-align:center}
+.toast{position:fixed;left:50%;bottom:calc(150px + var(--sab));transform:translateX(-50%) translateY(10px);background:#242424;border:1px solid #333;color:#fff;padding:10px 16px;border-radius:20px;font-size:13px;opacity:0;pointer-events:none;transition:.25s;z-index:60;max-width:88vw;text-align:center}
 .toast.show{opacity:1;transform:translateX(-50%)}
 /* ===== v42: la app nunca se corre de lado (aunque un nombre largo no quepa) ===== */
 html,body{overflow-x:clip;max-width:100%}
@@ -433,7 +434,7 @@ html,body{overflow-x:clip;max-width:100%}
 .ed-name{display:block}.ed-name small{display:block;font-size:11px;color:var(--mut);margin-bottom:4px}.ed-name input{width:100%;box-sizing:border-box;padding:10px 12px;border-radius:12px;border:1px solid var(--line2);background:var(--card2);color:var(--txt);font-size:15px}
 .ed-save{margin:4px 0 0}
 .ed-seg{margin:10px 0 4px}
-.edit-bar{position:fixed;left:12px;right:12px;bottom:calc(150px + env(safe-area-inset-bottom));z-index:55;display:none;align-items:center;gap:10px;background:var(--card);border:1px solid var(--acc);border-radius:14px;padding:10px 12px;box-shadow:0 6px 24px rgba(0,0,0,.5)}
+.edit-bar{position:fixed;left:12px;right:12px;bottom:calc(150px + var(--sab));z-index:55;display:none;align-items:center;gap:10px;background:var(--card);border:1px solid var(--acc);border-radius:14px;padding:10px 12px;box-shadow:0 6px 24px rgba(0,0,0,.5)}
 .edit-bar.show{display:flex}.edit-bar .tx{flex:1;min-width:0}.edit-bar b{display:block;font-size:13px}.edit-bar small{display:block;font-size:11px;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .edit-bar .prog{height:5px;border-radius:4px;background:var(--line2);margin-top:6px;overflow:hidden}.edit-bar .prog i{display:block;height:100%;background:var(--acc)}
 .undo-bar button+button{margin-left:6px}
@@ -446,6 +447,42 @@ html,body{overflow-x:clip;max-width:100%}
 .cr-vol{display:flex;align-items:center;gap:10px;margin-bottom:10px}.cr-vol input{flex:1;accent-color:var(--acc)}
 .cr-chips{flex-wrap:wrap}.cr-chips button.on{background:var(--acc);color:var(--onacc);border-color:var(--acc)}
 .web-v video{width:100%;max-height:75vh;background:#000;border-radius:14px}
+
+/* ===== v44c ===== */
+.st-tile.has-logo{background-size:cover!important;background-position:center;color:transparent}
+.st-logo-row{display:flex;align-items:center;gap:10px;background:var(--card2);border:1px solid var(--line2);border-radius:12px;padding:8px;margin-bottom:12px}
+.st-logo-row .tx{flex:1;min-width:0}.st-logo-row b{display:block;font-size:13px}.st-logo-row small{font-size:11px;color:var(--mut)}
+.st-logo-row .st-tile{width:48px;height:48px;flex:none;display:grid;place-items:center;font-size:20px;background:var(--card)}
+.song-item.locked .st-tile{filter:grayscale(1) brightness(.6)}
+.icon-btn.lock-b{color:#ffb347}
+
+/* ===== v44d: lista marcada ===== */
+.list-row.pick .ck{width:20px;height:20px;flex:none;border-radius:50%;border:2px solid var(--line2);margin-right:4px;cursor:pointer}
+.list-row.pick.on{border:2px solid var(--acc);border-radius:14px;background:color-mix(in srgb,var(--acc) 9%,transparent)}
+.list-row.pick.on .ck{background:var(--acc);border-color:var(--acc);box-shadow:inset 0 0 0 3px var(--card)}
+.list-row.pick.on .song-info b{color:var(--acc)}
+.list-row.pick .song-info{cursor:pointer}
+
+/* ===== v44d: al escribir en "Buscar canal" con un canal sonando: video chiquito y sin barras abajo ===== */
+#tvInline.compact{display:flex;align-items:center;gap:10px;padding:6px 12px}
+#tvInline.compact .tvi-video{width:112px;flex:none;max-height:none;border-radius:10px;margin:0}
+#tvInline.compact .tvi-bar{flex:1;min-width:0;margin-top:0;flex-wrap:nowrap}
+#tvInline.compact .tvi-info{flex:1 1 auto}
+#tvInline.compact .tvi-btns{flex:none}
+#tvInline.compact .tvi-btns .icon-btn:not(.tvi-play){display:none}
+body.kb-typing #mini, body.kb-typing #nav{display:none!important}
+:root{--sab:env(safe-area-inset-bottom,0px)}
+html.no-e2e{--sab:18px}
+/* v44e: viendo un canal, la barra de la canción se esconde (vuelve al cerrar el canal) */
+body.tvi-on #mini{display:none!important}
+body.tvi-on.has-mini{padding-bottom:calc(76px + var(--sab))}
+/* v44e: canal con candado: pantalla negra */
+.tvi-lock{display:none;position:absolute;inset:0;z-index:3;background:#000;border-radius:inherit;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:#fff;text-align:center;padding:8px;cursor:pointer}
+.tvi-lock i{font-style:normal;font-size:38px;line-height:1}.tvi-lock b{font-size:15px}.tvi-lock small{font-size:11px;opacity:.65}
+#tvInline.locked .tvi-lock{display:flex}
+#tvInline.locked .tvi-btns .icon-btn:not(#tviClose){display:none!important}
+#tvInline.compact .tvi-lock i{font-size:20px}#tvInline.compact .tvi-lock b,#tvInline.compact .tvi-lock small{display:none}
+.ch-pick{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 10px}.ch-pick button{padding:8px 14px;border-radius:18px;font-weight:700;font-size:13px;border:1px solid var(--line2);background:transparent;color:var(--soft)}.ch-pick button.on{background:var(--acc);border-color:var(--acc);color:var(--onacc)}
 </style>
 </head>
 <body>
@@ -453,7 +490,7 @@ html,body{overflow-x:clip;max-width:100%}
 <header class="topbar">
  <div class="tb-main">
  <div class="tb-left">
-  <div class="tb-title"><h1>🔥 Prometeo <span>Player</span></h1><button class="ver" id="btnVer" data-i18n-aria="diagBtn" aria-label="Diagnóstico">v44b</button></div>
+  <div class="tb-title"><h1>🔥 Prometeo <span>Player</span></h1><button class="ver" id="btnVer" data-i18n-aria="diagBtn" aria-label="Diagnóstico">v44e</button></div>
   <div class="top-actions">
     <button class="top-btn hidden" id="btnCast" aria-label="Transmitir">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 18v.01"/><path d="M3 14a4 4 0 0 1 4 4"/><path d="M3 10a8 8 0 0 1 8 8"/><path d="M3 6.5V6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4.5"/></svg>
@@ -595,7 +632,7 @@ html,body{overflow-x:clip;max-width:100%}
 </main>
 
 <div id="tvInline" class="tv-inline hidden">
-  <div id="tvInlineVideo" class="tvi-video"><span id="tvInlineState"></span></div>
+  <div id="tvInlineVideo" class="tvi-video"><span id="tvInlineState"></span><div id="tviLock" class="tvi-lock"><i>🔒</i><b data-i18n="tviTapUnlock">Toca para desbloquear</b><small id="tviLockSub"></small></div></div>
   <div class="tvi-bar">
     <div class="tvi-info"><b id="tvInlineName"></b><small id="tvInlineSub"></small></div>
     <div class="tvi-btns">
@@ -839,6 +876,119 @@ let castOn=false, castDevName='', castKind='', castPlaying=false, castPos=0, cas
 const castModeFor={};   /* Chromecast */
 let tvSel='';
 
+/* ================= v44c: 🚗 ANDROID AUTO CON PROMETEO ESCONDIDO =================
+   Si el carro elige una canción y la app no está en pantalla, la toca Android (ver PrometeoMusic.java).
+   Aquí solo se muestra lo mismo en la app, y al volver a la app se sigue la canción desde el mismo segundo. */
+let nativeAuto=false;
+function autoSrcObj(src){
+  src=String(src||'lib');
+  if(src.startsWith('pl:')){ const P=playlists.find(p=>String(p.id)===src.slice(3)); if(P) return {type:'pl', id:P.id}; }
+  return {type:'lib'};
+}
+function onAutoNative(ev){
+  const s=songs.find(x=>String(x.id)===String(ev.id)); if(!s) return;
+  nativeAuto=true;
+  if(radioId) stopRadio(true);
+  if(!audio.paused) audio.pause();
+  queueSource=autoSrcObj(ev.src); store.set('src',queueSource);
+  currentId=s.id; buildQueue(); qPos=queue.indexOf(currentId);
+  try{ updateNowText(); markCurrent(); updateMini(); }catch(e){}
+}
+function onAutoHandoff(ev){
+  nativeAuto=false;
+  const s=songs.find(x=>String(x.id)===String(ev.id)); if(!s) return;
+  queueSource=autoSrcObj(ev.src); store.set('src',queueSource);
+  currentId=s.id; buildQueue();
+  loadById(s.id, !!ev.playing, Math.max(0,(ev.pos||0)/1000));
+}
+
+/* ================= v44c: 🖼️ LOGO DE LA EMISORA (lo pone el usuario) ================= */
+function pickImage(){
+  return new Promise(res=>{
+    const inp=document.createElement('input'); inp.type='file'; inp.accept='image/*'; inp.style.display='none';
+    inp.onchange=()=>{
+      const f=inp.files && inp.files[0]; inp.remove(); if(!f){ res(null); return; }
+      const url=URL.createObjectURL(f); const img=new Image();
+      img.onload=()=>{ try{
+        const S=240, c=document.createElement('canvas'); c.width=c.height=S; const g=c.getContext('2d');
+        g.fillStyle='#fff'; g.fillRect(0,0,S,S);
+        const k=Math.max(S/img.width,S/img.height), w=img.width*k, h=img.height*k;   /* llena el cuadro (recorta lo que sobra) */
+        g.drawImage(img,(S-w)/2,(S-h)/2,w,h);
+        URL.revokeObjectURL(url); res(c.toDataURL('image/jpeg',0.82));
+      }catch(e){ URL.revokeObjectURL(url); res(null); } };
+      img.onerror=()=>{ URL.revokeObjectURL(url); toast(t('logoBad')); res(null); };
+      img.src=url;
+    };
+    document.body.appendChild(inp); inp.click();
+  });
+}
+async function setStationLogo(st){
+  const d=await pickImage(); if(!d) return;
+  st.logo=d; saveRadios(); renderRadio();
+  if(st.id===radioId) showStationTile(st);
+  toast(t('logoSet'));
+}
+function clearStationLogo(st){
+  const old=st.logo; if(!old) return;
+  delete st.logo; saveRadios(); renderRadio(); if(st.id===radioId) showStationTile(st);
+  toastUndo(t('logoOff'),()=>{ st.logo=old; saveRadios(); renderRadio(); if(st.id===radioId) showStationTile(st); toast(t('undone')); });
+}
+async function openStationMenu(st){
+  const r=await modal('📻 '+st.name,(b,close)=>{
+    b.appendChild(el('p','m-sub',st.id===radioId? t('live') : t('radioWord')));
+    addOpt(b,'🖼️',t(st.logo?'logoChange':'logoPut'),t('logoSub'),()=>close('logo'),true);
+    if(st.logo) addOpt(b,'🗑️',t('logoDel'),t('logoDelSub'),()=>close('nologo'));
+    addOpt(b,'✏️',t('editStation'),t('editStSub'),()=>close('edit'));
+    addOpt(b,'🗑️',t('delStation'),t('delStSub'),()=>close('del'));
+  },[[t('close'),()=>null,'btn-pill']]);
+  if(r==='logo') setStationLogo(st);
+  else if(r==='nologo') clearStationLogo(st);
+  else if(r==='edit') editStation(st);
+  else if(r==='del') deleteStationUndo(st);
+}
+function deleteStationUndo(st){
+  const i=radios.indexOf(st); if(i<0) return;
+  const inLists=radioLists.filter(L=>L.ids.includes(st.id)).map(L=>[L,L.ids.indexOf(st.id)]);
+  if(st.id===radioId) stopRadio(false);
+  radios.splice(i,1); saveRadios();
+  radioLists.forEach(L=>{ L.ids=L.ids.filter(id=>id!==st.id); }); saveRadioLists();
+  renderRadio();
+  toastUndo(t('stDelU',st.name),()=>{ radios.splice(Math.min(i,radios.length),0,st); saveRadios(); inLists.forEach(([L,k])=>{ if(!L.ids.includes(st.id)) L.ids.splice(Math.min(k,L.ids.length),0,st.id); }); saveRadioLists(); renderRadio(); toast(t('undone')); });
+}
+/* lo que está sonando (si la emisora lo manda) */
+function radioSubText(){ return radioNowTitle? '🎵 '+radioNowTitle : '📻 '+t('liveRadio'); }
+
+/* ================= v44c: 🔒 TV CON CANDADO (listas M3U y canales .m3u8) =================
+   Nada se bloquea solo: la opción está en el menú ⋮. Se abre con la huella, PIN o patrón del teléfono
+   (lo mismo que los audios privados) y queda abierto 5 minutos o hasta salir de la app. */
+/* v44e: al poner un candado, la TV se cierra en ese momento (los audios privados no se tocan) */
+let tvLockAt=0, tviLocked=false;
+function tvUnlocked(){ return privUnlocked() && privUnlockedAt>tvLockAt; }
+function chLockedRaw(ch, L){ if(ch && ch.lk) return true; L=L||tvLists.find(x=>x.channels.includes(ch)); return !!(L && L.locked); }
+function tvHiddenUrls(){
+  const s=new Set(); if(tvUnlocked()) return s;
+  tvLists.forEach(L=>L.channels.forEach(c=>{ if(L.locked || c.lk) s.add(c.u); }));
+  return s;
+}
+function lockedSingles(){ if(tvUnlocked()) return []; const o=[]; tvLists.forEach(L=>{ if(L.locked) return; L.channels.forEach(c=>{ if(c.lk) o.push(c); }); }); return o; }
+async function toggleTvLock(obj, isList){
+  if(!(await requireAuth())) return;
+  const L=isList? obj : tvLists.find(x=>x.channels.includes(obj));
+  if(isList) obj.locked=!obj.locked; else obj.lk=!obj.lk;
+  const on=isList? obj.locked : obj.lk;
+  if(L){ try{ await dbPut('tv',L); }catch(e){} }
+  if(on){ tvLockAt=Date.now(); tvLockNow(); } else { renderTv(); autoCatalogSoon(); }
+  setTimeout(()=>{ try{ renderTv(); }catch(e){} },500);
+  toast(on? t(isList?'tvLockOnL':'tvLockOnC') : t('tvLockOff'));
+}
+async function openLockedTv(fn){ if(tvUnlocked() || await requireAuth()){ renderTv(); if(fn) fn(); setTimeout(()=>{ try{ renderTv(); }catch(e){} },500); } }
+/* v44d: todos los canales, también los bloqueados (para no tomarlos como borrados) */
+function allChannelsRaw(){ const o=[]; tvLists.forEach(L=>L.channels.forEach(c=>o.push(c))); return o; }
+/* v44d: 📋 siempre hay una lista marcada; abajo solo salen sus canales */
+function curTvList(){ const un=tvUnlocked(); const ok=tvLists.filter(L=>!L.locked || un); const id=store.get('tvListSel',null); return ok.find(L=>L.id===id) || ok[0] || null; }
+function selectTvList(L){ store.set('tvListSel',L.id); tvGroup=''; tvSel=''; $('tvSearch').value=''; renderTv(); }
+
+
 /* ================= v44: ✂️ CORTAR VIDEO Y 🎵 EXTRAER AUDIO =================
    El original no se toca: el resultado se guarda aparte (Películas/Prometeo o Música/Prometeo). */
 let editJob=null;
@@ -1025,7 +1175,7 @@ let autoT=null;
 function autoCatalogSoon(){ if(!PM || !PM.autoCatalog) return; clearTimeout(autoT); autoT=setTimeout(sendAutoCatalog,1500); }
 function sendAutoCatalog(){
   if(!PM || !PM.autoCatalog) return;
-  const one=s=>{ const m=carMeta(s); return {id:s.id, t:m.title||'', a:m.artist||''}; };
+  const one=s=>{ const m=carMeta(s); const o={id:s.id, t:m.title||'', a:m.artist||''}; if(s.mid!=null) o.m=s.mid; else if(s.uri) o.u=s.uri; if(s.dur) o.d=Math.round(s.dur); return o; };
   const mus=musicSongs().filter(s=>!s.broken).slice(0,1500).map(one);
   const lists=playlists.map(p=>{ const it=p.songIds.map(songById).filter(s=>s && !s.priv && !s.temp); return {id:p.id, n:p.name, sub:nSongs(it.length), items:it.slice(0,1500).map(one)}; });
   const radio=radios.map(st=>({id:st.id, n:st.name, sub:st.genre||st.country||''}));
@@ -1513,7 +1663,7 @@ async function tvInlineShot(){
 
 
 /* ================= IDIOMAS (v41) ================= */
-const VERSION='44b';
+const VERSION='44e';
 const LANGS={es:'Español',en:'English',pt:'Português',fr:'Français'};
 const I18N={
 es:{
@@ -2018,6 +2168,20 @@ Object.assign(I18N.es,{"vCut": "Cortar video", "vExtract": "Extraer audio", "lv_
 Object.assign(I18N.en,{"vCut": "Cut video", "vExtract": "Extract audio", "lv_tools": "Tools", "lv_cut": "Cut video", "lv_extract": "Extract audio", "edCutT": "Cut video", "edRangeT": "Choose the section", "edScrub": "Move through the video", "edSee": "Watch section", "edStartHere": "Start here", "edEndHere": "End here", "edStart": "Start", "edLen": "Length", "edEnd": "End", "edName": "New file name", "edSaveCut": "Save section as a new video", "edUseRange": "Use this section", "edCutNote": "Saved to Movies/Prometeo and shown in 🎬 Videos. The original is not touched.", "edNoDur": "Could not read this video’s length", "edBusy": "Wait until the current job finishes", "edExtT": "Extract audio", "edFrom": "From {0} ({1})", "edMp3Note": "MP3: plays everywhere, including any car stereo.", "edM4aNote": "M4A: faster and sounds a bit better at the same size.", "edWhole": "Whole video", "edPart": "Only a section", "edSave": "Save", "edWhere": "Saved to Music/Prometeo as \"{0}\" and shown in 🎵 Music.", "edCutting": "Cutting…", "edExtracting": "Extracting audio…", "edFail": "Could not save (this format isn’t supported by the phone)", "edCancelled": "Cancelled: nothing was saved", "edNoAudio": "This video has no audio", "edSaved": "✓ Saved: {0}", "edListen": "Listen", "edWatch": "Watch", "edUndone": "↩ Done: the new file was deleted", "edUndoFail": "Could not delete the file", "crT": "TV remote", "crVol": "TV volume", "crPhone": "Continue on the phone", "crStop": "Stop", "crSubsOn": "Subtitles: on", "crSubsOff": "Subtitles: off", "crHint": "Tap to control the video", "auMusic": "🎵 Music", "auLists": "📋 Playlists", "auRadio": "📻 Radio", "auFavs": "⭐ Favorites", "auMix": "🔀 Shuffle all", "auOpen": "Open Prometeo on the phone", "wvT": "This is a video", "wvMsg": "\"{0}\" was not added to the library. Videos are fully supported in the Android app.", "wvMsgN": "{1} videos were not added to the library. Videos are fully supported in the Android app.", "wvWatch": "Watch it now", "wvWatchSub": "Plays here and is not saved (takes no space)", "wvGet": "Get the app", "wvGetSub": "GitHub › Releases", "wvNotSaved": "Not saved: nothing stays when you close it"});
 Object.assign(I18N.pt,{"vCut": "Cortar vídeo", "vExtract": "Extrair áudio", "lv_tools": "Ferramentas", "lv_cut": "Cortar vídeo", "lv_extract": "Extrair áudio", "edCutT": "Cortar vídeo", "edRangeT": "Escolher o trecho", "edScrub": "Percorrer o vídeo", "edSee": "Ver o trecho", "edStartHere": "Início aqui", "edEndHere": "Fim aqui", "edStart": "Início", "edLen": "Dura", "edEnd": "Fim", "edName": "Nome do arquivo novo", "edSaveCut": "Salvar trecho como vídeo novo", "edUseRange": "Usar este trecho", "edCutNote": "É salvo em Filmes/Prometeo e aparece em 🎬 Vídeos. O original não é alterado.", "edNoDur": "Não foi possível ler a duração deste vídeo", "edBusy": "Espere terminar o que está sendo salvo", "edExtT": "Extrair áudio", "edFrom": "De {0} ({1})", "edMp3Note": "MP3: toca em tudo, inclusive qualquer rádio de carro.", "edM4aNote": "M4A: mais rápido e soa um pouco melhor com o mesmo tamanho.", "edWhole": "Vídeo inteiro", "edPart": "Só um trecho", "edSave": "Salvar", "edWhere": "É salvo em Música/Prometeo como \"{0}\" e aparece em 🎵 Música.", "edCutting": "Cortando…", "edExtracting": "Extraindo áudio…", "edFail": "Não foi possível salvar (formato não compatível com o celular)", "edCancelled": "Cancelado: nada foi salvo", "edNoAudio": "Este vídeo não tem áudio", "edSaved": "✓ Salvo: {0}", "edListen": "Ouvir", "edWatch": "Ver", "edUndone": "↩ Pronto: o arquivo novo foi apagado", "edUndoFail": "Não foi possível apagar o arquivo", "crT": "Controle da TV", "crVol": "Volume da TV", "crPhone": "Continuar no celular", "crStop": "Parar", "crSubsOn": "Legendas: sim", "crSubsOff": "Legendas: não", "crHint": "Toque para controlar o vídeo", "auMusic": "🎵 Música", "auLists": "📋 Listas", "auRadio": "📻 Rádio", "auFavs": "⭐ Favoritos", "auMix": "🔀 Misturar tudo", "auOpen": "Abra o Prometeo no celular", "wvT": "Isto é um vídeo", "wvMsg": "\"{0}\" não foi adicionado à biblioteca. Os vídeos funcionam completos no app de Android.", "wvMsgN": "{1} vídeos não foram adicionados à biblioteca. Os vídeos funcionam completos no app de Android.", "wvWatch": "Ver agora", "wvWatchSub": "Toca aqui e não é salvo (não ocupa espaço)", "wvGet": "Baixar o app", "wvGetSub": "GitHub › Releases", "wvNotSaved": "Não é salvo: ao fechar não fica nada"});
 Object.assign(I18N.fr,{"vCut": "Couper la vidéo", "vExtract": "Extraire l’audio", "lv_tools": "Outils", "lv_cut": "Couper la vidéo", "lv_extract": "Extraire l’audio", "edCutT": "Couper la vidéo", "edRangeT": "Choisir le passage", "edScrub": "Parcourir la vidéo", "edSee": "Voir le passage", "edStartHere": "Début ici", "edEndHere": "Fin ici", "edStart": "Début", "edLen": "Durée", "edEnd": "Fin", "edName": "Nom du nouveau fichier", "edSaveCut": "Enregistrer le passage comme nouvelle vidéo", "edUseRange": "Utiliser ce passage", "edCutNote": "Enregistrée dans Films/Prometeo et visible dans 🎬 Vidéos. L’original n’est pas modifié.", "edNoDur": "Impossible de lire la durée de cette vidéo", "edBusy": "Attendez la fin de l’enregistrement en cours", "edExtT": "Extraire l’audio", "edFrom": "De {0} ({1})", "edMp3Note": "MP3 : se lit partout, y compris tout autoradio.", "edM4aNote": "M4A : plus rapide et un peu meilleur à taille égale.", "edWhole": "Toute la vidéo", "edPart": "Seulement un passage", "edSave": "Enregistrer", "edWhere": "Enregistré dans Musique/Prometeo sous « {0} » et visible dans 🎵 Musique.", "edCutting": "Découpage…", "edExtracting": "Extraction de l’audio…", "edFail": "Enregistrement impossible (format non pris en charge par le téléphone)", "edCancelled": "Annulé : rien n’a été enregistré", "edNoAudio": "Cette vidéo n’a pas de son", "edSaved": "✓ Enregistré : {0}", "edListen": "Écouter", "edWatch": "Voir", "edUndone": "↩ C’est fait : le nouveau fichier a été supprimé", "edUndoFail": "Impossible de supprimer le fichier", "crT": "Télécommande TV", "crVol": "Volume de la TV", "crPhone": "Continuer sur le téléphone", "crStop": "Arrêter", "crSubsOn": "Sous-titres : oui", "crSubsOff": "Sous-titres : non", "crHint": "Touchez pour contrôler la vidéo", "auMusic": "🎵 Musique", "auLists": "📋 Listes", "auRadio": "📻 Radio", "auFavs": "⭐ Favoris", "auMix": "🔀 Tout mélanger", "auOpen": "Ouvrez Prometeo sur le téléphone", "wvT": "C’est une vidéo", "wvMsg": "« {0} » n’a pas été ajoutée à la bibliothèque. Les vidéos sont complètes dans l’app Android.", "wvMsgN": "{1} vidéos n’ont pas été ajoutées. Les vidéos sont complètes dans l’app Android.", "wvWatch": "La regarder maintenant", "wvWatchSub": "Lue ici sans être enregistrée (aucun espace utilisé)", "wvGet": "Télécharger l’app", "wvGetSub": "GitHub › Releases", "wvNotSaved": "Non enregistrée : rien ne reste à la fermeture"});
+/* v44c */
+Object.assign(I18N.es,{"liveRadio": "Radio en vivo", "radioWord": "Emisora", "stMenu": "Más opciones", "logoPut": "Poner logo", "logoChange": "Cambiar logo", "logoSub": "Elegir una imagen de la galería", "logoDel": "Quitar logo", "logoDelSub": "Vuelve el cuadro de colores", "logoT": "Logo", "logoChangeBtn": "Cambiar", "logoDelBtn": "Quitar", "logoSet": "🖼️ Logo puesto", "logoOff": "Logo quitado", "logoBad": "Esa imagen no se pudo abrir", "editStSub": "Nombre, link y logo", "delStation": "Borrar emisora", "delStSub": "Con Deshacer", "stDelU": "Emisora borrada: {0}", "tvLockedL": "🔒 Bloqueada · toca para abrir", "tvLockedC": "🔒 Bloqueado · toca para abrir", "tvLockL": "Bloquear lista", "tvUnlockL": "Quitar bloqueo", "tvLockC": "Bloquear canal", "tvUnlockC": "Quitar bloqueo", "tvLockSub": "Pide huella, PIN o patrón para abrir", "tvUnlockSub": "Se abre sin pedir nada", "tvLockOnL": "🔒 Lista bloqueada", "tvLockOnC": "🔒 Canal bloqueado", "unlock": "Desbloquear", "tvLockOff": "🔓 Bloqueo quitado"});
+Object.assign(I18N.en,{"liveRadio": "Live radio", "radioWord": "Station", "stMenu": "More options", "logoPut": "Add logo", "logoChange": "Change logo", "logoSub": "Choose an image from the gallery", "logoDel": "Remove logo", "logoDelSub": "The color tile comes back", "logoT": "Logo", "logoChangeBtn": "Change", "logoDelBtn": "Remove", "logoSet": "🖼️ Logo added", "logoOff": "Logo removed", "logoBad": "That image could not be opened", "editStSub": "Name, link and logo", "delStation": "Delete station", "delStSub": "With Undo", "stDelU": "Station deleted: {0}", "tvLockedL": "🔒 Locked · tap to open", "tvLockedC": "🔒 Locked · tap to open", "tvLockL": "Lock list", "tvUnlockL": "Remove lock", "tvLockC": "Lock channel", "tvUnlockC": "Remove lock", "tvLockSub": "Asks for fingerprint, PIN or pattern to open", "tvUnlockSub": "Opens without asking", "tvLockOnL": "🔒 List locked", "tvLockOnC": "🔒 Channel locked", "unlock": "Unlock", "tvLockOff": "🔓 Lock removed"});
+Object.assign(I18N.pt,{"liveRadio": "Rádio ao vivo", "radioWord": "Emissora", "stMenu": "Mais opções", "logoPut": "Colocar logo", "logoChange": "Trocar logo", "logoSub": "Escolher uma imagem da galeria", "logoDel": "Tirar logo", "logoDelSub": "Volta o quadro colorido", "logoT": "Logo", "logoChangeBtn": "Trocar", "logoDelBtn": "Tirar", "logoSet": "🖼️ Logo colocado", "logoOff": "Logo tirado", "logoBad": "Não deu para abrir essa imagem", "editStSub": "Nome, link e logo", "delStation": "Apagar emissora", "delStSub": "Com Desfazer", "stDelU": "Emissora apagada: {0}", "tvLockedL": "🔒 Bloqueada · toque para abrir", "tvLockedC": "🔒 Bloqueado · toque para abrir", "tvLockL": "Bloquear lista", "tvUnlockL": "Tirar bloqueio", "tvLockC": "Bloquear canal", "tvUnlockC": "Tirar bloqueio", "tvLockSub": "Pede digital, PIN ou padrão para abrir", "tvUnlockSub": "Abre sem pedir nada", "tvLockOnL": "🔒 Lista bloqueada", "tvLockOnC": "🔒 Canal bloqueado", "unlock": "Desbloquear", "tvLockOff": "🔓 Bloqueio tirado"});
+Object.assign(I18N.fr,{"liveRadio": "Radio en direct", "radioWord": "Station", "stMenu": "Plus d’options", "logoPut": "Ajouter un logo", "logoChange": "Changer le logo", "logoSub": "Choisir une image dans la galerie", "logoDel": "Retirer le logo", "logoDelSub": "Le carré coloré revient", "logoT": "Logo", "logoChangeBtn": "Changer", "logoDelBtn": "Retirer", "logoSet": "🖼️ Logo ajouté", "logoOff": "Logo retiré", "logoBad": "Impossible d’ouvrir cette image", "editStSub": "Nom, lien et logo", "delStation": "Supprimer la station", "delStSub": "Avec Annuler", "stDelU": "Station supprimée : {0}", "tvLockedL": "🔒 Verrouillée · touchez pour ouvrir", "tvLockedC": "🔒 Verrouillée · touchez pour ouvrir", "tvLockL": "Verrouiller la liste", "tvUnlockL": "Retirer le verrou", "tvLockC": "Verrouiller la chaîne", "tvUnlockC": "Retirer le verrou", "tvLockSub": "Demande empreinte, PIN ou schéma pour ouvrir", "tvUnlockSub": "S’ouvre sans rien demander", "tvLockOnL": "🔒 Liste verrouillée", "tvLockOnC": "🔒 Chaîne verrouillée", "unlock": "Déverrouiller", "tvLockOff": "🔓 Verrou retiré"});
+/* v44d */
+Object.assign(I18N.es,{"tvSearchIn": "Buscar en {0}…"});
+Object.assign(I18N.en,{"tvSearchIn": "Search in {0}…"});
+Object.assign(I18N.pt,{"tvSearchIn": "Procurar em {0}…"});
+Object.assign(I18N.fr,{"tvSearchIn": "Chercher dans {0}…"});
+Object.assign(I18N.es,{"tviTapUnlock": "Toca para desbloquear", "tviLockedS": "Bloqueado", "tviLockedL": "Lista «{0}» con candado", "tviLockedC": "Canal con candado", "lmAddCh": "Agregar canal a esta lista", "lmAddChSub": "Nombre y link .m3u8 · el link de la lista no se toca", "lmAddChSubM": "Nombre y link .m3u8", "lmReset": "Quitar mis cambios", "lmResetSub": "Vuelve a la lista original del link · se puede deshacer", "lmResetSubF": "Vuelve a la lista original del archivo · se puede deshacer", "lmResetDone": "«{0}» volvió a la lista original", "saveIn": "Guardar en", "saveInNote": "Sale marcada la lista que tienes seleccionada. Si la lista tiene candado, el canal también.", "addChTo": "Agregar canal a «{0}»", "chAddedTo": "Canal agregado a «{0}»", "chExists": "Ese canal ya está en «{0}»", "chMineTag": "agregado por ti"});
+Object.assign(I18N.en,{"tviTapUnlock": "Tap to unlock", "tviLockedS": "Locked", "tviLockedL": "List «{0}» is locked", "tviLockedC": "Locked channel", "lmAddCh": "Add a channel to this list", "lmAddChSub": "Name and .m3u8 link · the list link is not touched", "lmAddChSubM": "Name and .m3u8 link", "lmReset": "Remove my changes", "lmResetSub": "Back to the original list from the link · can be undone", "lmResetSubF": "Back to the original list from the file · can be undone", "lmResetDone": "«{0}» is back to the original list", "saveIn": "Save in", "saveInNote": "The list you have selected is marked. If the list is locked, the channel is too.", "addChTo": "Add channel to «{0}»", "chAddedTo": "Channel added to «{0}»", "chExists": "That channel is already in «{0}»", "chMineTag": "added by you"});
+Object.assign(I18N.pt,{"tviTapUnlock": "Toque para desbloquear", "tviLockedS": "Bloqueado", "tviLockedL": "Lista «{0}» com cadeado", "tviLockedC": "Canal com cadeado", "lmAddCh": "Adicionar canal a esta lista", "lmAddChSub": "Nome e link .m3u8 · o link da lista não é alterado", "lmAddChSubM": "Nome e link .m3u8", "lmReset": "Tirar minhas mudanças", "lmResetSub": "Volta à lista original do link · dá para desfazer", "lmResetSubF": "Volta à lista original do arquivo · dá para desfazer", "lmResetDone": "«{0}» voltou à lista original", "saveIn": "Salvar em", "saveInNote": "Vem marcada a lista que você selecionou. Se a lista tiver cadeado, o canal também terá.", "addChTo": "Adicionar canal a «{0}»", "chAddedTo": "Canal adicionado a «{0}»", "chExists": "Esse canal já está em «{0}»", "chMineTag": "adicionado por você"});
+Object.assign(I18N.fr,{"tviTapUnlock": "Touchez pour déverrouiller", "tviLockedS": "Verrouillé", "tviLockedL": "Liste «{0}» verrouillée", "tviLockedC": "Chaîne verrouillée", "lmAddCh": "Ajouter une chaîne à cette liste", "lmAddChSub": "Nom et lien .m3u8 · le lien de la liste n'est pas modifié", "lmAddChSubM": "Nom et lien .m3u8", "lmReset": "Retirer mes changements", "lmResetSub": "Revient à la liste originale du lien · annulable", "lmResetSubF": "Revient à la liste originale du fichier · annulable", "lmResetDone": "«{0}» est revenue à la liste originale", "saveIn": "Enregistrer dans", "saveInNote": "La liste sélectionnée est cochée. Si la liste est verrouillée, la chaîne aussi.", "addChTo": "Ajouter une chaîne à «{0}»", "chAddedTo": "Chaîne ajoutée à «{0}»", "chExists": "Cette chaîne est déjà dans «{0}»", "chMineTag": "ajoutée par vous"});
 function t(k){ let s=(I18N[LANG]&&I18N[LANG][k]); if(s==null) s=I18N.es[k]; if(s==null) s=k;
   for(let i=1;i<arguments.length;i++) s=s.split('{'+(i-1)+'}').join(String(arguments[i])); return s; }
 function nSongs(n){ return t(n===1?'song1':'songN',n); }
@@ -2996,15 +3160,16 @@ function startStream(url){
 function onRadioNative(ev){
   if(!radioId || !ev) return;
   if(ev.type==='state'){ nrState=ev.value; if(ev.value==='online' && !radioStart) radioStart=Date.now(); setRadioState(ev.value); setPlayIcon(); carState(); }
-  else if(ev.type==='title'){ radioNowTitle=String(ev.value||'').trim(); $('radioNow').textContent=radioNowTitle? '♪ '+radioNowTitle : ''; sendCarRadio(); }
+  else if(ev.type==='title'){ radioNowTitle=String(ev.value||'').trim(); $('radioNow').textContent=''; if(radioId) $('curSub').textContent=radioSubText(); sendCarRadio(); }
   else if(ev.type==='error'){ nrState='paused'; setRadioState('paused'); setPlayIcon(); carState(); const st=stationById(radioId); toast(navigator.onLine===false? t('noNet') : t('radioFail',st? st.name : '')); }
 }
 const stationById=id=> id===TVA? tvAudioStation() : radios.find(r=>r.id===id);
 function saveRadios(){ store.set('radios',radios); }
 function stInitials(n){ const w=String(n||'').trim().split(/\s+/).filter(x=>/^\p{L}/u.test(x));
   if(w.length>1) return (w[0][0]+w[1][0]).toUpperCase(); if(w.length) return w[0].slice(0,2).toUpperCase(); return '📻'; }
-function stTile(st){ const d=el('div','st-tile',stInitials(st.name)); d.style.background='linear-gradient(135deg,'+st.color+',rgba(0,0,0,.55))'; return d; }
+function stTile(st){ if(st.logo){ const d=el('div','st-tile has-logo'); d.style.backgroundImage='url('+st.logo+')'; return d; } const d=el('div','st-tile',stInitials(st.name)); d.style.background='linear-gradient(135deg,'+st.color+',rgba(0,0,0,.55))'; return d; }
 function stTileDataURL(st){
+  if(st.logo) return st.logo;
   const c=document.createElement('canvas'); c.width=c.height=320; const g=c.getContext('2d');
   const gr=g.createLinearGradient(0,0,320,320); gr.addColorStop(0,st.color); gr.addColorStop(1,'#101418');
   g.fillStyle=gr; g.fillRect(0,0,320,320);
@@ -3024,10 +3189,10 @@ function renderRadio(){
   pool.forEach(st=>{
     const r=el('div','song-item'+(st.id===radioId?' live':'')); r.appendChild(stTile(st));
     const info=el('div','song-info'); info.appendChild(el('b',null,st.name));
-    let host=st.url.replace(/^https?:\/\//i,'');
-    info.appendChild(st.id===radioId? el('small','st-live',t('live')) : el('small',null,host));
+    info.appendChild(st.id===radioId? el('small','st-live',t('live')) : el('small',null,'📻 '+t('liveRadio')));
     info.onclick=()=>{ playRadio(st.id); switchTab('ahora'); }; r.appendChild(info);
-    [[st.fav?'★':'☆',t(st.fav?'favDel':'favAdd'),()=>toggleFavStation(st),'star'+(st.fav?'':' off')],['✎',t('edit'),()=>editStation(st)],['🗑',t('del'),()=>deleteStation(st),'del']].forEach(([ic,ti,fn,cls])=>{
+    onLongPress(r,()=>openStationMenu(st));
+    [[st.fav?'★':'☆',t(st.fav?'favDel':'favAdd'),()=>toggleFavStation(st),'star'+(st.fav?'':' off')],['⋮',t('stMenu'),()=>openStationMenu(st),'more']].forEach(([ic,ti,fn,cls])=>{
       const b=el('button','icon-btn'+(cls?' '+cls:''),ic); b.title=ti; b.setAttribute('aria-label',ti); b.onclick=e=>{ e.stopPropagation(); fn(); }; r.appendChild(b); });
     c.appendChild(r);
   });
@@ -3044,14 +3209,23 @@ function testStream(url){
   });
 }
 async function editStation(st){
-  let nameIn, urlIn, box;
+  let nameIn, urlIn, box, logo=st? st.logo||'' : '';
   const res=await modal(st? t('editStation') : t('addStationT'),(b,close)=>{
+    /* v44c: 🖼️ logo de la emisora */
+    const lr0=el('div','lrow st-logo-row'); const th=el('div','st-tile'+(logo?' has-logo':''));
+    const paintLogo=()=>{ th.className='st-tile'+(logo?' has-logo':''); th.style.backgroundImage=logo? 'url('+logo+')' : ''; th.textContent=logo? '' : '📻'; qb.classList.toggle('hidden',!logo); };
+    lr0.appendChild(th); const lt=el('div','tx'); lt.appendChild(el('b',null,t('logoT'))); lt.appendChild(el('small',null,t('logoSub'))); lr0.appendChild(lt);
+    const cb0=el('button','btn-pill',t('logoChangeBtn')); cb0.onclick=async()=>{ const d=await pickImage(); if(d){ logo=d; paintLogo(); } }; lr0.appendChild(cb0);
+    const qb=el('button','btn-pill',t('logoDelBtn')); qb.onclick=()=>{ logo=''; paintLogo(); }; lr0.appendChild(qb);
+    b.appendChild(lr0); paintLogo();
     b.appendChild(el('label','field-label',t('stName')));
     nameIn=el('input','search'); nameIn.type='text'; nameIn.value=st? st.name : ''; nameIn.maxLength=60; b.appendChild(nameIn);
     b.appendChild(el('label','field-label',t('stUrl')));
     urlIn=el('input','search'); urlIn.type='url'; urlIn.value=st? st.url : ''; urlIn.placeholder='https://…'; urlIn.autocapitalize='off'; urlIn.spellcheck=false; b.appendChild(urlIn);
     if(st){ const lr=el('div','link-btns'); const c1=el('button','btn-pill','📋 '+t('copy')); c1.onclick=()=>{ const v=urlIn.value.trim(); if(v) copyLink(v); };
-      const c2=el('button','btn-pill','📤 '+t('share')); c2.onclick=()=>{ const v=urlIn.value.trim(); if(v) shareLink(v,nameIn.value.trim()); }; lr.appendChild(c1); lr.appendChild(c2); b.appendChild(lr); }
+      const c2=el('button','btn-pill','📤 '+t('share')); c2.onclick=()=>{ const v=urlIn.value.trim(); if(v) shareLink(v,nameIn.value.trim()); };
+      const c3=el('button','btn-pill','✏️ '+t('editLink')); c3.onclick=()=>{ urlIn.focus(); urlIn.select(); };
+      lr.appendChild(c1); lr.appendChild(c2); lr.appendChild(c3); b.appendChild(lr); }
     b.appendChild(el('p','field-help',t('urlHelp')));
     box=el('div','test-box'); box.appendChild(el('i')); const msg=el('span',null,t('testIdle')); box.appendChild(msg); b.appendChild(box);
     const row=el('div','st-actions');
@@ -3069,16 +3243,16 @@ async function editStation(st){
       const n=nameIn.value.trim(), u=urlIn.value.trim();
       if(!n){ toast(t('needName')); nameIn.focus(); return; }
       if(!validUrl(u)){ box.className='test-box bad'; msg.textContent=t('badUrl'); urlIn.focus(); return; }
-      close({name:n,url:u});
+      close({name:n,url:u,logo});
     };
     row.appendChild(bt); row.appendChild(bc); row.appendChild(bs); b.appendChild(row);
     b.appendChild(el('p','privacy-small',t('radioPrivacy')));
     b.appendChild(el('p','privacy-small',t('noHost')));
   },[]);
   if(!res) return;
-  if(st){ st.name=res.name; const changed=st.url!==res.url; st.url=res.url; saveRadios();
+  if(st){ st.name=res.name; const changed=st.url!==res.url; st.url=res.url; if(res.logo) st.logo=res.logo; else delete st.logo; saveRadios();
     if(st.id===radioId){ if(changed) playRadio(st.id); else { updateRadioText(); showStationTile(st); } } }
-  else { radios.push({id:'r'+uid(), name:res.name, url:res.url, color:ST_COLORS[radios.length%ST_COLORS.length]}); saveRadios(); }
+  else { const ns={id:'r'+uid(), name:res.name, url:res.url, color:ST_COLORS[radios.length%ST_COLORS.length]}; if(res.logo) ns.logo=res.logo; radios.push(ns); saveRadios(); }
   renderRadio(); toast(t('stationSaved'));
 }
 async function deleteStation(st){
@@ -3098,7 +3272,7 @@ function updateRadioText(){
   const st=stationById(radioId); if(!st) return;
   $('curTitle').textContent=st.name;
   $('radioPos').textContent=radioPosText(st);
-  $('curSub').textContent=st.url.replace(/^https?:\/\//i,'');
+  $('curSub').textContent=radioSubText(); $('radioNow').textContent='';
   updateRadioTimes();
 }
 /* "Radio • 2 de 8", o "Carro · 1 de 4" si se está usando una lista */
@@ -3202,17 +3376,24 @@ function parseM3U(text){
   return out;
 }
 async function loadTv(){ try{ tvLists=(await dbAll('tv'))||[]; }catch(e){ tvLists=[]; } tvLists.sort((a,b)=>a.added-b.added); renderTv(); }
-function allChannels(){ const o=[]; tvLists.forEach(L=>L.channels.forEach(c=>o.push(c))); return o; }
+function allChannels(){ const o=[], un=tvUnlocked(); tvLists.forEach(L=>{ if(L.locked && !un) return; L.channels.forEach(c=>{ if(c.lk && !un) return; o.push(c); }); }); return o; }
 function chColor(s){ let h=0; for(let i=0;i<s.length;i++) h=(h*31+s.charCodeAt(i))>>>0; return ST_COLORS[h%ST_COLORS.length]; }
 function setRadioPane(p){ tvPane=p; $('segSt').classList.toggle('on',p==='st'); $('segTv').classList.toggle('on',p==='tv');
   $('paneSt').classList.toggle('hidden',p!=='st'); $('paneTv').classList.toggle('hidden',p!=='tv'); if(p==='tv') renderTv(); tviSync(true); }
 function renderTv(){
-  const all=allChannels();
+  const all=allChannels(), curL=curTvList();
+  const lall=curL? curL.channels.filter(c=>!(c.lk && !tvUnlocked())) : all;
+  $('tvSearch').placeholder=curL? t('tvSearchIn',curL.name) : t('searchCh');
   $('tvCount').textContent=t(all.length===1?'ch1':'chN',all.length);
   const ls=$('tvLists'); ls.textContent='';
   tvLists.forEach(L=>{
-    const r=el('div','song-item list-row'); const info=el('div','song-info');
-    info.appendChild(el('b',null,'📋 '+L.name)); info.appendChild(el('small',null,t(L.channels.length===1?'ch1':'chN',L.channels.length)+(L.url? ' • '+L.url.replace(/^https?:\/\//i,'') : '')));
+    const r=el('div','song-item list-row pick'+(L===curL?' on':'')); const info=el('div','song-info');
+    const shut=L.locked && !tvUnlocked();
+    r.appendChild(el('span','ck')); r.firstChild.onclick=()=>shut? openLockedTv(()=>selectTvList(L)) : selectTvList(L);
+    info.appendChild(el('b',null,'📋 '+L.name+(L.locked? (shut?' 🔒':' 🔓') : '')));
+    info.appendChild(el('small',null, shut? t('tvLockedL') : t(L.channels.length===1?'ch1':'chN',L.channels.length)+(L.url? ' • '+L.url.replace(/^https?:\/\//i,'') : '')));
+    if(shut){ info.onclick=()=>openLockedTv(()=>selectTvList(L)); r.appendChild(info); const lk=el('button','icon-btn lock-b','🔒'); lk.setAttribute('aria-label',t('unlock')); lk.onclick=()=>openLockedTv(()=>selectTvList(L)); r.appendChild(lk); onLongPress(r,()=>openLockedTv(()=>openListMenu(L))); ls.appendChild(r); return; }
+    info.onclick=()=>selectTvList(L);
     r.appendChild(info);
     if(L.url){ const b=el('button','icon-btn','⟳'); b.title=t('refresh'); b.setAttribute('aria-label',t('refresh')); b.onclick=()=>refreshList(L); r.appendChild(b); }
     const d=el('button','icon-btn more','⋮'); d.title=t('lmT'); d.setAttribute('aria-label',t('lmT')); d.onclick=()=>openListMenu(L); r.appendChild(d);
@@ -3224,25 +3405,34 @@ function renderTv(){
   renderTvMy(has);
   const sel=tvSelItems();
   $('tvSearch').classList.toggle('hidden',!has && !sel); $('tvGroups').classList.toggle('hidden',!has || !!sel);
-  const groups=[...new Set(all.map(c=>c.g).filter(Boolean))].sort((a,b)=>a.localeCompare(b,LANG));
+  const groups=[...new Set(lall.map(c=>c.g).filter(Boolean))].sort((a,b)=>a.localeCompare(b,LANG));
   if(tvGroup && !groups.includes(tvGroup)) tvGroup='';
   const gc=$('tvGroups'); gc.textContent='';
-  if(groups.length>1 && !sel) [''].concat(groups).forEach(g=>{ const b=el('button',g===tvGroup?'on':'',g||t('allGroups')); b.onclick=()=>{ tvGroup=g; renderTv(); }; gc.appendChild(b); });
+  const gN=g=>g? lall.filter(c=>c.g===g).length : lall.length;
+  if(groups.length>=1 && !sel) [''].concat(groups).forEach(g=>{ const b=el('button',g===tvGroup?'on':'',(g||t('allGroups'))+' · '+gN(g)); b.onclick=()=>{ tvGroup=g; renderTv(); }; gc.appendChild(b); });
   else gc.classList.add('hidden');
   $('tvGrpLabel').classList.toggle('hidden',gc.classList.contains('hidden'));
   $('tvHint').classList.toggle('hidden',!has || tvMy.length>0 || tvFav.length>0);
   const c=$('tvList'); c.textContent='';
-  if(!has && !sel){ c.appendChild(el('div','empty',t('tvEmpty'))); return; }
+  const singles=lockedSingles().filter(ch=>curL && curL.channels.includes(ch));
+  if(!has && !sel && !singles.length){ c.appendChild(el('div','empty',t('tvEmpty'))); return; }
   const q=$('tvSearch').value.trim().toLowerCase();
-  const base=sel || all;
+  const base=sel || lall;
   const list=base.filter(ch=>(sel || !tvGroup || ch.g===tvGroup) && (!q || ch.n.toLowerCase().includes(q) || (ch.g||'').toLowerCase().includes(q)));
   if(sel && !base.length){ c.appendChild(el('div','empty',t(tvSel==='fav'?'tvFavEmpty':'tvListEmpty'))); return; }
   const urls=new Set(all.map(x=>x.u));
   tvShown=list.filter(ch=>!ch.missing);
   const frag=document.createDocumentFragment();
+  /* v44c: canales sueltos bloqueados: nombre con 🔒 (se abren con huella o PIN) */
+  if(!q && !sel && !tvGroup) singles.forEach(ch=>{
+    const r=el('div','song-item locked'); const tl=stTile({name:ch.n,color:chColor(ch.n)}); r.appendChild(tl);
+    const info=el('div','song-info'); info.appendChild(el('b',null,ch.n+' 🔒')); info.appendChild(el('small',null,t('tvLockedC'))); info.onclick=()=>openLockedTv(()=>playChannel(ch)); r.appendChild(info);
+    const lk=el('button','icon-btn lock-b','🔒'); lk.setAttribute('aria-label',t('unlock')); lk.onclick=()=>openLockedTv(()=>playChannel(ch)); r.appendChild(lk);
+    frag.appendChild(r);
+  });
   list.slice(0,200).forEach(ch=>{
     const r=el('div','song-item'+(ch.missing?' missing':'')); r.appendChild(stTile({name:ch.n,color:chColor(ch.n)}));
-    const info=el('div','song-info'); info.appendChild(el('b',null,ch.n)); info.appendChild(el('small',null,ch.missing? t('chMissing') : (ch.o? '✏️ ' : '')+(ch.g||ch.u.replace(/^[a-z]+:\/\//i,''))));
+    const info=el('div','song-info'); info.appendChild(el('b',null,ch.n+(ch.x?' ✋':''))); info.appendChild(el('small',null,ch.missing? t('chMissing') : (ch.o? '✏️ ' : '')+(ch.x? t('chMineTag')+' · ' : '')+(ch.g||ch.u.replace(/^[a-z]+:\/\//i,''))));
     info.onclick=()=>playChannel(ch); r.appendChild(info);
     const fav=isFavCh(ch,urls), sb=el('button','icon-btn star'+(fav?'':' off'),fav?'★':'☆'); sb.title=t(fav?'chFavDel':'chFavAdd'); sb.setAttribute('aria-label',sb.title);
     sb.onclick=e=>{ e.stopPropagation(); toggleFavCh(ch); }; r.appendChild(sb);
@@ -3273,7 +3463,7 @@ function tviSync(pauseIfHidden){
   const showBox=!!tvInlineCh && currentTab==='radio' && tvPane==='tv';
   box.classList.toggle('hidden',!showBox); document.body.classList.toggle('tvi-on',showBox);
   if(showBox){ const tb=document.querySelector('.topbar'); box.style.top=(tb? tb.getBoundingClientRect().bottom : 0)+'px'; document.body.style.setProperty('--tvih',(box.offsetHeight+6)+'px'); }
-  if(!tvInlineCh || !PM || !PM.tvInlineRect) return;
+  if(!tvInlineCh || tviLocked || !PM || !PM.tvInlineRect) return;
   if(tviVisible()) requestAnimationFrame(()=>{ if(tviVisible()) PM.tvInlineRect(tviRect()).catch(()=>{}); });
   else { PM.tvInlineRect({show:false}).catch(()=>{}); if(pauseIfHidden && !showBox) PM.tvInlineCmd('pause').catch(()=>{}); }
 }
@@ -3289,6 +3479,8 @@ function tviRender(){
   const fav=isFavCh(ch); const fb=$('tviFav'); fb.textContent=fav?'★':'☆'; fb.classList.toggle('off',!fav); fb.title=t(fav?'chFavDel':'chFavAdd');
   $('tviPrev').classList.toggle('hidden',tviPool.length<2); $('tviNext').classList.toggle('hidden',tviPool.length<2);
   $('tviFull').title=t('tviFull'); $('tviClose').title=t('tviClose'); $('tviShot').title=t('tv_shot'); $('tviShot').classList.toggle('hidden',!(PM && PM.tvShot));
+  $('tvInline').classList.toggle('locked',tviLocked);
+  if(tviLocked){ sub.className=''; sub.textContent='🔒 '+t('tviLockedS'); $('tvInlineState').textContent=''; const L=tvLists.find(x=>x.channels.some(c=>c.u===ch.u) && x.locked); $('tviLockSub').textContent= L? t('tviLockedL',L.name) : t('tviLockedC'); }
   const box=$('tvInline'); if(!box.classList.contains('hidden')) document.body.style.setProperty('--tvih',(box.offsetHeight+6)+'px');
 }
 function openTvInline(ch, pool){
@@ -3297,14 +3489,14 @@ function openTvInline(ch, pool){
   if(navigator.onLine===false) toast(t('noNet'));
   tviPool=(pool && pool.length)? pool.slice() : tvPoolFor(ch).slice();
   tviIdx=Math.max(0,tviPool.indexOf(ch)); if(tviPool[tviIdx]!==ch){ const k=tviPool.findIndex(c=>c.u===ch.u); if(k>=0) tviIdx=k; else { tviPool.unshift(ch); tviIdx=0; } }
-  tvInlineCh=ch; tviState='';
+  tvInlineCh=ch; tviState=''; tviLocked=false;
   store.set('tvLast',{u:ch.u, n:ch.n, g:ch.g||''});
   tviRender(); tviSync(); renderTvResume();
   requestAnimationFrame(()=>{ if(tvInlineCh===ch) PM.tvInline(ch.u, tviVisible()? tviRect() : {show:false}).catch(()=>{ tviState='error'; tviRender(); }); });
 }
 function tviMove(dir){ if(tviPool.length<2) return; tviIdx=(tviIdx+dir+tviPool.length)%tviPool.length; openTvInline(tviPool[tviIdx], tviPool); }
 function closeTvInline(){
-  tvInlineCh=null; tviState=''; tviFromFull=false;
+  tvInlineCh=null; tviState=''; tviFromFull=false; tviLocked=false;
   if(PM && PM.tvClose) PM.tvClose().catch(()=>{});
   tviSync(); if(currentTab==='radio' && tvPane==='tv') renderTv();
 }
@@ -3318,6 +3510,21 @@ $('tviPrev').onclick=()=>tviMove(-1); $('tviNext').onclick=()=>tviMove(1);
 $('tviPlay').onclick=()=>{ if(!tvInlineCh) return; if(tviState==='error'){ openTvInline(tvInlineCh,tviPool); return; } PM.tvInlineCmd('toggle').catch(()=>{}); };
 $('tviFav').onclick=()=>{ if(tvInlineCh){ toggleFavCh(tvInlineCh); tviRender(); } };
 $('tviFull').onclick=tviFull; $('tviClose').onclick=closeTvInline; $('tviShot').onclick=tvInlineShot;
+function chLockedU(u){ return tvLists.some(L=>L.channels.some(c=>c.u===u && (L.locked || c.lk))); }
+/* v44e: la TV se cierra ya: el canal de una lista con candado se apaga (pantalla negra), el solo audio y el Chromecast también */
+function tvLockNow(){
+  try{ renderTv(); }catch(e){} try{ autoCatalogSoon(); }catch(e){}
+  if(tvUnlocked()) return;
+  if(tvInlineCh && !tviLocked && chLockedU(tvInlineCh.u)) tviLockScreen();
+  if(radioId===TVA && tvAudio && tvAudio.pool[tvAudio.i] && chLockedU(tvAudio.pool[tvAudio.i].u)) stopRadio(false);
+  if(castOn && castKind==='tv'){ const c=castTvPool[castTvIdx]; if(c && chLockedU(c.u)){ PM.castCmd('stop').catch(()=>{}); castKind=''; castPlaying=false; castBuf=false; castRender(); } }
+}
+function tviLockScreen(){
+  if(!tvInlineCh) return; tviLocked=true;
+  if(PM && PM.tvClose) PM.tvClose().catch(()=>{});
+  tviRender(); tviSync();
+}
+$('tviLock').onclick=async()=>{ if(!tviLocked || !tvInlineCh) return; if(tvUnlocked() || await requireAuth()){ const ch=tvInlineCh; tviLocked=false; renderTv(); openTvInline(ch, tvPoolFor(ch)); } };
 window.addEventListener('resize',()=>tviSync());
 /* ---- TV a pantalla completa ---- */
 function openTvFull(ch, pool){
@@ -3401,7 +3608,10 @@ async function refreshList(L){
 /* v42: los links que corregiste a mano (✏️) se mantienen al actualizar la lista */
 function buildChannels(L, entries){
   const hid=new Set(L.hidden||[]), over=L.over||{};
-  return entries.filter(e=>!hid.has(e.u)).map(e=>{ const c={n:e.n||e.u, g:e.g||'', u:e.u}; if(over[e.u]){ c.o=e.u; c.u=over[e.u]; } return c; });
+  const out=entries.filter(e=>!hid.has(e.u)).map(e=>{ const c={n:e.n||e.u, g:e.g||'', u:e.u}; if(over[e.u]){ c.o=e.u; c.u=over[e.u]; } return c; });
+  /* v44e: los canales que agregaste a mano a esta lista se quedan arriba (el link M3U no se toca) */
+  const have=new Set(out.map(c=>c.u));
+  return (L.extra||[]).filter(e=>!have.has(e.u)).map(e=>({n:e.n, g:e.g||'', u:e.u, x:1})).concat(out);
 }
 /* Cambia los canales de una lista. Favoritos, tus listas y "Seguir viendo" se conservan (se reconocen por el nombre) */
 async function replaceChannels(L, entries, url){
@@ -3427,10 +3637,16 @@ async function openListMenu(L){
     b.appendChild(el('p','m-sub',t(L.channels.length===1?'ch1':'chN',L.channels.length)+(L.url? ' · '+L.url.replace(/^https?:\/\//i,'') : (L.mine? '' : ' · '+t('fromFile')))));
     const it=(ic,title,sub,key,cls)=>{ const bt=el('button','m-item list-act'+(cls?' '+cls:'')); bt.appendChild(el('b',null,ic+' '+title)); if(sub) bt.appendChild(el('small',null,sub)); bt.onclick=()=>close(key); b.appendChild(bt); };
     it('✏️',t('lmRename'),'','rename');
+    it('➕',t('lmAddCh'),t(L.mine?'lmAddChSubM':'lmAddChSub'),'addch');
+    it(L.locked?'🔓':'🔒',t(L.locked?'tvUnlockL':'tvLockL'),t(L.locked?'tvUnlockSub':'tvLockSub'),'lock');
     if(!L.mine){ it('🔗',t('lmLink'),t('lmLinkSub'),'link'); it('📂',t('lmFile'),t('lmFileSub'),'file'); }
     if(L.url) it('🔄',t('lmRefresh'),t('lmRefreshSub'),'refresh');
+    if(!L.mine && ((L.hidden||[]).length || Object.keys(L.over||{}).length || (L.extra||[]).length)) it('↩️',t('lmReset'),t(L.url?'lmResetSub':'lmResetSubF'),'reset');
     it('🗑️',t('lmDelete'),t('lmDeleteSub'),'delete','del-ch');
   },[[t('close'),()=>null,'btn-pill']]);
+  if(r==='addch'){ await addChannelDialog(L); return; }
+  if(r==='reset'){ await resetListEdits(L); return; }
+  if(r==='lock'){ await toggleTvLock(L,true); return; }
   if(r==='rename'){ const n=await askText(t('lmRename'),L.name); if(n && n!==L.name){ L.name=n; try{ await dbPut('tv',L); }catch(e){} renderTv(); toast(t('lmRenamed')); } }
   else if(r==='link') await changeListLink(L);
   else if(r==='file') await changeListFile(L);
@@ -3531,7 +3747,7 @@ async function setChLink(ch, L, u){
 }
 /* Quita de Favoritos, Mis listas, "Seguir viendo" y del solo audio los canales que ya no existen en ninguna lista */
 function purgeChannels(gone){
-  const still=new Set(allChannels().map(c=>c.u));
+  const still=new Set(allChannelsRaw().map(c=>c.u));
   const dead=c=>gone.has(c.u) && !still.has(c.u);
   const nf=tvFav.filter(c=>!dead(c)); if(nf.length!==tvFav.length){ tvFav=nf; saveTvFav(); }
   let ch=false; tvMy.forEach(L=>{ const k=L.items.filter(c=>!dead(c)); if(k.length!==L.items.length){ L.items=k; ch=true; } }); if(ch) saveTvMy();
@@ -3555,6 +3771,7 @@ async function editChannel(ch){
   if(!res || (res.n===ch.n && res.u===ch.u)) return;
   const oldU=ch.u, urlChanged=res.u!==oldU;
   ch.n=res.n; ch.u=res.u;
+  if(ch.x && L.extra){ const e=L.extra.find(e=>e.u===oldU); if(e){ e.n=res.n; e.u=res.u; } }
   try{ await dbPut('tv',L); }catch(e){ toast(t('saveFail')); return; }
   const fix=c=>{ if(c && c.u===oldU){ c.n=res.n; c.u=res.u; return true; } return false; };
   if(tvFav.map(fix).some(Boolean)) saveTvFav();
@@ -3566,39 +3783,89 @@ async function editChannel(ch){
 }
 async function deleteChannel(ch){
   const L=tvLists.find(x=>x.channels.includes(ch)); if(!L) return;
-  const yes=await modal(t('delChT'),b=>{ b.appendChild(el('p','m-msg',t('delChQ',ch.n,L.name))); if(L.url) b.appendChild(el('p','field-help',t('delChM3U'))); },[[t('cancel'),()=>false,'btn-pill'],[t('del'),()=>true,'btn-danger']]);
+  const yes=await modal(t('delChT'),b=>{ b.appendChild(el('p','m-msg',t('delChQ',ch.n,L.name))); if(L.url && !ch.x) b.appendChild(el('p','field-help',t('delChM3U'))); },[[t('cancel'),()=>false,'btn-pill'],[t('del'),()=>true,'btn-danger']]);
   if(!yes) return;
   L.channels=L.channels.filter(c=>c!==ch);
-  if(L.url){ L.hidden=(L.hidden||[]); const ou=ch.o||ch.u; if(!L.hidden.includes(ou)) L.hidden.push(ou); }
+  if(ch.x){ L.extra=(L.extra||[]).filter(e=>e.u!==ch.u); }
+  else if(L.url){ L.hidden=(L.hidden||[]); const ou=ch.o||ch.u; if(!L.hidden.includes(ou)) L.hidden.push(ou); }
   if(!L.channels.length && L.mine){ try{ await dbDel('tv',L.id); }catch(e){} tvLists=tvLists.filter(x=>x!==L); }
   else { try{ await dbPut('tv',L); }catch(e){} }
   purgeChannels(new Set([ch.u]));
   renderTv(); toast(t('chDeleted'));
 }
 /* Formulario de canal (agregar o editar): devuelve {n,u} o null */
-function channelForm(title, init){
-  let nameIn, urlIn;
+function channelForm(title, init, pick){
+  let nameIn, urlIn, sel=pick? pick.sel : null;
   return modal(title,(b,close)=>{
     b.appendChild(el('label','field-label',t('chName'))); nameIn=el('input','search'); nameIn.type='text'; nameIn.maxLength=60; nameIn.value=(init&&init.n)||''; b.appendChild(nameIn);
     b.appendChild(el('label','field-label',t('chUrl'))); urlIn=el('input','search'); urlIn.type='url'; urlIn.placeholder='https://…/canal.m3u8'; urlIn.autocapitalize='off'; urlIn.spellcheck=false; urlIn.value=(init&&init.u)||''; b.appendChild(urlIn);
+    if(pick && pick.opts.length>1){
+      b.appendChild(el('label','field-label',t('saveIn'))); const pr=el('div','ch-pick');
+      pick.opts.forEach(o=>{ const c=el('button',o.k===sel?'on':'',(o.k===sel?'✓ ':'')+o.label); c.onclick=()=>{ sel=o.k; [...pr.children].forEach((x,i)=>{ const on=pick.opts[i].k===sel; x.className=on?'on':''; x.textContent=(on?'✓ ':'')+pick.opts[i].label; }); }; pr.appendChild(c); });
+      b.appendChild(pr); b.appendChild(el('p','field-help',t('saveInNote')));
+    }
     const row=el('div','st-actions');
     const bc=el('button','btn-pill',t('cancel')); bc.onclick=()=>close(null);
     const bs=el('button','btn-ok',t('save')); bs.onclick=()=>{ const n=nameIn.value.trim(), u=urlIn.value.trim();
-      if(!n){ toast(t('needName')); return; } if(!STREAM_RE.test(u)){ toast(t('badUrl')); return; } close({n,u}); };
+      if(!n){ toast(t('needName')); return; } if(!STREAM_RE.test(u) || /\s/.test(u)){ toast(t('badUrl')); return; } close({n,u,k:sel}); };
     row.appendChild(bc); row.appendChild(bs); b.appendChild(row);
   },[]);
 }
-async function addChannelDialog(){
-  const res=await channelForm(t('addChannelT'));
+async function addChannelDialog(target){
+  if(target && !(target instanceof Object && target.channels)) target=null;   /* desde el botón llega el evento del clic */
+  const vis=tvLists.filter(L=>!L.mine && (!L.locked || tvUnlocked()));
+  const mine=tvLists.find(x=>x.mine);
+  const opts=vis.map(L=>({k:L.id, label:'📋 '+L.name})).concat([{k:'__mine', label:'📺 '+(mine? mine.name : t('myChannels'))}]);
+  let def=target? (target.mine? '__mine' : target.id) : null;
+  if(!def){ let cur=null; try{ cur=curTvList(); }catch(e){} def=(cur && !cur.mine && vis.includes(cur))? cur.id : '__mine'; }
+  const res=await channelForm(target && !target.mine? t('addChTo',target.name) : t('addChannelT'), null, {opts, sel:def});
   if(!res) return;
-  let L=tvLists.find(x=>x.mine);
+  /* el link se prueba antes de guardar (como al editar un link) */
+  if(PM && PM.probeUrl && /^https?:/i.test(res.u)){
+    toast(t('testing')); let ok=true, why='';
+    try{ const r=await PM.probeUrl(res.u); ok=!!r.ok; why=r.why || (r.code? 'HTTP '+r.code : ''); }catch(e){ ok=false; why=String(e); }
+    if(!ok){
+      const keep=await modal(t('linkFailT'),b=>{ b.appendChild(el('p','m-msg',t('linkFail',why||'?'))); b.appendChild(el('p','field-help',t('linkFailHelp'))); },
+        [[t('cancel'),()=>false,'btn-pill'],[t('saveAnyway'),()=>true,'btn-ok']]);
+      if(!keep) return;
+    }
+  }
+  let L=res.k==='__mine'? mine : tvLists.find(x=>x.id===res.k);
   if(!L){ L={id:'lmine', name:t('myChannels'), url:'', mine:true, channels:[], added:0}; tvLists.unshift(L); }
-  L.channels.push({n:res.n, g:'', u:res.u});
+  if(L.channels.some(c=>c.u===res.u)){ toast(t('chExists',L.name)); return; }
+  const ch={n:res.n, g:'', u:res.u};
+  if(L.mine) L.channels.push(ch);
+  else { ch.x=1; L.extra=(L.extra||[]).filter(e=>e.u!==res.u); L.extra.unshift({n:res.n, g:'', u:res.u}); if(L.hidden) L.hidden=L.hidden.filter(u=>u!==res.u); L.channels.unshift(ch); }
   try{ await dbPut('tv',L); }catch(e){ toast(t('saveFail')); return; }
-  renderTv(); toast(t('chSaved'));
+  renderTv(); try{ autoCatalogSoon(); }catch(e){}
+  toastUndo(t('chAddedTo',L.name), async()=>{
+    L.channels=L.channels.filter(c=>c!==ch); if(L.extra) L.extra=L.extra.filter(e=>e.u!==ch.u);
+    if(!L.channels.length && L.mine){ try{ await dbDel('tv',L.id); }catch(e){} tvLists=tvLists.filter(x=>x!==L); }
+    else { try{ await dbPut('tv',L); }catch(e){} }
+    purgeChannels(new Set([ch.u])); renderTv(); toast(t('undone'));
+  });
+}
+/* v44e: ↩️ Quitar mis cambios: la lista vuelve a ser como su link o archivo (se puede deshacer) */
+async function resetListEdits(L){
+  const snap={channels:L.channels.slice(), hidden:(L.hidden||[]).slice(), over:Object.assign({},L.over||{}), extra:(L.extra||[]).slice()};
+  let entries=null;
+  if(L.url && snap.hidden.length){
+    if(navigator.onLine===false){ toast(t('noNet')); return; }
+    toast(t('loadingList'));
+    try{ entries=parseM3U(await fetchListText(L.url)).filter(e=>STREAM_RE.test(e.u)); }catch(e){ toast(t('listFail',(e && e.message)||e||'error')); return; }
+    if(!entries.length){ toast(t('listEmptyErr')); return; }
+  }
+  L.hidden=[]; L.over={}; L.extra=[];
+  L.channels= entries? buildChannels(L,entries) : snap.channels.filter(c=>!c.x).map(c=>c.o? {n:c.n, g:c.g||'', u:c.o} : c);
+  try{ await dbPut('tv',L); }catch(e){ Object.assign(L,snap); toast(t('saveFail')); return; }
+  const now=new Set(L.channels.map(c=>c.u)), gone=new Set(snap.channels.map(c=>c.u).filter(u=>!now.has(u)));
+  if(tvInlineCh && gone.has(tvInlineCh.u)) closeTvInline();
+  renderTv(); let undone=false;
+  const tm=setTimeout(()=>{ if(undone) return; purgeChannels(gone); if(currentTab==='radio' && tvPane==='tv') renderTv(); },6500);
+  toastUndo(t('lmResetDone',L.name), async()=>{ undone=true; clearTimeout(tm); Object.assign(L,snap); try{ await dbPut('tv',L); }catch(e){} renderTv(); toast(t('undone')); });
 }
 $('segSt').onclick=()=>setRadioPane('st'); $('segTv').onclick=()=>setRadioPane('tv');
-$('btnAddList').onclick=addListDialog; $('btnAddChannel').onclick=addChannelDialog;
+$('btnAddList').onclick=addListDialog; $('btnAddChannel').onclick=()=>addChannelDialog();
 $('tvSearch').addEventListener('input',renderTv);
 
 /* ================= CARRO POR BLUETOOTH (v41) =================
@@ -3636,6 +3903,8 @@ function carState(){ if(radioId){ if(PM && PM.playState) PM.playState(!radioPaus
 function carControl(ev){
   const a=ev && ev.action;
   /* v44: 🚗 Android Auto */
+  if(a==='autoNative'){ onAutoNative(ev); return; }
+  if(a==='autoHandoff'){ onAutoHandoff(ev); return; }
   if(a==='playId'){ autoPlay(ev.id); return; }
   if(a==='search'){ autoSearch(ev.q); return; }
   if(radioId){ if(a==='play'){ if(radioPaused()) toggleRadio(); } else if(a==='pause') radioPauseAny(); else if(a==='next') switchStation(1); else if(a==='prev') switchStation(-1); return; }
@@ -3671,7 +3940,11 @@ function nativeStart(){
   if(PM.onVolumes) PM.onVolumes(onVolEvent);
   if(PM.onVideoEvents) PM.onVideoEvents(onVideoEvent);
   if(PM.onEditEvents) PM.onEditEvents(onEditEvent);
-  document.addEventListener('resume',()=>{ setTimeout(()=>{ checkVolumes(); if(!scanning && !orgRun) scanPhone(false,{silent:true}); },800); },false);
+  document.addEventListener('resume',()=>{ if(currentTab==='radio' && tvPane==='tv' && tvLists.length) setTimeout(()=>{ try{ renderTv(); }catch(e){} },300); });
+/* v44e: si la app NO llega detrás de la barra del teléfono, no hace falta dejar ese espacio abajo (era la franja negra) */
+function e2eCheck(){ try{ const a=document.activeElement; if(a && /^(INPUT|TEXTAREA)$/.test(a.tagName)) return; const gap=(screen.height||0)-window.innerHeight; document.documentElement.classList.toggle('no-e2e', screen.height>0 && gap>40); }catch(e){} }
+window.e2eCheck=e2eCheck; e2eCheck(); window.addEventListener('resize',()=>setTimeout(e2eCheck,150)); document.addEventListener('resume',()=>setTimeout(e2eCheck,300),false);
+document.addEventListener('resume',()=>{ setTimeout(()=>{ checkVolumes(); if(!scanning && !orgRun) scanPhone(false,{silent:true}); },800); },false);
   refreshVols().catch(()=>{});
   PM.hasPermission().then(ok=>{
     if(ok) return scanPhone(false).then(()=>checkVolumes());
@@ -4274,7 +4547,7 @@ function privKind(folder,file,rec){
   return '';
 }
 function privUnlocked(){ return privUnlockedAt>0 && Date.now()-privUnlockedAt<PRIV_UNLOCK_MS; }
-function lockPriv(){ if(authBusy) return; privUnlockedAt=0; if(openVpl){ const P=vlistById(openVpl); if(P && P.locked) closeVplDetail(); } else if(plMedia==='video' && $('plList')) renderPlaylists(); if(libSeg==='priv'){ libSeg='music'; renderLib(); } }
+function lockPriv(){ if(authBusy) return; privUnlockedAt=0; if(tvLists.length){ try{ tvLockNow(); }catch(e){} } if(openVpl){ const P=vlistById(openVpl); if(P && P.locked) closeVplDetail(); } else if(plMedia==='video' && $('plList')) renderPlaylists(); if(libSeg==='priv'){ libSeg='music'; renderLib(); } }
 /* Quita los audios privados de las playlists y de la cola (los archivos no se tocan) */
 async function cleanPriv(){
   const pr=new Set(privSongs().map(s=>s.id)); if(!pr.size) return;
@@ -4404,7 +4677,7 @@ function onTvEvent(ev){
 function renderTvResume(){
   const box=$('tvResume'); box.textContent='';
   const last=store.get('tvLast',null);
-  if(!last || !last.u || tvInlineCh){ box.classList.add('hidden'); return; }
+  if(!last || !last.u || tvInlineCh || tvHiddenUrls().has(last.u)){ box.classList.add('hidden'); return; }
   const r=resolveCh(Object.assign({},last));
   /* Si ese canal ya no está en ninguna de tus listas (por ejemplo, borraste la lista), la tarjeta se quita sola */
   if(!r.ch){ store.set('tvLast',null); box.classList.add('hidden'); return; }
@@ -4432,7 +4705,7 @@ function saveTvFav(){ store.set('tvFav',tvFav); } function saveTvMy(){ store.set
 const chSnap=ch=>({u:ch.u, n:ch.n, g:ch.g||''});
 /* Busca el canal actual que corresponde a uno guardado: primero por dirección, luego por nombre */
 function resolveCh(it, all){
-  all=all||allChannels();
+  all=all||allChannelsRaw();
   const m=all.find(c=>c.u===it.u) || all.find(c=>c.n===it.n && (c.g||'')===(it.g||'')) || all.find(c=>c.n===it.n);
   if(m && m.u!==it.u){ it.u=m.u; it.g=m.g||''; return {ch:m, moved:true}; }
   return {ch:m||null, moved:false};
@@ -4447,9 +4720,10 @@ function toggleFavCh(ch){
   saveTvFav(); renderTv(); toast((i>=0?'☆ ':'★ ')+ch.n);
 }
 function tvSelItems(){
-  const all=allChannels(); let src=null, moved=false;
+  const all=allChannelsRaw(); let src=null, moved=false;
   if(tvSel==='fav') src=tvFav; else { const L=tvMy.find(x=>x.id===tvSel); if(L) src=L.items; }
   if(!src) return null;
+  { const hid=tvHiddenUrls(); if(hid.size) src=src.filter(it=>!hid.has(it.u)); }   /* v44c: lo bloqueado no sale aquí */
   const out=src.map(it=>{ const r=resolveCh(it,all); if(r.moved) moved=true; return r.ch || Object.assign({missing:true},{n:it.n,g:it.g,u:it.u}); });
   if(moved){ saveTvFav(); saveTvMy(); }
   return out;
@@ -4498,13 +4772,15 @@ async function openChSheet(ch){
       row.appendChild(cb); row.appendChild(el('span',null,L.name)); row.appendChild(el('small',null,t('nCh',L.items.length))); b.appendChild(row);
     });
     const nb=el('button','m-item new',t('createList')); nb.onclick=()=>close('new'); b.appendChild(nb);
-    if(L0 && L0.mine){ const eb=el('button','m-item edit-ch'); eb.appendChild(el('b',null,t('editCh'))); eb.appendChild(el('small',null,t('editChSub'))); eb.onclick=()=>close('edit'); b.appendChild(eb); }
+    if(L0 && L0.mine){ const kb=el('button','m-item list-act'); kb.appendChild(el('b',null,(ch.lk?'🔓 ':'🔒 ')+t(ch.lk?'tvUnlockC':'tvLockC'))); kb.appendChild(el('small',null,t(ch.lk?'tvUnlockSub':'tvLockSub'))); kb.onclick=()=>close('lock'); b.appendChild(kb); }
+    if(L0 && (L0.mine || ch.x)){ const eb=el('button','m-item edit-ch'); eb.appendChild(el('b',null,t('editCh'))); eb.appendChild(el('small',null,t('editChSub'))); eb.onclick=()=>close('edit'); b.appendChild(eb); }
     if(L0){ const db=el('button','m-item del-ch'); db.appendChild(el('b',null,t('delCh'))); db.appendChild(el('small',null,t('delChSub',L0.name))); db.onclick=()=>close('del'); b.appendChild(db); }
   },[[t('watchNow'),()=>'play','btn-pill'],[t('done'),()=>null,'btn-ok']]);
   if(r==='again') return openChSheet(ch);
+  if(r==='lock'){ await toggleTvLock(ch,false); return; }
   if(r==='del'){ await deleteChannel(ch); return; }
   if(r==='edit'){ await editChannel(ch); return; }
-  if(r==='link'){ if(L0 && L0.mine) await editChannel(ch); else if(L0) await editChLink(ch,L0); return; }
+  if(r==='link'){ if(L0 && (L0.mine || ch.x)) await editChannel(ch); else if(L0) await editChLink(ch,L0); return; }
   if(r==='orig'){ if(L0 && ch.o){ await setChLink(ch,L0,ch.o); toast(t('linkOrig')); } return; }
   if(r==='new'){ await newTvList(ch); return; }
   if(r==='play') playChannel(ch);
@@ -5048,7 +5324,7 @@ async function buildBackup(){
   const used=new Set(); playlists.forEach(p=>(p.songIds||[]).forEach(id=>used.add(id)));
   const songInfo={}; songs.forEach(x=>{ if(used.has(x.id)) songInfo[x.id]={n:x.name||'', t:x.title||'', a:x.artist||'', z:x.size||0}; });
   return {app:'Prometeo Player', kind:'backup', v:1, ver:VERSION, date:new Date().toISOString(),
-    prefs, tv:tvLists.map(L=>({id:L.id,name:L.name,url:L.url||'',mine:!!L.mine,channels:L.channels,hidden:L.hidden||[],over:L.over||{},added:L.added||0})),
+    prefs, tv:tvLists.map(L=>({id:L.id,name:L.name,url:L.url||'',mine:!!L.mine,locked:!!L.locked,channels:L.channels,hidden:L.hidden||[],over:L.over||{},extra:L.extra||[],added:L.added||0})),
     playlists:playlists.map(p=>({id:p.id,name:p.name,songIds:(p.songIds||[]).slice(),created:p.created||0})), songInfo};
 }
 async function saveBackup(){
@@ -5104,7 +5380,7 @@ async function restoreBackup(){
     if(!L0 || !Array.isArray(L0.channels)) continue;
     let L=Object.assign({},L0);
     const same=tvLists.find(x=>x.id===L.id || (L.url && x.url===L.url) || (L.mine && x.mine));
-    if(same){ const u=new Set(same.channels.map(c=>c.u)); L.channels.forEach(c=>{ if(c && c.u && !u.has(c.u)){ same.channels.push(c); u.add(c.u); } }); L=same; }
+    if(same){ const u=new Set(same.channels.map(c=>c.u)); L.channels.forEach(c=>{ if(c && c.u && !u.has(c.u)){ same.channels.push(c); u.add(c.u); } }); if(Array.isArray(L0.extra) && L0.extra.length){ const eu=new Set((same.extra||[]).map(e=>e.u)); same.extra=(same.extra||[]).concat(L0.extra.filter(e=>e && e.u && !eu.has(e.u))); } L=same; }
     else tvLists.push(L);
     try{ await dbPut('tv',L); }catch(e){}
   }
@@ -5350,6 +5626,23 @@ document.querySelectorAll('.songPicker').forEach(inp=>{
     if(f.length) addFiles(f); else toast(t('noFile')); });
 });
 document.querySelectorAll('#nav button').forEach(b=>b.onclick=()=>switchTab(b.dataset.tab));
+/* v44d: ⌨️ al escribir en "Buscar canal…" el teclado no tapa lo que escribes */
+function tvKb(on){
+  document.body.classList.toggle('kb-typing',on);
+  const box=$('tvInline'); if(box) box.classList.toggle('compact',on);
+  tviSync(false);
+  if(on) setTimeout(tvSearchIntoView,250);
+}
+function tvSearchIntoView(){
+  const i=$('tvSearch'); if(!i || document.activeElement!==i) return;
+  const box=$('tvInline'), tb=document.querySelector('.topbar');
+  const top=(box && !box.classList.contains('hidden'))? box.getBoundingClientRect().bottom : (tb? tb.getBoundingClientRect().bottom : 0);
+  const d=i.getBoundingClientRect().top-top-10; if(Math.abs(d)>4) window.scrollBy(0,d);
+  tviSync(false);
+}
+$('tvSearch').addEventListener('focus',()=>tvKb(true));
+$('tvSearch').addEventListener('blur',()=>setTimeout(()=>{ if(document.activeElement!==$('tvSearch')) tvKb(false); },120));
+if(window.visualViewport) window.visualViewport.addEventListener('resize',()=>{ if(document.activeElement===$('tvSearch')) setTimeout(tvSearchIntoView,60); });
 document.querySelector('#castBar .cb-info').addEventListener('click',()=>{ if(castOn && castKind==='video') openCastRemote(); });
 document.querySelectorAll('#modes button').forEach(b=>b.onclick=()=>setVisual(b.dataset.mode));
 

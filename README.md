@@ -24,6 +24,17 @@
 - 🚗 **Android Auto**: tu música, listas, radio y favoritos en la pantalla del carro (Prometeo tiene que estar abierto en el teléfono). Mientras Prometeo no esté en Google Play, hay que activar "Fuentes desconocidas" en los ajustes de desarrollador de Android Auto.
 - 🌐 **Versión web**: si eliges un video, ya no entra como canción: puedes verlo en el momento (sin guardarlo) o descargar la app.
 
+### V44c, V44d y V44e
+- 📋 **TV por lista**: toca el nombre de una lista M3U y abajo salen solo sus canales, con sus categorías y la búsqueda dentro de ella. Siempre hay una lista marcada (la primera, o la última que tocaste).
+- 🚗 **Android Auto**: la canción que eliges en el carro suena aunque Prometeo esté escondido; al abrir Prometeo sigue desde el mismo segundo.
+- 🖼️ **Logo de la emisora**: lo pones tú desde la galería (menú ⋮ de la emisora). Se guarda una copia pequeña dentro de la app.
+- 🎵 Debajo del nombre de la emisora sale **lo que está sonando** (si la emisora lo manda) o "📻 Radio en vivo". El link queda en **Editar emisora**, con copiar, compartir y editar.
+- 🔒 **Candado opcional para TV**: listas M3U y canales .m3u8 sueltos se pueden bloquear con la huella, PIN o patrón del teléfono. Se ven con su nombre y 🔒, quedan abiertos 5 minutos o hasta salir de la app, y no salen en Favoritos ni en Buscar.
+- 🔒 Al poner el candado a una lista con un canal sonando, se cierra **al instante**: la pantalla queda en negro con "Toca para desbloquear" (también se detiene el Chromecast). Los audios privados no se tocan.
+- ➕ **Canal a mano dentro de una lista M3U** (menú ⋮ de la lista o «＋ Canal» › Guardar en). Se queda al actualizar la lista y el link M3U nunca se toca. «↩️ Quitar mis cambios» vuelve a la lista original, con Deshacer.
+- 📐 **Más espacio viendo TV**: video un poco más pequeño, nombre y botones en un renglón, la barra de la canción se esconde mientras ves un canal y los botones de abajo ya no dejan una franja vacía.
+- ⌨️ Al escribir en «Buscar canal…» el video se hace chiquito y sigue viéndose, y ves lo que escribes.
+
 ## ✨ Novedades de la V43
 
 - 🎬 **Videos del teléfono** (Biblioteca › 🎬 Videos), sin copiarlos:

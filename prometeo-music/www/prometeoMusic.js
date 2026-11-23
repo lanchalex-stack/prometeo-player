@@ -121,6 +121,8 @@ module.exports = {
     editCancel: function () { return call('editCancel'); },
     editDelete: function (uri) { return new Promise(function (ok, fail) { exec(ok, fail, 'PrometeoMusic', 'editDelete', [uri]); }); },
     /* ---- v44: 🚗 Android Auto ---- */
+    /** v44c: apaga el reproductor de Android Auto (lo hace solo cuando la app vuelve a tocar algo) */
+    autoStop: function () { return call('autoStop'); },
     autoCatalog: function (json) { return new Promise(function (ok, fail) { exec(ok, fail, 'PrometeoMusic', 'autoCatalog', [json]); }); },
     /* ---- v43: 🎬 videos del teléfono ---- */
     /** 1 = todos los videos, 2 = acceso limitado (solo los elegidos), 0 = sin permiso */

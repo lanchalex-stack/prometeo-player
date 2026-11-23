@@ -326,6 +326,8 @@ public class PrometeoMusic extends CordovaPlugin {
         /* ---- Sesión multimedia: lo que ve el carro por Bluetooth (y los botones del volante) ---- */
         if ("nowPlaying".equals(action)) {
             final JSONObject o = args.optJSONObject(0);
+            /* v44c: la app volvió a tocar música o radio por su cuenta → se apaga el reproductor de Android Auto */
+            if (o != null && autoActive()) cordova.getActivity().runOnUiThread(new Runnable() { public void run() { autoStop(); } });
             cordova.getThreadPool().execute(new Runnable() {
                 public void run() { try { setNowPlaying(o); cb.success(); } catch (Exception e) { cb.error(String.valueOf(e.getMessage())); } }
             });
@@ -333,6 +335,8 @@ public class PrometeoMusic extends CordovaPlugin {
         }
         if ("playState".equals(action)) {
             final boolean playing = args.optBoolean(0, false);
+            /* v44c: mientras toca Android (Android Auto), el estado lo lleva ese reproductor */
+            if (autoActive()) { cb.success(); return true; }
             try { setPlayState(playing, args.optLong(1, 0)); cb.success(); }
             catch (Exception e) { cb.error(String.valueOf(e.getMessage())); }
             /* Música local: el mismo servicio en primer plano que la radio, para que Android no la corte */
@@ -356,7 +360,9 @@ public class PrometeoMusic extends CordovaPlugin {
             cb.sendPluginResult(r);
             return true;
         }
+        if ("autoStop".equals(action)) { cordova.getActivity().runOnUiThread(new Runnable() { public void run() { autoStop(); } }); cb.success(); return true; }
         if ("radioPlay".equals(action)) {
+            if (autoActive()) cordova.getActivity().runOnUiThread(new Runnable() { public void run() { autoStop(); } });
             final String url = args.optString(0, "");
             final String name = args.optString(1, "");
             final boolean tv = "tv".equals(args.optString(2, ""));
@@ -1080,7 +1086,12 @@ public class PrometeoMusic extends CordovaPlugin {
             @Override public void onSkipToPrevious() { sendControl("prev", -1); }
             @Override public void onSeekTo(long pos) { sendControl("seek", pos); }
             /* v44: 🚗 Android Auto: tocar una canción, lista o radio en la pantalla del carro, o buscar por voz */
-            @Override public void onPlayFromMediaId(String id, android.os.Bundle extras) { sendControlStr("playId", "id", id); }
+            @Override public void onPlayFromMediaId(String id, android.os.Bundle extras) {
+                /* v44c: con Prometeo escondido, Android toca la canción directamente (la parte web no puede arrancar sonido nuevo) */
+                if (!appVisible && autoPlayNative(id)) return;
+                if (id != null && id.startsWith("r:")) autoStop();
+                sendControlStr("playId", "id", id);
+            }
             @Override public void onPlayFromSearch(String q, android.os.Bundle extras) { sendControlStr("search", "q", q == null ? "" : q); }
         }, new Handler(Looper.getMainLooper()));
         return session;
@@ -1102,6 +1113,8 @@ public class PrometeoMusic extends CordovaPlugin {
     }
 
     private void sendControl(String what, long pos) {
+        /* v44c: si la canción la está tocando Android (Android Auto), los botones van directo a ese reproductor */
+        if (autoActive() && autoCmd(what, pos)) return;
         CallbackContext cb = controlsCallback;
         if (cb == null) return;
         try {
@@ -1234,6 +1247,7 @@ public class PrometeoMusic extends CordovaPlugin {
     @Override
     public void onPause(boolean multitasking) {
         super.onPause(multitasking);
+        appVisible = false;
         if (tvInline != null) tvInline.pause();
     }
     /** TV en "solo audio": sin video y con la calidad más baja (gasta menos datos y batería) */
@@ -1257,6 +1271,148 @@ public class PrometeoMusic extends CordovaPlugin {
        hasta unos 2 minutos. Si vuelve el internet antes, reconecta en ese momento. Si el link está malo, no insiste. */
     private static final long[] RETRY_DELAYS_MS = {2000, 5000, 10000, 20000, 30000, 30000, 30000};
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
+
+    /* ================= v44c: 🚗 MÚSICA TOCADA POR ANDROID (Android Auto con Prometeo escondido) =================
+       Cuando Prometeo no está en pantalla, Android no deja que la parte web empiece un sonido nuevo.
+       Entonces la canción elegida en el carro la toca este reproductor, con la lista que mandó la app (catálogo).
+       Al volver a Prometeo, la app sigue la misma canción desde el mismo segundo y este reproductor se apaga. */
+    private volatile boolean appVisible = true;
+    private ExoPlayer song;
+    private int songFx = 0, autoErrors = 0;
+    private JSONArray autoQ;
+    private int autoI = -1;
+    private String autoSrc = "lib";
+
+    @Override
+    public void onResume(boolean multitasking) {
+        super.onResume(multitasking);
+        appVisible = true;
+        if (autoActive()) {
+            JSONObject it = autoQ.optJSONObject(autoI);
+            try {
+                JSONObject o = new JSONObject();
+                o.put("action", "autoHandoff"); o.put("id", it.optString("id")); o.put("src", autoSrc);
+                o.put("pos", song.getCurrentPosition()); o.put("playing", song.getPlayWhenReady());
+                CallbackContext cb = controlsCallback;
+                if (cb != null) { PluginResult r = new PluginResult(PluginResult.Status.OK, o); r.setKeepCallback(true); cb.sendPluginResult(r); }
+            } catch (JSONException ignored) { }
+        }
+    }
+
+    private boolean autoActive() { return song != null && autoQ != null && autoI >= 0; }
+
+    private static boolean playableItem(JSONObject s) { return s != null && (s.optLong("m", -1) >= 0 || s.optString("u", "").length() > 0); }
+
+    /** El carro eligió algo con Prometeo escondido. Devuelve false si lo debe hacer la app (radio, o canción sin archivo) */
+    private boolean autoPlayNative(String id) {
+        if (id == null || id.startsWith("r:")) return false;
+        JSONObject c = AutoService.catalog(cordova.getContext());
+        if (c == null) return false;
+        try {
+            JSONArray src = null; String sid = null, from = "lib"; boolean mix = false;
+            if ("mix".equals(id)) { src = c.optJSONArray("music"); mix = true; }
+            else if (id.startsWith("s:")) { src = c.optJSONArray("music"); sid = id.substring(2); }
+            else if (id.startsWith("pls:")) {
+                String r = id.substring(4); int k = r.indexOf(':'); if (k < 0) return false;
+                String pl = r.substring(0, k); sid = r.substring(k + 1); from = "pl:" + pl;
+                JSONArray ls = c.optJSONArray("lists");
+                for (int i = 0; ls != null && i < ls.length(); i++) { JSONObject p = ls.getJSONObject(i); if (pl.equals(p.optString("id"))) { src = p.optJSONArray("items"); break; } }
+            }
+            if (src == null) return false;
+            JSONArray q = new JSONArray(); int at = -1;
+            for (int i = 0; i < src.length(); i++) { JSONObject s = src.optJSONObject(i); if (!playableItem(s)) continue; if (sid != null && sid.equals(s.optString("id"))) at = q.length(); q.put(s); }
+            if (q.length() == 0) return false;
+            if (mix) {
+                java.util.List<JSONObject> l = new java.util.ArrayList<>(); for (int i = 0; i < q.length(); i++) l.add(q.getJSONObject(i));
+                java.util.Collections.shuffle(l); q = new JSONArray(); for (JSONObject s : l) q.put(s); at = 0;
+            }
+            if (at < 0) return false;
+            /* la radio se apaga en el acto */
+            radioWanted = false; cancelRetry();
+            if (radio != null) { radio.stop(); radio.clearMediaItems(); }
+            autoQ = q; autoI = at; autoSrc = from; autoErrors = 0;
+            autoLoad(true, 0);
+            /* si la app está despierta, que muestre la misma canción (sin tocarla) */
+            JSONObject o = new JSONObject(); o.put("action", "autoNative"); o.put("id", q.getJSONObject(at).optString("id")); o.put("src", from);
+            CallbackContext cb = controlsCallback;
+            if (cb != null) { PluginResult r = new PluginResult(PluginResult.Status.OK, o); r.setKeepCallback(true); cb.sendPluginResult(r); }
+            return true;
+        } catch (Exception e) { return false; }
+    }
+
+    private void ensureSong() {
+        if (song != null) return;
+        song = new ExoPlayer.Builder(cordova.getContext())
+                .setAudioAttributes(new AudioAttributes.Builder().setUsage(C.USAGE_MEDIA).setContentType(C.AUDIO_CONTENT_TYPE_MUSIC).build(), true)
+                .build();
+        song.setHandleAudioBecomingNoisy(true);
+        song.setWakeMode(C.WAKE_MODE_LOCAL);
+        songFx = AudioFx.newSession(cordova.getContext());
+        if (songFx > 0) { song.setAudioSessionId(songFx); AudioFx.attach(songFx); }   /* 🎚️ el mismo ecualizador */
+        song.addListener(new Player.Listener() {
+            @Override public void onIsPlayingChanged(boolean playing) {
+                if (!autoActive()) return;
+                setPlayState(playing, song.getCurrentPosition());
+                musicState(playing);
+            }
+            @Override public void onPlaybackStateChanged(int s) {
+                if (s == Player.STATE_ENDED && autoActive()) autoMove(1, true);
+            }
+            @Override public void onPlayerError(PlaybackException error) {
+                if (!autoActive()) return;
+                if (++autoErrors < 5) autoMove(1, true); else { setPlayState(false, 0); }
+            }
+        });
+    }
+
+    private void autoLoad(boolean play, long pos) {
+        JSONObject it = autoQ.optJSONObject(autoI);
+        if (it == null) return;
+        ensureSong();
+        Uri u = it.optString("u", "").length() > 0 ? Uri.parse(it.optString("u")) : ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, it.optLong("m"));
+        song.setMediaItem(MediaItem.fromUri(u));
+        song.prepare();
+        if (pos > 0) song.seekTo(pos);
+        song.setPlayWhenReady(play);
+        try {
+            JSONObject o = new JSONObject();
+            o.put("title", it.optString("t")); o.put("artist", it.optString("a")); o.put("duration", it.optLong("d", 0));
+            setNowPlaying(o);
+        } catch (Exception ignored) { }
+        setPlayState(play, Math.max(0, pos));
+        musicState(play);
+    }
+
+    private void autoMove(int dir, boolean auto) {
+        int n = autoQ.length();
+        int j = autoI + dir;
+        if (j < 0) j = 0;
+        if (j >= n) { song.pause(); song.seekTo(0); setPlayState(false, 0); return; }   /* se acabó la lista */
+        if (!auto) autoErrors = 0;
+        autoI = j;
+        autoLoad(true, 0);
+    }
+
+    /** Botones del carro, del volante o de la notificación mientras toca Android */
+    private boolean autoCmd(final String what, final long pos) {
+        mainHandler.post(new Runnable() { public void run() {
+            if (!autoActive()) return;
+            switch (what) {
+                case "play": song.play(); break;
+                case "pause": song.pause(); break;
+                case "next": autoMove(1, false); break;
+                case "prev": if (song.getCurrentPosition() > 3000) { song.seekTo(0); setPlayState(song.isPlaying(), 0); } else autoMove(-1, false); break;
+                case "seek": if (pos >= 0) { song.seekTo(pos); setPlayState(song.isPlaying(), pos); } break;
+                default: break;
+            }
+        } });
+        return "play".equals(what) || "pause".equals(what) || "next".equals(what) || "prev".equals(what) || "seek".equals(what);
+    }
+
+    private void autoStop() {
+        if (song != null) { song.stop(); song.clearMediaItems(); }
+        autoQ = null; autoI = -1;
+    }
     private volatile boolean radioWanted = false;
     private String radioUrl;
     private int retryCount = 0;
@@ -1675,6 +1831,8 @@ public class PrometeoMusic extends CordovaPlugin {
         RadioService.controls = null; RadioService.music = false; RadioService.art = null;
         if (radio != null) { radio.release(); radio = null; }
         if (radioFx > 0) { AudioFx.detach(radioFx); radioFx = 0; }
+        if (song != null) { song.release(); song = null; } autoQ = null; autoI = -1;
+        if (songFx > 0) { AudioFx.detach(songFx); songFx = 0; }
         RadioService.stop(cordova.getContext());
         if (btRegistered) {
             try { ((AudioManager) cordova.getContext().getSystemService(Context.AUDIO_SERVICE)).unregisterAudioDeviceCallback(btCallback); } catch (Exception ignored) { }
