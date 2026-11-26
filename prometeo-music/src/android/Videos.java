@@ -112,7 +112,16 @@ final class Videos {
 
     /** v44: un cuadro del video en "ms" (para elegir el tramo al cortar). exact = cuadro exacto (más lento) */
     private static android.media.MediaMetadataRetriever fr; private static String frUri;
+    /* v45: el video se suelta a los 15 s sin pedir cuadros (al salir de Cortar/Extraer) o al expulsar la memoria */
+    private static final android.os.Handler frH = new android.os.Handler(android.os.Looper.getMainLooper());
+    private static final Runnable frIdle = new Runnable() { public void run() { frameRelease(); } };
+    static synchronized void frameRelease() {
+        frH.removeCallbacks(frIdle);
+        if (fr != null) try { fr.release(); } catch (Exception ignored) { }
+        fr = null; frUri = null;
+    }
     static synchronized byte[] frame(Context ctx, Uri u, long ms, boolean exact) {
+        frH.removeCallbacks(frIdle); frH.postDelayed(frIdle, 15000);
         try {
             if (fr == null || !u.toString().equals(frUri)) {
                 if (fr != null) try { fr.release(); } catch (Exception ignored) { }

@@ -387,7 +387,7 @@ final class CastHelper {
                 case "play": rmc.play(); break;
                 case "pause": rmc.pause(); break;
                 case "toggle": if (rmc.isPlaying()) rmc.pause(); else rmc.play(); break;
-                case "stop": rmc.stop(); keepAwake(false); if (server != null) server.stopLive(); break;
+                case "stop": rmc.stop(); keepAwake(false); if (server != null) { server.stopLive(); server.closeClients(); } break;
                 case "seek": rmc.seek(new MediaSeekOptions.Builder().setPosition(Math.max(0, ms)).build()); break;
                 /* v44: control del video en el TV */
                 case "volume": { CastSession s = cc == null ? null : cc.getSessionManager().getCurrentCastSession(); if (s != null) s.setVolume(Math.max(0, Math.min(100, ms)) / 100.0); break; }

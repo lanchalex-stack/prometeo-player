@@ -168,6 +168,7 @@ public class PrometeoMusic extends CordovaPlugin {
         registerBluetoothWatch();
         registerNetworkWatch();
         registerVolumeWatch();
+        registerTrimWatch();
         /* Botones de la notificación de música (Android 12 o menos): igual que los del volante */
         RadioService.controls = new RadioService.Controls() {
             public void on(String what) { sendControl(what, -1); }
@@ -572,6 +573,21 @@ public class PrometeoMusic extends CordovaPlugin {
             cordova.getThreadPool().execute(new Runnable() {
                 public void run() { try { cb.success(Library.volumes(cordova.getContext())); } catch (Exception e) { cb.error(String.valueOf(e.getMessage())); } }
             });
+            return true;
+        }
+        /* v45c: ¿el archivo de esta canción sigue al alcance? (si la memoria USB se expulsó, ya no) */
+        if ("fileOk".equals(action)) {
+            final JSONObject q = args.optJSONObject(0);
+            cordova.getThreadPool().execute(new Runnable() { public void run() {
+                boolean ok = false;
+                try {
+                    String us = q == null ? "" : q.optString("uri", "");
+                    Uri u = us.length() > 0 ? Uri.parse(us) : ContentUris.withAppendedId(collection(), q.optLong("mid", -1));
+                    android.os.ParcelFileDescriptor p = cordova.getContext().getContentResolver().openFileDescriptor(u, "r");
+                    if (p != null) { ok = p.getStatSize() != 0; p.close(); }
+                } catch (Exception e) { ok = false; }
+                cb.sendPluginResult(new PluginResult(PluginResult.Status.OK, ok));
+            } });
             return true;
         }
         if ("volEvents".equals(action)) {
@@ -1025,10 +1041,15 @@ public class PrometeoMusic extends CordovaPlugin {
     /* Aviso cuando se conecta o se saca una tarjeta SD o memoria USB */
     private Object volWatch;
     private BroadcastReceiver volReceiver;
-    private void volChanged() {
+    private void volChanged() { volChanged(null, null); }
+    /** v45: avisa a la app qué memoria cambió y cómo ("ejecting", "unmounted", "removed"…) para soltar sus archivos enseguida */
+    private void volChanged(String name, String state) {
+        if (state != null && !android.os.Environment.MEDIA_MOUNTED.equals(state)) Videos.frameRelease();
         CallbackContext c = volCallback; if (c == null) return;
         try {
             JSONObject o = new JSONObject(); o.put("type", "volumes");
+            if (name != null) o.put("name", name);
+            if (state != null) o.put("state", state);
             PluginResult r = new PluginResult(PluginResult.Status.OK, o); r.setKeepCallback(true); c.sendPluginResult(r);
         } catch (JSONException ignored) { }
     }
@@ -1037,12 +1058,12 @@ public class PrometeoMusic extends CordovaPlugin {
             if (Build.VERSION.SDK_INT >= 30) {
                 android.os.storage.StorageManager sm = (android.os.storage.StorageManager) cordova.getContext().getSystemService(Context.STORAGE_SERVICE);
                 android.os.storage.StorageManager.StorageVolumeCallback cbk = new android.os.storage.StorageManager.StorageVolumeCallback() {
-                    @Override public void onStateChanged(android.os.storage.StorageVolume v) { volChanged(); }
+                    @Override public void onStateChanged(android.os.storage.StorageVolume v) { String n = null; try { n = Library.volName(v); } catch (Exception ignored) { } volChanged(n, v.getState()); }
                 };
                 sm.registerStorageVolumeCallback(cordova.getContext().getMainExecutor(), cbk);
                 volWatch = cbk;
             } else {
-                volReceiver = new BroadcastReceiver() { @Override public void onReceive(Context ctx, Intent intent) { volChanged(); } };
+                volReceiver = new BroadcastReceiver() { @Override public void onReceive(Context ctx, Intent intent) { String a = intent.getAction(); volChanged(null, Intent.ACTION_MEDIA_MOUNTED.equals(a) ? android.os.Environment.MEDIA_MOUNTED : "ejecting"); } };
                 IntentFilter f = new IntentFilter();
                 f.addAction(Intent.ACTION_MEDIA_MOUNTED); f.addAction(Intent.ACTION_MEDIA_UNMOUNTED);
                 f.addAction(Intent.ACTION_MEDIA_REMOVED); f.addAction(Intent.ACTION_MEDIA_EJECT); f.addAction(Intent.ACTION_MEDIA_BAD_REMOVAL);
@@ -1272,6 +1293,48 @@ public class PrometeoMusic extends CordovaPlugin {
     private static final long[] RETRY_DELAYS_MS = {2000, 5000, 10000, 20000, 30000, 30000, 30000};
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
 
+    /* ================= v45: PANTALLA EN BLANCO AL VOLVER =================
+       Si mientras Prometeo estaba atrás Android le quitó memoria a la pantalla (por abrir X, Instagram…),
+       al volver se le pide redibujarse. Y si la parte web no contesta en 8 s, se recarga sola
+       (la radio sigue sonando; la canción vuelve donde iba). */
+    private volatile boolean trimmedInBg = false;
+    private android.content.ComponentCallbacks2 trimCb;
+    private int resumeSeq = 0;
+    private void registerTrimWatch() {
+        trimCb = new android.content.ComponentCallbacks2() {
+            @Override public void onTrimMemory(int level) { if (!appVisible && level >= android.content.ComponentCallbacks2.TRIM_MEMORY_BACKGROUND) trimmedInBg = true; }
+            @Override public void onConfigurationChanged(android.content.res.Configuration c) { }
+            @Override public void onLowMemory() { if (!appVisible) trimmedInBg = true; }
+        };
+        try { cordova.getActivity().getApplication().registerComponentCallbacks(trimCb); } catch (Exception ignored) { }
+    }
+    private void checkScreenOnResume() {
+        final int seq = ++resumeSeq;
+        final boolean trimmed = trimmedInBg; trimmedInBg = false;
+        mainHandler.postDelayed(new Runnable() { public void run() {
+            if (seq != resumeSeq || !appVisible) return;
+            final View v = webView == null ? null : webView.getView();
+            if (v == null) return;
+            if (trimmed) { v.setVisibility(View.INVISIBLE); v.setVisibility(View.VISIBLE); }
+            v.invalidate();
+            if (!(v instanceof WebView)) return;
+            final boolean[] answered = { false };
+            try {
+                ((WebView) v).evaluateJavascript("(function(){try{return window.__pmAlive?__pmAlive():1}catch(e){return 1}})()",
+                    new android.webkit.ValueCallback<String>() { public void onReceiveValue(String r) { answered[0] = true; } });
+            } catch (Exception e) { return; }
+            mainHandler.postDelayed(new Runnable() { public void run() {
+                if (answered[0] || seq != resumeSeq || !appVisible) return;
+                try {
+                    String u = ((WebView) v).getUrl(); if (u == null) return;
+                    int h = u.indexOf('#'); if (h >= 0) u = u.substring(0, h);
+                    h = u.indexOf('?'); if (h >= 0) u = u.substring(0, h);
+                    ((WebView) v).loadUrl(u + "?recuperado=1");
+                } catch (Exception ignored) { }
+            } }, 8000);
+        } }, 700);
+    }
+
     /* ================= v44c: 🚗 MÚSICA TOCADA POR ANDROID (Android Auto con Prometeo escondido) =================
        Cuando Prometeo no está en pantalla, Android no deja que la parte web empiece un sonido nuevo.
        Entonces la canción elegida en el carro la toca este reproductor, con la lista que mandó la app (catálogo).
@@ -1287,6 +1350,7 @@ public class PrometeoMusic extends CordovaPlugin {
     public void onResume(boolean multitasking) {
         super.onResume(multitasking);
         appVisible = true;
+        checkScreenOnResume();
         if (autoActive()) {
             JSONObject it = autoQ.optJSONObject(autoI);
             try {

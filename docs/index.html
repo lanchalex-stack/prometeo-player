@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#141414">
-<title>Prometeo Player v44e</title>
+<title>Prometeo Player v45c</title>
 <style>
 /* ===== Skins: cada skin solo cambia estas variables ===== */
 :root,[data-skin="neon"]{--bg:#0a0a0a;--card:#141414;--card2:#1c1c1c;--line:#232323;--line2:#2c2c2c;--acc:#00e5ff;--accrgb:0,229,255;--onacc:#000;--txt:#fff;--txt2:#ddd;--soft:#aaa;--mut:#8a8a8a;--dim:#666;--viz:#070b0c;--sheet:#161616;--input:#202020;--mini:#1a1f20;--miniline:#2a3a3c;--thumb:#fff;--overlay:rgba(0,0,0,.7);--red:#ff4d5e}
@@ -21,7 +21,7 @@ body.has-mini{padding-bottom:calc(142px + var(--sab))}
 button{font-family:inherit;cursor:pointer;color:inherit}
 .hidden{display:none!important}
 
-.topbar{background:var(--card);padding:calc(12px + env(safe-area-inset-top)) 12px 12px 16px;display:flex;justify-content:space-between;align-items:center;gap:8px;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+.topbar{background:var(--card);padding:calc(12px + var(--sat)) 12px 12px 16px;display:flex;justify-content:space-between;align-items:center;gap:8px;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
 .topbar h1{font-size:18px;font-weight:900;letter-spacing:.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
 .topbar h1 span{color:var(--acc)}
 .top-actions{display:flex;align-items:center;gap:5px;flex:none}
@@ -53,14 +53,16 @@ button{font-family:inherit;cursor:pointer;color:inherit}
 .two-btn{display:flex;gap:8px;margin-top:12px}
 .tv-inline{position:fixed;left:0;right:0;z-index:9;background:var(--bg);padding:8px 12px 10px;border-bottom:1px solid var(--line);box-shadow:0 8px 20px rgba(0,0,0,.35)}
 .tvi-video{position:relative;width:80%;margin:0 auto;aspect-ratio:16/9;max-height:32vh;background:#000;border-radius:14px;display:flex;align-items:center;justify-content:center;color:#9aa;font-size:12px;text-align:center;padding:0 12px}
-.tvi-bar{display:flex;align-items:center;gap:6px;margin-top:8px}
-.tvi-btns{display:flex;align-items:center;gap:4px;flex:none}
+/* v45: nombre del canal y EN VIVO arriba a todo lo ancho; los botones en una fila debajo */
+.tvi-bar{display:flex;flex-direction:column;align-items:stretch;gap:8px;margin-top:8px}
+.tvi-btns{display:flex;align-items:center;justify-content:space-between;gap:4px;width:100%}
+#tvInline.locked .tvi-btns{justify-content:flex-end}
 .tvi-bar .icon-btn{width:40px;height:40px;font-size:16px}
 @media (max-width:380px){.tvi-bar .icon-btn{width:36px;height:36px;font-size:15px}.tvi-btns{gap:3px}}
 .tvi-bar .icon-btn{flex:none}
 .tvi-bar .tvi-play{background:var(--acc);color:var(--onacc);border-color:var(--acc)}
-.tvi-info{flex:1;min-width:0}
-.tvi-info b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:14px}
+.tvi-info{min-width:0;padding:0 4px}
+.tvi-info b{display:block;overflow:hidden;font-size:15px;line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 .tvi-info small{display:block;font-size:11px;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tvi-info small.live{color:var(--red);font-weight:800}
 body.tvi-on #view-radio{padding-top:var(--tvih,0px)}
@@ -161,7 +163,9 @@ body.radio-on .radio-times{display:flex}
 .radio-note{display:flex;gap:10px;align-items:flex-start;background:rgba(var(--accrgb),.08);border:1px solid rgba(var(--accrgb),.35);border-radius:14px;padding:10px 12px;font-size:12px;color:var(--txt2);line-height:1.4}
 .st-tile{width:44px;height:44px;flex:none;border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:15px;color:rgba(0,0,0,.75)}
 .st-live{color:#ff4d5e!important;font-weight:800}
-.song-item.live .song-info b{color:var(--acc)}
+/* v45: lo que está sonando (canción, emisora o canal) se ve sombreado y con borde, en todos los skins */
+.song-item.current,.song-item.live{background:rgba(var(--accrgb),.10);box-shadow:inset 0 0 0 2px rgba(var(--accrgb),.85);border-radius:14px;border-bottom-color:transparent}
+.song-item.live .song-info b,.song-item.current .song-info b{color:var(--acc);font-weight:800}
 .field-label{display:block;font-size:11px;font-weight:800;color:var(--mut);letter-spacing:.6px;text-transform:uppercase;margin:12px 4px 6px}
 .field-help{margin:8px 4px 0;font-size:12px;color:var(--mut);line-height:1.45}
 .test-box{margin-top:12px;display:flex;align-items:center;gap:10px;border-radius:14px;padding:11px 12px;font-size:13px;border:1px solid var(--line2);background:var(--card2)}
@@ -466,13 +470,15 @@ html,body{overflow-x:clip;max-width:100%}
 /* ===== v44d: al escribir en "Buscar canal" con un canal sonando: video chiquito y sin barras abajo ===== */
 #tvInline.compact{display:flex;align-items:center;gap:10px;padding:6px 12px}
 #tvInline.compact .tvi-video{width:112px;flex:none;max-height:none;border-radius:10px;margin:0}
-#tvInline.compact .tvi-bar{flex:1;min-width:0;margin-top:0;flex-wrap:nowrap}
-#tvInline.compact .tvi-info{flex:1 1 auto}
-#tvInline.compact .tvi-btns{flex:none}
+#tvInline.compact .tvi-bar{flex:1;min-width:0;margin-top:0;flex-wrap:nowrap;flex-direction:row;align-items:center}
+#tvInline.compact .tvi-info{flex:1 1 auto;padding:0}
+#tvInline.compact .tvi-info b{-webkit-line-clamp:1}
+#tvInline.compact .tvi-btns{flex:none;width:auto}
 #tvInline.compact .tvi-btns .icon-btn:not(.tvi-play){display:none}
 body.kb-typing #mini, body.kb-typing #nav{display:none!important}
-:root{--sab:env(safe-area-inset-bottom,0px)}
-html.no-e2e{--sab:18px}
+:root{--sab:env(safe-area-inset-bottom,0px);--sat:env(safe-area-inset-top,0px)}
+/* v45: si la app no llega detrás de las barras del teléfono, arriba y abajo solo queda un poco de aire */
+html.no-e2e{--sab:10px;--sat:-4px}
 /* v44e: viendo un canal, la barra de la canción se esconde (vuelve al cerrar el canal) */
 body.tvi-on #mini{display:none!important}
 body.tvi-on.has-mini{padding-bottom:calc(76px + var(--sab))}
@@ -490,7 +496,7 @@ body.tvi-on.has-mini{padding-bottom:calc(76px + var(--sab))}
 <header class="topbar">
  <div class="tb-main">
  <div class="tb-left">
-  <div class="tb-title"><h1>🔥 Prometeo <span>Player</span></h1><button class="ver" id="btnVer" data-i18n-aria="diagBtn" aria-label="Diagnóstico">v44e</button></div>
+  <div class="tb-title"><h1>🔥 Prometeo <span>Player</span></h1><button class="ver" id="btnVer" data-i18n-aria="diagBtn" aria-label="Diagnóstico">v45c</button></div>
   <div class="top-actions">
     <button class="top-btn hidden" id="btnCast" aria-label="Transmitir">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 18v.01"/><path d="M3 14a4 4 0 0 1 4 4"/><path d="M3 10a8 8 0 0 1 8 8"/><path d="M3 6.5V6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4.5"/></svg>
@@ -557,7 +563,8 @@ body.tvi-on.has-mini{padding-bottom:calc(76px + var(--sab))}
     <button class="btn-add btn-scan" style="margin-top:10px" data-i18n="addMusicBtn">＋ Agregar música</button>
   </div>
   <div class="card">
-    <div class="card-title"><span data-i18n="queue">Cola</span><small id="queueInfo"></small></div>
+    <div class="card-title"><span id="queueTitle" data-i18n="queue">Cola</span><small id="queueInfo"></small></div>
+    <div id="nowRadioChips" class="chips hidden"></div>
     <div id="queueList" class="list"></div>
   </div>
 </section>
@@ -1662,7 +1669,7 @@ async function tvInlineShot(){
 
 
 /* ================= IDIOMAS (v41) ================= */
-const VERSION='44e';
+const VERSION='45c';
 const LANGS={es:'Español',en:'English',pt:'Português',fr:'Français'};
 const I18N={
 es:{
@@ -2181,6 +2188,14 @@ Object.assign(I18N.es,{"tviTapUnlock": "Toca para desbloquear", "tviLockedS": "B
 Object.assign(I18N.en,{"tviTapUnlock": "Tap to unlock", "tviLockedS": "Locked", "tviLockedL": "List «{0}» is locked", "tviLockedC": "Locked channel", "lmAddCh": "Add a channel to this list", "lmAddChSub": "Name and .m3u8 link · the list link is not touched", "lmAddChSubM": "Name and .m3u8 link", "lmReset": "Remove my changes", "lmResetSub": "Back to the original list from the link · can be undone", "lmResetSubF": "Back to the original list from the file · can be undone", "lmResetDone": "«{0}» is back to the original list", "saveIn": "Save in", "saveInNote": "The list you have selected is marked. If the list is locked, the channel is too.", "addChTo": "Add channel to «{0}»", "chAddedTo": "Channel added to «{0}»", "chExists": "That channel is already in «{0}»", "chMineTag": "added by you"});
 Object.assign(I18N.pt,{"tviTapUnlock": "Toque para desbloquear", "tviLockedS": "Bloqueado", "tviLockedL": "Lista «{0}» com cadeado", "tviLockedC": "Canal com cadeado", "lmAddCh": "Adicionar canal a esta lista", "lmAddChSub": "Nome e link .m3u8 · o link da lista não é alterado", "lmAddChSubM": "Nome e link .m3u8", "lmReset": "Tirar minhas mudanças", "lmResetSub": "Volta à lista original do link · dá para desfazer", "lmResetSubF": "Volta à lista original do arquivo · dá para desfazer", "lmResetDone": "«{0}» voltou à lista original", "saveIn": "Salvar em", "saveInNote": "Vem marcada a lista que você selecionou. Se a lista tiver cadeado, o canal também terá.", "addChTo": "Adicionar canal a «{0}»", "chAddedTo": "Canal adicionado a «{0}»", "chExists": "Esse canal já está em «{0}»", "chMineTag": "adicionado por você"});
 Object.assign(I18N.fr,{"tviTapUnlock": "Touchez pour déverrouiller", "tviLockedS": "Verrouillé", "tviLockedL": "Liste «{0}» verrouillée", "tviLockedC": "Chaîne verrouillée", "lmAddCh": "Ajouter une chaîne à cette liste", "lmAddChSub": "Nom et lien .m3u8 · le lien de la liste n'est pas modifié", "lmAddChSubM": "Nom et lien .m3u8", "lmReset": "Retirer mes changements", "lmResetSub": "Revient à la liste originale du lien · annulable", "lmResetSubF": "Revient à la liste originale du fichier · annulable", "lmResetDone": "«{0}» est revenue à la liste originale", "saveIn": "Enregistrer dans", "saveInNote": "La liste sélectionnée est cochée. Si la liste est verrouillée, la chaîne aussi.", "addChTo": "Ajouter une chaîne à «{0}»", "chAddedTo": "Chaîne ajoutée à «{0}»", "chExists": "Cette chaîne est déjà dans «{0}»", "chMineTag": "ajoutée par vous"});
+Object.assign(I18N.es,{"nowStations": "Emisoras", "recovered": "Prometeo se volvió a cargar para verse bien"});
+Object.assign(I18N.en,{"nowStations": "Stations", "recovered": "Prometeo reloaded itself to show up properly"});
+Object.assign(I18N.pt,{"nowStations": "Emissoras", "recovered": "O Prometeo recarregou para aparecer direito"});
+Object.assign(I18N.fr,{"nowStations": "Stations", "recovered": "Prometeo s'est rechargé pour bien s'afficher"});
+Object.assign(I18N.es,{"volSongGone": "La canción estaba en la memoria que quitaste: se detuvo"});
+Object.assign(I18N.en,{"volSongGone": "That song was on the storage you removed: it stopped"});
+Object.assign(I18N.pt,{"volSongGone": "A música estava na memória que você tirou: parou"});
+Object.assign(I18N.fr,{"volSongGone": "Cette chanson était sur la mémoire retirée : arrêtée"});
 function t(k){ let s=(I18N[LANG]&&I18N[LANG][k]); if(s==null) s=I18N.es[k]; if(s==null) s=k;
   for(let i=1;i<arguments.length;i++) s=s.split('{'+(i-1)+'}').join(String(arguments[i])); return s; }
 function nSongs(n){ return t(n===1?'song1':'songN',n); }
@@ -2766,7 +2781,24 @@ function renderPlDetail(){
   ids.forEach(id=>{ const s=songById(id);
     c.appendChild(songRow(s,()=>{ playFrom({type:'pl',id:p.id},id); switchTab('ahora'); },[['✕',t('removeFromPl'),()=>removeFromPl(p,id),'del']])); });
 }
+/* v45: en "Ahora", mientras suena una emisora, abajo salen las emisoras (con Todas · Favoritas · tus listas) */
+let qRadioMode=false;
+function nowRadioMode(){ const st=radioId && stationById(radioId); return !!st && !st.tv; }
+function renderNowRadio(){
+  const c=$('queueList'); c.textContent='';
+  const ch=$('nowRadioChips'); ch.textContent=''; ch.classList.remove('hidden'); fillRadioChips(ch);
+  const pool=radioPool();
+  $('queueInfo').textContent=t(pool.length===1?'st1':'stN',pool.length);
+  if(!pool.length){ c.appendChild(el('div','empty',t(radioFilter==='fav'?'rFavEmpty':'rListEmpty'))); return; }
+  const frag=document.createDocumentFragment();
+  pool.forEach(st=>frag.appendChild(stationRow(st,()=>playRadio(st.id))));
+  c.appendChild(frag);
+}
 function renderQueue(){
+  qRadioMode=nowRadioMode();
+  $('queueTitle').textContent=qRadioMode? '📻 '+t('nowStations') : t('queue');
+  if(qRadioMode){ renderNowRadio(); return; }
+  $('nowRadioChips').classList.add('hidden');
   const c=$('queueList'); c.textContent='';
   $('queueInfo').textContent=sourceName()+' • '+queue.length+(shuffle?' • 🔀':'');
   if(!queue.length){ c.appendChild(el('div','empty',t('queueEmpty'))); return; }
@@ -3185,16 +3217,19 @@ function renderRadio(){
   if(!radios.length){ c.appendChild(el('div','empty',t('radioEmpty'))); return; }
   const pool=radioPool();
   if(!pool.length){ c.appendChild(el('div','empty',t(radioFilter==='fav'?'rFavEmpty':'rListEmpty'))); return; }
-  pool.forEach(st=>{
-    const r=el('div','song-item'+(st.id===radioId?' live':'')); r.appendChild(stTile(st));
-    const info=el('div','song-info'); info.appendChild(el('b',null,st.name));
-    info.appendChild(st.id===radioId? el('small','st-live',t('live')) : el('small',null,'📻 '+t('liveRadio')));
-    info.onclick=()=>{ playRadio(st.id); switchTab('ahora'); }; r.appendChild(info);
-    onLongPress(r,()=>openStationMenu(st));
-    [[st.fav?'★':'☆',t(st.fav?'favDel':'favAdd'),()=>toggleFavStation(st),'star'+(st.fav?'':' off')],['⋮',t('stMenu'),()=>openStationMenu(st),'more']].forEach(([ic,ti,fn,cls])=>{
-      const b=el('button','icon-btn'+(cls?' '+cls:''),ic); b.title=ti; b.setAttribute('aria-label',ti); b.onclick=e=>{ e.stopPropagation(); fn(); }; r.appendChild(b); });
-    c.appendChild(r);
-  });
+  pool.forEach(st=>c.appendChild(stationRow(st,()=>{ playRadio(st.id); switchTab('ahora'); })));
+  /* v45: "Ahora" también muestra las emisoras mientras suena una */
+  if(qRadioMode || nowRadioMode()) renderQueue();
+}
+function stationRow(st,onTap){
+  const r=el('div','song-item'+(st.id===radioId?' live':'')); r.appendChild(stTile(st));
+  const info=el('div','song-info'); info.appendChild(el('b',null,st.name));
+  info.appendChild(st.id===radioId? el('small','st-live',t('live')) : el('small',null,'📻 '+t('liveRadio')));
+  info.onclick=onTap; r.appendChild(info);
+  onLongPress(r,()=>openStationMenu(st));
+  [[st.fav?'★':'☆',t(st.fav?'favDel':'favAdd'),()=>toggleFavStation(st),'star'+(st.fav?'':' off')],['⋮',t('stMenu'),()=>openStationMenu(st),'more']].forEach(([ic,ti,fn,cls])=>{
+    const b=el('button','icon-btn'+(cls?' '+cls:''),ic); b.title=ti; b.setAttribute('aria-label',ti); b.onclick=e=>{ e.stopPropagation(); fn(); }; r.appendChild(b); });
+  return r;
 }
 /* Prueba una dirección: intenta reproducirla en silencio unos segundos */
 function testStream(url){
@@ -3379,6 +3414,23 @@ function allChannels(){ const o=[], un=tvUnlocked(); tvLists.forEach(L=>{ if(L.l
 function chColor(s){ let h=0; for(let i=0;i<s.length;i++) h=(h*31+s.charCodeAt(i))>>>0; return ST_COLORS[h%ST_COLORS.length]; }
 function setRadioPane(p){ tvPane=p; $('segSt').classList.toggle('on',p==='st'); $('segTv').classList.toggle('on',p==='tv');
   $('paneSt').classList.toggle('hidden',p!=='st'); $('paneTv').classList.toggle('hidden',p!=='tv'); if(p==='tv') renderTv(); tviSync(true); }
+/* v45: el canal que suena (en pantalla, solo audio o en el TV) se marca en la lista */
+function tvLiveU(){
+  if(tvInlineCh && !tviLocked) return tvInlineCh.u;
+  try{ if(radioId===TVA && tvAudio && tvAudio.pool && tvAudio.pool[tvAudio.i]) return tvAudio.pool[tvAudio.i].u; }catch(e){}
+  try{ if(castOn && castKind==='tv' && castTvPool[castTvIdx]) return castTvPool[castTvIdx].u; }catch(e){}
+  return '';
+}
+function tvMarkLive(){
+  const u=tvLiveU();
+  document.querySelectorAll('#tvList .song-item[data-u]').forEach(r=>{
+    const on=!!u && r.dataset.u===u; if(on===r.classList.contains('live')) return;
+    r.classList.toggle('live',on);
+    const sm=r.querySelector('.song-info small'); if(!sm) return;
+    if(on){ sm.dataset.sub=sm.textContent; sm.textContent=t('live'); sm.classList.add('st-live'); }
+    else { if(sm.dataset.sub!=null) sm.textContent=sm.dataset.sub; sm.classList.remove('st-live'); }
+  });
+}
 function renderTv(){
   const all=allChannels(), curL=curTvList();
   const lall=curL? curL.channels.filter(c=>!(c.lk && !tvUnlocked())) : all;
@@ -3430,7 +3482,7 @@ function renderTv(){
     frag.appendChild(r);
   });
   list.slice(0,200).forEach(ch=>{
-    const r=el('div','song-item'+(ch.missing?' missing':'')); r.appendChild(stTile({name:ch.n,color:chColor(ch.n)}));
+    const r=el('div','song-item'+(ch.missing?' missing':'')); r.dataset.u=ch.u; r.appendChild(stTile({name:ch.n,color:chColor(ch.n)}));
     const info=el('div','song-info'); info.appendChild(el('b',null,ch.n+(ch.x?' ✋':''))); info.appendChild(el('small',null,ch.missing? t('chMissing') : (ch.o? '✏️ ' : '')+(ch.x? t('chMineTag')+' · ' : '')+(ch.g||ch.u.replace(/^[a-z]+:\/\//i,''))));
     info.onclick=()=>playChannel(ch); r.appendChild(info);
     const fav=isFavCh(ch,urls), sb=el('button','icon-btn star'+(fav?'':' off'),fav?'★':'☆'); sb.title=t(fav?'chFavDel':'chFavAdd'); sb.setAttribute('aria-label',sb.title);
@@ -3441,6 +3493,7 @@ function renderTv(){
   });
   c.appendChild(frag);
   if(list.length>200) c.appendChild(el('div','empty',t('moreCh',list.length-200)));
+  try{ tvMarkLive(); }catch(e){}
 }
 /* ================= REPRODUCTOR DE TV (v41) =================
    Se le pasa la lista que estás viendo (grupo, favoritos, mi lista o búsqueda) para cambiar de canal dentro de ella. */
@@ -3488,14 +3541,14 @@ function openTvInline(ch, pool){
   if(navigator.onLine===false) toast(t('noNet'));
   tviPool=(pool && pool.length)? pool.slice() : tvPoolFor(ch).slice();
   tviIdx=Math.max(0,tviPool.indexOf(ch)); if(tviPool[tviIdx]!==ch){ const k=tviPool.findIndex(c=>c.u===ch.u); if(k>=0) tviIdx=k; else { tviPool.unshift(ch); tviIdx=0; } }
-  tvInlineCh=ch; tviState=''; tviLocked=false;
+  tvInlineCh=ch; tviState=''; tviLocked=false; setTimeout(()=>{ try{ tvMarkLive(); }catch(e){} },0);
   store.set('tvLast',{u:ch.u, n:ch.n, g:ch.g||''});
   tviRender(); tviSync(); renderTvResume();
   requestAnimationFrame(()=>{ if(tvInlineCh===ch) PM.tvInline(ch.u, tviVisible()? tviRect() : {show:false}).catch(()=>{ tviState='error'; tviRender(); }); });
 }
 function tviMove(dir){ if(tviPool.length<2) return; tviIdx=(tviIdx+dir+tviPool.length)%tviPool.length; openTvInline(tviPool[tviIdx], tviPool); }
 function closeTvInline(){
-  tvInlineCh=null; tviState=''; tviFromFull=false; tviLocked=false;
+  tvInlineCh=null; tviState=''; tviFromFull=false; tviLocked=false; setTimeout(()=>{ try{ tvMarkLive(); }catch(e){} },0);
   if(PM && PM.tvClose) PM.tvClose().catch(()=>{});
   tviSync(); if(currentTab==='radio' && tvPane==='tv') renderTv();
 }
@@ -3519,7 +3572,7 @@ function tvLockNow(){
   if(castOn && castKind==='tv'){ const c=castTvPool[castTvIdx]; if(c && chLockedU(c.u)){ PM.castCmd('stop').catch(()=>{}); castKind=''; castPlaying=false; castBuf=false; castRender(); } }
 }
 function tviLockScreen(){
-  if(!tvInlineCh) return; tviLocked=true;
+  if(!tvInlineCh) return; tviLocked=true; try{ tvMarkLive(); }catch(e){}
   if(PM && PM.tvClose) PM.tvClose().catch(()=>{});
   tviRender(); tviSync();
 }
@@ -3942,6 +3995,10 @@ function nativeStart(){
   document.addEventListener('resume',()=>{ if(currentTab==='radio' && tvPane==='tv' && tvLists.length) setTimeout(()=>{ try{ renderTv(); }catch(e){} },300); });
 /* v44e: si la app NO llega detrás de la barra del teléfono, no hace falta dejar ese espacio abajo (era la franja negra) */
 function e2eCheck(){ try{ const a=document.activeElement; if(a && /^(INPUT|TEXTAREA)$/.test(a.tagName)) return; const gap=(screen.height||0)-window.innerHeight; document.documentElement.classList.toggle('no-e2e', screen.height>0 && gap>40); }catch(e){} }
+/* v45: Android pregunta si la página responde al volver a Prometeo; si no contesta, la recarga sola */
+window.__pmAlive=()=>1;
+document.addEventListener('resume',()=>setTimeout(()=>releaseIfUnmounted('al volver'),600),false);
+try{ if(/[?&]recuperado=1/.test(location.search)){ history.replaceState(null,'',location.pathname); setTimeout(()=>toast(t('recovered')),1200); } }catch(e){}
 window.e2eCheck=e2eCheck; e2eCheck(); window.addEventListener('resize',()=>setTimeout(e2eCheck,150)); document.addEventListener('resume',()=>setTimeout(e2eCheck,300),false);
 document.addEventListener('resume',()=>{ setTimeout(()=>{ checkVolumes(); if(!scanning && !orgRun) scanPhone(false,{silent:true}); },800); },false);
   refreshVols().catch(()=>{});
@@ -4268,7 +4325,32 @@ function toastUndo(msg, fn){
 /* ================= v42: TARJETAS SD Y MEMORIAS USB =================
    Cada vez que se conecta una, Prometeo PREGUNTA: agregar, solo escuchar ahora, o no. Nunca agrega solo. */
 let volTimer=null, volBusy=false;
-function onVolEvent(){ clearTimeout(volTimer); volTimer=setTimeout(()=>checkVolumes(),1500); }
+/* v45: si una memoria se está expulsando o la quitaron, lo que suena de ella se detiene enseguida (así Android la suelta sin problema) */
+function releaseVolFiles(name){
+  const n=String(name||'').toLowerCase(); if(!n) return;
+  const cur=currentId && songById(currentId);
+  if(cur && String(cur.vol||'').toLowerCase()===n && audio.getAttribute('src')){ stopAudio(); setPlayIcon(); }
+}
+/* Si Android no dijo cuál memoria fue, se revisa si la de la canción que suena sigue conectada */
+/* v45c: la canción ya está cargada en memoria, así que sigue sonando aunque quiten la USB.
+   Se le pregunta a Android si su archivo todavía existe; si no, se detiene. Sirve también para
+   canciones agregadas con el selector (que no guardan de qué memoria son). */
+const volLog=[];
+function vlog(x){ volLog.push(new Date().toTimeString().slice(0,8)+' '+x); if(volLog.length>12) volLog.shift(); }
+async function releaseIfUnmounted(why){
+  const cur=currentId && songById(currentId);
+  if(!cur || radioId || !audio.getAttribute('src') || !PM || !PM.fileOk) return;
+  if(cur.mid==null && !cur.uri) return;
+  let ok=true; try{ ok=await PM.fileOk({mid:cur.mid==null? -1 : cur.mid, uri:cur.mid==null? (cur.uri||'') : ''}); }catch(e){}
+  vlog((why||'')+' «'+cur.name+'» vol='+(cur.vol||'?')+' → '+(ok?'sigue':'ya no está'));
+  if(!ok && currentId===cur.id){ stopAudio(); setPlayIcon(); toast(t('volSongGone')); }
+}
+function onVolEvent(ev){
+  vlog('memoria: '+((ev&&ev.name)||'?')+' '+((ev&&ev.state)||'cambio'));
+  if(ev && ev.state && ev.state!=='mounted'){ if(ev.name) releaseVolFiles(ev.name); }
+  clearTimeout(onVolEvent.t); onVolEvent.t=setTimeout(()=>releaseIfUnmounted('aviso'),700);
+  clearTimeout(volTimer); volTimer=setTimeout(()=>checkVolumes(),1500);
+}
 function dropTemp(names){
   const gone=new Set(names); const cur=currentId && songById(currentId);
   const drop=songs.filter(s=>s.temp && gone.has(s.vol)); if(!drop.length) return;
@@ -4293,6 +4375,7 @@ async function checkVolumes(){
       const okM=volOkMap(), no=store.get('volNo',{})||{}; gone.forEach(n=>{ delete okM[n]; delete no[n]; }); store.set('volOk',okM); store.set('volNo',no);
       dropTemp(gone); if(volPending && gone.includes(volPending.name)) volPending=null;
       gone.forEach(n=>{ volTmpV.delete(n); delete vTmpU[n]; delete vBanner[n]; }); if(vLoaded && vPerm) loadVideos().then(()=>{ if(libMedia==='video') renderLib(); });
+      gone.forEach(releaseVolFiles);
       songs.forEach(s=>{ if(!s.temp && gone.includes(s.vol)) s.broken=true; });
       renderAll(); toast(t('volGone',gone.map(volLabel).join(', ')));
     }
@@ -4604,15 +4687,18 @@ function radioPool(){
 }
 function setRadioFilter(f){ radioFilter=f; store.set('radioFilter',f); renderRadio(); if(radioId){ updateRadioText(); updateMini(); } }
 function toggleFavStation(st){ st.fav=!st.fav; saveRadios(); renderRadio(); toast((st.fav?'★ ':'☆ ')+st.name); }
+function fillRadioChips(c){
+  const chip=(id,txt,cls)=>{ const b=el('button',(radioFilter===id?'on':'')+(cls?' '+cls:''),txt); b.onclick=()=>setRadioFilter(id); c.appendChild(b); };
+  chip('all',t('rAll',radios.length)); chip('fav',t('rFav',radios.filter(r=>r.fav).length),'fav');
+  radioLists.forEach(L=>chip(L.id,L.name+' · '+L.ids.filter(id=>stationById(id)).length));
+  const nb=el('button','add',t('rNewList')); nb.onclick=()=>editRadioList(null); c.appendChild(nb);
+}
 function renderRadioChips(){
   const c=$('radioChips'), bar=$('radioListBar'); if(!c) return; c.textContent=''; bar.textContent='';
   if(radioFilter!=='all' && radioFilter!=='fav' && !radioListById(radioFilter)){ radioFilter='all'; store.set('radioFilter','all'); }
   c.classList.toggle('hidden',!radios.length); bar.classList.add('hidden');
   if(!radios.length) return;
-  const chip=(id,txt,cls)=>{ const b=el('button',(radioFilter===id?'on':'')+(cls?' '+cls:''),txt); b.onclick=()=>setRadioFilter(id); c.appendChild(b); };
-  chip('all',t('rAll',radios.length)); chip('fav',t('rFav',radios.filter(r=>r.fav).length),'fav');
-  radioLists.forEach(L=>chip(L.id,L.name+' · '+L.ids.filter(id=>stationById(id)).length));
-  const nb=el('button','add',t('rNewList')); nb.onclick=()=>editRadioList(null); c.appendChild(nb);
+  fillRadioChips(c);
   const L=radioListById(radioFilter);
   if(L){ bar.classList.remove('hidden'); bar.appendChild(el('b',null,L.name));
     const e=el('button','btn-pill',t('editListBtn')); e.onclick=()=>editRadioList(L); bar.appendChild(e);
@@ -5170,6 +5256,7 @@ setInterval(()=>{
 },2000);
 function castWatchDone(){ if(castTry && castTry.timer) clearTimeout(castTry.timer); castTry=null; }
 function castRender(){
+  try{ tvMarkLive(); }catch(e){}
   const b=$('btnCast'); if(b){ b.classList.toggle('on',castOn); b.title=t('castBtn'); b.setAttribute('aria-label',t('castBtn')); }
   const bar=$('castBar'); bar.classList.toggle('hidden',!castOn); bar.classList.toggle('tap',castOn && castKind==='video');
   if(!castOn) return;
@@ -5704,6 +5791,7 @@ async function diagnose(){
     catch(e){ lines.push(t('curSong')+': ❌ '+t('readFail')); }
   }
   lines.push(t('dataMode')+': '+t(useDataUrl?'yes':'no'));
+  if(volLog.length){ lines.push(''); lines.push('— Memorias —'); volLog.forEach(x=>lines.push(x)); }
   if(castLogList.length){ lines.push(''); lines.push('— Chromecast —'); castLogList.forEach(x=>lines.push(x)); }
   modal(t('diagT'),bx=>{ const pre=el('p','m-msg',lines.join('\n')); pre.style.whiteSpace='pre-line'; pre.style.userSelect='text'; bx.appendChild(pre); },[[t('close'),()=>null,'btn-ok']]);
 }

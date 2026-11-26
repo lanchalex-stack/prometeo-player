@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
         xmlns:android="http://schemas.android.com/apk/res/android"
-        id="prometeo-music" version="1.12.2">
+        id="prometeo-music" version="1.12.3">
     <name>Prometeo Music</name>
     <description>Música del teléfono sin copiarla, sesión para el carro, radio y TV con ExoPlayer (AndroidX Media3). Sin recopilar datos.</description>
     <author>Lanchalex</author>

@@ -39,6 +39,8 @@ final class CastServer {
     private ExecutorService pool;
     private String token;
     private volatile boolean running;
+    /** v45: conexiones abiertas (para cerrarlas al dar «Detener» y no dejar archivos de la USB abiertos) */
+    private final java.util.Set<Socket> clients = java.util.Collections.newSetFromMap(new java.util.concurrent.ConcurrentHashMap<Socket, Boolean>());
 
     CastServer(Context ctx) { this.ctx = ctx.getApplicationContext(); }
 
@@ -101,6 +103,12 @@ final class CastServer {
 
     /* ---------------- radio en pedacitos (HLS) ---------------- */
     private LiveHls live;
+
+    /** v45: corta lo que se esté enviando (el archivo se suelta enseguida) */
+    void closeClients() {
+        for (Socket s : clients.toArray(new Socket[0])) { try { s.close(); } catch (Exception ignored) { } }
+        clients.clear();
+    }
 
     synchronized void stopLive() { if (live != null) { live.stop(); live = null; } }
 
@@ -306,7 +314,8 @@ final class CastServer {
             try {
                 final Socket s = ss.accept();
                 s.setSoTimeout(20000);
-                pool.execute(new Runnable() { public void run() { handle(s); } });
+                clients.add(s);
+                pool.execute(new Runnable() { public void run() { try { handle(s); } finally { clients.remove(s); try { s.close(); } catch (Exception ignored) { } } } });
             } catch (Exception e) {
                 if (!running) return;
             }

@@ -24,6 +24,14 @@
 - 🚗 **Android Auto**: tu música, listas, radio y favoritos en la pantalla del carro (Prometeo tiene que estar abierto en el teléfono). Mientras Prometeo no esté en Google Play, hay que activar "Fuentes desconocidas" en los ajustes de desarrollador de Android Auto.
 - 🌐 **Versión web**: si eliges un video, ya no entra como canción: puedes verlo en el momento (sin guardarlo) o descargar la app.
 
+### V45
+
+- 🎨 Más espacio y mejor vista: encabezado más arriba, el canal de TV con su nombre completo y "● EN VIVO" arriba y los botones en una fila debajo, y los botones de abajo más cerca de la barra del teléfono.
+- 📻 En **Ahora**, mientras suena una emisora, abajo salen tus emisoras (Todas · Favoritas · tus listas) para cambiar al instante.
+- ✨ Lo que está sonando se ve resaltado (canción, emisora o canal de TV), también en el skin blanco y negro.
+- 🩹 Si al volver a Prometeo la pantalla quedaba en blanco, ahora se vuelve a mostrar sola.
+- 💾 Memorias USB/SD: al expulsarlas, Prometeo suelta sus archivos enseguida; el Chromecast también los suelta al dar «Detener».
+
 ### V44c, V44d y V44e
 - 📋 **TV por lista**: toca el nombre de una lista M3U y abajo salen solo sus canales, con sus categorías y la búsqueda dentro de ella. Siempre hay una lista marcada (la primera, o la última que tocaste).
 - 🚗 **Android Auto**: la canción que eliges en el carro suena aunque Prometeo esté escondido; al abrir Prometeo sigue desde el mismo segundo.
