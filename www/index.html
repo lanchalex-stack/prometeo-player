@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#141414">
-<title>Prometeo Player v45c</title>
+<title>Prometeo Player v45d</title>
 <style>
 /* ===== Skins: cada skin solo cambia estas variables ===== */
 :root,[data-skin="neon"]{--bg:#0a0a0a;--card:#141414;--card2:#1c1c1c;--line:#232323;--line2:#2c2c2c;--acc:#00e5ff;--accrgb:0,229,255;--onacc:#000;--txt:#fff;--txt2:#ddd;--soft:#aaa;--mut:#8a8a8a;--dim:#666;--viz:#070b0c;--sheet:#161616;--input:#202020;--mini:#1a1f20;--miniline:#2a3a3c;--thumb:#fff;--overlay:rgba(0,0,0,.7);--red:#ff4d5e}
@@ -279,6 +279,7 @@ input.search:focus{border-color:var(--acc)}
 .about-logo{width:72px;height:72px;border-radius:22px;margin:0 auto 12px;background:var(--card2);border:1px solid var(--line2);display:flex;align-items:center;justify-content:center;font-size:36px}
 .about h4{font-size:22px;font-weight:900}
 .about h4 span{color:var(--acc)}
+/* v45d */ .about-inst{margin:4px 0 0;font-size:12.5px;color:var(--soft);text-align:center}
 .about-ver{display:inline-block;margin-top:8px;color:var(--acc);font-size:12px;font-weight:800;border:1px solid var(--acc);padding:3px 10px;border-radius:12px}
 .about-dev{margin-top:16px;font-size:15px;color:var(--txt2)}
 .about-dev b{color:var(--txt)}
@@ -496,7 +497,7 @@ body.tvi-on.has-mini{padding-bottom:calc(76px + var(--sab))}
 <header class="topbar">
  <div class="tb-main">
  <div class="tb-left">
-  <div class="tb-title"><h1>🔥 Prometeo <span>Player</span></h1><button class="ver" id="btnVer" data-i18n-aria="diagBtn" aria-label="Diagnóstico">v45c</button></div>
+  <div class="tb-title"><h1>🔥 Prometeo <span>Player</span></h1><button class="ver" id="btnVer" data-i18n-aria="diagBtn" aria-label="Diagnóstico">v45d</button></div>
   <div class="top-actions">
     <button class="top-btn hidden" id="btnCast" aria-label="Transmitir">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 18v.01"/><path d="M3 14a4 4 0 0 1 4 4"/><path d="M3 10a8 8 0 0 1 8 8"/><path d="M3 6.5V6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4.5"/></svg>
@@ -1670,7 +1671,7 @@ async function tvInlineShot(){
 
 
 /* ================= IDIOMAS (v41) ================= */
-const VERSION='45c';
+const VERSION='45d';
 const LANGS={es:'Español',en:'English',pt:'Português',fr:'Français'};
 const I18N={
 es:{
@@ -2197,6 +2198,10 @@ Object.assign(I18N.es,{"volSongGone": "La canción estaba en la memoria que quit
 Object.assign(I18N.en,{"volSongGone": "That song was on the storage you removed: it stopped"});
 Object.assign(I18N.pt,{"volSongGone": "A música estava na memória que você tirou: parou"});
 Object.assign(I18N.fr,{"volSongGone": "Cette chanson était sur la mémoire retirée : arrêtée"});
+Object.assign(I18N.es,{"instVer": "Versión instalada: {0} · Hecha para Android {1}", "madeFor": "Hecha para", "thisPhone": "Este teléfono"});
+Object.assign(I18N.en,{"instVer": "Installed version: {0} · Made for Android {1}", "madeFor": "Made for", "thisPhone": "This phone"});
+Object.assign(I18N.pt,{"instVer": "Versão instalada: {0} · Feita para Android {1}", "madeFor": "Feita para", "thisPhone": "Este telefone"});
+Object.assign(I18N.fr,{"instVer": "Version installée : {0} · Conçue pour Android {1}", "madeFor": "Conçue pour", "thisPhone": "Ce téléphone"});
 function t(k){ let s=(I18N[LANG]&&I18N[LANG][k]); if(s==null) s=I18N.es[k]; if(s==null) s=k;
   for(let i=1;i<arguments.length;i++) s=s.split('{'+(i-1)+'}').join(String(arguments[i])); return s; }
 function nSongs(n){ return t(n===1?'song1':'songN',n); }
@@ -5205,6 +5210,9 @@ function openAbout(){
     const lg=el('div','about-logo'); const li=el('img'); li.src=PROMETEO_LOGO; li.alt='Prometeo Player'; lg.appendChild(li); w.appendChild(lg);
     const h=el('h4',null,'Prometeo '); h.appendChild(el('span',null,'Player')); w.appendChild(h);
     w.appendChild(el('div','about-ver',t('version',VERSION)));
+    /* v45d: lo que Android dice que está instalado */
+    if(PM && PM.appInfo){ const inst=el('p','about-inst',''); w.appendChild(inst);
+      appInfoText().then(x=>{ inst.textContent=x||''; }); }
     const dev=el('p','about-dev',t('devBy')+' '); dev.appendChild(el('b',null,'Lanchalex')); w.appendChild(dev);
     const f=el('div','about-feats');
     [['📴','feat1'],['🛡️','feat2'],['🎵','feat3']].forEach(([ic,k])=>{ const r=el('div'); r.appendChild(el('span',null,ic)); r.appendChild(el('span',null,t(k))); f.appendChild(r); });
@@ -5766,10 +5774,18 @@ function tryPlay(url){
     a.src=url;
   });
 }
+/* v45d: "Versión instalada: v45d (1.45.1) · Hecha para Android 16" */
+const ANDROID_NAMES={24:'7',25:'7.1',26:'8',27:'8.1',28:'9',29:'10',30:'11',31:'12',32:'12L',33:'13',34:'14',35:'15',36:'16',37:'17'};
+async function appInfoRaw(){ try{ return PM && PM.appInfo ? await Promise.race([PM.appInfo(), new Promise(r=>setTimeout(()=>r(null),2500))]) : null; }catch(e){ return null; } }
+async function appInfoText(){
+  const i=await appInfoRaw(); if(!i) return '';
+  return t('instVer','v'+VERSION+' ('+i.name+')', ANDROID_NAMES[i.target]||('API '+i.target));
+}
 async function diagnose(){
   const lines=[], m=navigator.userAgent.match(/Chrome\/(\d+)/), av=new Audio(), B=window.__BOOT||{errors:[]};
   /* ---- parte nativa (Cordova + plugin) ---- */
   lines.push('— App —');
+  { const i=await appInfoRaw(); lines.push('Prometeo: v'+VERSION+(i? ' ('+i.name+') • '+t('madeFor')+' Android '+(ANDROID_NAMES[i.target]||'?')+' (API '+i.target+') • '+t('thisPhone')+': Android '+i.release+' (API '+i.sdk+')' : '')); }
   lines.push('Cordova: '+(window.cordova? 'sí '+(cordova.version||'')+' '+(cordova.platformVersion||'') : 'NO'));
   lines.push('deviceready: '+(B.ready? 'sí ('+B.ready+' ms)' : 'NO'));
   try{ const ch=cordova.require('cordova/channel');

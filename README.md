@@ -24,6 +24,11 @@
 - 🚗 **Android Auto**: tu música, listas, radio y favoritos en la pantalla del carro (Prometeo tiene que estar abierto en el teléfono). Mientras Prometeo no esté en Google Play, hay que activar "Fuentes desconocidas" en los ajustes de desarrollador de Android Auto.
 - 🌐 **Versión web**: si eliges un video, ya no entra como canción: puedes verlo en el momento (sin guardarlo) o descargar la app.
 
+### V45d
+
+- 📱 Hecha para **Android 16** (lo que pide Google Play) y probada con la pantalla completa nueva.
+- ℹ️ **Acerca de** y **Diagnóstico** dicen la versión instalada y para qué Android está hecha.
+
 ### V45
 
 - 🎨 Más espacio y mejor vista: encabezado más arriba, el canal de TV con su nombre completo y "● EN VIVO" arriba y los botones en una fila debajo, y los botones de abajo más cerca de la barra del teléfono.

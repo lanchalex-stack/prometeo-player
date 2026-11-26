@@ -87,6 +87,8 @@ module.exports = {
     /* ---- v42: Agregar música, memorias (SD / USB) y ordenar ---- */
     /** memorias del teléfono: [{name, label, removable, primary, mounted, free, total, indexed, songs}] */
     volumes: function () { return call('volumes'); },
+    /** v45d: {name, code, target, sdk, release} de la app instalada */
+    appInfo: function () { return call('appInfo'); },
     /** v45c: true si el archivo de la canción {mid, uri} todavía se puede abrir */
     fileOk: function (s) { return new Promise(function (ok) { exec(function (r) { ok(r !== false); }, function () { ok(true); }, 'PrometeoMusic', 'fileOk', [s || {}]); }); },
     /** aviso cuando se conecta o se saca una tarjeta / memoria USB: fn({type:'volumes'}) */

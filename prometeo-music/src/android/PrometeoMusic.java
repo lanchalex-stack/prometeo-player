@@ -575,6 +575,21 @@ public class PrometeoMusic extends CordovaPlugin {
             });
             return true;
         }
+        /* v45d: qué versión de Prometeo está instalada y para qué Android está hecha */
+        if ("appInfo".equals(action)) {
+            try {
+                Context c = cordova.getContext();
+                android.content.pm.PackageInfo pi = c.getPackageManager().getPackageInfo(c.getPackageName(), 0);
+                JSONObject o = new JSONObject();
+                o.put("name", pi.versionName == null ? "" : pi.versionName);
+                o.put("code", android.os.Build.VERSION.SDK_INT >= 28 ? pi.getLongVersionCode() : pi.versionCode);
+                o.put("target", c.getApplicationInfo().targetSdkVersion);
+                o.put("sdk", android.os.Build.VERSION.SDK_INT);
+                o.put("release", android.os.Build.VERSION.RELEASE);
+                cb.success(o);
+            } catch (Exception e) { cb.error(String.valueOf(e.getMessage())); }
+            return true;
+        }
         /* v45c: ¿el archivo de esta canción sigue al alcance? (si la memoria USB se expulsó, ya no) */
         if ("fileOk".equals(action)) {
             final JSONObject q = args.optJSONObject(0);
